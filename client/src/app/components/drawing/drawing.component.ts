@@ -38,6 +38,25 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.canvas = this.baseCanvas.nativeElement;
     }
 
+    @HostListener('window:keyup', ['$event'])
+    keyEvent(event: KeyboardEvent)
+    {
+        switch (event.key) {
+            case 'c':
+                this.currentTool = this.tools[0];
+                console.log(event.key);
+                break;
+            
+            case 'w':
+                console.log(event.key);
+                break;
+
+            default:
+                this.currentTool = this.tools[0];
+                break;
+        }
+    }
+
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
         this.currentTool.onMouseMove(event);
@@ -45,12 +64,17 @@ export class DrawingComponent implements AfterViewInit {
 
     @HostListener('mousedown', ['$event'])
     onMouseDown(event: MouseEvent): void {
-        this.currentTool.onMouseDown(event);
+        this.currentTool.onMouseDown(event); 
     }
 
     @HostListener('mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
         this.currentTool.onMouseUp(event);
+    }
+
+    getVal(item)
+    {
+        this.currentTool.onWidthChange(item.target.value);
     }
 
     get width(): number {
