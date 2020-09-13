@@ -31,8 +31,8 @@ export class BrushService extends Tool {
       super(drawingService);
       this.clearPath();
       //en attendant davoir plus de texture
-      this.texture = Texture.shadowTexture;
-      this.color = "#FF0000" ;
+      this.texture = Texture.zigzagTexture;
+      this.color = "#000000" ;
       this.lineWidth = 1;
   }
 
@@ -105,4 +105,5 @@ export class BrushService extends Tool {
     ctx.lineWidth = 15;
     ctx.stroke();
   }
+
 }

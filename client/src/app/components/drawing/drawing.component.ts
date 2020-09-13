@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-//import { PencilService } from '@app/services/tools/pencil-service';
+import { PencilService } from '@app/services/tools/pencil-service';
 import { BrushService } from '@app/services/tools/brush-service';
 
 
@@ -27,9 +27,9 @@ export class DrawingComponent implements AfterViewInit {
     // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
     private tools: Tool[];
     currentTool: Tool;
-    constructor(private drawingService: DrawingService, brushService: BrushService) {
-        this.tools = [brushService];
-        this.currentTool = this.tools[0];
+    constructor(private drawingService: DrawingService, pencilService: PencilService, brushService: BrushService) {
+        this.tools = [pencilService, brushService];
+        this.currentTool = this.tools[1];
     }
 
     ngAfterViewInit(): void {
