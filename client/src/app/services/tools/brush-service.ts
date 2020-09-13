@@ -12,7 +12,7 @@ export enum MouseButton {
 }
 enum Texture {
   shadowTexture = 0,
-  texture2 = 1,
+  zigzagTexture = 1,
   texture3 = 2,
   texture4 = 3,
   texture5= 4
@@ -24,12 +24,16 @@ enum Texture {
 export class BrushService extends Tool {
   private pathData: Vec2[];
   private texture: Texture;
+  private color: string;
+  private lineWidth: number;
 
   constructor(drawingService: DrawingService) {
       super(drawingService);
       this.clearPath();
       //en attendant davoir plus de texture
       this.texture = Texture.shadowTexture;
+      this.color = "#FF0000" ;
+      this.lineWidth = 1;
   }
 
   onMouseDown(event: MouseEvent): void {
@@ -65,7 +69,11 @@ export class BrushService extends Tool {
   private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
       switch(this.texture){
         case 0:
-          this.ShadowTexture(ctx, path)
+          this.ShadowTexture(ctx, path);
+          break;
+        case 1:
+          this.ZigzagTexture(ctx,path);
+          break;
       }
   }
 
@@ -74,12 +82,27 @@ export class BrushService extends Tool {
   }
 
   private ShadowTexture(ctx: CanvasRenderingContext2D, path: Vec2[]){
+    ctx.strokeStyle = this.color;
+    ctx.lineWidth = this.lineWidth;
     ctx.beginPath();
     for (const point of path) {
-        ctx.lineTo(point.x, point.y);
+        ctx.lineTo(point.x, point.y );
     }
     ctx.shadowColor= 'black';
     ctx.shadowBlur= 20;
+    ctx.lineWidth = 15;
+    ctx.stroke();
+  }
+
+  private ZigzagTexture(ctx: CanvasRenderingContext2D, path: Vec2[]){
+    ctx.strokeStyle = this.color;
+    ctx.lineWidth = this.lineWidth;
+    ctx.beginPath();
+    for (const point of path) {
+        ctx.lineTo(point.x - 5, point.y - 5 );
+        ctx.lineTo(point.x + 5, point.y + 5 );
+    }
+    ctx.lineWidth = 15;
     ctx.stroke();
   }
 }
