@@ -1,16 +1,17 @@
 canvas {
     cursor: crosshair;
-    border: 2px solid #000000;
     position: absolute;
     left: 0;
     top: 0;
 }
 
-#canvas{
+#canvas {
     z-index: 0;
+    background-color: #FFFFFF;
+    box-shadow: 0px 0px 10px grey;
 }
 
-#drawCanvas{
+#previewLayer {
     z-index: 1;
 }
 
