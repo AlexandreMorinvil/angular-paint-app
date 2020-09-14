@@ -48,7 +48,7 @@ export class DrawingComponent implements AfterViewInit {
                 break;
             
             case 'w':
-                console.log(event.key);
+                console.log(event.key); 
                 break;
 
             default:
