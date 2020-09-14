@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
-import { EditorComponent } from './editor.component';
+import { EditorPageComponent } from './editor-page.component';
 
-describe('EditorComponent', () => {
-    let component: EditorComponent;
-    let fixture: ComponentFixture<EditorComponent>;
+describe('EditorPageComponent', () => {
+    let component: EditorPageComponent;
+    let fixture: ComponentFixture<EditorPageComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [EditorComponent, DrawingComponent, SidebarComponent],
+            declarations: [EditorPageComponent, DrawingComponent, SidebarComponent],
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(EditorComponent);
+        fixture = TestBed.createComponent(EditorPageComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
