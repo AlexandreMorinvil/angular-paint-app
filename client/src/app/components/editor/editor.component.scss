@@ -1,16 +1,23 @@
 .container {
     height: 100%;
-    display: flex;
-}
-
-.drawing-container {
-    overflow: auto;
-    flex: 1 1 auto;
-}
-
-.drawing {
     display: grid;
-    width: min-content;
-    outline: none;
 }
-  
+
+.container-grid {
+    display: grid;
+    grid-template-columns: 64px 200px auto;
+    grid-template-areas: "sidebar panel workspace";
+    grid-gap: 0px;
+}
+
+.grid-area-sidebar {
+    grid-area: sidebar;
+}
+
+.grid-area-panel {
+    grid-area: panel;
+}
+
+.grid-area-workspace {
+    grid-area: workspace;
+}
