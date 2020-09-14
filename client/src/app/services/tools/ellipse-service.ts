@@ -10,16 +10,29 @@ export enum MouseButton {
     Back = 3,
     Forward = 4,
 }
+export enum TypeTrace {
+    Contour = 'contour',
+    Full = 'full',
+    FullContour = 'fullContour',
+}
 
 @Injectable({
     providedIn: 'root',
 })
 export class EllipseService extends Tool {
     public pathData: Vec2[];
+    public lineWidth: number;
+    public primaryColor: string;
+    public secondaryColor: string;
+    public typeTrace: TypeTrace;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
+        this.typeTrace = TypeTrace.Contour;
+        this.primaryColor = '#ff0000'; //red
+        this.secondaryColor = '#000000'; //black
+        this.lineWidth = 1;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -33,12 +46,17 @@ export class EllipseService extends Tool {
     }
 
     onMouseUp(event: MouseEvent): void {
-        if (this.mouseDown) {
+        if (this.mouseDown && event.shiftKey == false) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.drawEllipse(this.drawingService.baseCtx, this.pathData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawingService.previewCtx.setLineDash([0]);
+        }
+        if (event.shiftKey == true) {
+            const mousePosition = this.getPositionFromMouse(event);
+            this.pathData.push(mousePosition);
+            this.drawCercle(this.drawingService.baseCtx, this.pathData);
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
         this.mouseDown = false;
         this.clearPath();
@@ -55,32 +73,77 @@ export class EllipseService extends Tool {
             //Rectangle preview for ellipse
             this.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
         }
+        if (event.shiftKey == true && this.mouseDown) {
+            const mousePosition = this.getPositionFromMouse(event);
+            this.pathData.push(mousePosition);
+
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawCercle(this.drawingService.previewCtx, this.pathData);
+        }
     }
 
     private drawEllipse(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
-        let firstPoint = path[0];
-        let lastPoint = path[path.length - 1];
+        let mouseMoveCoord = path[path.length - 1];
 
-        let centerX = (lastPoint.x + firstPoint.x) / 2;
-        let centerY = (lastPoint.y + firstPoint.y) / 2;
+        let centerX = (mouseMoveCoord.x + this.mouseDownCoord.x) / 2;
+        let centerY = (mouseMoveCoord.y + this.mouseDownCoord.y) / 2;
 
-        let radiusX = Math.abs(lastPoint.x - firstPoint.x) / 2;
-        let radiusY = Math.abs(lastPoint.y - firstPoint.y) / 2;
+        let radiusX = Math.abs(mouseMoveCoord.x - this.mouseDownCoord.x) / 2;
+        let radiusY = Math.abs(mouseMoveCoord.y - this.mouseDownCoord.y) / 2;
 
         ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI * 2, false);
-        ctx.stroke();
+        ctx.lineWidth = this.lineWidth;
+
+        this.drawingService.previewCtx.setLineDash([0]); //set line dash to default when drawing Ellipse
+        this.applyTrace(ctx);
     }
+
     private drawPreviewRect(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
-        let lastMouseMoveCoord = path[path.length - 1];
-        let width = lastMouseMoveCoord.x - this.mouseDownCoord.x;
-        let height = lastMouseMoveCoord.y - this.mouseDownCoord.y;
+        let mouseMoveCoord = path[path.length - 1];
+        let width = mouseMoveCoord.x - this.mouseDownCoord.x;
+        let height = mouseMoveCoord.y - this.mouseDownCoord.y;
 
         ctx.rect(this.mouseDownCoord.x, this.mouseDownCoord.y, width, height);
         ctx.setLineDash([6]); //abitrary number!!!
-
+        ctx.lineWidth = 1;
         ctx.stroke();
+    }
+
+    private drawCercle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+        ctx.beginPath();
+        let mouseMoveCoord = path[path.length - 1];
+
+        let radius = Math.abs(mouseMoveCoord.y - this.mouseDownCoord.y) / 2;
+        let centerY = (mouseMoveCoord.y + this.mouseDownCoord.y) / 2;
+        let centerX = (mouseMoveCoord.x + this.mouseDownCoord.x) / 2;
+        ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+
+        ctx.lineWidth = this.lineWidth;
+
+        this.drawingService.previewCtx.setLineDash([0]); //set line dash to default when drawing Cercle
+        this.applyTrace(ctx);
+    }
+
+    private applyTrace(ctx: CanvasRenderingContext2D): void {
+        if (this.typeTrace == TypeTrace.Contour) {
+            ctx.strokeStyle = this.secondaryColor;
+            ctx.stroke();
+        }
+        if (this.typeTrace == TypeTrace.Full) {
+            ctx.fillStyle = this.primaryColor;
+            ctx.fill();
+        }
+        if (this.typeTrace == TypeTrace.FullContour) {
+            ctx.fillStyle = this.primaryColor;
+            ctx.strokeStyle = this.secondaryColor;
+            ctx.fill();
+            ctx.stroke();
+        }
+    }
+    onWidthChange(width: number): void {
+        this.lineWidth = width;
     }
 
     private clearPath(): void {
