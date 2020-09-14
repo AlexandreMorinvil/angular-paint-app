@@ -4,8 +4,6 @@ import { Message } from '@common/communication/message';
 import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-
-
 @Component({
     selector: 'app-main-page',
     templateUrl: './main-page.component.html',
@@ -15,7 +13,7 @@ export class MainPageComponent {
     readonly title: string = 'LOG2990';
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
-    constructor(private basicService: IndexService) { }
+    constructor(private basicService: IndexService) {}
 
     sendTimeToServer(): void {
         const newTimeMessage: Message = {
