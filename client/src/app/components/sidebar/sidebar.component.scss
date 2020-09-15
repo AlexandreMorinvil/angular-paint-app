@@ -1,5 +1,7 @@
 .container {
-    height: 100%;
+    box-sizing: border-box;
+    height: 100vh;
+    width: var(--sidebar-width);
     background-color: rgb(66, 63, 89);
     border-right: 1px solid rgb(33, 33, 59);
     overflow: hidden;

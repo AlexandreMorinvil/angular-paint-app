@@ -5,7 +5,7 @@
 
 .container-grid {
     display: grid;
-    grid-template-columns: 64px 200px auto;
+    grid-template-columns: var(--sidebar-width) var(--attributes-panel-width) auto;
     grid-template-areas: "sidebar panel workspace";
     grid-gap: 0px;
 }
@@ -20,4 +20,14 @@
 
 .grid-area-workspace {
     grid-area: workspace;
+}
+
+.sidebar-fixed-offset {
+    position: fixed;
+    left: 0;
+}
+
+.workspace-fixed-offset {
+    position: fixed;
+    left: var(--sidebar-width);
 }

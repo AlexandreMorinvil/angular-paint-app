@@ -4,3 +4,9 @@ html, body {
     height: auto;
     margin: 0;
 }
+
+/* Variables */
+:root {
+    --sidebar-width: 64px;
+    --attributes-panel-width: 200px;
+}

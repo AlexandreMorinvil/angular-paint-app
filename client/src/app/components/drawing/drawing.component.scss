@@ -6,13 +6,15 @@ canvas {
 }
 
 #canvas {
-    z-index: 0;
+    position: absolute;
     background-color: #FFFFFF;
     box-shadow: 0px 0px 10px grey;
+    z-index: 0;
 }
 
 #previewLayer {
-    z-index: 1;
+    position: absolute;
+    z-index: 0;
 }
 
 #canvas-container{
