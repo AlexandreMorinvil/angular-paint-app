@@ -46,18 +46,18 @@ export class EllipseService extends Tool {
     }
 
     onMouseUp(event: MouseEvent): void {
-        if (this.mouseDown && event.shiftKey == false) {
+        if (event.shiftKey) {
+            const mousePosition = this.getPositionFromMouse(event);
+            this.pathData.push(mousePosition);
+            this.drawCercle(this.drawingService.baseCtx, this.pathData);
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        } else if (this.mouseDown && !event.shiftKey) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.drawEllipse(this.drawingService.baseCtx, this.pathData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
-        if (event.shiftKey == true) {
-            const mousePosition = this.getPositionFromMouse(event);
-            this.pathData.push(mousePosition);
-            this.drawCercle(this.drawingService.baseCtx, this.pathData);
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        }
+
         this.mouseDown = false;
         this.clearPath();
     }
@@ -73,7 +73,7 @@ export class EllipseService extends Tool {
             //Rectangle preview for ellipse
             this.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
         }
-        if (event.shiftKey == true && this.mouseDown) {
+        if (event.shiftKey && this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
 
@@ -120,29 +120,27 @@ export class EllipseService extends Tool {
         let centerY = (mouseMoveCoord.y + this.mouseDownCoord.y) / 2;
         let lengthPreview = Math.abs(mouseMoveCoord.x - this.mouseDownCoord.x);
 
-        if (lengthPreview < 2 * radius && mouseMoveCoord.x > this.mouseDownCoord.x) {
+        if (lengthPreview <= 2 * radius && mouseMoveCoord.x >= this.mouseDownCoord.x) {
             let radius = Math.abs(mouseMoveCoord.x - this.mouseDownCoord.x) / 2;
             let centerX = Math.abs(mouseMoveCoord.x + this.mouseDownCoord.x) / 2;
             ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
         }
-
-        if (lengthPreview < 2 * radius && mouseMoveCoord.x < this.mouseDownCoord.x) {
+        if (lengthPreview <= 2 * radius && mouseMoveCoord.x <= this.mouseDownCoord.x) {
             let radius = Math.abs(mouseMoveCoord.x - this.mouseDownCoord.x) / 2;
             let centerX = Math.abs(mouseMoveCoord.x + this.mouseDownCoord.x) / 2;
             ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
         }
-        if (lengthPreview > 2 * radius && mouseMoveCoord.x < this.mouseDownCoord.x) {
+        if (lengthPreview >= 2 * radius && mouseMoveCoord.x <= this.mouseDownCoord.x) {
             let centerX = this.mouseDownCoord.x - radius;
             ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
         }
-        if (lengthPreview > 2 * radius && mouseMoveCoord.x > this.mouseDownCoord.x) {
+        if (lengthPreview >= 2 * radius && mouseMoveCoord.x >= this.mouseDownCoord.x) {
             let centerX = this.mouseDownCoord.x + radius;
             ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
         }
 
         ctx.lineWidth = this.lineWidth;
-
-        this.drawingService.previewCtx.setLineDash([0]); //set line dash to default when drawing Cercle
+        ctx.setLineDash([0]); //set line dash to default when drawing Cercle
         this.applyTrace(ctx);
     }
 

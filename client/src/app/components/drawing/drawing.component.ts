@@ -66,6 +66,11 @@ export class DrawingComponent implements AfterViewInit {
                 this.currentTool = this.tools[1];
                 console.log(event.key);
                 break;
+            case 'Shift':
+                break;
+            default:
+                this.currentTool = this.tools[0];
+                break;
         }
     }
 
