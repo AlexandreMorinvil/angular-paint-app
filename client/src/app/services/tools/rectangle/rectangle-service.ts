@@ -21,6 +21,7 @@ export class RectangleService extends Tool {
         super(drawingService);
         this.clearPath();
     }
+
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
@@ -47,7 +48,6 @@ export class RectangleService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawRectangle(this.drawingService.previewCtx, this.pathData);
@@ -59,10 +59,8 @@ export class RectangleService extends Tool {
         let lastMouseMoveCoord = path[path.length - 1];
         let width = lastMouseMoveCoord.x - this.mouseDownCoord.x;
         let height = lastMouseMoveCoord.y - this.mouseDownCoord.y;
-
-        ctx.rect(this.mouseDownCoord.x, this.mouseDownCoord.y, width, height);
-        ctx.setLineDash([6]); //abitrary number!!!
-
+        ctx.strokeRect(this.mouseDownCoord.x, this.mouseDownCoord.y, width, height);
+        ctx.setLineDash([0]); //pour les pointillés autours
         ctx.stroke();
     }
 

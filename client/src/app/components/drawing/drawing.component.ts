@@ -22,6 +22,7 @@ export class DrawingComponent implements AfterViewInit {
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
+    public rectangle: RectangleService;
 
     // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
     private tools: Tool[];
@@ -59,14 +60,12 @@ export class DrawingComponent implements AfterViewInit {
         switch (event.key) {
             case 'C':
                 this.currentTool = this.tools[0];
-                console.log(event.key);
                 break;
-
             case '1':
                 this.currentTool = this.tools[1];
-                console.log(event.key);
                 break;
-
+            case 'Shift':
+                break;
             default:
                 this.currentTool = this.tools[0];
                 break;

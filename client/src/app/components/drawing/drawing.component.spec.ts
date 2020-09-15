@@ -76,4 +76,22 @@ describe('DrawingComponent', () => {
         expect(mouseEventSpy).toHaveBeenCalled();
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
     });
+    it('sould call the tool pencil when pressing the key C', () => {
+        const event = {} as KeyboardEvent;
+        event.key == 'C';
+        component.keyEvent(event);
+        expect(component.currentTool).toBe(toolStub);
+    });
+    it('sould call the tool rectangle when pressing the key 1', () => {
+        const event = {} as KeyboardEvent;
+        event.key == '1';
+        component.keyEvent(event);
+        expect(component.currentTool).toBe(toolStub);
+    });
+    it('sould call no tool by default', () => {
+        const event = {} as KeyboardEvent;
+        event.key == 'default';
+        component.keyEvent(event);
+        expect(component.currentTool).toBe(toolStub);
+    });
 });
