@@ -58,7 +58,7 @@ export class DrawingComponent implements AfterViewInit {
 
     @HostListener('keypress', ['$event'])
     onKeyPress(event: KeyboardEvent): void{
-      if (event.key === 'p')
+      if (event.key === 'w')
       this.currentTool = this.tools[1];
     }
 

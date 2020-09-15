@@ -13,9 +13,9 @@ export enum MouseButton {
 enum Texture {
   shadowTexture = 0,
   zigzagTexture = 1,
-  texture3 = 2,
-  texture4 = 3,
-  texture5= 4
+  squareTexture = 2,
+  dashTexture = 3,
+  gradientTexture = 4
 }
 @Injectable({
   providedIn: 'root'
@@ -30,10 +30,9 @@ export class BrushService extends Tool {
   constructor(drawingService: DrawingService) {
       super(drawingService);
       this.clearPath();
-      //en attendant davoir plus de texture
-      this.texture = Texture.zigzagTexture;
-      this.color = "#000000" ;
-      this.lineWidth = 1;
+      this.texture = Texture.gradientTexture;
+      this.color = "#000000";
+      this.lineWidth = 10;
   }
 
   onMouseDown(event: MouseEvent): void {
@@ -66,6 +65,7 @@ export class BrushService extends Tool {
       }
   }
 
+
   private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
       switch(this.texture){
         case 0:
@@ -73,6 +73,15 @@ export class BrushService extends Tool {
           break;
         case 1:
           this.ZigzagTexture(ctx,path);
+          break;
+        case 2:
+          this.SquareTexture(ctx,path);
+          break;
+        case 3:
+          this.DashTexture(ctx,path);
+          break;
+        case 4:
+          this.GradientTexture(ctx,path);
           break;
       }
   }
@@ -82,28 +91,102 @@ export class BrushService extends Tool {
   }
 
   private ShadowTexture(ctx: CanvasRenderingContext2D, path: Vec2[]){
+    // parameters of the line and the shadow
     ctx.strokeStyle = this.color;
+    ctx.shadowColor= this.color;
     ctx.lineWidth = this.lineWidth;
+    ctx.shadowBlur= 5;
+    //First pixel
+    ctx.fillRect(path[0].x, path[0].y, this.lineWidth,this.lineWidth);
+    //Drawing of the line
     ctx.beginPath();
     for (const point of path) {
         ctx.lineTo(point.x, point.y );
     }
-    ctx.shadowColor= 'black';
-    ctx.shadowBlur= 20;
-    ctx.lineWidth = 15;
     ctx.stroke();
   }
 
   private ZigzagTexture(ctx: CanvasRenderingContext2D, path: Vec2[]){
+    // parameters of the line
     ctx.strokeStyle = this.color;
     ctx.lineWidth = this.lineWidth;
+    // first pixel
+    ctx.lineTo(path[0].x - 5, path[0].y - 5 );
+    ctx.lineTo(path[0].x + 5, path[0].y + 5 );
+    //Drawing of the line
     ctx.beginPath();
     for (const point of path) {
         ctx.lineTo(point.x - 5, point.y - 5 );
         ctx.lineTo(point.x + 5, point.y + 5 );
     }
-    ctx.lineWidth = 15;
     ctx.stroke();
   }
 
+  private SquareTexture(ctx: CanvasRenderingContext2D, path: Vec2[]){
+    // parameters of the line
+    ctx.strokeStyle = this.color;
+    //first pixel
+    ctx.fillRect(path[0].x, path[0].y, this.lineWidth + 5, this.lineWidth + 5);
+    //Drawing of the squares
+    for (const point of path) {
+      ctx.fillRect(point.x, point.y, this.lineWidth + 5, this.lineWidth + 5);
+    }
+  }
+
+  private DashTexture(ctx: CanvasRenderingContext2D, path: Vec2[]){
+    //parameters of the line
+    ctx.strokeStyle = this.color;
+    ctx.shadowColor= this.color;
+    ctx.lineWidth = this.lineWidth;
+    ctx.setLineDash([4, 16]);
+    //first pixel
+    ctx.fillRect(path[0].x, path[0].y, this.lineWidth,this.lineWidth);
+    //Drawing of the squares
+    ctx.beginPath();
+    for (const point of path) {
+        ctx.lineTo(point.x, point.y );
+    }
+    ctx.stroke();
+  }
+
+  private GradientTexture(ctx: CanvasRenderingContext2D, path: Vec2[]){
+    //parameters of the line
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = this.color;
+    ctx.lineWidth = this.lineWidth;
+
+
+    //First pixel
+    for (var i = 0; i < 3; i++ ){
+      ctx.globalAlpha = 1 - 0.25*i;
+        ctx.fillRect(path[0].x, path[0].y, this.lineWidth,this.lineWidth);
+    }
+    //First line of the gradient
+    ctx.beginPath();
+    for (const point of path)
+      ctx.lineTo(point.x, point.y+this.lineWidth );
+    ctx.stroke();
+    //Second line of the gradient
+    ctx.globalAlpha = 0.75;
+    ctx.beginPath();
+    for (const point of path) {
+        ctx.lineTo(point.x, point.y );
+    }
+    ctx.stroke();
+    //Third line of the gradient
+    ctx.globalAlpha = 0.5;
+    ctx.beginPath();
+    for (const point of path)
+      ctx.lineTo(point.x, point.y-this.lineWidth );
+    ctx.stroke();
+    //Fourth line of the gradient
+    ctx.globalAlpha = 0.25;
+    ctx.beginPath();
+    for (const point of path)
+      ctx.lineTo(point.x, point.y-2*this.lineWidth );
+    ctx.stroke();
+  }
+
+
 }
+

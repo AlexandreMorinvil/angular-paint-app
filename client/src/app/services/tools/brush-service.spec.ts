@@ -5,7 +5,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { BrushService } from './brush-service';
 
 // tslint:disable:no-any
-describe('PencilService', () => {
+describe('BrushService', () => {
     let service: BrushService;
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
