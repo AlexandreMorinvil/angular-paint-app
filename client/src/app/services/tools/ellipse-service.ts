@@ -79,6 +79,7 @@ export class EllipseService extends Tool {
 
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawCercle(this.drawingService.previewCtx, this.pathData);
+            this.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
         }
     }
 
@@ -117,8 +118,27 @@ export class EllipseService extends Tool {
 
         let radius = Math.abs(mouseMoveCoord.y - this.mouseDownCoord.y) / 2;
         let centerY = (mouseMoveCoord.y + this.mouseDownCoord.y) / 2;
-        let centerX = (mouseMoveCoord.x + this.mouseDownCoord.x) / 2;
-        ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+        let lengthPreview = Math.abs(mouseMoveCoord.x - this.mouseDownCoord.x);
+
+        if (lengthPreview < 2 * radius && mouseMoveCoord.x > this.mouseDownCoord.x) {
+            let radius = Math.abs(mouseMoveCoord.x - this.mouseDownCoord.x) / 2;
+            let centerX = Math.abs(mouseMoveCoord.x + this.mouseDownCoord.x) / 2;
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+        }
+
+        if (lengthPreview < 2 * radius && mouseMoveCoord.x < this.mouseDownCoord.x) {
+            let radius = Math.abs(mouseMoveCoord.x - this.mouseDownCoord.x) / 2;
+            let centerX = Math.abs(mouseMoveCoord.x + this.mouseDownCoord.x) / 2;
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+        }
+        if (lengthPreview > 2 * radius && mouseMoveCoord.x < this.mouseDownCoord.x) {
+            let centerX = this.mouseDownCoord.x - radius;
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+        }
+        if (lengthPreview > 2 * radius && mouseMoveCoord.x > this.mouseDownCoord.x) {
+            let centerX = this.mouseDownCoord.x + radius;
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+        }
 
         ctx.lineWidth = this.lineWidth;
 
