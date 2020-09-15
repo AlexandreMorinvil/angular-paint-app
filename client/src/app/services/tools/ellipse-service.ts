@@ -29,10 +29,10 @@ export class EllipseService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
-        this.typeTrace = TypeTrace.Contour;
+        this.typeTrace = TypeTrace.FullContour;
         this.primaryColor = '#ff0000'; //red
         this.secondaryColor = '#000000'; //black
-        this.lineWidth = 1;
+        this.lineWidth = 6;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -49,7 +49,7 @@ export class EllipseService extends Tool {
         if (event.shiftKey) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-            this.drawCercle(this.drawingService.baseCtx, this.pathData);
+            this.drawCircle(this.drawingService.baseCtx, this.pathData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
         } else if (this.mouseDown && !event.shiftKey) {
             const mousePosition = this.getPositionFromMouse(event);
@@ -63,7 +63,14 @@ export class EllipseService extends Tool {
     }
 
     onMouseMove(event: MouseEvent): void {
-        if (this.mouseDown) {
+        if (event.shiftKey && this.mouseDown) {
+            const mousePosition = this.getPositionFromMouse(event);
+            this.pathData.push(mousePosition);
+
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawCircle(this.drawingService.previewCtx, this.pathData);
+            this.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
+        } else if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
 
@@ -73,17 +80,9 @@ export class EllipseService extends Tool {
             //Rectangle preview for ellipse
             this.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
         }
-        if (event.shiftKey && this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
-            this.pathData.push(mousePosition);
-
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawCercle(this.drawingService.previewCtx, this.pathData);
-            this.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
-        }
     }
 
-    private drawEllipse(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    public drawEllipse(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         let mouseMoveCoord = path[path.length - 1];
 
@@ -100,7 +99,7 @@ export class EllipseService extends Tool {
         this.applyTrace(ctx);
     }
 
-    private drawPreviewRect(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    public drawPreviewRect(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         let mouseMoveCoord = path[path.length - 1];
         let width = mouseMoveCoord.x - this.mouseDownCoord.x;
@@ -112,7 +111,7 @@ export class EllipseService extends Tool {
         ctx.stroke();
     }
 
-    private drawCercle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    public drawCircle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         let mouseMoveCoord = path[path.length - 1];
 
@@ -124,17 +123,14 @@ export class EllipseService extends Tool {
             let radius = Math.abs(mouseMoveCoord.x - this.mouseDownCoord.x) / 2;
             let centerX = Math.abs(mouseMoveCoord.x + this.mouseDownCoord.x) / 2;
             ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-        }
-        if (lengthPreview <= 2 * radius && mouseMoveCoord.x <= this.mouseDownCoord.x) {
+        } else if (lengthPreview <= 2 * radius && mouseMoveCoord.x <= this.mouseDownCoord.x) {
             let radius = Math.abs(mouseMoveCoord.x - this.mouseDownCoord.x) / 2;
             let centerX = Math.abs(mouseMoveCoord.x + this.mouseDownCoord.x) / 2;
             ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-        }
-        if (lengthPreview >= 2 * radius && mouseMoveCoord.x <= this.mouseDownCoord.x) {
+        } else if (lengthPreview >= 2 * radius && mouseMoveCoord.x <= this.mouseDownCoord.x) {
             let centerX = this.mouseDownCoord.x - radius;
             ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-        }
-        if (lengthPreview >= 2 * radius && mouseMoveCoord.x >= this.mouseDownCoord.x) {
+        } else if (lengthPreview >= 2 * radius && mouseMoveCoord.x >= this.mouseDownCoord.x) {
             let centerX = this.mouseDownCoord.x + radius;
             ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
         }
@@ -144,7 +140,7 @@ export class EllipseService extends Tool {
         this.applyTrace(ctx);
     }
 
-    private applyTrace(ctx: CanvasRenderingContext2D): void {
+    public applyTrace(ctx: CanvasRenderingContext2D): void {
         if (this.typeTrace == TypeTrace.Contour) {
             ctx.strokeStyle = this.secondaryColor;
             ctx.stroke();
@@ -164,7 +160,7 @@ export class EllipseService extends Tool {
         this.lineWidth = width;
     }
 
-    private clearPath(): void {
+    public clearPath(): void {
         this.pathData = [];
     }
 }

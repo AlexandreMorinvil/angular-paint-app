@@ -54,8 +54,8 @@ export class DrawingComponent implements AfterViewInit {
         this.currentTool.onMouseUp(event);
     }
 
-    @HostListener('window:keyup', ['$event'])
-    keyEvent(event: KeyboardEvent) {
+    @HostListener('keyup', ['$event'])
+    keyEvent(event: KeyboardEvent): void {
         switch (event.key) {
             case 'c':
                 this.currentTool = this.tools[0];
