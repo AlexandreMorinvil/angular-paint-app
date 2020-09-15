@@ -7,10 +7,12 @@ import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { FormsModule } from '@angular/forms';
+
 
 @NgModule({
     declarations: [AppComponent, EditorComponent, SidebarComponent, DrawingComponent, MainPageComponent],
-    imports: [BrowserModule, HttpClientModule, AppRoutingModule],
+    imports: [BrowserModule, HttpClientModule, AppRoutingModule, FormsModule],
     providers: [],
     bootstrap: [AppComponent],
 })

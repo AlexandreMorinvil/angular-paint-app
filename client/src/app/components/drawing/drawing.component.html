@@ -1,10 +1,16 @@
-<div>
-    <label for="name">Grosseur</label>
-    <input id="grosseurCrayon" type="text" value="1" (change)= getVal($event) >
+<div class="wrapper">
+    <div>
+        <label for="name">Size</label>
+        <input  value="#000000" [(ngModel)]="size">
+    </div>
+
+    <div>
+        <label for="name">Color</label>
+        <input  value="#000000" [(ngModel)]="color">
+    </div>
 </div>
 
 <div id="canvas-container">
-    <canvas id="canvas" #baseCanvas [attr.width]="width" [attr.height]="height"></canvas>
-    <canvas id="previewLayer" #previewCanvas [attr.width]="width" [attr.height]="height"></canvas>
+    <canvas id="canvas" #baseCanvas [attr.width]="width" [attr.height]="height" style="border:3px solid #000000;"></canvas>
+    <canvas id="previewLayer" #previewCanvas [attr.width]="width" [attr.height]="height" style="border:3px dotted #000000;"></canvas>
 </div>
-

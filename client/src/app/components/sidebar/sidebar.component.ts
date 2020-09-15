@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { PencilService } from '@app/services/tools/pencil-service';
+//import { PencilService } from '@app/services/tools/pencil-service';
 
 @Component({
     selector: 'app-sidebar',
