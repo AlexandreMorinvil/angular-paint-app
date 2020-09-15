@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '../drawing/drawing.service';
-import { EllipseService } from './ellipse-service';
+import { EllipseService, TypeTrace } from './ellipse-service';
 
 describe('EllipseService', () => {
     let service: EllipseService;
@@ -110,7 +110,7 @@ describe('EllipseService', () => {
         expect(drawCircleSpy).toHaveBeenCalled();
     });
 
-    it(' onMouseUp should call drawCircle if mouse was already down and shift is pressed down', () => {
+    it(' onMouseUp should call drawCircle if mouse down and shift is pressed down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
         mouseEvent = { shiftKey: true } as MouseEvent;
@@ -120,7 +120,7 @@ describe('EllipseService', () => {
         expect(drawCircleSpy).toHaveBeenCalled();
     });
 
-    it(' should call drawCircle', () => {
+    it(' onMouseMove should call drawCircle if mouse down and shift is pressed down ', () => {
         //bottom right
         mouseEvent = { offsetX: 10, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseDown(mouseEvent);
@@ -131,7 +131,7 @@ describe('EllipseService', () => {
         expect(drawCircleSpy).toHaveBeenCalled();
     });
 
-    it(' should call drawCircle', () => {
+    it(' onMouseMove should call drawCircle if mouse down and shift is pressed down ', () => {
         //top right
         mouseEvent = { offsetX: 10, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseDown(mouseEvent);
@@ -142,7 +142,7 @@ describe('EllipseService', () => {
         expect(drawCircleSpy).toHaveBeenCalled();
     });
 
-    it(' should call drawCircle', () => {
+    it(' onMouseMove should call drawCircle if mouse down and shift is pressed down ', () => {
         mouseEvent = { offsetX: 20, offsetY: 9, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 50, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
@@ -152,20 +152,41 @@ describe('EllipseService', () => {
         expect(drawCircleSpy).toHaveBeenCalled();
     });
 
-    it(' should call drawCircle', () => {
+    it(' should call applyTrace', () => {
         mouseEvent = { offsetX: 50, offsetY: 9, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 20, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
 
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-        expect(drawCircleSpy).toHaveBeenCalled();
+        expect(applyTraceSpy).toHaveBeenCalled();
     });
 
-    it(' should call applyTrace for trace of type contour when drawEllipse is called', () => {
-        service.onMouseMove(mouseEvent); //drawEllipse is called in onMouseMove()
-        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-        expect(applyTraceSpy).toHaveBeenCalled();
+    it(' should call applyTrace for trace of type Contour with the color blue', () => {
+        service.typeTrace = TypeTrace.Contour;
+        service.secondaryColor = 'blue';
+        service.applyTrace(baseCtxStub);
+
+        expect(baseCtxStub.strokeStyle).toBe('#0000ff');
+    });
+
+    it(' should call applyTrace for trace of type Full with the color red', () => {
+        service.typeTrace = TypeTrace.Full;
+        service.primaryColor = 'red';
+
+        service.applyTrace(baseCtxStub);
+
+        expect(baseCtxStub.fillStyle).toBe('#ff0000');
+    });
+
+    it(' should call applyTrace for trace of type fullContour', () => {
+        service.typeTrace = TypeTrace.FullContour;
+        service.primaryColor = 'red';
+        service.secondaryColor = 'blue';
+
+        service.applyTrace(baseCtxStub);
+        expect(baseCtxStub.strokeStyle).toBe('#0000ff');
+        expect(baseCtxStub.fillStyle).toBe('#ff0000');
     });
 
     // Exemple de test d'intégration qui est quand même utile

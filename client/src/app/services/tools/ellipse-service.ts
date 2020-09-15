@@ -156,9 +156,6 @@ export class EllipseService extends Tool {
             ctx.stroke();
         }
     }
-    onWidthChange(width: number): void {
-        this.lineWidth = width;
-    }
 
     public clearPath(): void {
         this.pathData = [];
