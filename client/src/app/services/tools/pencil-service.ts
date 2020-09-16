@@ -23,7 +23,7 @@ export class PencilService extends Tool {
     private pathData: Vec2[];
 
     constructor(drawingService: DrawingService) {
-        super(drawingService);
+        super(drawingService, "crayon", "C");
         this.clearPath();
     }
 

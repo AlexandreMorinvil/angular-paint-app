@@ -4,7 +4,7 @@
     width: var(--sidebar-width);
     background-color: rgb(66, 63, 89);
     border-right: 1px solid rgb(33, 33, 59);
-    overflow: hidden;
+    overflow: visible;
 }
 
 .container-flex {
@@ -13,13 +13,26 @@
 }
 
 button {
+    cursor: pointer;
+    position: relative;
     height: var(--sidebar-width);
     width: var(--sidebar-width);
     background-color: inherit;
     border-style: none;
+    border-right: inherit;
     border-bottom: 1px solid rgb(53, 53, 79);
 }
 
 button:hover {
+    box-sizing: border-box;
+    border-right: inherit;
     background-color: rgb(96, 93, 119);
+}
+
+.tooltip {
+    visibility: hidden;
+}
+
+.has-tooltip:hover .tooltip {
+    visibility: visible;
 }

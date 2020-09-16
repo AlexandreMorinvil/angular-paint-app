@@ -14,4 +14,8 @@ export class SidebarComponent {
     public getListOfTools(): Tool[] {
         return this.toolboxSevice.getAvailableTools();
     }
+
+    public formatTooltipMessage(tool: Tool): string {
+        return "Outil : " + tool.name + "\n( Raccourci: " + tool.shortcut + " )";
+    }
 }

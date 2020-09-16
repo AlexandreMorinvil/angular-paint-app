@@ -1,5 +1,7 @@
 <div class="container container-flex">
-    <button *ngFor="let item of getListOfTools()">
-        Crayon
+    
+    <button *ngFor="let tool of getListOfTools()" class="has-tooltip">
+        {{ tool.name }}
+        <app-tooltip [text]="formatTooltipMessage(tool)" class="tooltip"></app-tooltip>
     </button>
 </div>
