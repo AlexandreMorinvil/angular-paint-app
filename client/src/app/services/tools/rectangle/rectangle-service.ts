@@ -24,6 +24,7 @@ export class RectangleService extends Tool {
 
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
+
         if (this.mouseDown) {
             this.clearPath();
 
@@ -33,17 +34,17 @@ export class RectangleService extends Tool {
     }
 
     onMouseUp(event: MouseEvent): void {
-        if (event.shiftKey) {
-            const mousePosition = this.getPositionFromMouse(event);
-            this.pathData.push(mousePosition);
-            this.drawSquare(this.drawingService.baseCtx, this.pathData);
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        } else if (this.mouseDown && !event.shiftKey) {
+        if (this.mouseDown && !event.shiftKey) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.drawRectangle(this.drawingService.baseCtx, this.pathData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawingService.previewCtx.setLineDash([0]);
+        } else if (event.shiftKey) {
+            const mousePosition = this.getPositionFromMouse(event);
+            this.pathData.push(mousePosition);
+            this.drawSquare(this.drawingService.baseCtx, this.pathData);
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
         this.mouseDown = false;
         this.clearPath();
@@ -55,13 +56,11 @@ export class RectangleService extends Tool {
             this.pathData.push(mousePosition);
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawRectangle(this.drawingService.previewCtx, this.pathData);
-        } else if (event.shiftKey && this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
-            this.pathData.push(mousePosition);
-
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawSquare(this.drawingService.previewCtx, this.pathData);
+            if (event.shiftKey) {
+                this.drawSquare(this.drawingService.previewCtx, this.pathData);
+            } else {
+                this.drawRectangle(this.drawingService.previewCtx, this.pathData);
+            }
         }
     }
 
