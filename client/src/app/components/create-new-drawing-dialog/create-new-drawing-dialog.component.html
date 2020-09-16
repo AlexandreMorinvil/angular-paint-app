@@ -1,0 +1,23 @@
+<h1 mat-dialog-title>Créer un nouveau dessin</h1>
+<div mat-dialog-content>
+    <p>Dimensions du dessin</p>
+    <div mat-dialog-content id="modal-create-drawing-content">
+        <p>
+            <mat-form-field appearance="outline" hintLabel="Hauteur de l'image">
+                <input matInput (ngModelChange)="onDimensionChange()" type="number" min="1" />
+            </mat-form-field>
+        </p>
+
+        <p>
+            <mat-form-field appearance="outline" hintLabel="Largeur de l'image">
+                <input matInput type="number" min="1" />
+            </mat-form-field>
+        </p>
+    </div>
+
+    <div mat-dialog-actions>
+        <button mat-button (click)="onNoClick()">Annuler</button>
+        <button mat-button cdkFocusInitial routerLink="/editor">Ok</button>
+        <a routerLink="/editor" routerLinkActive="active">Login</a>
+    </div>
+</div>
