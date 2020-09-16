@@ -6,20 +6,20 @@ import { CreateNewDrawingDialogComponent } from '@app/components/create-new-draw
     providedIn: 'root',
 })
 export class CreateNewDrawingDialogService {
-    animal: string;
-    name: string;
+    height: number = 250; // should be working zone dimensions
+    width: number = 250; // should be working zone dimensions
+
     constructor(public dialog: MatDialog) {}
 
     openDialog(): void {
         const dialogRef = this.dialog.open(CreateNewDrawingDialogComponent, {
             width: '500px',
-            height: '400px',
-            data: { name: this.name, animal: this.animal },
+            height: '600px',
+            data: { height: this.height, width: this.width },
         });
 
         dialogRef.afterClosed().subscribe((result) => {
             console.log('The dialog was closed');
-            this.animal = result;
         });
     }
 }
