@@ -21,4 +21,4 @@ import { CreateNewDrawingDialogService } from './services/create-new-drawing-dia
     providers: [{ provide: MAT_DIALOG_DATA, useValue: [] }, CreateNewDrawingDialogService],
     bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

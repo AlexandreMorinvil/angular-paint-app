@@ -1,17 +1,17 @@
 <div class="container">
-    <h1 class="header-item">Bienvenue au cours {{ title }}</h1>
-
-    <div id="server-message">
-        <p>Petit message du serveur : {{ message | async }}</p>
+    <h1 class="title">PolyDessin</h1>
+    <!------ <h2 class="header-item">Bienvenu au cours de {{ title }}</h2>
+        <div id="server-message">
+         <p>Petit message du serveur : {{ message | async }}</p>
         <button class="button" (click)="getMessagesFromServer()">Récuper un message du serveur</button>
-        <button class="button" (click)="sendTimeToServer()">Envoyer un message au serveur</button>
-    </div>
-
-    <button class="button" routerLink="/editor">Ouvir Éditeur</button>
-    <button mat-raised-button class="button" (click)="openCreateNewDrawingDialog()">Créer un nouveau dessin</button>
+        <button class="button" (click)="sendTimeToServer()">Envoyer un message au serveur</button> </div>---->
+    <button class="button1">Créer un nouveau dessin</button>
+    <button class="button2">Ouvrir le carrousel de dessins</button>
+    <button class="button3">Afficher le Guide d'utilisation</button>
+    <button class="button4">Continuer un dessin</button>
+    <button class="button5" routerLink="/editor">Commencer</button>
 
     <div class="footer-item">
-        <h4 class="team-name">Équipe Poly</h4>
-        <p>Coequipier #1, Coequipier #2, Coequipier #3, Coequipier #4, Coequipier #5, Coequipier #6</p>
+        <p>© 2020 Polytecnhique de Montréal, Coequipier #1, Coequipier #2, Coequipier #3, Coequipier #4, Coequipier #5,Coequipier #6</p>
     </div>
 </div>
