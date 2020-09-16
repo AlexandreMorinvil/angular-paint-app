@@ -4,20 +4,19 @@
     <div mat-dialog-content id="modal-create-drawing-content">
         <p>
             <mat-form-field appearance="outline" hintLabel="Hauteur de l'image">
-                <input matInput (ngModelChange)="onDimensionChange()" type="number" min="1" />
+                <input matInput type="number" min="250" />
             </mat-form-field>
         </p>
 
         <p>
             <mat-form-field appearance="outline" hintLabel="Largeur de l'image">
-                <input matInput type="number" min="1" />
+                <input matInput type="number" min="250" />
             </mat-form-field>
         </p>
     </div>
 
     <div mat-dialog-actions>
         <button mat-button (click)="onNoClick()">Annuler</button>
-        <button mat-button cdkFocusInitial routerLink="/editor">Ok</button>
-        <a routerLink="/editor" routerLinkActive="active">Login</a>
+        <button mat-button (click)="navigateToEditor()">Ok</button>
     </div>
 </div>
