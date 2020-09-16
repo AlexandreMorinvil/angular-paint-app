@@ -5,11 +5,10 @@
          <p>Petit message du serveur : {{ message | async }}</p>
         <button class="button" (click)="getMessagesFromServer()">Récuper un message du serveur</button>
         <button class="button" (click)="sendTimeToServer()">Envoyer un message au serveur</button> </div>---->
-    <button class="button1">Créer un nouveau dessin</button>
+    <button class="button1" (click)="openCreateNewDrawingDialog()">Créer un nouveau dessin</button>
     <button class="button2">Ouvrir le carrousel de dessins</button>
     <button class="button3">Afficher le Guide d'utilisation</button>
     <button class="button4">Continuer un dessin</button>
-    <button class="button5" routerLink="/editor">Commencer</button>
 
     <div class="footer-item">
         <p>© 2020 Polytecnhique de Montréal, Coequipier #1, Coequipier #2, Coequipier #3, Coequipier #4, Coequipier #5,Coequipier #6</p>
