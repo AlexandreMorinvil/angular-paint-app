@@ -6,6 +6,27 @@
     min-height: 100vh;
     height: auto;
 }
+@keyframes bounce {
+    0%,
+    100%,
+    20%,
+    50%,
+    80% {
+        -webkit-transform: translateY(0);
+        -ms-transform: translateY(0);
+        transform: translateY(0);
+    }
+    40% {
+        -webkit-transform: translateY(-20px);
+        -ms-transform: translateY(-20px);
+        transform: translateY(-20px);
+    }
+    60% {
+        -webkit-transform: translateY(-10px);
+        -ms-transform: translateY(-10px);
+        transform: translateY(-10px);
+    }
+}
 
 .button {
     visibility: hidden;
@@ -30,8 +51,16 @@
     color: white;
     background-color: #600808;
     border-color: #600808;
+    border-radius: 15px;
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-fill-mode: both;
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-fill-mode: both;
     cursor: pointer;
-    border-radius: 10px;
 }
 
 .button1:hover,
@@ -40,6 +69,8 @@
 .button4:hover {
     background-color: #b81414;
     color: white;
+    animation-name: bounce;
+    -moz-animation-name: bounce;
 }
 
 .button4 {
