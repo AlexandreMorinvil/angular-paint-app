@@ -64,6 +64,11 @@ export class RectangleService extends Tool {
         }
     }
 
+    onShiftPressed(event: KeyboardEvent): void {
+        this.drawingService.previewCtx.beginPath();
+        this.drawSquare(this.drawingService.previewCtx, this.pathData);
+    }
+
     private drawRectangle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         let lastMouseMoveCoord = path[path.length - 1];
