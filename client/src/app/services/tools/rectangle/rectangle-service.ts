@@ -80,7 +80,7 @@ export class RectangleService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-            
+
             //On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawRectangle(this.drawingService.previewCtx, this.pathData);
@@ -95,6 +95,8 @@ export class RectangleService extends Tool {
 
     onShiftUp(event: KeyboardEvent): void {
         this.shiftDown = false;
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawRectangle(this.drawingService.previewCtx, this.pathData);
     }
 
     private drawRectangle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {

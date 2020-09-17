@@ -3,6 +3,11 @@ import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Tool } from '@app/classes/tool';
+import { DrawingService } from '@app/services/drawing/drawing.service';
+import { EllipseService } from '@app/services/tools/ellipse-service';
+import { PencilService } from '@app/services/tools/pencil-service';
 import { DrawingComponent } from './drawing.component';
 
 class ToolStub extends Tool {}
@@ -27,6 +32,7 @@ describe('DrawingComponent', () => {
                 { provide: PencilService, useValue: toolStub },
                 { provide: DrawingService, useValue: drawingStub },
                 { provide: RectangleService, useValue: toolStub },
+                { provide: EllipseService, useValue: toolStub },
             ],
         }).compileComponents();
     }));
@@ -92,6 +98,29 @@ describe('DrawingComponent', () => {
         const event = {} as KeyboardEvent;
         event.key == 'default';
         component.keyEvent(event);
+
+    it(' should call the default tool when receiving a keyup event', () => {
+        const event = {} as KeyboardEvent;
+        component.keyEvent(event);
+
+        expect(component.currentTool).toBe(toolStub);
+    });
+
+    it(' should call the crayon tool when receiving a keyup event of c', () => {
+        const event = new KeyboardEvent('key', {
+            key: 'c',
+        });
+        component.keyEvent(event);
+
+        expect(component.currentTool).toBe(toolStub);
+    });
+
+    it(' should call the ellipse tool when receiving the keyup event of 2', () => {
+        const event = new KeyboardEvent('key', {
+            key: '2',
+        });
+        component.keyEvent(event);
+
         expect(component.currentTool).toBe(toolStub);
     });
 });
