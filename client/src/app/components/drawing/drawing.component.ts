@@ -27,11 +27,7 @@ export class DrawingComponent implements AfterViewInit {
     colorUse = "#000000";
     sizePoint = 1;
     
-
-
-    constructor(private drawingService: DrawingService, public toolbox: ToolboxService) {
-        
-    }
+    constructor(private drawingService: DrawingService, public toolbox: ToolboxService) {}
 
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;

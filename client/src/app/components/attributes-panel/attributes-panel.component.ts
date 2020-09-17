@@ -13,11 +13,12 @@ export class AttributesPanelComponent {
     colorUse = "#000000";
     sizePoint= 1;
     textureUse = 0;
-    keys = Object.keys;
     textures = TextureEnum;
+    enumKeys: any[] = [];
     
     constructor(toolboxService: ToolboxService) {
         this.toolbox = toolboxService;
+        this.enumKeys = Object.keys(this.textures).filter(f => !isNaN(Number(f)));
     }
 
     set color(item:string){
@@ -39,8 +40,7 @@ export class AttributesPanelComponent {
     }
 
     change(value: TextureEnum) {
-        this.textureUse = value;
-        this.toolbox.getCurrentTool().onTextureChange(this.textureUse);
+        this.texture = value;
     }
 
     set texture(item:TextureEnum){

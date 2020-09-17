@@ -3,7 +3,7 @@ import { Tool } from '@app/classes/tool';
 
 import { CursorService } from '@app/services/tools/cursor/cursor.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
-import { BrushService } from '@app/services/tools/brush/brush-service';
+import { BrushService } from '@app/services/tools/brush/brush-service'; 
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse-service';
 
