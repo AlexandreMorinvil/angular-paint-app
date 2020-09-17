@@ -12,10 +12,10 @@ export enum MouseButton {
 }
 enum Texture {
   shadowTexture = 0,
-  zigzagTexture = 1,
+  gradientTexture = 1,
   squareTexture = 2,
   dashTexture = 3,
-  gradientTexture = 4
+  zigzagTexture = 4
 }
 @Injectable({
   providedIn: 'root'
@@ -30,9 +30,9 @@ export class BrushService extends Tool {
   constructor(drawingService: DrawingService) {
       super(drawingService);
       this.clearPath();
-      this.texture = Texture.gradientTexture;
+      this.texture = Texture.zigzagTexture;
       this.color = "#000000";
-      this.lineWidth = 10;
+      this.lineWidth = 3;
   }
 
   onMouseDown(event: MouseEvent): void {
@@ -72,7 +72,7 @@ export class BrushService extends Tool {
           this.ShadowTexture(ctx, path);
           break;
         case 1:
-          this.ZigzagTexture(ctx,path);
+          this.GradientTexture(ctx,path);
           break;
         case 2:
           this.SquareTexture(ctx,path);
@@ -81,7 +81,7 @@ export class BrushService extends Tool {
           this.DashTexture(ctx,path);
           break;
         case 4:
-          this.GradientTexture(ctx,path);
+          this.ZigzagTexture(ctx,path);
           break;
       }
   }
@@ -106,20 +106,25 @@ export class BrushService extends Tool {
     ctx.stroke();
   }
 
-  private ZigzagTexture(ctx: CanvasRenderingContext2D, path: Vec2[]){
-    // parameters of the line
+  private GradientTexture(ctx: CanvasRenderingContext2D, path: Vec2[]){
+    //parameters of the line
     ctx.strokeStyle = this.color;
     ctx.lineWidth = this.lineWidth;
+
     // first pixel
-    ctx.lineTo(path[0].x - 5, path[0].y - 5 );
-    ctx.lineTo(path[0].x + 5, path[0].y + 5 );
-    //Drawing of the line
-    ctx.beginPath();
-    for (const point of path) {
-        ctx.lineTo(point.x - 5, point.y - 5 );
-        ctx.lineTo(point.x + 5, point.y + 5 );
+    for( var i = 0; i < 4 ; i++ ){
+      ctx.globalAlpha = 1 - 0.25*i;
+      ctx.fillRect(path[0].x, path[0].y + (this.lineWidth*i), 1, this.lineWidth/2);
     }
-    ctx.stroke();
+
+    //drawing of the line
+    for( var i = 0; i < 4 ; i++ ){
+      ctx.globalAlpha = 1 - 0.25*i;
+      ctx.beginPath();
+      for (const point of path)
+      ctx.lineTo(point.x, point.y+(this.lineWidth*i));
+      ctx.stroke();
+    }
   }
 
   private SquareTexture(ctx: CanvasRenderingContext2D, path: Vec2[]){
@@ -149,44 +154,20 @@ export class BrushService extends Tool {
     ctx.stroke();
   }
 
-  private GradientTexture(ctx: CanvasRenderingContext2D, path: Vec2[]){
-    //parameters of the line
-    ctx.globalAlpha = 1;
+  private ZigzagTexture(ctx: CanvasRenderingContext2D, path: Vec2[]){
+    // parameters of the line
     ctx.strokeStyle = this.color;
     ctx.lineWidth = this.lineWidth;
-
-
-    //First pixel
-    for (var i = 0; i < 3; i++ ){
-      ctx.globalAlpha = 1 - 0.25*i;
-        ctx.fillRect(path[0].x, path[0].y, this.lineWidth,this.lineWidth);
-    }
-    //First line of the gradient
-    ctx.beginPath();
-    for (const point of path)
-      ctx.lineTo(point.x, point.y+this.lineWidth );
-    ctx.stroke();
-    //Second line of the gradient
-    ctx.globalAlpha = 0.75;
+    // first pixel
+    ctx.lineTo(path[0].x - this.lineWidth, path[0].y - this.lineWidth );
+    ctx.lineTo(path[0].x + this.lineWidth, path[0].y + this.lineWidth );
+    //Drawing of the line
     ctx.beginPath();
     for (const point of path) {
-        ctx.lineTo(point.x, point.y );
+        ctx.lineTo(point.x + 2*this.lineWidth, point.y - 2*this.lineWidth );
+        ctx.lineTo(point.x - 2*this.lineWidth, point.y + 2*this.lineWidth );
     }
     ctx.stroke();
-    //Third line of the gradient
-    ctx.globalAlpha = 0.5;
-    ctx.beginPath();
-    for (const point of path)
-      ctx.lineTo(point.x, point.y-this.lineWidth );
-    ctx.stroke();
-    //Fourth line of the gradient
-    ctx.globalAlpha = 0.25;
-    ctx.beginPath();
-    for (const point of path)
-      ctx.lineTo(point.x, point.y-2*this.lineWidth );
-    ctx.stroke();
   }
-
-
 }
 
