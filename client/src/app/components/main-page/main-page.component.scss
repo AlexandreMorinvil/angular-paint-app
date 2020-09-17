@@ -6,24 +6,98 @@
     min-height: 100vh;
     height: auto;
 }
-
-.button {
-    margin-top: 10px;
-    text-align: center;
+@keyframes bounce {
+    0%,
+    100%,
+    20%,
+    50%,
+    80% {
+        -webkit-transform: translateY(0);
+        -ms-transform: translateY(0);
+        transform: translateY(0);
+    }
+    40% {
+        -webkit-transform: translateY(-20px);
+        -ms-transform: translateY(-20px);
+        transform: translateY(-20px);
+    }
+    60% {
+        -webkit-transform: translateY(-10px);
+        -ms-transform: translateY(-10px);
+        transform: translateY(-10px);
+    }
 }
 
-.team-name {
-    margin-top: 0.25em;
-    margin-bottom: 0.25em;
+.button {
+    visibility: hidden;
+    margin-top: 10px;
+    text-align: center;
+    width: 450px;
+    height: 50px;
+    cursor: pointer;
+    border-radius: 15px;
+}
+
+.button1,
+.button2,
+.button3,
+.button4 {
+    margin-top: 30px;
+    text-align: center;
+    width: 500px;
+    height: 60px;
+    font-size: 25px;
+    font-family: Gillsans, sans-serif;
+    color: white;
+    background-color: #600808;
+    border-color: #600808;
+    border-radius: 15px;
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-fill-mode: both;
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-fill-mode: both;
+    cursor: pointer;
+}
+
+.button1:hover,
+.button2:hover,
+.button3:hover,
+.button4:hover {
+    background-color: #b81414;
+    color: white;
+    animation-name: bounce;
+    -moz-animation-name: bounce;
+}
+
+.button4 {
+    visibility: hidden;
+}
+
+.title {
+    text-align: center;
+    color: #c80808;
+    font-size: 8em;
+    font-weight: bold;
+    font-family: Helvetica;
+    text-shadow: 0 1px 0 #ccc, 0 2px 0 #c9c9c9, 0 3px 0 #bbb, 0 4px 0 #b9b9b9, 0 5px 0 #aaa, 0 6px 1px rgba(0, 0, 0, 0.1), 0 0 5px rgba(0, 0, 0, 0.1),
+        0 1px 3px rgba(0, 0, 0, 0.3), 0 3px 5px rgba(0, 0, 0, 0.2), 0 5px 10px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.2),
+        0 20px 20px rgba(0, 0, 0, 0.15);
 }
 
 .header-item {
     justify-content: center;
     text-align: center;
+    font-size: 20px;
+    font-family: Gillsans, sans-serif;
 }
 
 .footer-item {
     text-align: center;
+    font-family: Gillsans, sans-serif;
 }
 
 .server-message {
