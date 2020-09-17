@@ -4,6 +4,18 @@ canvas {
     left: 0;
     top: 0;
 }
+.wrapper {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    grid-template-rows: 30px 30px;
+  }
+
+
+input {
+    text-align: center ;
+    width: 2cm;
+    align-self: center;
+}
 
 #canvas {
     position: absolute;

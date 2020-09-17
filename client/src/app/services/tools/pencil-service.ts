@@ -21,6 +21,8 @@ export enum MouseButton {
 })
 export class PencilService extends Tool {
     private pathData: Vec2[];
+    private width : number = 1 ;
+    private color : string = "#000000";
 
     constructor(drawingService: DrawingService) {
         super(drawingService, "crayon", "C");
@@ -33,7 +35,7 @@ export class PencilService extends Tool {
             this.clearPath();
 
             this.mouseDownCoord = this.getPositionFromMouse(event);
-            this.pathData.push(this.mouseDownCoord);
+            this.pathData.push(this.mouseDownCoord);  
         }
     }
 
@@ -58,11 +60,24 @@ export class PencilService extends Tool {
         }
     }
 
+    onWidthChange(width : number): void {
+        this.width= width;
+    }
+
+
+    onColorChange(color : string): void {
+        this.color= color;
+    }
+    
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
+        ctx.fillRect(path[0].x, path[0].y, this.width,this.width);
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
         }
+        ctx.lineWidth=this.width;       //width ajustment
+        ctx.strokeStyle = this.color;   //color of the line
+        ctx.fillStyle = this.color;     //color of the starting point
         ctx.stroke();
     }
 

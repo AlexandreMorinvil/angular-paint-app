@@ -9,7 +9,8 @@ import { EditorPageComponent } from './components/editor-page/editor-page.compon
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { TooltipComponent } from './components/tooltip/tooltip.component';
-import { WorkspaceComponent } from './components/workspace/workspace.component'
+import { WorkspaceComponent } from './components/workspace/workspace.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
     declarations: [
@@ -22,7 +23,7 @@ import { WorkspaceComponent } from './components/workspace/workspace.component'
         TooltipComponent,
         WorkspaceComponent
     ],
-    imports: [BrowserModule, HttpClientModule, AppRoutingModule],
+    imports: [BrowserModule, HttpClientModule, AppRoutingModule, FormsModule],
     providers: [],
     bootstrap: [AppComponent],
 })

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 
 import { PencilService } from '@app/services/tools/pencil-service';
+import { CursorService } from '@app/services/tools/cursor.service';
 
 
 @Injectable({
@@ -12,7 +13,9 @@ export class ToolboxService {
     private currentTool: Tool;
     
     constructor(
+        cursorService: CursorService,
         pencilService: PencilService) {
+            this.availableTools.push(cursorService);
             this.availableTools.push(pencilService);
     }
 
