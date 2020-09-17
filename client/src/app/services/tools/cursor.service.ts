@@ -23,7 +23,7 @@ export class CursorService extends Tool {
   anchorHit: number = 0;
 
   constructor(drawingService: DrawingService) {
-    super(drawingService, "cursor", "Y");
+    super(drawingService, "cursor", "y");
   }
 
   onMouseDown(event: MouseEvent): void {

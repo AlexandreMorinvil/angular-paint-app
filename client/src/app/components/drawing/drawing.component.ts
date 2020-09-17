@@ -1,10 +1,8 @@
 //import { variable } from '@angular/compiler/src/output/output_ast';
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
-import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { PencilService } from '@app/services/tools/pencil-service';
-import { CursorService } from '@app/services/tools/cursor.service';
+import { ToolboxService } from '@app/services/toolbox/toolbox.service';
 
 // TODO : Avoir un fichier séparé pour les constantes ?
 export const DEFAULT_WIDTH = 1000;
@@ -26,13 +24,10 @@ export class DrawingComponent implements AfterViewInit {
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
     colorUse = "#000000";
     sizePoint= 1;
+    toolbox: ToolboxService;
 
-    // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
-    private tools: Tool[];
-    currentTool: Tool;
-    constructor(private drawingService: DrawingService, pencilService: PencilService, cursorService: CursorService) {
-        this.tools = [pencilService, cursorService];
-        this.currentTool = this.tools[0];
+    constructor(private drawingService: DrawingService, toolboxService: ToolboxService) {
+        this.toolbox = toolboxService;
     }
 
     ngAfterViewInit(): void {
@@ -43,54 +38,29 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.canvas = this.baseCanvas.nativeElement;
     }
 
-    @HostListener('window:keyup', ['$event'])
-    keyEvent(event: KeyboardEvent)
-    {
-        switch (event.key) {
-            case 'c':
-                this.currentTool = this.tools[0];
-                break;
-            case 'w':
-                break;
-            case 'y':
-                this.currentTool = this.tools[1];
-                break;
-            default:
-                break;
-        }
-    }
-
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
-        this.currentTool.onMouseMove(event);
+        this.toolbox.getCurrentTool().onMouseMove(event);
     }
 
     @HostListener('mousedown', ['$event'])
     onMouseDown(event: MouseEvent): void {
-        this.currentTool.onMouseDown(event); 
+        this.toolbox.getCurrentTool().onMouseDown(event);
     }
 
     @HostListener('mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
-        this.currentTool.onMouseUp(event);
+        this.toolbox.getCurrentTool().onMouseUp(event);
     }
 
-    set color(item:string){
-        this.colorUse = item;
-        this.currentTool.onColorChange(this.colorUse);
-    }
-
-    get color(): string {
-        return this.colorUse;
-    }
-    
-    set size(item:number){
-        this.sizePoint = item;
-        this.currentTool.onWidthChange(this.sizePoint);
-    }
-
-    get size(): number {
-        return this.sizePoint;
+    @HostListener('window:keyup', ['$event'])
+    keyEvent(event: KeyboardEvent)
+    {
+        for (let i in this.toolbox.getAvailableTools()) {
+            if (this.toolbox.getAvailableTools()[i].shortcut === event.key.toLowerCase()) {
+                this.toolbox.setSelectedTool(this.toolbox.getAvailableTools()[i]);
+            } 
+        }
     }
 
 

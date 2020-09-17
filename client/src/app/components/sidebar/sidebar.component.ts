@@ -15,6 +15,10 @@ export class SidebarComponent {
         return this.toolboxSevice.getAvailableTools();
     }
 
+    public setCurrentTool(tool: Tool): void {
+        this.toolboxSevice.setSelectedTool(tool);
+    }
+
     public formatTooltipMessage(tool: Tool): string {
         return "Outil : " + tool.name + "\n( Raccourci: " + tool.shortcut + " )";
     }

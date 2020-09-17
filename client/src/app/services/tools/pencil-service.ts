@@ -25,7 +25,7 @@ export class PencilService extends Tool {
     private color : string = "#000000";
 
     constructor(drawingService: DrawingService) {
-        super(drawingService, "crayon", "C");
+        super(drawingService, "crayon", "c");
         this.clearPath();
     }
 
