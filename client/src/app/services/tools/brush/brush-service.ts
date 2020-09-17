@@ -171,7 +171,7 @@ export class BrushService extends Tool {
     ctx.lineWidth = this.lineWidth;
     ctx.setLineDash([4, 16]);
     //first pixel
-    ctx.fillRect(path[0].x, path[0].y, this.lineWidth, this.lineWidth);
+    ctx.fillRect(path[0].x, path[0].y, this.lineWidth, 1);
     //Drawing of the squares
     ctx.beginPath();
     for (const point of path) {
