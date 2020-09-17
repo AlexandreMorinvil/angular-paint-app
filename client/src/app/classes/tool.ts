@@ -29,6 +29,10 @@ export abstract class Tool {
 
     onColorChange(color : string): void {}
 
+    onShiftDown(event: KeyboardEvent): void {}
+
+    onShiftUp(event: KeyboardEvent): void {}
+
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };
     }

@@ -2,7 +2,6 @@
     
     <button *ngFor="let tool of getListOfTools()" (click)="setCurrentTool(tool)" class="has-tooltip">
         {{ tool.name }}
-        
         <app-tooltip [text]="formatTooltipMessage(tool)" class="tooltip"></app-tooltip>
     </button>
 </div>

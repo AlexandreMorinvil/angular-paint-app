@@ -1,9 +1,9 @@
 import { Injectable} from '@angular/core';
 import { Tool } from '@app/classes/tool';
 
-import { PencilService } from '@app/services/tools/pencil-service';
-import { CursorService } from '@app/services/tools/cursor.service';
-
+import { CursorService } from '@app/services/tools/cursor/cursor.service';
+import { PencilService } from '@app/services/tools/pencil/pencil-service';
+import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
 
 @Injectable({
     providedIn: 'root',
@@ -14,10 +14,12 @@ export class ToolboxService {
     
     constructor(
         cursorService: CursorService,
-        pencilService: PencilService) {
+        pencilService: PencilService,
+        rectangleService: RectangleService) {
             this.currentTool = cursorService;
             this.availableTools.push(cursorService);
             this.availableTools.push(pencilService);
+            this.availableTools.push(rectangleService);
     }
 
     public getAvailableTools(): Tool[] {
