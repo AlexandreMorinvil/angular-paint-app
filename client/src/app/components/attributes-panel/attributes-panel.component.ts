@@ -1,10 +1,6 @@
 import { Component } from '@angular/core';
-/*import { Tool } from '@app/classes/tool';
-import { Vec2 } from '@app/classes/vec2';
-import { DrawingService } from '@app/services/drawing/drawing.service';
-import { PencilService } from '@app/services/tools/pencil-service';
-import { CursorService } from '@app/services/tools/cursor.service';*/
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
+import { TextureEnum } from '@app/services/tools/brush/brush-service';
 
 @Component({
     selector: 'app-attributes-panel',
@@ -16,7 +12,10 @@ export class AttributesPanelComponent {
     toolbox: ToolboxService; 
     colorUse = "#000000";
     sizePoint= 1;
-
+    textureUse = 0;
+    keys = Object.keys;
+    textures = TextureEnum;
+    
     constructor(toolboxService: ToolboxService) {
         this.toolbox = toolboxService;
     }
@@ -38,4 +37,19 @@ export class AttributesPanelComponent {
     get size(): number {
         return this.sizePoint;
     }
+
+    change(value: TextureEnum) {
+        this.textureUse = value;
+        this.toolbox.getCurrentTool().onTextureChange(this.textureUse);
+    }
+
+    set texture(item:TextureEnum){
+        this.textureUse = item;
+        this.toolbox.getCurrentTool().onTextureChange(this.textureUse);
+    }
+
+    get texture(): TextureEnum {
+        return this.textureUse;
+    }
+
 }

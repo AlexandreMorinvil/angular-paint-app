@@ -9,7 +9,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EllipseService } from '@app/services/tools/ellipse-service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { DrawingComponent } from './drawing.component';
-
+import {BrushService} from '@app/services/tools/brush-service'
 class ToolStub extends Tool {}
 
 // TODO : Déplacer dans un fichier accessible à tous
@@ -30,6 +30,7 @@ describe('DrawingComponent', () => {
             declarations: [DrawingComponent],
             providers: [
                 { provide: PencilService, useValue: toolStub },
+                { provide: BrushService, useValue: toolStub },
                 { provide: DrawingService, useValue: drawingStub },
                 { provide: RectangleService, useValue: toolStub },
                 { provide: EllipseService, useValue: toolStub },

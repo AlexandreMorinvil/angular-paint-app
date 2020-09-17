@@ -1,6 +1,6 @@
 <div class="container container-flex">
     Panneau d'attributs
-    
+
     <div class="wrapper">
         <div>
             <label for="name">Size</label>
@@ -13,6 +13,28 @@
             <br>
             <input value="#000000" [(ngModel)]="color">
         </div>
+
+        <!--<div>
+            <label for="name">Texture (0-4)</label>
+            <br>
+            <input value="0" [(ngModel)]="texture">
+        </div>
+
+        <label for="name">Texture</label>
+        <select>
+            <option *ngFor="let texture of keys(textures)" [value]="texture">{{textures[texture]}}</option>
+        </select>-->
+
+        <div>
+            <select (change)="change($event.target.value)">
+            <option>Texture</option>
+            <option *ngFor="let texture of keys(textures)"
+                [value]="texture">{{textures[texture]}}</option>
+          </select>
+        </div>
+     
+
+
     </div>
 
 </div>

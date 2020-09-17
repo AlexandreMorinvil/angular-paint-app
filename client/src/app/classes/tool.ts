@@ -33,6 +33,8 @@ export abstract class Tool {
 
     onShiftUp(event: KeyboardEvent): void {}
 
+    onTextureChange(texture:number):void {}
+
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };
     }

@@ -77,7 +77,6 @@ export class DrawingComponent implements AfterViewInit {
         }
     }
 
-
     get width(): number {
         return this.canvasSize.x;
     }
