@@ -42,6 +42,7 @@ export class RectangleService extends Tool {
     public secondaryColor: string;
     public lineWidth: number;
     public typeLayout: string;
+    public lineDash: number;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
