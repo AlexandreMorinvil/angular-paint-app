@@ -45,7 +45,7 @@ export class RectangleService extends Tool {
     public lineDash: number;
 
     constructor(drawingService: DrawingService) {
-        super(drawingService, "rectangle", "1");
+        super(drawingService, 'rectangle', '1');
         this.clearPath();
         this.primaryColor = Color.vert;
         this.secondaryColor = Color.noir;
@@ -105,9 +105,23 @@ export class RectangleService extends Tool {
         let width = lastMouseMoveCoord.x - this.mouseDownCoord.x;
         let height = lastMouseMoveCoord.y - this.mouseDownCoord.y;
         if (this.shiftDown) {
-            height = width = Math.min(height, width); //draw square on shift pressed
+            let squareSide = Math.abs(Math.min(height, width));
+            if (height < 0 && width >= 0) {
+                height = -1 * squareSide;
+                width = squareSide;
+            } else if (height >= 0 && width < 0) {
+                width = -1 * squareSide;
+                height = squareSide;
+            } else if (height < 0 && width < 0) {
+                width = -1 * squareSide;
+                height = -1 * squareSide;
+            } else if (height >= 0 && width >= 0) {
+                width = squareSide;
+                height = squareSide;
+            }
         }
         ctx.rect(this.mouseDownCoord.x, this.mouseDownCoord.y, width, height);
+        console.log(this.mouseDownCoord.x, this.mouseDownCoord.y, width, height);
         this.setAttribute(ctx);
         ctx.setLineDash([0]); //pour les pointillés autours
     }
