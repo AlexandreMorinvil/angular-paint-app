@@ -1,7 +1,11 @@
 <div class="container container-flex">
-    <p style="color:white">Panneau d'attributs</p>
-
+    <div class="title">
+        <img [src]="currentTool.iconDirectory" [alt]="currentTool.name">
+        <h1 style="color:white">{{ currentTool.name }}</h1>
+    </div>
     <div class="wrapper">
+
+
         <div>
             <label for="name" style="color:white">Size</label>
             <br>
@@ -18,11 +22,10 @@
             <label for="name" style="color:white">Texture</label>
             <br>
             <select (change)="change($event.target.value)">
-                <option *ngFor="let texture of enumKeys"
-                [value]="texture">{{textures[texture]}}</option>
-          </select>
+                <option *ngFor="let texture of enumKeys" [value]="texture">{{textures[texture]}}</option>
+            </select>
         </div>
-     
+
 
 
     </div>
