@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -25,7 +26,7 @@ export class PencilService extends Tool {
     private color : string = "#000000";
 
     constructor(drawingService: DrawingService) {
-        super(drawingService, "crayon", "c");
+        super(drawingService, new Description("crayon", "c", "pencil_icon.png"));
         this.clearPath();
     }
 

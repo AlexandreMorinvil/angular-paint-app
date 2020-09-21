@@ -1,22 +1,20 @@
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { Description } from './description';
 import { Vec2 } from './vec2';
 
 // Ceci est justifié vu qu'on a des fonctions qui seront gérés par les classes enfant
 // tslint:disable:no-empty
 export abstract class Tool {
-    private _name: string;
-    private _shortcut: string;
+    private description: Description;
 
     mouseDownCoord: Vec2;
     mouseDown: boolean = false;
 
     constructor(
-        protected drawingService: DrawingService, 
-        name: string,
-        shortcut: string
+        protected drawingService: DrawingService,
+        description: Description
         ) {
-        this._name = name;
-        this._shortcut = shortcut;
+        this.description = description;
     }
 
     onMouseDown(event: MouseEvent): void {}
@@ -40,10 +38,14 @@ export abstract class Tool {
     }
 
     get name(): string {
-        return this._name;
+        return this.description.name;
     }
 
     get shortcut(): string {
-        return this._shortcut;
+        return this.description.shortcut;
+    }
+
+    get iconDirectory(): string {
+        return this.description.iconDirectory;
     }
 }

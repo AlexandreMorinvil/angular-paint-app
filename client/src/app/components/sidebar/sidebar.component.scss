@@ -12,6 +12,12 @@
     flex-direction: column;
 }
 
+img {
+    height: 80%;
+    width: 80%;
+    margin: auto;
+}
+
 button {
     cursor: pointer;
     position: relative;
@@ -21,6 +27,10 @@ button {
     border-style: none;
     border-right: inherit;
     border-bottom: 1px solid rgb(53, 53, 79);
+
+    display: flex;
+    justify-content: center;
+    align-content: center;
 }
 
 button:hover {

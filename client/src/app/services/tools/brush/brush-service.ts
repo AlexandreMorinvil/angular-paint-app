@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { Description } from '@app/classes/description';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
@@ -28,7 +29,7 @@ export class BrushService extends Tool {
   private color: string = "#000000";
 
   constructor(drawingService: DrawingService) {
-    super(drawingService, "pinceau", "w");
+    super(drawingService, new Description("pinceau", "w", "brush_icon.png"));
     this.clearPath();
     this.texture = TextureEnum.shadowTexture;
     this.color = "#000000";

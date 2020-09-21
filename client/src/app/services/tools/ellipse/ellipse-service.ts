@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -27,7 +28,7 @@ export class EllipseService extends Tool {
     public typeTrace: TypeTrace;
 
     constructor(drawingService: DrawingService) {
-        super(drawingService, "ellipse", "2");
+        super(drawingService, new Description("ellipse", "2", "ellipse_icon.png"));
         this.clearPath();
         this.typeTrace = TypeTrace.FullContour;
         this.primaryColor = '#ff0000'; //red

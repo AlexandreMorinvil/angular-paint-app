@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -45,7 +46,7 @@ export class RectangleService extends Tool {
     public lineDash: number;
 
     constructor(drawingService: DrawingService) {
-        super(drawingService, "rectangle", "1");
+        super(drawingService, new Description("rectangle", "1", "rectangle_icon.png"));
         this.clearPath();
         this.primaryColor = Color.vert;
         this.secondaryColor = Color.noir;

@@ -1,7 +1,8 @@
 <div class="container container-flex">
     
     <button *ngFor="let tool of getListOfTools()" (click)="setCurrentTool(tool)" class="has-tooltip" style="color:white">
-        {{ tool.name }}
+        <img [src]="tool.iconDirectory" [alt]="tool.name">
+        <!-- {{ tool.name }} -->
         <app-tooltip [text]="formatTooltipMessage(tool)" class="tooltip"></app-tooltip>
     </button>
 </div>
