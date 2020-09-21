@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
-import { DrawingService } from '../drawing/drawing.service';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EllipseService, TypeTrace } from './ellipse-service';
 
 describe('EllipseService', () => {

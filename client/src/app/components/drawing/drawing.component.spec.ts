@@ -1,16 +1,12 @@
-/*import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Tool } from '@app/classes/tool';
-import { DrawingService } from '@app/services/drawing/drawing.service';
-import { PencilService } from '@app/services/tools/pencil/pencil-service';
-import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { EllipseService } from '@app/services/tools/ellipse-service';
-import { PencilService } from '@app/services/tools/pencil-service';
+import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
+import { EllipseService } from '@app/services/tools/ellipse/ellipse-service';
+import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { DrawingComponent } from './drawing.component';
-import {BrushService} from '@app/services/tools/brush-service'
-class ToolStub extends Tool {}
+import { BrushService } from '@app/services/tools/brush/brush-service'
+class ToolStub extends Tool { }
 
 // TODO : Déplacer dans un fichier accessible à tous
 const DEFAULT_WIDTH = 1000;
@@ -23,7 +19,7 @@ describe('DrawingComponent', () => {
     let drawingStub: DrawingService;
 
     beforeEach(async(() => {
-        toolStub = new ToolStub({} as DrawingService);
+        toolStub = new ToolStub({} as DrawingService, "", "");
         drawingStub = new DrawingService();
 
         TestBed.configureTestingModule({
@@ -56,7 +52,7 @@ describe('DrawingComponent', () => {
     });
 
     it('should get stubTool', () => {
-        const currentTool = component.currentTool;
+        const currentTool = component.toolbox.getCurrentTool();
         expect(currentTool).toEqual(toolStub);
     });
 
@@ -86,43 +82,43 @@ describe('DrawingComponent', () => {
     it('sould call the tool pencil when pressing the key C', () => {
         const event = {} as KeyboardEvent;
         event.key == 'C';
-        component.keyEvent(event);
-        expect(component.currentTool).toBe(toolStub);
+        component.keyEventUp(event);
+        expect(component.toolbox.getCurrentTool()).toBe(toolStub);
     });
     it('sould call the tool rectangle when pressing the key 1', () => {
         const event = {} as KeyboardEvent;
         event.key == '1';
-        component.keyEvent(event);
-        expect(component.currentTool).toBe(toolStub);
+        component.keyEventUp(event);
+        expect(component.toolbox.getCurrentTool()).toBe(toolStub);
     });
     it('sould call no tool by default', () => {
         const event = {} as KeyboardEvent;
         event.key == 'default';
-        component.keyEvent(event);
+        component.keyEventUp(event);
 
-    it(' should call the default tool when receiving a keyup event', () => {
-        const event = {} as KeyboardEvent;
-        component.keyEvent(event);
+        it(' should call the default tool when receiving a keyup event', () => {
+            const event = {} as KeyboardEvent;
+            component.keyEventUp(event);
 
-        expect(component.currentTool).toBe(toolStub);
-    });
-
-    it(' should call the crayon tool when receiving a keyup event of c', () => {
-        const event = new KeyboardEvent('key', {
-            key: 'c',
+            expect(component.toolbox.getCurrentTool()).toBe(toolStub);
         });
-        component.keyEvent(event);
 
-        expect(component.currentTool).toBe(toolStub);
-    });
+        it(' should call the crayon tool when receiving a keyup event of c', () => {
+            const event = new KeyboardEvent('key', {
+                key: 'c',
+            });
+            component.keyEventUp(event);
 
-    it(' should call the ellipse tool when receiving the keyup event of 2', () => {
-        const event = new KeyboardEvent('key', {
-            key: '2',
+            expect(component.toolbox.getCurrentTool()).toBe(toolStub);
         });
-        component.keyEvent(event);
 
-        expect(component.currentTool).toBe(toolStub);
+        it(' should call the ellipse tool when receiving the keyup event of 2', () => {
+            const event = new KeyboardEvent('key', {
+                key: '2',
+            });
+            component.keyEventUp(event);
+
+            expect(component.toolbox.getCurrentTool()).toBe(toolStub);
+        });
     });
 });
-*/

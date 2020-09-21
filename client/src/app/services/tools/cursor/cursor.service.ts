@@ -43,7 +43,7 @@ export class CursorService extends Tool {
 
   onMouseMove(event: MouseEvent): void {
     if (this.clickOnAnchor && this.mouseDown) {
-      const mouseDownCoord = this.getPositionFromMouse(event);
+      let mouseDownCoord = this.getPositionFromMouse(event);
       switch (this.anchorHit) {
         case 1:
           this.moveWidth(mouseDownCoord.x);

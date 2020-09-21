@@ -21,8 +21,8 @@ export enum MouseButton {
 })
 export class PencilService extends Tool {
     private pathData: Vec2[];
-    private width : number = 1 ;
-    private color : string = "#000000";
+    private width: number = 1;
+    private color: string = "#000000";
 
     constructor(drawingService: DrawingService) {
         super(drawingService, "crayon", "c");
@@ -34,7 +34,7 @@ export class PencilService extends Tool {
         if (this.mouseDown) {
             this.clearPath();
             this.mouseDownCoord = this.getPositionFromMouse(event);
-            this.pathData.push(this.mouseDownCoord);  
+            this.pathData.push(this.mouseDownCoord);
         }
     }
 
@@ -51,30 +51,42 @@ export class PencilService extends Tool {
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
-            this.pathData.push(mousePosition);
 
-            // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawLine(this.drawingService.previewCtx, this.pathData);
+            if (this.isInCanvas(mousePosition)) {
+                this.pathData.push(mousePosition);
+                // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                this.drawLine(this.drawingService.previewCtx, this.pathData);
+            }
+            else{
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                this.clearPath();
+            }
+
         }
     }
 
-    onWidthChange(width : number): void {
-        this.width= width;
+    onWidthChange(width: number): void {
+        this.width = width;
     }
 
 
-    onColorChange(color : string): void {
-        this.color= color;
+    onColorChange(color: string): void {
+        this.color = color;
     }
-    
+
+    private isInCanvas(mousePosition: Vec2): boolean {
+        return (mousePosition.x <= this.drawingService.previewCtx.canvas.width &&
+            mousePosition.y <= this.drawingService.previewCtx.canvas.height);
+    }
+
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
-        ctx.fillRect(path[0].x, path[0].y, this.width,this.width);
+        ctx.fillRect(path[0].x, path[0].y, this.width, this.width);
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
         }
-        ctx.lineWidth=this.width;       //width ajustment
+        ctx.lineWidth = this.width;       //width ajustment
         ctx.strokeStyle = this.color;   //color of the line
         ctx.fillStyle = this.color;     //color of the starting point
         ctx.stroke();
