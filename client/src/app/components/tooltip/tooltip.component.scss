@@ -2,13 +2,14 @@
     display: inline-block;
     white-space: pre-line;
     --arrow-size: 10px;
+    --tooltip-color: rgba(5, 0, 5, 0.9);
 }
 
 .tooltip {
     min-width: 120px;
     max-width: 240px;
     width: auto;
-    background-color: rgba(5, 0, 5, 0.6);
+    background-color: var(--tooltip-color);
     color: white;
     text-align: center;
     border-radius: 3px;
@@ -30,5 +31,5 @@
     margin-top: -var(--arrow-size);
     border-width: var(--arrow-size);
     border-style: solid;
-    border-color: transparent black transparent transparent;
+    border-color: transparent var(--tooltip-color) transparent transparent;
   }
