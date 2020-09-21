@@ -15,6 +15,11 @@ export class SidebarComponent {
         return this.toolboxSevice.getAvailableTools();
     }
 
+    public getCurrentTool(): Tool {
+        return this.toolboxSevice.getCurrentTool();
+    }
+
+
     public setCurrentTool(tool: Tool): void {
         this.toolboxSevice.setSelectedTool(tool);
     }
