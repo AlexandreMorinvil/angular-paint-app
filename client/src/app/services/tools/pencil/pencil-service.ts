@@ -3,6 +3,7 @@ import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { WidthService } from '@app/services/tool-modifier/width/width.service';
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
 export enum MouseButton {
@@ -22,10 +23,10 @@ export enum MouseButton {
 })
 export class PencilService extends Tool {
     private pathData: Vec2[];
-    private width : number = 1 ;
     private color : string = "#000000";
 
-    constructor(drawingService: DrawingService) {
+    constructor(drawingService: DrawingService,
+        private widthService: WidthService) {
         super(drawingService, new Description("crayon", "c", "pencil_icon.png"));
         this.clearPath();
     }
@@ -60,24 +61,19 @@ export class PencilService extends Tool {
         }
     }
 
-    onWidthChange(width : number): void {
-        this.width= width;
-    }
-
-
     onColorChange(color : string): void {
         this.color= color;
     }
     
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
-        ctx.fillRect(path[0].x, path[0].y, this.width,this.width);
+        ctx.fillRect(path[0].x, path[0].y, this.widthService.value ,this.widthService.value);
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
         }
-        ctx.lineWidth=this.width;       //width ajustment
-        ctx.strokeStyle = this.color;   //color of the line
-        ctx.fillStyle = this.color;     //color of the starting point
+        ctx.lineWidth=this.widthService.value;  //width ajustment
+        ctx.strokeStyle = this.color;           //color of the line
+        ctx.fillStyle = this.color;             //color of the starting point
         ctx.stroke();
     }
 

@@ -18,6 +18,9 @@ import { CreateNewDrawingDialogService } from './services/create-new-drawing-dia
 import { TooltipComponent } from './components/tooltip/tooltip.component';
 import { WorkspaceComponent } from './components/workspace/workspace.component';
 
+// Attribute components
+import { AttributesWidthomponent } from './components/attributes-panel/attribute-width/attributes-width.component';
+
 
 @NgModule({
     declarations: [
@@ -29,7 +32,8 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
         MainPageComponent,
         TooltipComponent,
         WorkspaceComponent,
-        CreateNewDrawingDialogComponent
+        CreateNewDrawingDialogComponent,
+        AttributesWidthomponent
     ],
     
     imports: [

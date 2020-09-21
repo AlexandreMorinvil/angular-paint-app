@@ -1,11 +1,13 @@
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { Description } from './description';
+import { ToolModifier } from './toolModifier';
 import { Vec2 } from './vec2';
 
 // Ceci est justifié vu qu'on a des fonctions qui seront gérés par les classes enfant
 // tslint:disable:no-empty
 export abstract class Tool {
     private description: Description;
+    protected modifiers: ToolModifier<number | string | boolean>[];
 
     mouseDownCoord: Vec2;
     mouseDown: boolean = false;
@@ -22,8 +24,6 @@ export abstract class Tool {
     onMouseUp(event: MouseEvent): void {}
 
     onMouseMove(event: MouseEvent): void {}
-    
-    onWidthChange(width : number): void {}
 
     onColorChange(color : string): void {}
 

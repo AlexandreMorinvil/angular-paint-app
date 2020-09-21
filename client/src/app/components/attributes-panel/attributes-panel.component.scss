@@ -32,7 +32,7 @@
     align-items: center;
     height: calc(var(--sidebar-width) * 2);
     background-color: var(--attribute-panel-section-color);
-    border-bottom: solid var(--attribute-panel-contrast-color) 3px;
+    border-bottom: solid var(--attribute-panel-contrast-color) 2px;
 }
 
 .title h1 {
@@ -46,4 +46,12 @@
     height: var(--sidebar-width);
     width: var(--sidebar-width);
     margin: auto;
+}
+
+// Sections
+.section {
+    margin: 2px 0;
+    border-top: solid var(--attribute-panel-contrast-color) 2px;
+    background-color: var(--attribute-panel-section-color);
+    border-bottom: solid var(--attribute-panel-contrast-color) 2px;
 }

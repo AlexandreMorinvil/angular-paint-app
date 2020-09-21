@@ -3,6 +3,7 @@ import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { WidthService } from '@app/services/tool-modifier/width/width.service';
 
 export enum MouseButton {
     Left = 0,
@@ -22,18 +23,17 @@ export enum TypeTrace {
 })
 export class EllipseService extends Tool {
     public pathData: Vec2[];
-    public lineWidth: number;
     public primaryColor: string;
     public secondaryColor: string;
     public typeTrace: TypeTrace;
 
-    constructor(drawingService: DrawingService) {
+    constructor(drawingService: DrawingService,
+        private widthService: WidthService) {
         super(drawingService, new Description("ellipse", "2", "ellipse_icon.png"));
         this.clearPath();
         this.typeTrace = TypeTrace.FullContour;
         this.primaryColor = '#ff0000'; //red
         this.secondaryColor = '#000000'; //black
-        this.lineWidth = 6;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -94,7 +94,7 @@ export class EllipseService extends Tool {
         let radiusY = Math.abs(mouseMoveCoord.y - this.mouseDownCoord.y) / 2;
 
         ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI * 2, false);
-        ctx.lineWidth = this.lineWidth;
+        ctx.lineWidth = this.widthService.value;
 
         this.drawingService.previewCtx.setLineDash([0]); //set line dash to default when drawing Ellipse
         this.applyTrace(ctx);
@@ -146,7 +146,7 @@ export class EllipseService extends Tool {
             ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
         }
 
-        ctx.lineWidth = this.lineWidth;
+        ctx.lineWidth = this.widthService.value;
         ctx.setLineDash([0]); //set line dash to default when drawing Cercle
         this.applyTrace(ctx);
         

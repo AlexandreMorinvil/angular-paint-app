@@ -3,6 +3,7 @@ import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { WidthService } from '@app/services/tool-modifier/width/width.service';
 
 export enum MouseButton {
     Left = 0,
@@ -19,14 +20,6 @@ enum Color {
     vert = '#008000',
 }
 
-enum LineWidth {
-    onePixel = 1,
-    twoPixel = 2,
-    threePixel = 3,
-    fourPixel = 4,
-    fivePixel = 5,
-}
-
 enum TypeLayout {
     Full = 'Full',
     Contour = 'Contour',
@@ -41,16 +34,15 @@ export class RectangleService extends Tool {
     private shiftDown: boolean = false;
     public primaryColor: string;
     public secondaryColor: string;
-    public lineWidth: number;
     public typeLayout: string;
     public lineDash: number;
 
-    constructor(drawingService: DrawingService) {
+    constructor(drawingService: DrawingService,
+        private widthService: WidthService) {
         super(drawingService, new Description("rectangle", "1", "rectangle_icon.png"));
         this.clearPath();
         this.primaryColor = Color.vert;
         this.secondaryColor = Color.noir;
-        this.lineWidth = LineWidth.fourPixel;
         this.typeLayout = TypeLayout.FullWithContour;
     }
 
@@ -114,6 +106,7 @@ export class RectangleService extends Tool {
     }
 
     public setAttribute(ctx: CanvasRenderingContext2D) {
+        ctx.lineWidth = this.widthService.value;
         if (this.typeLayout == TypeLayout.Full) {
             ctx.fillStyle = this.primaryColor;
             ctx.fill();

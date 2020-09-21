@@ -3,14 +3,10 @@
         <img [src]="currentTool.iconDirectory" [alt]="currentTool.name">
         <h1 style="color:white">{{ currentTool.name }}</h1>
     </div>
+
+    <app-attributes-width class="section"> </app-attributes-width>
+
     <div class="wrapper">
-
-
-        <div>
-            <label for="name" style="color:white">Size</label>
-            <br>
-            <input value="1" [(ngModel)]="size">
-        </div>
 
         <div>
             <label for="name" style="color:white">Color</label>

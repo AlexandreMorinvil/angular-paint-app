@@ -32,15 +32,6 @@ export class AttributesPanelComponent {
     get color(): string {
         return this.colorUse;
     }
-    
-    set size(item:number){
-        this.sizePoint = item;
-        this.toolboxService.getCurrentTool().onWidthChange(this.sizePoint);
-    }
-
-    get size(): number {
-        return this.sizePoint;
-    }
 
     change(value: TextureEnum) {
         this.texture = value;
