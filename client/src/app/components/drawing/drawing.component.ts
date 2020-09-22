@@ -4,18 +4,15 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
 
-
 // TODO : Avoir un fichier séparé pour les constantes ?
 export const DEFAULT_WIDTH = 1000;
 export const DEFAULT_HEIGHT = 800;
-
 
 @Component({
     selector: 'app-drawing',
     templateUrl: './drawing.component.html',
     styleUrls: ['./drawing.component.scss'],
 })
-
 export class DrawingComponent implements AfterViewInit {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     // On utilise ce canvas pour dessiner sans affecter le dessin final
@@ -26,9 +23,9 @@ export class DrawingComponent implements AfterViewInit {
     private previewCtx: CanvasRenderingContext2D;
     private editCtx: CanvasRenderingContext2D;
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
-    colorUse = "#000000";
+    colorUse = '#000000';
     sizePoint = 1;
-    
+
     constructor(private drawingService: DrawingService, public toolbox: ToolboxService) {}
 
     ngAfterViewInit(): void {
@@ -57,17 +54,33 @@ export class DrawingComponent implements AfterViewInit {
         this.toolbox.getCurrentTool().onMouseUp(event);
     }
 
+    @HostListener('click', ['$event'])
+    onMouseClick(event: MouseEvent): void {
+        this.toolbox.getCurrentTool().onMouseClick(event);
+    }
+
+    @HostListener('dblclick', ['$event'])
+    onMouseDblClick(event: MouseEvent): void {
+        this.toolbox.getCurrentTool().onMouseDblClick(event);
+    }
+
     @HostListener('window:keyup', ['$event'])
     keyEventUp(event: KeyboardEvent) {
         if (event.key === 'Shift') {
             this.toolbox.getCurrentTool().onShiftUp(event);
-        }
-        else {
+        } else {
             for (let i in this.toolbox.getAvailableTools()) {
                 if (this.toolbox.getAvailableTools()[i].shortcut === event.key.toLowerCase()) {
                     this.toolbox.setSelectedTool(this.toolbox.getAvailableTools()[i]);
                 }
             }
+        }
+    }
+
+    @HostListener('document:keydown', ['$event'])
+    onEscapeDown(event: KeyboardEvent) {
+        if (event.key == 'Escape') {
+            this.toolbox.getCurrentTool().onEscapeDown(event);
         }
     }
 
@@ -85,5 +98,4 @@ export class DrawingComponent implements AfterViewInit {
     get height(): number {
         return this.canvasSize.y;
     }
-
 }
