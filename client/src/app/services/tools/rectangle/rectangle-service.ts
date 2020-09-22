@@ -104,8 +104,8 @@ export class RectangleService extends Tool {
         ctx.lineWidth = this.widthService.value;
         ctx.fillStyle = this.primaryColor;
         ctx.strokeStyle = this.secondaryColor;
-        if (this.tracingService.valueFill === true) ctx.stroke();
-        if (this.tracingService.valueContour === true) ctx.fill();
+        if (this.tracingService.valueFill === true) ctx.fill();
+        if (this.tracingService.valueContour === true) ctx.stroke();
         
     }
 

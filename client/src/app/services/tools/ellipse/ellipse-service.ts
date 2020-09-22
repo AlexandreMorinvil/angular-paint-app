@@ -150,8 +150,8 @@ export class EllipseService extends Tool {
     public applyTrace(ctx: CanvasRenderingContext2D): void {
         ctx.fillStyle = this.primaryColor;
         ctx.strokeStyle = this.secondaryColor;
-        if (this.tracingService.valueFill === true) ctx.stroke();
-        if (this.tracingService.valueContour === true) ctx.fill();
+        if (this.tracingService.valueFill === true) ctx.fill();
+        if (this.tracingService.valueContour === true) ctx.stroke();
     }
 
     public clearPath(): void {
