@@ -17,7 +17,6 @@ export class TextureService extends ToolModifier {
   private listTextures: string[];
   private texture: string = TextureEnum.shadowTexture;
 
-
   constructor() {
     super();
     this.listTextures = Object.values(TextureEnum);
@@ -27,11 +26,12 @@ export class TextureService extends ToolModifier {
     return this.listTextures;
   }
 
-  get value(): string {
-    return this.texture;
+  public setValue(input: string) {
+    if (this.listTextures.includes(input))
+      this.texture = input;
   }
 
-  set value(input: string) {
-    this.texture = input;
+  get value(): string {
+    return this.texture;
   }
 }

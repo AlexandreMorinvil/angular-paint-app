@@ -8,18 +8,33 @@ import { TextureService } from '@app/services/tool-modifier/texture/texture.serv
 })
 export class AttributeTextureComponent {
     
+    private _texture:string;
+
     constructor(private textureService: TextureService) {
+        this._texture = this.textureService.value
     }
 
     set texture(value:string){
-        this.textureService.value = value;
+        this._texture = value;
     }
 
     get texture(): string {
+        return this._texture;
+    }
+
+    public getActiveTexture() {
         return this.textureService.value;
     }
 
     public getListTextures() {
         return this.textureService.getListTextures();
+    }
+
+    public assign(): void {
+        this.textureService.setValue(this._texture);
+    }
+
+    public revert(): void {
+        this._texture = this.textureService.value;
     }
 }

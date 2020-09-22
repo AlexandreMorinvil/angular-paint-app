@@ -7,7 +7,7 @@
         </div>
         <p class="centered"> {{ width }} px </p>
     </div>
-    <div class="grid-confirmation" *ngIf="width !== activeWidth">
+    <div class="grid-confirmation" *ngIf="width !== getActiveWidth()">
         <button class="confirmation-button cancel" (click)="revert()">Annuler</button>
         <button class="confirmation-button confirm" (click)="assign()">Confirmer</button>
     </div>
