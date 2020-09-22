@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AttributesWidthomponent } from './attributes-texture.component';
+import { AttributeTracingComponent } from './attributes-tracing.component';
 
-describe('AttributeTextureComponent', () => {
-    let component: AttributesWidthomponent;
-    let fixture: ComponentFixture<AttributesWidthomponent>;
+describe('AttributeTracingComponent', () => {
+    let component: AttributeTracingComponent;
+    let fixture: ComponentFixture<AttributeTracingComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [AttributesWidthomponent],
+            declarations: [AttributeTracingComponent],
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(AttributesWidthomponent);
+        fixture = TestBed.createComponent(AttributeTracingComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

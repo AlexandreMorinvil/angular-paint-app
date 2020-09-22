@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ToolModifier } from /*'@app/classes/*/ '../../../classes/toolModifier';
+import { ToolModifier } from '@app/classes/toolModifier';
 
 export enum TextureEnum {
   shadowTexture = "ombrée",
@@ -12,13 +12,14 @@ export enum TextureEnum {
 @Injectable({
   providedIn: 'root'
 })
-export class TextureService extends ToolModifier<string> {
+export class TextureService extends ToolModifier {
 
   private listTextures: string[];
+  private texture: string = TextureEnum.shadowTexture;
 
 
   constructor() {
-    super(TextureEnum.shadowTexture);
+    super();
     this.listTextures = Object.values(TextureEnum);
   }
 
@@ -27,10 +28,10 @@ export class TextureService extends ToolModifier<string> {
   }
 
   get value(): string {
-    return this.parameter;
+    return this.texture;
   }
 
   set value(input: string) {
-    this.parameter = input;
+    this.texture = input;
   }
 }

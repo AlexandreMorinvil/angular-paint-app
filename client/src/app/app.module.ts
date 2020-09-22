@@ -19,6 +19,7 @@ import { TooltipComponent } from './components/tooltip/tooltip.component';
 import { WorkspaceComponent } from './components/workspace/workspace.component';
 
 // Attribute components
+import { AttributeTracingComponent } from './components/attributes-panel/attribute-tracing/attributes-tracing.component';
 import { AttributesWidthomponent } from './components/attributes-panel/attribute-width/attributes-width.component';
 import { AttributesTextureComponent } from './components/attributes-panel/attribute-texture/attributes-texture.component';
 
@@ -33,6 +34,7 @@ import { AttributesTextureComponent } from './components/attributes-panel/attrib
         TooltipComponent,
         WorkspaceComponent,
         CreateNewDrawingDialogComponent,
+        AttributeTracingComponent,
         AttributesWidthomponent,
         AttributesTextureComponent
     ],

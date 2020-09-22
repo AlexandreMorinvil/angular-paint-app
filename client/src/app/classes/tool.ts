@@ -7,7 +7,7 @@ import { Vec2 } from './vec2';
 // tslint:disable:no-empty
 export abstract class Tool {
     private description: Description;
-    protected modifiers: ToolModifier<number | string | boolean>[];
+    protected modifiers: ToolModifier;
 
     mouseDownCoord: Vec2;
     mouseDown: boolean = false;

@@ -8,14 +8,10 @@ import { ToolboxService } from '@app/services/toolbox/toolbox.service';
     styleUrls: ['./attributes-panel.component.scss'],
 })
 export class AttributesPanelComponent {
-
     colorUse = "#000000";
-    sizePoint= 1;
-    textureUse = 0;
-    enumKeys: any[] = [];
-    
+
     constructor(private toolboxService: ToolboxService) {
-        // this.enumKeys = Object.keys(this.textures).filter(f => !isNaN(Number(f)));
+
     }
 
     get currentTool(): Tool {
@@ -30,18 +26,4 @@ export class AttributesPanelComponent {
     get color(): string {
         return this.colorUse;
     }
-
-    // change(value: TextureEnum) {
-    //     this.texture = value;
-    // }
-
-    // set texture(item:TextureEnum){
-    //     this.textureUse = item;
-    //     this.toolboxService.getCurrentTool().onTextureChange(this.textureUse);
-    // }
-
-    // get texture(): TextureEnum {
-    //     return this.textureUse;
-    // }
-
 }
