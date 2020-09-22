@@ -8,7 +8,7 @@ export enum MouseButton {
   Middle = 1,
   Right = 2,
   Back = 3,
-  Forward = 4, 
+  Forward = 4,
 }
 export enum TextureEnum {
   shadowTexture = 0,
@@ -82,28 +82,28 @@ export class BrushService extends Tool {
   private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
     switch (+this.texture) {
       case TextureEnum.shadowTexture:{
-        this.ShadowTexture(ctx, path);
+        this.shadowTexture(ctx, path);
         break;
       }
       case TextureEnum.gradientTexture:{
-        this.GradientTexture(ctx, path);
+        this.gradientTexture(ctx, path);
         break;
       }
       case TextureEnum.squareTexture:{
-        this.SquareTexture(ctx, path);
+        this.squareTexture(ctx, path);
         break;
       }
       case TextureEnum.dashTexture:{
-        this.DashTexture(ctx, path);
+        this.dashTexture(ctx, path);
         break;
       }
       case TextureEnum.zigzagTexture:{
-        this.ZigzagTexture(ctx, path);
+        this.zigzagTexture(ctx, path);
         break;
       }
-      default: { 
-        break; 
-     } 
+      default: {
+        break;
+     }
     }
   }
 
@@ -111,7 +111,7 @@ export class BrushService extends Tool {
     this.pathData = [];
   }
 
-  private ShadowTexture(ctx: CanvasRenderingContext2D, path: Vec2[]) {
+  private shadowTexture(ctx: CanvasRenderingContext2D, path: Vec2[]) {
     // parameters of the line and the shadow
     ctx.strokeStyle = this.color;
     ctx.shadowColor = this.color;
@@ -129,7 +129,7 @@ export class BrushService extends Tool {
     ctx.shadowBlur = 0;
   }
 
-  private GradientTexture(ctx: CanvasRenderingContext2D, path: Vec2[]) {
+  private gradientTexture(ctx: CanvasRenderingContext2D, path: Vec2[]) {
     //parameters of the line
     ctx.strokeStyle = this.color;
     ctx.fillStyle = this.color;
@@ -152,7 +152,7 @@ export class BrushService extends Tool {
     ctx.globalAlpha = 1;
   }
 
-  private SquareTexture(ctx: CanvasRenderingContext2D, path: Vec2[]) {
+  private squareTexture(ctx: CanvasRenderingContext2D, path: Vec2[]) {
     // parameters of the line
     ctx.fillStyle = this.color;
     //first pixel
@@ -163,7 +163,7 @@ export class BrushService extends Tool {
     }
   }
 
-  private DashTexture(ctx: CanvasRenderingContext2D, path: Vec2[]) {
+  private dashTexture(ctx: CanvasRenderingContext2D, path: Vec2[]) {
     //parameters of the line
     ctx.strokeStyle = this.color;
     ctx.fillStyle = this.color;
@@ -181,7 +181,7 @@ export class BrushService extends Tool {
     ctx.setLineDash([]);
   }
 
-  private ZigzagTexture(ctx: CanvasRenderingContext2D, path: Vec2[]) {
+  private zigzagTexture(ctx: CanvasRenderingContext2D, path: Vec2[]) {
     // parameters of the line
     ctx.strokeStyle = this.color;
     ctx.lineWidth = this.lineWidth;
