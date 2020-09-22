@@ -22,10 +22,6 @@ export class AttributeTextureComponent {
         return this._texture;
     }
 
-    public getActiveTexture() {
-        return this.textureService.value;
-    }
-
     public getListTextures() {
         return this.textureService.getListTextures();
     }
@@ -36,5 +32,9 @@ export class AttributeTextureComponent {
 
     public revert(): void {
         this._texture = this.textureService.value;
+    }
+
+    public needConfirmation(): boolean {
+        return this._texture !== this.textureService.value;
     }
 }

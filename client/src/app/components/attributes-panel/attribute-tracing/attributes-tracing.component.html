@@ -6,7 +6,7 @@
         <label class="offset" for="contour">Contour</label>
         <input class="centered" name="contour" type=checkbox [value]="contour" [(ngModel)]="contour">
     </div>
-    <div class="grid-confirmation" *ngIf="texture !== activeWidth">
+    <div class="grid-confirmation" *ngIf="needConfirmation()">
         <button class="confirmation-button cancel" (click)="revert()">Annuler</button>
         <button class="confirmation-button confirm" (click)="assign()">Confirmer</button>
     </div>

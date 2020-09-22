@@ -22,10 +22,6 @@ export class AttributeWidthComponent {
         return this._width;
     }
 
-    public getActiveWidth(): number {
-        return this.widthService.value;
-    }
-
     public getMaxValue() {
         return this.widthService.MAX_ATTRIBUTE_WIDTH;
     }
@@ -40,5 +36,9 @@ export class AttributeWidthComponent {
 
     public revert(): void {
         this._width = this.widthService.value;
+    }
+
+    public needConfirmation(): boolean {
+        return this._width !== this.widthService.value;
     }
 }

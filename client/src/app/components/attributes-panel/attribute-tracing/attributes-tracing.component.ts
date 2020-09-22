@@ -8,22 +8,42 @@ import { TracingService } from '@app/services/tool-modifier/tracing/tracing.serv
 })
 export class AttributeTracingComponent {
 
+    private _contour: boolean;
+    private _fill: boolean;
+
     constructor(private tracingService: TracingService) {
+        this._contour = this.tracingService.valueContour;
+        this._fill = this.tracingService.valueFill;
     }
 
     get contour(): boolean {
-        return this.tracingService.valueContour;
+        return this._contour;
     }
-    
+
     get fill(): boolean {
-        return this.tracingService.valueFill;
+        return this._fill;
     }
-    
-    set contour(value:boolean){
-        this.tracingService.valueContour = value;
+
+    set contour(value: boolean) {
+        this._contour = value;
     }
 
     set fill(value: boolean) {
-        this.tracingService.valueFill = value;
+        this._fill = value;
+    }
+
+    public assign(): void {
+        this.tracingService.setContourValue(this._contour);
+        this.tracingService.setFillValue(this._fill);
+    }
+
+    public revert(): void {
+        this._contour = this.tracingService.valueContour;
+        this._fill = this.tracingService.valueFill;
+    }
+
+    public needConfirmation(): boolean {
+        return (this._contour !== this.tracingService.valueContour) ||
+            (this._fill !== this.tracingService.valueFill);
     }
 }

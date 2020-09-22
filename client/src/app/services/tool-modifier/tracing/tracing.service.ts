@@ -7,10 +7,18 @@ import { ToolModifier } from '@app/classes/toolModifier';
 export class TracingService extends ToolModifier {
 
   private contour:boolean = true;
-  private fill:boolean = false;
+  private fill:boolean = true;
 
   constructor() {
     super();
+  }
+
+  public setContourValue(input: boolean) : void {
+    this.contour = input;
+  }
+
+  public setFillValue(input: boolean) : void {
+    this.fill = input;
   }
 
   get valueContour(): boolean {
@@ -19,13 +27,5 @@ export class TracingService extends ToolModifier {
 
   get valueFill(): boolean {
     return this.fill;
-  }
-
-  set valueContour(input: boolean) {
-    this.contour = input;
-  }
-
-  set valueFill(input: boolean) {
-    this.fill = input;
   }
 }
