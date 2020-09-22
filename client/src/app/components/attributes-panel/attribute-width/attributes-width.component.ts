@@ -6,7 +6,7 @@ import { WidthService } from '@app/services/tool-modifier/width/width.service';
     templateUrl: './attributes-width.component.html',
     styleUrls: ['./attributes-width.component.scss', "../attributes-section.component.scss"],
 })
-export class AttributesWidthomponent {
+export class AttributeWidthComponent {
     
     constructor(private widthService: WidthService) {
     }

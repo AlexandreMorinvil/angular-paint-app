@@ -6,7 +6,7 @@ import { TextureService } from '@app/services/tool-modifier/texture/texture.serv
     templateUrl: './attributes-texture.component.html',
     styleUrls: ['./attributes-texture.component.scss', "../attributes-section.component.scss"],
 })
-export class AttributesTextureComponent {
+export class AttributeTextureComponent {
     
     constructor(private textureService: TextureService) {
     }

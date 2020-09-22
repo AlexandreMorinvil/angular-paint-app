@@ -20,8 +20,8 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
 
 // Attribute components
 import { AttributeTracingComponent } from './components/attributes-panel/attribute-tracing/attributes-tracing.component';
-import { AttributesWidthomponent } from './components/attributes-panel/attribute-width/attributes-width.component';
-import { AttributesTextureComponent } from './components/attributes-panel/attribute-texture/attributes-texture.component';
+import { AttributeWidthComponent } from './components/attributes-panel/attribute-width/attributes-width.component';
+import { AttributeTextureComponent } from './components/attributes-panel/attribute-texture/attributes-texture.component';
 
 @NgModule({
     declarations: [
@@ -35,8 +35,8 @@ import { AttributesTextureComponent } from './components/attributes-panel/attrib
         WorkspaceComponent,
         CreateNewDrawingDialogComponent,
         AttributeTracingComponent,
-        AttributesWidthomponent,
-        AttributesTextureComponent
+        AttributeWidthComponent,
+        AttributeTextureComponent
     ],
     
     imports: [
