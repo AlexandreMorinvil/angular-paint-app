@@ -8,14 +8,20 @@ import { WidthService } from '@app/services/tool-modifier/width/width.service';
 })
 export class AttributeWidthComponent {
     
+    private _width:number;
     constructor(private widthService: WidthService) {
+        this._width = this.widthService.value;
     }
 
     set width(value:number){
-        this.widthService.value = value;
+        this._width = value;
     }
 
     get width(): number {
+        return this._width;
+    }
+
+    get activeWidth(): number {
         return this.widthService.value;
     }
 
@@ -25,5 +31,13 @@ export class AttributeWidthComponent {
 
     public getMinValue() {
         return this.widthService.MIN_ATTRIBUTE_WIDTH;
+    }
+
+    public assign(): void {
+        this.widthService.setValue(this.width);
+    }
+
+    public revert(): void {
+        this._width = this.widthService.value;
     }
 }
