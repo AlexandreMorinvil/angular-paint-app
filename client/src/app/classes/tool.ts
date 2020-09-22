@@ -7,7 +7,7 @@ import { Vec2 } from './vec2';
 // tslint:disable:no-empty
 export abstract class Tool {
     private description: Description;
-    protected modifiers: ToolModifier;
+    protected _modifiers: ToolModifier[] = [];
 
     mouseDownCoord: Vec2;
     mouseDown: boolean = false;
@@ -33,6 +33,10 @@ export abstract class Tool {
 
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };
+    }
+
+    public needsModifierManager(modifier: ToolModifier): boolean {
+        return this._modifiers.includes(modifier);
     }
 
     get name(): string {

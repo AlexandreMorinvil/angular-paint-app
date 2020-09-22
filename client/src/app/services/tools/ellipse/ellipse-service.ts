@@ -26,6 +26,8 @@ export class EllipseService extends Tool {
         private tracingService: TracingService,
         private widthService: WidthService) {
         super(drawingService, new Description("ellipse", "2", "ellipse_icon.png"));
+        this._modifiers.push(this.widthService);
+        this._modifiers.push(this.tracingService);
         this.clearPath();
         this.primaryColor = '#ff0000'; //red
         this.secondaryColor = '#000000'; //black

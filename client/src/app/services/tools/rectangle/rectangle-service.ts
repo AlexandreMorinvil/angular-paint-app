@@ -36,6 +36,8 @@ export class RectangleService extends Tool {
         private tracingService: TracingService,
         private widthService: WidthService) {
         super(drawingService, new Description("rectangle", "1", "rectangle_icon.png"));
+        this._modifiers.push(this.widthService);
+        this._modifiers.push(this.tracingService);
         this.clearPath();
         this.primaryColor = Color.vert;
         this.secondaryColor = Color.noir;

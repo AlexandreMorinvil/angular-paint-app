@@ -4,10 +4,9 @@
         <h1>{{ capitalizeFirstLetter(currentTool.name) }}</h1>
     </div>
 
-    <app-attributes-width class="section"> </app-attributes-width>
-    <app-attributes-texture class="section"></app-attributes-texture>
-    <app-attributes-tracing class="section"></app-attributes-tracing>
-
+    <app-attributes-width class="section" *ngIf="needsWidthAttribute()"> </app-attributes-width>
+    <app-attributes-texture class="section" *ngIf="needsTextureAttribute()"></app-attributes-texture>
+    <app-attributes-tracing class="section" *ngIf="needsTracingAttribute()"></app-attributes-tracing>
 
     <div class="section">
         <label for="name">Couleur</label>

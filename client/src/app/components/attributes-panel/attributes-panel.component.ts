@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { TextureService } from '@app/services/tool-modifier/texture/texture.service';
+import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
+import { WidthService } from '@app/services/tool-modifier/width/width.service';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
 
 @Component({
@@ -10,7 +13,12 @@ import { ToolboxService } from '@app/services/toolbox/toolbox.service';
 export class AttributesPanelComponent {
     colorUse = "#000000";
 
-    constructor(private toolboxService: ToolboxService) {
+    constructor(
+        private toolboxService: ToolboxService,
+        private widthService: WidthService,
+        private textureService: TextureService,
+        private tracingService: TracingService
+        ) {
 
     }
 
@@ -20,6 +28,18 @@ export class AttributesPanelComponent {
 
     public capitalizeFirstLetter(string: string): string {
         return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    public needsWidthAttribute() {
+        return this.currentTool.needsModifierManager(this.widthService);
+    }
+
+    public needsTextureAttribute() {
+        return this.currentTool.needsModifierManager(this.textureService);
+    }
+
+    public needsTracingAttribute() {
+        return this.currentTool.needsModifierManager(this.tracingService);
     }
 
     set color(item: string) {
