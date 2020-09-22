@@ -27,7 +27,7 @@ export class EllipseService extends Tool {
     public typeTrace: TypeTrace;
 
     constructor(drawingService: DrawingService) {
-        super(drawingService, "ellipse", "2");
+        super(drawingService, 'ellipse', '2');
         this.clearPath();
         this.typeTrace = TypeTrace.FullContour;
         this.primaryColor = '#ff0000'; //red
@@ -113,12 +113,14 @@ export class EllipseService extends Tool {
 
     onShiftDown(event: KeyboardEvent): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
         this.drawCircle(this.drawingService.previewCtx, this.pathData);
     }
 
     onShiftUp(event: KeyboardEvent): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawEllipse(this.drawingService.previewCtx, this.pathData);
+        this.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
     }
 
     public drawCircle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
@@ -148,7 +150,6 @@ export class EllipseService extends Tool {
         ctx.lineWidth = this.lineWidth;
         ctx.setLineDash([0]); //set line dash to default when drawing Cercle
         this.applyTrace(ctx);
-        
     }
 
     public applyTrace(ctx: CanvasRenderingContext2D): void {
