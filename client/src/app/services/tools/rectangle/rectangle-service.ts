@@ -3,6 +3,7 @@ import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
 
 export enum MouseButton {
@@ -20,12 +21,6 @@ enum Color {
     vert = '#008000',
 }
 
-enum TypeLayout {
-    Full = 'Full',
-    Contour = 'Contour',
-    FullWithContour = 'FullWithContour',
-}
-
 @Injectable({
     providedIn: 'root',
 })
@@ -38,12 +33,12 @@ export class RectangleService extends Tool {
     public lineDash: number;
 
     constructor(drawingService: DrawingService,
+        private tracingService: TracingService,
         private widthService: WidthService) {
         super(drawingService, new Description("rectangle", "1", "rectangle_icon.png"));
         this.clearPath();
         this.primaryColor = Color.vert;
         this.secondaryColor = Color.noir;
-        this.typeLayout = TypeLayout.FullWithContour;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -107,18 +102,11 @@ export class RectangleService extends Tool {
 
     public setAttribute(ctx: CanvasRenderingContext2D) {
         ctx.lineWidth = this.widthService.value;
-        if (this.typeLayout == TypeLayout.Full) {
-            ctx.fillStyle = this.primaryColor;
-            ctx.fill();
-        } else if (this.typeLayout == TypeLayout.Contour) {
-            ctx.strokeStyle = this.secondaryColor;
-            ctx.stroke();
-        } else if (this.typeLayout == TypeLayout.FullWithContour) {
-            ctx.fillStyle = this.primaryColor;
-            ctx.strokeStyle = this.secondaryColor;
-            ctx.fill();
-            ctx.stroke();
-        }
+        ctx.fillStyle = this.primaryColor;
+        ctx.strokeStyle = this.secondaryColor;
+        if (this.tracingService.valueFill === true) ctx.stroke();
+        if (this.tracingService.valueContour === true) ctx.fill();
+        
     }
 
     private clearPath(): void {

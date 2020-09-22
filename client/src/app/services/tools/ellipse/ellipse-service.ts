@@ -3,6 +3,7 @@ import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
 
 export enum MouseButton {
@@ -12,11 +13,6 @@ export enum MouseButton {
     Back = 3,
     Forward = 4,
 }
-export enum TypeTrace {
-    Contour = 'contour',
-    Full = 'full',
-    FullContour = 'fullContour',
-}
 
 @Injectable({
     providedIn: 'root',
@@ -25,13 +21,12 @@ export class EllipseService extends Tool {
     public pathData: Vec2[];
     public primaryColor: string;
     public secondaryColor: string;
-    public typeTrace: TypeTrace;
 
     constructor(drawingService: DrawingService,
+        private tracingService: TracingService,
         private widthService: WidthService) {
         super(drawingService, new Description("ellipse", "2", "ellipse_icon.png"));
         this.clearPath();
-        this.typeTrace = TypeTrace.FullContour;
         this.primaryColor = '#ff0000'; //red
         this.secondaryColor = '#000000'; //black
     }
@@ -149,24 +144,14 @@ export class EllipseService extends Tool {
         ctx.lineWidth = this.widthService.value;
         ctx.setLineDash([0]); //set line dash to default when drawing Cercle
         this.applyTrace(ctx);
-        
+
     }
 
     public applyTrace(ctx: CanvasRenderingContext2D): void {
-        if (this.typeTrace == TypeTrace.Contour) {
-            ctx.strokeStyle = this.secondaryColor;
-            ctx.stroke();
-        }
-        if (this.typeTrace == TypeTrace.Full) {
-            ctx.fillStyle = this.primaryColor;
-            ctx.fill();
-        }
-        if (this.typeTrace == TypeTrace.FullContour) {
-            ctx.fillStyle = this.primaryColor;
-            ctx.strokeStyle = this.secondaryColor;
-            ctx.fill();
-            ctx.stroke();
-        }
+        ctx.fillStyle = this.primaryColor;
+        ctx.strokeStyle = this.secondaryColor;
+        if (this.tracingService.valueFill === true) ctx.stroke();
+        if (this.tracingService.valueContour === true) ctx.fill();
     }
 
     public clearPath(): void {
