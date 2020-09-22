@@ -1,7 +1,7 @@
 <div class="container container-flex">
     <div class="title">
         <img [src]="currentTool.iconDirectory" [alt]="currentTool.name">
-        <h1 style="color:white">{{ currentTool.name }}</h1>
+        <h1>{{ capitalizeFirstLetter(currentTool.name) }}</h1>
     </div>
 
     <app-attributes-width class="section"> </app-attributes-width>
@@ -9,9 +9,8 @@
     <app-attributes-tracing class="section"></app-attributes-tracing>
 
 
-    <div>
-        <label for="name" style="color:white">Color</label>
-        <br>
+    <div class="section">
+        <label for="name">Couleur</label>
         <input value="#000000" [(ngModel)]="color">
     </div>
 

@@ -4,7 +4,7 @@ import { TracingService } from '@app/services/tool-modifier/tracing/tracing.serv
 @Component({
     selector: 'app-attributes-tracing',
     templateUrl: './attributes-tracing.component.html',
-    styleUrls: ['./attributes-tracing.component.scss'],
+    styleUrls: ['./attributes-tracing.component.scss', "../attributes-section.component.scss"],
 })
 export class AttributeTracingComponent {
 

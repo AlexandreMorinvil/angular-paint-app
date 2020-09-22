@@ -22,6 +22,7 @@
 // Title
 .title {
     display: flex;
+    margin: 2px 0;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -45,8 +46,15 @@
 
 // Sections
 .section {
-    margin: 2px 0;
+    margin: 2px 0 0;
+    padding: 10px 5px 20px;
     border-top: solid var(--attribute-panel-contrast-color) 2px;
     background-color: var(--attribute-panel-section-color);
     border-bottom: solid var(--attribute-panel-contrast-color) 2px;
+}
+
+.section:last-child {
+    margin-top: auto;
+    margin-bottom: 0px;
+    border-bottom: none;
 }

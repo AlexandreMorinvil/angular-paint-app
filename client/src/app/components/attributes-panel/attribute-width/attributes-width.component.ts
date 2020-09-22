@@ -4,7 +4,7 @@ import { WidthService } from '@app/services/tool-modifier/width/width.service';
 @Component({
     selector: 'app-attributes-width',
     templateUrl: './attributes-width.component.html',
-    styleUrls: ['./attributes-width.component.scss'],
+    styleUrls: ['./attributes-width.component.scss', "../attributes-section.component.scss"],
 })
 export class AttributesWidthomponent {
     

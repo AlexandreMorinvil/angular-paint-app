@@ -1,0 +1,33 @@
+.grid-input-value {
+    display: grid;
+    grid-row-gap: 10px;
+    grid-template-columns: 3fr 1fr;
+    justify-content: center;
+}
+
+h2 {
+    display: block;
+    font-size: calc(var(--sidebar-width) * 0.4);
+    text-align: center;
+    margin: 0 0 10px;
+}
+
+select,
+input[type='range'] {
+    font-size: 1em;
+    width: 90%;
+    margin: auto;
+}
+
+input[type='checkbox'] {
+    width: 20px;
+    height: 20px;
+    margin: auto;
+}
+
+.centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+}

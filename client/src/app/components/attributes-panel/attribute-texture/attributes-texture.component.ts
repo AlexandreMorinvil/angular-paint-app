@@ -4,7 +4,7 @@ import { TextureService } from '@app/services/tool-modifier/texture/texture.serv
 @Component({
     selector: 'app-attributes-texture',
     templateUrl: './attributes-texture.component.html',
-    styleUrls: ['./attributes-texture.component.scss'],
+    styleUrls: ['./attributes-texture.component.scss', "../attributes-section.component.scss"],
 })
 export class AttributesTextureComponent {
     

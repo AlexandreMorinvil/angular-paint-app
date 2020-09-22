@@ -16,9 +16,13 @@ export class AttributesPanelComponent {
 
     get currentTool(): Tool {
         return this.toolboxService.getCurrentTool();
-    } 
+    }
 
-    set color(item:string){
+    public capitalizeFirstLetter(string: string): string {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    set color(item: string) {
         this.colorUse = item;
         this.toolboxService.getCurrentTool().onColorChange(this.colorUse);
     }
