@@ -1,0 +1,6 @@
+<div class="container container-flex">
+    <label for="texture">Texture</label>
+    <select [(ngModel)]="texture">
+        <option *ngFor="let textureName of getListTextures()" [ngValue]="textureName">{{ textureName }}</option>
+    </select>
+</div>

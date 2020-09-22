@@ -3,6 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { Description } from '@app/classes/description';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { TextureService, TextureEnum } from '@app/services/tool-modifier/texture/texture.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
 
 export enum MouseButton {
@@ -12,27 +13,20 @@ export enum MouseButton {
   Back = 3,
   Forward = 4, 
 }
-export enum TextureEnum {
-  shadowTexture = 0,
-  gradientTexture = 1,
-  squareTexture = 2,
-  dashTexture = 3,
-  zigzagTexture = 4
-}
+
 @Injectable({
   providedIn: 'root'
 })
 
 export class BrushService extends Tool {
   private pathData: Vec2[];
-  private texture: TextureEnum;
   private color: string = "#000000";
 
   constructor(drawingService: DrawingService,
+    private textureService: TextureService,
     private widthService: WidthService) {
     super(drawingService, new Description("pinceau", "w", "brush_icon.png"));
     this.clearPath();
-    this.texture = TextureEnum.shadowTexture;
     this.color = "#000000";
   }
 
@@ -70,13 +64,8 @@ export class BrushService extends Tool {
     this.color = color;
   }
 
-  onTextureChange(texture: TextureEnum):void{
-    this.texture = texture;
-  }
-
-
   private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-    switch (+this.texture) {
+    switch (this.textureService.value) {
       case TextureEnum.shadowTexture:{
         this.ShadowTexture(ctx, path);
         break;

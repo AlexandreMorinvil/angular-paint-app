@@ -20,7 +20,7 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
 
 // Attribute components
 import { AttributesWidthomponent } from './components/attributes-panel/attribute-width/attributes-width.component';
-
+import { AttributesTextureComponent } from './components/attributes-panel/attribute-texture/attributes-texture.component';
 
 @NgModule({
     declarations: [
@@ -33,7 +33,8 @@ import { AttributesWidthomponent } from './components/attributes-panel/attribute
         TooltipComponent,
         WorkspaceComponent,
         CreateNewDrawingDialogComponent,
-        AttributesWidthomponent
+        AttributesWidthomponent,
+        AttributesTextureComponent
     ],
     
     imports: [

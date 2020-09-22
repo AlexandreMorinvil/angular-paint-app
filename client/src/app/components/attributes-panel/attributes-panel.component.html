@@ -5,25 +5,13 @@
     </div>
 
     <app-attributes-width class="section"> </app-attributes-width>
-
-    <div class="wrapper">
-
-        <div>
-            <label for="name" style="color:white">Color</label>
-            <br>
-            <input value="#000000" [(ngModel)]="color">
-        </div>
-
-        <div>
-            <label for="name" style="color:white">Texture</label>
-            <br>
-            <select (change)="change($event.target.value)">
-                <option *ngFor="let texture of enumKeys" [value]="texture">{{textures[texture]}}</option>
-            </select>
-        </div>
+    <app-attributes-texture class="section"></app-attributes-texture>
 
 
-
+    <div>
+        <label for="name" style="color:white">Color</label>
+        <br>
+        <input value="#000000" [(ngModel)]="color">
     </div>
 
 </div>

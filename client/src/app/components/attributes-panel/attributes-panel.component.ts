@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
-import { TextureEnum } from '@app/services/tools/brush/brush-service';
 
 @Component({
     selector: 'app-attributes-panel',
@@ -13,11 +12,10 @@ export class AttributesPanelComponent {
     colorUse = "#000000";
     sizePoint= 1;
     textureUse = 0;
-    textures = TextureEnum;
     enumKeys: any[] = [];
     
     constructor(private toolboxService: ToolboxService) {
-        this.enumKeys = Object.keys(this.textures).filter(f => !isNaN(Number(f)));
+        // this.enumKeys = Object.keys(this.textures).filter(f => !isNaN(Number(f)));
     }
 
     get currentTool(): Tool {
@@ -33,17 +31,17 @@ export class AttributesPanelComponent {
         return this.colorUse;
     }
 
-    change(value: TextureEnum) {
-        this.texture = value;
-    }
+    // change(value: TextureEnum) {
+    //     this.texture = value;
+    // }
 
-    set texture(item:TextureEnum){
-        this.textureUse = item;
-        this.toolboxService.getCurrentTool().onTextureChange(this.textureUse);
-    }
+    // set texture(item:TextureEnum){
+    //     this.textureUse = item;
+    //     this.toolboxService.getCurrentTool().onTextureChange(this.textureUse);
+    // }
 
-    get texture(): TextureEnum {
-        return this.textureUse;
-    }
+    // get texture(): TextureEnum {
+    //     return this.textureUse;
+    // }
 
 }
