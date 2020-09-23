@@ -12,6 +12,8 @@ export enum MouseButton {
     Forward = 4,
 }
 
+const minSurfaceSize = 250;
+
 @Injectable({
     providedIn: 'root',
 })
@@ -21,12 +23,16 @@ export class CursorService extends Tool {
     dotsize: number = 10;
     clickOnAnchor: boolean = false;
     anchorHit: number = 0;
+    imageData: any;
 
     constructor(drawingService: DrawingService) {
-        super(drawingService, new Description('curseur', 'y', 'crop-icon.png'));
+        super(drawingService, "cursor", "y");
     }
 
     onMouseDown(event: MouseEvent): void {
+        this.drawingService.previewCtx.fillStyle = "#000000";
+        this.imageData = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.baseCtx.canvas.width,
+            this.drawingService.baseCtx.canvas.height);
         this.mouseDownCoord = this.getPositionFromMouse(event);
         this.drawnAnchor(this.drawingService.baseCtx, this.drawingService.canvas);
         this.checkHit(this.mouseDownCoord, this.drawingService.canvas);
@@ -39,53 +45,90 @@ export class CursorService extends Tool {
         this.drawingService.baseCtx.canvas.width = this.drawingService.previewCtx.canvas.width;
         this.drawingService.baseCtx.canvas.height = this.drawingService.previewCtx.canvas.height;
         this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
+        this.drawingService.baseCtx.putImageData(this.imageData, 0, 0);
     }
 
     onMouseMove(event: MouseEvent): void {
         if (this.clickOnAnchor && this.mouseDown) {
-            const mouseDownCoord = this.getPositionFromMouse(event);
+            this.mouseDownCoord = this.getPositionFromMouse(event);
             switch (this.anchorHit) {
                 case 1:
-                    this.moveWidth(mouseDownCoord.x);
-                    this.moveHeight(mouseDownCoord.y);
+                    this.moveWidth(this.mouseDownCoord.x);
+                    this.moveHeight(this.mouseDownCoord.y);
                     break;
                 case 2:
-                    this.moveWidth(mouseDownCoord.x);
+                    this.moveWidth(this.mouseDownCoord.x);
                     break;
                 case 3:
-                    this.moveHeight(mouseDownCoord.y);
+                    this.moveHeight(this.mouseDownCoord.y);
                     break;
                 default:
+                    this.anchorHit = 0;
                     break;
             }
         }
     }
 
-    moveWidth(mouseDownCoordX: number): void {
-        if (mouseDownCoordX >= 250) {
+    moveWidth(mouseDownCoordX: number) {
+        if (mouseDownCoordX >= minSurfaceSize) {
             this.drawingService.previewCtx.canvas.width = mouseDownCoordX;
-        } else {
-            this.drawingService.previewCtx.canvas.width = 250;
+        }
+        else {
+            this.drawingService.previewCtx.canvas.width = minSurfaceSize;
         }
     }
 
-    moveHeight(mouseDownCoordY: number): void {
-        if (mouseDownCoordY >= 250) {
+    moveHeight(mouseDownCoordY: number) {
+        if (mouseDownCoordY >= minSurfaceSize) {
             this.drawingService.previewCtx.canvas.height = mouseDownCoordY;
-        } else {
-            this.drawingService.previewCtx.canvas.height = 250;
+        }
+        else {
+            this.drawingService.previewCtx.canvas.height = minSurfaceSize;
         }
     }
 
     drawnAnchor(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement): void {
         ctx.beginPath();
-        ctx.arc(canvas.width, canvas.height, this.dotsize, 0, Math.PI * 2, false);
+        ctx.arc(canvas.width, canvas.height, this.dotsize, 0, (Math.PI * 2), false);
         ctx.closePath();
-        ctx.arc(canvas.width / 2, canvas.height, this.dotsize, 0, Math.PI * 2, false);
+        ctx.arc(canvas.width / 2, canvas.height, this.dotsize, 0, (Math.PI * 2), false);
         ctx.closePath();
-        ctx.arc(canvas.width, canvas.height / 2, this.dotsize, 0, Math.PI * 2, false);
+        ctx.arc(canvas.width, canvas.height / 2, this.dotsize, 0, (Math.PI * 2), false);
         ctx.closePath();
         ctx.fill();
+    }
+
+    checkHit(mouse: Vec2, canvas: HTMLCanvasElement): void {
+        let x: number;
+        let y: number;
+        let dotSizeSquare: number = Math.pow(this.dotsize, 2);
+
+        x = Math.pow((mouse.x - canvas.width), 2);
+        y = Math.pow((mouse.y - canvas.height), 2);
+        if (x + y <= dotSizeSquare) {
+            this.clickOnAnchor = true;
+            this.anchorHit = 1;
+        }
+
+        x = Math.pow((mouse.x - canvas.width), 2);
+        y = Math.pow((mouse.y - canvas.height / 2), 2);
+        if (x + y <= dotSizeSquare) {
+            this.clickOnAnchor = true;
+            this.anchorHit = 2;
+        }
+
+        x = Math.pow((mouse.x - canvas.width / 2), 2);
+        y = Math.pow((mouse.y - canvas.height), 2);
+        if (x + y <= dotSizeSquare) {
+            this.clickOnAnchor = true;
+            this.anchorHit = 3;
+        }
+
+        if (!this.clickOnAnchor) {
+            this.clickOnAnchor = false;
+            this.anchorHit = 0;
+        }
+
     }
 
     checkHit(mouse: Vec2, canvas: HTMLCanvasElement): void {

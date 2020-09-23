@@ -104,6 +104,7 @@ export class RectangleService extends Tool {
             height = width = Math.min(height, width); // draw square on shift pressed
         }
         ctx.rect(this.mouseDownCoord.x, this.mouseDownCoord.y, width, height);
+        console.log(this.mouseDownCoord.x, this.mouseDownCoord.y, width, height);
         this.setAttribute(ctx);
         ctx.setLineDash([0]);
     }

@@ -13,11 +13,13 @@ export const DEFAULT_HEIGHT = 800;
 })
 export class DrawingComponent implements AfterViewInit {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
-
     // On utilise ce canvas pour dessiner sans affecter le dessin final
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
+    @ViewChild('editCanvas', { static: false }) editCanvas: ElementRef<HTMLCanvasElement>;
+
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
+    private editCtx: CanvasRenderingContext2D;
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
     colorUse: string = '#000000';
     sizePoint: number = 1;
@@ -30,6 +32,9 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
+        this.editCtx = this.editCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.editCtx.canvas.width = window.innerWidth;
+        this.editCtx.canvas.height = window.innerHeight;
     }
 
     @HostListener('mousemove', ['$event'])
@@ -58,6 +63,7 @@ export class DrawingComponent implements AfterViewInit {
                 }
             }
         }
+
     }
 
     @HostListener('window:keydown', ['$event'])
