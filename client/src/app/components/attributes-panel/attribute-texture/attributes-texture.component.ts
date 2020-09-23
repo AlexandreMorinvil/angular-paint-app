@@ -7,18 +7,18 @@ import { TextureService } from '@app/services/tool-modifier/texture/texture.serv
     styleUrls: ['./attributes-texture.component.scss', '../attributes-section.component.scss'],
 })
 export class AttributeTextureComponent {
-    private _texture: string;
+    private texture: string;
 
     constructor(private textureService: TextureService) {
-        this._texture = this.textureService.value;
+        this.texture = this.textureService.getTexture();
     }
 
-    set texture(value: string) {
-        this._texture = value;
+    set textureDisplayed(value: string) {
+        this.texture = value;
     }
 
-    get texture(): string {
-        return this._texture;
+    get textureDisplayed(): string {
+        return this.texture;
     }
 
     getListTextures(): string[] {
@@ -26,14 +26,14 @@ export class AttributeTextureComponent {
     }
 
     assign(): void {
-        this.textureService.setValue(this._texture);
+        this.textureService.setTexture(this.texture);
     }
 
     revert(): void {
-        this._texture = this.textureService.value;
+        this.texture = this.textureService.getTexture();
     }
 
     needConfirmation(): boolean {
-        return this._texture !== this.textureService.value;
+        return this.texture !== this.textureService.getTexture();
     }
 }

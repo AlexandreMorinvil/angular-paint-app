@@ -5,26 +5,26 @@ import { ToolModifier } from '@app/classes/tool-modifier';
     providedIn: 'root',
 })
 export class TracingService extends ToolModifier {
-    private contour: boolean = true;
-    private fill: boolean = true;
+    private hasContour: boolean = true;
+    private hasFill: boolean = true;
 
     constructor() {
         super();
     }
 
-    setContourValue(input: boolean): void {
-        this.contour = input;
+    getHasContour(): boolean {
+        return this.hasContour;
     }
 
-    setFillValue(input: boolean): void {
-        this.fill = input;
+    setHasFill(input: boolean): void {
+        this.hasFill = input;
     }
 
-    get valueContour(): boolean {
-        return this.contour;
+    getHasFill(): boolean {
+        return this.hasFill;
     }
 
-    get valueFill(): boolean {
-        return this.fill;
+    setHasContour(input: boolean): void {
+        this.hasContour = input;
     }
 }

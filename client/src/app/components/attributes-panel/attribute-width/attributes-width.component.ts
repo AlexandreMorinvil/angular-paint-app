@@ -7,18 +7,18 @@ import { WidthService } from '@app/services/tool-modifier/width/width.service';
     styleUrls: ['./attributes-width.component.scss', '../attributes-section.component.scss'],
 })
 export class AttributeWidthComponent {
-    private _width: number;
+    private width: number;
 
     constructor(private widthService: WidthService) {
-        this._width = this.widthService.value;
+        this.width = this.widthService.getWidth();
     }
 
-    set width(value: number) {
-        this._width = value;
+    set widthDisplayed(value: number) {
+        this.width = value;
     }
 
-    get width(): number {
-        return this._width;
+    get widthDisplayed(): number {
+        return this.width;
     }
 
     getMaxValue(): number {
@@ -30,14 +30,14 @@ export class AttributeWidthComponent {
     }
 
     assign(): void {
-        this.widthService.setValue(this._width);
+        this.widthService.setWidth(this.width);
     }
 
     revert(): void {
-        this._width = this.widthService.value;
+        this.width = this.widthService.getWidth();
     }
 
     needConfirmation(): boolean {
-        return this._width !== this.widthService.value;
+        return this.width !== this.widthService.getWidth();
     }
 }

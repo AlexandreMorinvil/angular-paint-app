@@ -88,11 +88,11 @@ export class RectangleService extends Tool {
     }
 
     setAttribute(ctx: CanvasRenderingContext2D): void {
-        ctx.lineWidth = this.widthService.value;
+        ctx.lineWidth = this.widthService.getWidth();
         ctx.fillStyle = this.primaryColor;
         ctx.strokeStyle = this.secondaryColor;
-        if (this.tracingService.valueFill === true) ctx.fill();
-        if (this.tracingService.valueContour === true) ctx.stroke();
+        if (this.tracingService.getHasFill()) ctx.fill();
+        if (this.tracingService.getHasContour()) ctx.stroke();
     }
 
     private drawRectangle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {

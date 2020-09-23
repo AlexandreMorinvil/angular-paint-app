@@ -3,9 +3,9 @@
     <div class="grid-input-value">
         <div class="centered">
             <label for="width" style="display: none;">Taille</label>
-            <input type=range [min]="getMinValue()" [max]="getMaxValue()" [value]="width" [(ngModel)]="width">
+            <input type=range [min]="getMinValue()" [max]="getMaxValue()" [value]="widthDisplayed" [(ngModel)]="widthDisplayed">
         </div>
-        <p class="centered"> {{ width }} px </p>
+        <p class="centered"> {{ widthDisplayed }} px </p>
     </div>
     <div class="grid-confirmation" *ngIf="needConfirmation()">
         <button class="confirmation-button cancel" (click)="revert()">Annuler</button>

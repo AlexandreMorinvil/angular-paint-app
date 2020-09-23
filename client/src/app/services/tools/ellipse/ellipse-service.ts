@@ -89,7 +89,7 @@ export class EllipseService extends Tool {
         const radiusY = Math.abs(mouseMoveCoord.y - this.mouseDownCoord.y) / 2;
 
         ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI * 2, false);
-        ctx.lineWidth = this.widthService.value;
+        ctx.lineWidth = this.widthService.getWidth();
 
         this.drawingService.previewCtx.setLineDash([0]); // set line dash to default when drawing Ellipse
         this.applyTrace(ctx);
@@ -141,7 +141,7 @@ export class EllipseService extends Tool {
             ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
         }
 
-        ctx.lineWidth = this.widthService.value;
+        ctx.lineWidth = this.widthService.getWidth();
         ctx.setLineDash([0]); // set line dash to default when drawing Cercle
         this.applyTrace(ctx);
     }
@@ -149,8 +149,8 @@ export class EllipseService extends Tool {
     applyTrace(ctx: CanvasRenderingContext2D): void {
         ctx.fillStyle = this.primaryColor;
         ctx.strokeStyle = this.secondaryColor;
-        if (this.tracingService.valueFill === true) ctx.fill();
-        if (this.tracingService.valueContour === true) ctx.stroke();
+        if (this.tracingService.getHasFill()) ctx.fill();
+        if (this.tracingService.getHasContour()) ctx.stroke();
     }
 
     clearPath(): void {

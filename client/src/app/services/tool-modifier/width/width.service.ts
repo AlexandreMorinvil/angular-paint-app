@@ -13,13 +13,13 @@ export class WidthService extends ToolModifier {
         super();
     }
 
-    setValue(input: number): void {
+    setWidth(input: number): void {
         if (input >= this.MAX_ATTRIBUTE_WIDTH) this.width = this.MAX_ATTRIBUTE_WIDTH;
         else if (input <= this.MIN_ATTRIBUTE_WIDTH) this.width = this.MIN_ATTRIBUTE_WIDTH;
         else this.width = input;
     }
 
-    get value(): number {
+    getWidth(): number {
         return this.width;
     }
 }

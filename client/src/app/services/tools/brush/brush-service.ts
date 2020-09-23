@@ -64,7 +64,7 @@ export class BrushService extends Tool {
     }
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        switch (this.textureService.value) {
+        switch (this.textureService.getTexture()) {
             case TextureEnum.shadowTexture: {
                 this.ShadowTexture(ctx, path);
                 break;
@@ -100,10 +100,10 @@ export class BrushService extends Tool {
         ctx.strokeStyle = this.color;
         ctx.shadowColor = this.color;
         ctx.fillStyle = this.color;
-        ctx.lineWidth = this.widthService.value;
+        ctx.lineWidth = this.widthService.getWidth();
         ctx.shadowBlur = 5;
         // First pixel
-        ctx.fillRect(path[0].x, path[0].y, this.widthService.value, this.widthService.value);
+        ctx.fillRect(path[0].x, path[0].y, this.widthService.getWidth(), this.widthService.getWidth());
         // Drawing of the line
         ctx.beginPath();
         for (const point of path) {
@@ -117,19 +117,19 @@ export class BrushService extends Tool {
         // parameters of the line
         ctx.strokeStyle = this.color;
         ctx.fillStyle = this.color;
-        ctx.lineWidth = this.widthService.value;
+        ctx.lineWidth = this.widthService.getWidth();
 
         // first pixel
         for (let i = 0; i < 4; i++) {
             ctx.globalAlpha = 1 - 0.25 * i;
-            ctx.fillRect(path[0].x, path[0].y + this.widthService.value * i, 1, this.widthService.value / 2);
+            ctx.fillRect(path[0].x, path[0].y + this.widthService.getWidth() * i, 1, this.widthService.getWidth() / 2);
         }
 
         // drawing of the line
         for (let i = 0; i < 4; i++) {
             ctx.globalAlpha = 1 - 0.25 * i;
             ctx.beginPath();
-            for (const point of path) ctx.lineTo(point.x, point.y + this.widthService.value * i);
+            for (const point of path) ctx.lineTo(point.x, point.y + this.widthService.getWidth() * i);
             ctx.stroke();
         }
         ctx.globalAlpha = 1;
@@ -139,10 +139,10 @@ export class BrushService extends Tool {
         // parameters of the line
         ctx.fillStyle = this.color;
         // first pixel
-        ctx.fillRect(path[0].x, path[0].y, this.widthService.value + 5, this.widthService.value + 5);
+        ctx.fillRect(path[0].x, path[0].y, this.widthService.getWidth() + 5, this.widthService.getWidth() + 5);
         // Drawing of the squares
         for (const point of path) {
-            ctx.fillRect(point.x, point.y, this.widthService.value + 5, this.widthService.value + 5);
+            ctx.fillRect(point.x, point.y, this.widthService.getWidth() + 5, this.widthService.getWidth() + 5);
         }
     }
 
@@ -151,10 +151,10 @@ export class BrushService extends Tool {
         ctx.strokeStyle = this.color;
         ctx.fillStyle = this.color;
         ctx.shadowColor = this.color;
-        ctx.lineWidth = this.widthService.value;
+        ctx.lineWidth = this.widthService.getWidth();
         ctx.setLineDash([4, 16]);
         // first pixel
-        ctx.fillRect(path[0].x, path[0].y, this.widthService.value, 1);
+        ctx.fillRect(path[0].x, path[0].y, this.widthService.getWidth(), 1);
         // Drawing of the squares
         ctx.beginPath();
         for (const point of path) {
@@ -167,15 +167,15 @@ export class BrushService extends Tool {
     private ZigzagTexture(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         // parameters of the line
         ctx.strokeStyle = this.color;
-        ctx.lineWidth = this.widthService.value;
+        ctx.lineWidth = this.widthService.getWidth();
         // first pixel
-        ctx.lineTo(path[0].x - this.widthService.value, path[0].y - this.widthService.value);
-        ctx.lineTo(path[0].x + this.widthService.value, path[0].y + this.widthService.value);
+        ctx.lineTo(path[0].x - this.widthService.getWidth(), path[0].y - this.widthService.getWidth());
+        ctx.lineTo(path[0].x + this.widthService.getWidth(), path[0].y + this.widthService.getWidth());
         // Drawing of the line
         ctx.beginPath();
         for (const point of path) {
-            ctx.lineTo(point.x + 2 * this.widthService.value, point.y - 2 * this.widthService.value);
-            ctx.lineTo(point.x - 2 * this.widthService.value, point.y + 2 * this.widthService.value);
+            ctx.lineTo(point.x + 2 * this.widthService.getWidth(), point.y - 2 * this.widthService.getWidth());
+            ctx.lineTo(point.x - 2 * this.widthService.getWidth(), point.y + 2 * this.widthService.getWidth());
         }
         ctx.stroke();
     }

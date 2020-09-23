@@ -7,41 +7,41 @@ import { TracingService } from '@app/services/tool-modifier/tracing/tracing.serv
     styleUrls: ['./attributes-tracing.component.scss', '../attributes-section.component.scss'],
 })
 export class AttributeTracingComponent {
-    private _contour: boolean;
-    private _fill: boolean;
+    private hasContour: boolean;
+    private hasFill: boolean;
 
     constructor(private tracingService: TracingService) {
-        this._contour = this.tracingService.valueContour;
-        this._fill = this.tracingService.valueFill;
+        this.contour = this.tracingService.getHasContour();
+        this.fill = this.tracingService.getHasFill();
     }
 
     get contour(): boolean {
-        return this._contour;
+        return this.hasContour;
     }
 
     set contour(value: boolean) {
-        this._contour = value;
+        this.hasContour = value;
     }
 
     get fill(): boolean {
-        return this._fill;
+        return this.hasFill;
     }
 
     set fill(value: boolean) {
-        this._fill = value;
+        this.hasFill = value;
     }
 
     assign(): void {
-        this.tracingService.setContourValue(this._contour);
-        this.tracingService.setFillValue(this._fill);
+        this.tracingService.setHasContour(this.hasContour);
+        this.tracingService.setHasFill(this.hasFill);
     }
 
     revert(): void {
-        this._contour = this.tracingService.valueContour;
-        this._fill = this.tracingService.valueFill;
+        this.hasContour = this.tracingService.getHasContour();
+        this.hasFill = this.tracingService.getHasFill();
     }
 
     needConfirmation(): boolean {
-        return this._contour !== this.tracingService.valueContour || this._fill !== this.tracingService.valueFill;
+        return this.hasContour !== this.tracingService.getHasContour() || this.hasFill !== this.tracingService.getHasFill();
     }
 }

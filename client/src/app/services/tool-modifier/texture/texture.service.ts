@@ -25,11 +25,11 @@ export class TextureService extends ToolModifier {
         return this.listTextures;
     }
 
-    setValue(input: string): void {
-        if (this.listTextures.includes(input)) this.texture = input;
+    getTexture(): string {
+        return this.texture;
     }
 
-    get value(): string {
-        return this.texture;
+    setTexture(input: string): void {
+        if (this.listTextures.includes(input)) this.texture = input;
     }
 }
