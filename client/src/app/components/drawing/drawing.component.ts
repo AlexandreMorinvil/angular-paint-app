@@ -63,7 +63,6 @@ export class DrawingComponent implements AfterViewInit {
                 }
             }
         }
-
     }
 
     @HostListener('window:keydown', ['$event'])

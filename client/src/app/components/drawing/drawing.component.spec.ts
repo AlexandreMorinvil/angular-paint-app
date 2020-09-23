@@ -1,12 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
+import { BrushService } from '@app/services/tools/brush/brush-service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse-service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
+import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
 import { DrawingComponent } from './drawing.component';
-import { BrushService } from '@app/services/tools/brush/brush-service'
-class ToolStub extends Tool { }
+class ToolStub extends Tool {}
 
 // TODO : Déplacer dans un fichier accessible à tous
 const DEFAULT_WIDTH = 1000;
@@ -19,7 +20,7 @@ describe('DrawingComponent', () => {
     let drawingStub: DrawingService;
 
     beforeEach(async(() => {
-        toolStub = new ToolStub({} as DrawingService, "", "");
+        toolStub = new ToolStub({} as DrawingService, {} as Description);
         drawingStub = new DrawingService();
 
         TestBed.configureTestingModule({
