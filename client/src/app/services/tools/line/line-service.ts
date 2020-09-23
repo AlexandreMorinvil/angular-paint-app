@@ -23,20 +23,19 @@ export class LineService extends Tool {
         this.clearPath();
     }
 
-    /* onMouseDown(event: MouseEvent): void {
-        this.mouseDown = event.button === MouseButton.Left;
+    onMouseDown(event: MouseEvent): void {
+        /* this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.clearPath();
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
-        }
-    } */
+        } */
+    }
 
     /* onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-            this.drawLine(this.drawingService.baseCtx, this.pathData);
         }
         this.mouseDown = false;
         this.clearPath();
@@ -47,10 +46,12 @@ export class LineService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
 
             if (this.isInCanvas(mousePosition)) {
-                this.pathData.push(mousePosition);
-                // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                this.pathData[0] = this.mouseDownCoord;
+                this.pathData.push(mousePosition);
                 this.drawLine(this.drawingService.previewCtx, this.pathData);
+
+                // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             } else {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.clearPath();
