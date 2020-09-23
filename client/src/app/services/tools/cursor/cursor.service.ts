@@ -12,6 +12,8 @@ export enum MouseButton {
     Forward = 4,
 }
 
+const minSurfaceSize = 250;
+
 @Injectable({
     providedIn: 'root'
 })
@@ -69,20 +71,20 @@ export class CursorService extends Tool {
     }
 
     moveWidth(mouseDownCoordX: number) {
-        if (mouseDownCoordX >= 250) {
+        if (mouseDownCoordX >= minSurfaceSize) {
             this.drawingService.previewCtx.canvas.width = mouseDownCoordX;
         }
         else {
-            this.drawingService.previewCtx.canvas.width = 250;
+            this.drawingService.previewCtx.canvas.width = minSurfaceSize;
         }
     }
 
     moveHeight(mouseDownCoordY: number) {
-        if (mouseDownCoordY >= 250) {
+        if (mouseDownCoordY >= minSurfaceSize) {
             this.drawingService.previewCtx.canvas.height = mouseDownCoordY;
         }
         else {
-            this.drawingService.previewCtx.canvas.height = 250;
+            this.drawingService.previewCtx.canvas.height = minSurfaceSize;
         }
     }
 
