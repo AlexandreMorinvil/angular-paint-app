@@ -5,8 +5,8 @@ import { ToolModifier } from '@app/classes/toolModifier';
 @Injectable({
   providedIn: 'root'
 })
-export class ColorService extends ToolModifier<string> {
+export class ColorService extends ToolModifier {
   constructor() {
-    super("#000000");
+    super();
   }
 }

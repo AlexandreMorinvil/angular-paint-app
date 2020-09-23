@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
-import { DrawingService } from '../drawing/drawing.service';
-import { EllipseService, TypeTrace } from './ellipse-service';
+import { DrawingService } from '@app/services/drawing/drawing.service';
+import { EllipseService } from './ellipse-service';
 
 describe('EllipseService', () => {
     let service: EllipseService;
@@ -163,7 +163,7 @@ describe('EllipseService', () => {
     });
 
     it(' should call applyTrace for trace of type Contour with the color blue', () => {
-        service.typeTrace = TypeTrace.Contour;
+        // service.typeTrace = TypeTrace.Contour;
         service.secondaryColor = 'blue';
         service.applyTrace(baseCtxStub);
 
@@ -171,7 +171,7 @@ describe('EllipseService', () => {
     });
 
     it(' should call applyTrace for trace of type Full with the color red', () => {
-        service.typeTrace = TypeTrace.Full;
+        // service.typeTrace = TypeTrace.Full;
         service.primaryColor = 'red';
 
         service.applyTrace(baseCtxStub);
@@ -180,7 +180,7 @@ describe('EllipseService', () => {
     });
 
     it(' should call applyTrace for trace of type fullContour', () => {
-        service.typeTrace = TypeTrace.FullContour;
+        // service.typeTrace = TypeTrace.FullContour;
         service.primaryColor = 'red';
         service.secondaryColor = 'blue';
 

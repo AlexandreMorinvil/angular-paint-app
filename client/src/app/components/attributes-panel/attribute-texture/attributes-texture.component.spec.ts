@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AttributeWidthComponent } from './attributes-texture.component';
+import { AttributeTextureComponent } from './attributes-texture.component';
 
 describe('AttributeTextureComponent', () => {
-    let component: AttributeWidthComponent;
-    let fixture: ComponentFixture<AttributeWidthComponent>;
+    let component: AttributeTextureComponent;
+    let fixture: ComponentFixture<AttributeTextureComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [AttributeWidthComponent],
+            declarations: [AttributeTextureComponent],
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(AttributeWidthComponent);
+        fixture = TestBed.createComponent(AttributeTextureComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
