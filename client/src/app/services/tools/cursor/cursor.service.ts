@@ -21,20 +21,21 @@ export class CursorService extends Tool {
   dotsize: number = 10;
   clickOnAnchor: boolean = false;
   anchorHit: number = 0;
-  imageData: any ;
+  imageData: any;
 
   constructor(drawingService: DrawingService) {
     super(drawingService, "cursor", "y");
   }
 
   onMouseDown(event: MouseEvent): void {
-    this.drawingService.previewCtx.fillStyle= "#000000";
-    this.imageData = this.drawingService.baseCtx.getImageData(0,0,this.drawingService.baseCtx.canvas.width,
-                                                                this.drawingService.baseCtx.canvas.height);
-    this.mouseDownCoord = this.getPositionFromMouse(event);
-    this.drawnAnchor(this.drawingService.baseCtx, this.drawingService.canvas);
-    this.checkHit(this.mouseDownCoord, this.drawingService.canvas);
-    this.mouseDown = true;
+      this.drawingService.previewCtx.fillStyle = "#000000";
+      this.imageData = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.baseCtx.canvas.width,
+        this.drawingService.baseCtx.canvas.height);
+      this.mouseDownCoord = this.getPositionFromMouse(event);
+      this.drawnAnchor(this.drawingService.baseCtx, this.drawingService.canvas);
+      this.checkHit(this.mouseDownCoord, this.drawingService.canvas);
+      this.mouseDown = true;
+    
   }
 
   onMouseUp(event: MouseEvent): void {
@@ -43,7 +44,7 @@ export class CursorService extends Tool {
     this.drawingService.baseCtx.canvas.width = this.drawingService.previewCtx.canvas.width;
     this.drawingService.baseCtx.canvas.height = this.drawingService.previewCtx.canvas.height;
     this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
-    this.drawingService.baseCtx.putImageData(this.imageData,0,0);
+    this.drawingService.baseCtx.putImageData(this.imageData, 0, 0);
   }
 
   onMouseMove(event: MouseEvent): void {
@@ -66,7 +67,7 @@ export class CursorService extends Tool {
     }
   }
 
-  moveWidth(mouseDownCoordX : number){
+  moveWidth(mouseDownCoordX: number) {
     if (mouseDownCoordX >= 250) {
       this.drawingService.previewCtx.canvas.width = mouseDownCoordX;
     }
@@ -74,8 +75,8 @@ export class CursorService extends Tool {
       this.drawingService.previewCtx.canvas.width = 250;
     }
   }
-  
-  moveHeight(mouseDownCoordY : number){
+
+  moveHeight(mouseDownCoordY: number) {
     if (mouseDownCoordY >= 250) {
       this.drawingService.previewCtx.canvas.height = mouseDownCoordY;
     }

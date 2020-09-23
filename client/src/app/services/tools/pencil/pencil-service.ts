@@ -58,7 +58,7 @@ export class PencilService extends Tool {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.drawLine(this.drawingService.previewCtx, this.pathData);
             }
-            else{
+            else {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.clearPath();
             }
@@ -86,7 +86,7 @@ export class PencilService extends Tool {
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
         }
-        ctx.lineWidth = this.width;       //width ajustment
+        ctx.lineWidth = this.width;     //width ajustment
         ctx.strokeStyle = this.color;   //color of the line
         ctx.fillStyle = this.color;     //color of the starting point
         ctx.stroke();
