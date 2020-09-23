@@ -1,36 +1,35 @@
 export class Description {
-    private _name: string;
-    private _shortcut: string;
-    private _iconName: string;
+    private itemName: string;
+    private itemShortcut: string;
+    private itemiconName: string;
 
     constructor(name: string = 'nom inconnu', shortcut: string = '', iconName: string = 'question_mark.png') {
-        this._name = name;
-        this._shortcut = shortcut;
-        this._iconName = iconName;
+        this.itemName = name;
+        this.itemShortcut = shortcut;
+        this.itemiconName = iconName;
     }
 
-    // Getters
     get name(): string {
-        return this._name;
+        return this.itemName;
     }
 
     set name(name: string) {
-        this._name = name;
+        this.itemName = name;
     }
 
     get shortcut(): string {
-        return this._shortcut;
+        return this.itemShortcut;
     }
 
     set shortcut(shortcut: string) {
-        this._shortcut = shortcut;
+        this.itemShortcut = shortcut;
     }
 
     get iconDirectory(): string {
-        return 'assets/images/' + this._iconName;
+        return 'assets/images/' + this.itemiconName;
     }
 
     set iconName(iconName: string) {
-        this._iconName = iconName;
+        this.itemiconName = iconName;
     }
 }

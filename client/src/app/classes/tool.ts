@@ -7,7 +7,7 @@ import { Vec2 } from './vec2';
 // tslint:disable:no-empty
 export abstract class Tool {
     private description: Description;
-    protected _modifiers: ToolModifier[] = [];
+    protected modifiers: ToolModifier[] = [];
 
     mouseDownCoord: Vec2;
     mouseDown: boolean = false;
@@ -33,7 +33,7 @@ export abstract class Tool {
     }
 
     needsModifierManager(modifier: ToolModifier): boolean {
-        return this._modifiers.includes(modifier);
+        return this.modifiers.includes(modifier);
     }
 
     get name(): string {

@@ -23,8 +23,8 @@ export class BrushService extends Tool {
 
     constructor(drawingService: DrawingService, private textureService: TextureService, private widthService: WidthService) {
         super(drawingService, new Description('pinceau', 'w', 'brush_icon.png'));
-        this._modifiers.push(this.widthService);
-        this._modifiers.push(this.textureService);
+        this.modifiers.push(this.widthService);
+        this.modifiers.push(this.textureService);
         this.clearPath();
         this.color = '#000000';
     }

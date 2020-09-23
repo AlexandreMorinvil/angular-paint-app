@@ -22,7 +22,7 @@ export class PencilService extends Tool {
 
     constructor(drawingService: DrawingService, private widthService: WidthService) {
         super(drawingService, new Description('crayon', 'c', 'pencil_icon.png'));
-        this._modifiers.push(this.widthService);
+        this.modifiers.push(this.widthService);
         this.clearPath();
     }
 
