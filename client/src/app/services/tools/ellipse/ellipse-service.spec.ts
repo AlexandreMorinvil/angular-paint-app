@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { EllipseService, TypeTrace } from './ellipse-service';
+import { EllipseService } from './ellipse-service';
 
 describe('EllipseService', () => {
     let service: EllipseService;
@@ -60,7 +60,7 @@ describe('EllipseService', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
-            button: 1, // TODO: Avoir ceci dans un enum accessible
+            button: 1, // TODO: Have an enum accessible
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);
@@ -121,7 +121,7 @@ describe('EllipseService', () => {
     });
 
     it(' onMouseMove should call drawCircle if mouse down and shift is pressed down ', () => {
-        //bottom right
+        // bottom right
         mouseEvent = { offsetX: 10, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 11, offsetY: 11, button: 0, shiftKey: true } as MouseEvent;
@@ -132,7 +132,7 @@ describe('EllipseService', () => {
     });
 
     it(' onMouseMove should call drawCircle if mouse down and shift is pressed down ', () => {
-        //top right
+        // top right
         mouseEvent = { offsetX: 10, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 9, offsetY: 9, button: 0, shiftKey: true } as MouseEvent;
@@ -163,7 +163,7 @@ describe('EllipseService', () => {
     });
 
     it(' should call applyTrace for trace of type Contour with the color blue', () => {
-        service.typeTrace = TypeTrace.Contour;
+        // service.typeTrace = TypeTrace.Contour;
         service.secondaryColor = 'blue';
         service.applyTrace(baseCtxStub);
 
@@ -171,7 +171,7 @@ describe('EllipseService', () => {
     });
 
     it(' should call applyTrace for trace of type Full with the color red', () => {
-        service.typeTrace = TypeTrace.Full;
+        // service.typeTrace = TypeTrace.Full;
         service.primaryColor = 'red';
 
         service.applyTrace(baseCtxStub);
@@ -180,7 +180,7 @@ describe('EllipseService', () => {
     });
 
     it(' should call applyTrace for trace of type fullContour', () => {
-        service.typeTrace = TypeTrace.FullContour;
+        // service.typeTrace = TypeTrace.FullContour;
         service.primaryColor = 'red';
         service.secondaryColor = 'blue';
 

@@ -1,0 +1,13 @@
+<div class="container">
+    <h2>Texture</h2>
+    <div class="centered">
+        <label for="texture" style="display: none;">Texture</label>
+        <select name="texture" [(ngModel)]="textureDisplayed">
+            <option *ngFor="let textureName of getListTextures()" [ngValue]="textureName">{{ textureName }}</option>
+        </select>
+    </div>
+    <div class="grid-confirmation" *ngIf="needConfirmation()">
+        <button class="confirmation-button cancel" (click)="revert()">Annuler</button>
+        <button class="confirmation-button confirm" (click)="assign()">Confirmer</button>
+    </div>
+</div>

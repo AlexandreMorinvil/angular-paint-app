@@ -14,24 +14,31 @@ import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorPageComponent } from './components/editor-page/editor-page.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
-import { CreateNewDrawingDialogService } from './services/create-new-drawing-dialog/create-new-drawing-dialog.service';
 import { TooltipComponent } from './components/tooltip/tooltip.component';
 import { WorkspaceComponent } from './components/workspace/workspace.component';
+import { CreateNewDrawingDialogService } from './services/create-new-drawing-dialog/create-new-drawing-dialog.service';
 
+// Attribute components
+import { AttributeTextureComponent } from './components/attributes-panel/attribute-texture/attributes-texture.component';
+import { AttributeTracingComponent } from './components/attributes-panel/attribute-tracing/attributes-tracing.component';
+import { AttributeWidthComponent } from './components/attributes-panel/attribute-width/attributes-width.component';
 
 @NgModule({
     declarations: [
         AppComponent,
         AttributesPanelComponent,
-        EditorPageComponent, 
+        EditorPageComponent,
         SidebarComponent,
         DrawingComponent,
         MainPageComponent,
         TooltipComponent,
         WorkspaceComponent,
-        CreateNewDrawingDialogComponent
+        CreateNewDrawingDialogComponent,
+        AttributeTracingComponent,
+        AttributeWidthComponent,
+        AttributeTextureComponent,
     ],
-    
+
     imports: [
         BrowserAnimationsModule,
         BrowserModule,
@@ -47,4 +54,4 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
     providers: [{ provide: MAT_DIALOG_DATA, useValue: [] }, CreateNewDrawingDialogService],
     bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

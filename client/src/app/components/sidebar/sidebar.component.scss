@@ -12,6 +12,12 @@
     flex-direction: column;
 }
 
+img {
+    height: 80%;
+    width: 80%;
+    margin: auto;
+}
+
 button {
     cursor: pointer;
     position: relative;
@@ -21,12 +27,22 @@ button {
     border-style: none;
     border-right: inherit;
     border-bottom: 1px solid rgb(53, 53, 79);
+    color:white;
+    outline:none;
+
+    display: flex;
+    justify-content: center;
+    align-content: center;
 }
 
 button:hover {
     box-sizing: border-box;
     border-right: inherit;
     background-color: rgb(96, 93, 119);
+}
+
+button.active {
+    background-color: rgb(227, 205, 61);
 }
 
 .tooltip {

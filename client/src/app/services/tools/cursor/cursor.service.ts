@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
+import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-
 
 export enum MouseButton {
     Left = 0,
@@ -15,7 +15,7 @@ export enum MouseButton {
 const minSurfaceSize = 250;
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class CursorService extends Tool {
     mouseDownCoord: Vec2;
@@ -37,7 +37,6 @@ export class CursorService extends Tool {
         this.drawnAnchor(this.drawingService.baseCtx, this.drawingService.canvas);
         this.checkHit(this.mouseDownCoord, this.drawingService.canvas);
         this.mouseDown = true;
-
     }
 
     onMouseUp(event: MouseEvent): void {
@@ -132,4 +131,35 @@ export class CursorService extends Tool {
 
     }
 
+    checkHit(mouse: Vec2, canvas: HTMLCanvasElement): void {
+        let x: number;
+        let y: number;
+        const dotSizeSquare: number = Math.pow(this.dotsize, 2);
+
+        x = Math.pow(mouse.x - canvas.width, 2);
+        y = Math.pow(mouse.y - canvas.height, 2);
+        if (x + y <= dotSizeSquare) {
+            this.clickOnAnchor = true;
+            this.anchorHit = 1;
+        }
+
+        x = Math.pow(mouse.x - canvas.width, 2);
+        y = Math.pow(mouse.y - canvas.height / 2, 2);
+        if (x + y <= dotSizeSquare) {
+            this.clickOnAnchor = true;
+            this.anchorHit = 2;
+        }
+
+        x = Math.pow(mouse.x - canvas.width / 2, 2);
+        y = Math.pow(mouse.y - canvas.height, 2);
+        if (x + y <= dotSizeSquare) {
+            this.clickOnAnchor = true;
+            this.anchorHit = 3;
+        }
+
+        if (!this.clickOnAnchor) {
+            this.clickOnAnchor = false;
+            this.anchorHit = 0;
+        }
+    }
 }

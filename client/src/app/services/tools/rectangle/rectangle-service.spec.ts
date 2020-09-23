@@ -56,7 +56,7 @@ describe('RectangleService', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
-            button: 1, // TODO: Avoir ceci dans un enum accessible
+            button: 1, // TODO: Have an enum accessible
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);
@@ -113,7 +113,7 @@ describe('RectangleService', () => {
         service.onMouseMove(mouseEvent);
 
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-        expect(mouseEvent.offsetX == mouseEvent.offsetY);
+        expect(mouseEvent.offsetX === mouseEvent.offsetY);
     });
 
     it(' should not be a square  when drawing rectangle and shift not pressed', () => {
@@ -123,7 +123,7 @@ describe('RectangleService', () => {
         service.onMouseMove(mouseEvent);
 
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-        expect(mouseEvent.offsetX != mouseEvent.offsetY);
+        expect(mouseEvent.offsetX !== mouseEvent.offsetY);
     });
 
     it(' should call setAttribute when type of Layout Full with the color green', () => {
