@@ -8,6 +8,9 @@ describe('CursorService', () => {
   let service: CursorService;
   let mouseEvent: MouseEvent;
   let drawServiceSpy: jasmine.SpyObj<DrawingService>;
+  //let cursorServiceSpy: jasmine.SpyObj<CursorService>;
+  let drawnAnchorSpy: jasmine.Spy<any>;
+  let checkHitSpy: jasmine.Spy<any>;
 
   let baseCtxStub: CanvasRenderingContext2D;
   let previewCtxStub: CanvasRenderingContext2D;
@@ -16,11 +19,14 @@ describe('CursorService', () => {
     baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
     previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
     drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
+    //cursorServiceSpy = jasmine.createSpyObj('CursorService', ['drawnAnchor', 'checkHit'])
     
     TestBed.configureTestingModule({
       providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
     });
     service = TestBed.inject(CursorService);
+    drawnAnchorSpy = spyOn<any>(service, 'drawnAnchor').and.callThrough();
+    checkHitSpy = spyOn<any>(service, 'checkHit').and.callThrough();
 
     service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
     service['drawingService'].previewCtx = previewCtxStub;
@@ -47,5 +53,14 @@ describe('CursorService', () => {
     service.onMouseDown(mouseEvent);
     expect(service.mouseDown).toEqual(true);
   });
+
+  it(' mouseDown should call drawAnchor and checkHit', () => {
+    service.mouseDownCoord = { x: 0, y: 0 };
+    service.mouseDown = true;
+
+    service.onMouseDown(mouseEvent);
+    expect(drawnAnchorSpy).toHaveBeenCalled();
+    expect(checkHitSpy).toHaveBeenCalled();
+});
 
 });
