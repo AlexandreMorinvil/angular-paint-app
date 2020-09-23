@@ -4,17 +4,16 @@ import { WidthService } from '@app/services/tool-modifier/width/width.service';
 @Component({
     selector: 'app-attributes-width',
     templateUrl: './attributes-width.component.html',
-    styleUrls: ['./attributes-width.component.scss', "../attributes-section.component.scss"],
+    styleUrls: ['./attributes-width.component.scss', '../attributes-section.component.scss'],
 })
 export class AttributeWidthComponent {
-    
-    private _width:number;
+    private _width: number;
 
     constructor(private widthService: WidthService) {
         this._width = this.widthService.value;
     }
 
-    set width(value:number){
+    set width(value: number) {
         this._width = value;
     }
 
@@ -22,23 +21,23 @@ export class AttributeWidthComponent {
         return this._width;
     }
 
-    public getMaxValue() {
+    getMaxValue(): number {
         return this.widthService.MAX_ATTRIBUTE_WIDTH;
     }
 
-    public getMinValue() {
+    getMinValue(): number {
         return this.widthService.MIN_ATTRIBUTE_WIDTH;
     }
 
-    public assign(): void {
+    assign(): void {
         this.widthService.setValue(this._width);
     }
 
-    public revert(): void {
+    revert(): void {
         this._width = this.widthService.value;
     }
 
-    public needConfirmation(): boolean {
+    needConfirmation(): boolean {
         return this._width !== this.widthService.value;
     }
 }

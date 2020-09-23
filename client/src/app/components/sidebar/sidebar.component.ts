@@ -8,23 +8,21 @@ import { ToolboxService } from '@app/services/toolbox/toolbox.service';
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-
     constructor(private toolboxSevice: ToolboxService) {}
 
-    public getListOfTools(): Tool[] {
+    getListOfTools(): Tool[] {
         return this.toolboxSevice.getAvailableTools();
     }
 
-    public getCurrentTool(): Tool {
+    getCurrentTool(): Tool {
         return this.toolboxSevice.getCurrentTool();
     }
 
-
-    public setCurrentTool(tool: Tool): void {
+    setCurrentTool(tool: Tool): void {
         this.toolboxSevice.setSelectedTool(tool);
     }
 
-    public formatTooltipMessage(tool: Tool): string {
-        return "Outil : " + tool.name + "\n( Raccourci: " + tool.shortcut + " )";
+    formatTooltipMessage(tool: Tool): string {
+        return 'Outil : ' + tool.name + '\n( Raccourci: ' + tool.shortcut + ' )';
     }
 }

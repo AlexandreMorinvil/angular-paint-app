@@ -11,34 +11,32 @@ import { ToolboxService } from '@app/services/toolbox/toolbox.service';
     styleUrls: ['./attributes-panel.component.scss'],
 })
 export class AttributesPanelComponent {
-    colorUse = "#000000";
+    colorUse: string = '#000000';
 
     constructor(
         private toolboxService: ToolboxService,
         private widthService: WidthService,
         private textureService: TextureService,
-        private tracingService: TracingService
-        ) {
-
-    }
+        private tracingService: TracingService,
+    ) {}
 
     get currentTool(): Tool {
         return this.toolboxService.getCurrentTool();
     }
 
-    public capitalizeFirstLetter(string: string): string {
-        return string.charAt(0).toUpperCase() + string.slice(1);
+    capitalizeFirstLetter(str: string): string {
+        return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
-    public needsWidthAttribute() {
+    needsWidthAttribute(): boolean {
         return this.currentTool.needsModifierManager(this.widthService);
     }
 
-    public needsTextureAttribute() {
+    needsTextureAttribute(): boolean {
         return this.currentTool.needsModifierManager(this.textureService);
     }
 
-    public needsTracingAttribute() {
+    needsTracingAttribute(): boolean {
         return this.currentTool.needsModifierManager(this.tracingService);
     }
 

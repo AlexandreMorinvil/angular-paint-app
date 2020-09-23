@@ -5,7 +5,6 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
 
-// TODO : Déplacer ça dans un fichier séparé accessible par tous
 export enum MouseButton {
     Left = 0,
     Middle = 1,
@@ -14,20 +13,15 @@ export enum MouseButton {
     Forward = 4,
 }
 
-// Ceci est une implémentation de base de l'outil Crayon pour aider à débuter le projet
-// L'implémentation ici ne couvre pas tous les critères d'accepetation du projet
-// Vous êtes encouragés de modifier et compléter le code.
-// N'oubliez pas de regarder les tests dans le fichier spec.ts aussi!
 @Injectable({
     providedIn: 'root',
 })
 export class PencilService extends Tool {
     private pathData: Vec2[];
-    private color: string = "#000000";
+    private color: string = '#000000';
 
-    constructor(drawingService: DrawingService,
-        private widthService: WidthService) {
-        super(drawingService, new Description("crayon", "c", "pencil_icon.png"));
+    constructor(drawingService: DrawingService, private widthService: WidthService) {
+        super(drawingService, new Description('crayon', 'c', 'pencil_icon.png'));
         this._modifiers.push(this.widthService);
         this.clearPath();
     }
@@ -56,7 +50,6 @@ export class PencilService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
 
-            // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawLine(this.drawingService.previewCtx, this.pathData);
         }
@@ -72,9 +65,9 @@ export class PencilService extends Tool {
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
         }
-        ctx.lineWidth = this.widthService.value;  //width ajustment
-        ctx.strokeStyle = this.color;           //color of the line
-        ctx.fillStyle = this.color;             //color of the starting point
+        ctx.lineWidth = this.widthService.value; // width ajustment
+        ctx.strokeStyle = this.color; // color of the line
+        ctx.fillStyle = this.color; // color of the starting point
         ctx.stroke();
     }
 

@@ -60,7 +60,7 @@ describe('EllipseService', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
-            button: 1, // TODO: Avoir ceci dans un enum accessible
+            button: 1, // TODO: Have an enum accessible
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);
@@ -121,7 +121,7 @@ describe('EllipseService', () => {
     });
 
     it(' onMouseMove should call drawCircle if mouse down and shift is pressed down ', () => {
-        //bottom right
+        // bottom right
         mouseEvent = { offsetX: 10, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 11, offsetY: 11, button: 0, shiftKey: true } as MouseEvent;
@@ -132,7 +132,7 @@ describe('EllipseService', () => {
     });
 
     it(' onMouseMove should call drawCircle if mouse down and shift is pressed down ', () => {
-        //top right
+        // top right
         mouseEvent = { offsetX: 10, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 9, offsetY: 9, button: 0, shiftKey: true } as MouseEvent;

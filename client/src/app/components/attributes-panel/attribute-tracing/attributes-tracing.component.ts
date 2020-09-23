@@ -4,10 +4,9 @@ import { TracingService } from '@app/services/tool-modifier/tracing/tracing.serv
 @Component({
     selector: 'app-attributes-tracing',
     templateUrl: './attributes-tracing.component.html',
-    styleUrls: ['./attributes-tracing.component.scss', "../attributes-section.component.scss"],
+    styleUrls: ['./attributes-tracing.component.scss', '../attributes-section.component.scss'],
 })
 export class AttributeTracingComponent {
-
     private _contour: boolean;
     private _fill: boolean;
 
@@ -20,30 +19,29 @@ export class AttributeTracingComponent {
         return this._contour;
     }
 
-    get fill(): boolean {
-        return this._fill;
-    }
-
     set contour(value: boolean) {
         this._contour = value;
+    }
+
+    get fill(): boolean {
+        return this._fill;
     }
 
     set fill(value: boolean) {
         this._fill = value;
     }
 
-    public assign(): void {
+    assign(): void {
         this.tracingService.setContourValue(this._contour);
         this.tracingService.setFillValue(this._fill);
     }
 
-    public revert(): void {
+    revert(): void {
         this._contour = this.tracingService.valueContour;
         this._fill = this.tracingService.valueFill;
     }
 
-    public needConfirmation(): boolean {
-        return (this._contour !== this.tracingService.valueContour) ||
-            (this._fill !== this.tracingService.valueFill);
+    needConfirmation(): boolean {
+        return this._contour !== this.tracingService.valueContour || this._fill !== this.tracingService.valueFill;
     }
 }

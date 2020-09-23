@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
-import { ToolModifier } from '@app/classes/toolModifier';
-
+import { ToolModifier } from '@app/classes/tool-modifier';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
 export class ColorService extends ToolModifier {
-  constructor() {
-    super();
-  }
+    constructor() {
+        super();
+    }
 }

@@ -1,37 +1,35 @@
 import { Injectable } from '@angular/core';
-import { ToolModifier } from '@app/classes/toolModifier';
+import { ToolModifier } from '@app/classes/tool-modifier';
 
 export enum TextureEnum {
-  shadowTexture = "ombrée",
-  gradientTexture = "dégradée",
-  squareTexture = "carrotée",
-  dashTexture = "pointillée",
-  zigzagTexture = "zigzaguée"
+    shadowTexture = 'ombrée',
+    gradientTexture = 'dégradée',
+    squareTexture = 'carrotée',
+    dashTexture = 'pointillée',
+    zigzagTexture = 'zigzaguée',
 }
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
 export class TextureService extends ToolModifier {
+    private listTextures: string[];
+    private texture: string = TextureEnum.shadowTexture;
 
-  private listTextures: string[];
-  private texture: string = TextureEnum.shadowTexture;
+    constructor() {
+        super();
+        this.listTextures = Object.values(TextureEnum);
+    }
 
-  constructor() {
-    super();
-    this.listTextures = Object.values(TextureEnum);
-  }
+    getListTextures(): string[] {
+        return this.listTextures;
+    }
 
-  public getListTextures(): string[] {
-    return this.listTextures;
-  }
+    setValue(input: string): void {
+        if (this.listTextures.includes(input)) this.texture = input;
+    }
 
-  public setValue(input: string) {
-    if (this.listTextures.includes(input))
-      this.texture = input;
-  }
-
-  get value(): string {
-    return this.texture;
-  }
+    get value(): string {
+        return this.texture;
+    }
 }

@@ -1,6 +1,6 @@
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { Description } from './description';
-import { ToolModifier } from './toolModifier';
+import { ToolModifier } from './tool-modifier';
 import { Vec2 } from './vec2';
 
 // Ceci est justifié vu qu'on a des fonctions qui seront gérés par les classes enfant
@@ -12,10 +12,7 @@ export abstract class Tool {
     mouseDownCoord: Vec2;
     mouseDown: boolean = false;
 
-    constructor(
-        protected drawingService: DrawingService,
-        description: Description
-        ) {
+    constructor(protected drawingService: DrawingService, description: Description) {
         this.description = description;
     }
 
@@ -25,7 +22,7 @@ export abstract class Tool {
 
     onMouseMove(event: MouseEvent): void {}
 
-    onColorChange(color : string): void {}
+    onColorChange(color: string): void {}
 
     onShiftDown(event: KeyboardEvent): void {}
 
@@ -35,7 +32,7 @@ export abstract class Tool {
         return { x: event.offsetX, y: event.offsetY };
     }
 
-    public needsModifierManager(modifier: ToolModifier): boolean {
+    needsModifierManager(modifier: ToolModifier): boolean {
         return this._modifiers.includes(modifier);
     }
 
