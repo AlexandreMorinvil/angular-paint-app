@@ -30,6 +30,8 @@ export abstract class Tool {
 
     onMouseClick(event: MouseEvent): void {}
 
+    onBackSpaceDown(event: KeyboardEvent): void {}
+
     onMouseDblClick(event: MouseEvent): void {}
 
     onShiftDown(event: KeyboardEvent): void {}
