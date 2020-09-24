@@ -1,0 +1,17 @@
+<div class="container">
+    <h2>Couleur</h2>
+    <div class="grid-confirmation" *ngIf="needConfirmation()">
+        <button class="confirmation-button cancel" (click)="revert()">Annuler</button>
+        <button class="confirmation-button confirm" (click)="assign()">Confirmer</button>
+    </div>
+    <div class="grid-color-selected">
+        <div>
+            <label class="centered" for="primary-color">Primaire</label>
+            <input class="centered" name="primary-color" type="color" [value]="primaryColorDisplayed" [(ngModel)]="primaryColorDisplayed" />
+        </div>
+        <div>
+            <label class="centered" for="secondary-color">Secondaire</label>
+            <input class="centered" name="secondary-color" type="color" [value]="secondaryColorDisplayed" [(ngModel)]="secondaryColorDisplayed" />
+        </div>
+    </div>
+</div>

@@ -25,7 +25,7 @@ export class ColorService extends ToolModifier {
 
     setPrimaryColor(color: string): void {
         if (this.validateColor(color)) {
-            this.updatePreviousColors(color);
+            if (color !== this.primaryColor) this.updatePreviousColors(color);
             this.primaryColor = color;
         }
     }
@@ -44,7 +44,7 @@ export class ColorService extends ToolModifier {
 
     setSecondaryColor(color: string): void {
         if (this.validateColor(color)) {
-            this.updatePreviousColors(color);
+            if (color !== this.secondaryColor) this.updatePreviousColors(color);
             this.secondaryColor = color;
         }
     }
@@ -74,10 +74,11 @@ export class ColorService extends ToolModifier {
 
         // Validate that the rest of the string is a number
         const inputNumberPart = input.substring(1);
-        if (!/^\d+$/.test(inputNumberPart)) return false;
+        const inputHexadecimalNumber = parseInt(inputNumberPart, 16);
+        if (isNaN(inputHexadecimalNumber)) return false;
 
         // Validate that the string is in the range 0x000000 and 0xffffff
-        const inputHexadecimalNumber = parseInt(inputNumberPart, 16);
+
         if (!(inputHexadecimalNumber >= 0x000000)) return false;
         if (!(inputHexadecimalNumber <= 0xffffff)) return false;
 

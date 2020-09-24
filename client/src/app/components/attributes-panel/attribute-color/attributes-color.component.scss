@@ -1,0 +1,10 @@
+.offset {
+    margin-left: 10px;
+}
+
+.grid-color-selected {
+    display: grid;
+    grid-row-gap: 10px;
+    grid-template-columns: 1fr 1fr;
+    justify-content: center;
+}

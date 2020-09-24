@@ -8,9 +8,10 @@
     <app-attributes-texture class="section" *ngIf="needsTextureAttribute()"></app-attributes-texture>
     <app-attributes-tracing class="section" *ngIf="needsTracingAttribute()"></app-attributes-tracing>
 
+    <app-attributes-color class="section"></app-attributes-color>
     <div class="section">
         <label for="name">Couleur</label>
-        <input type="color" value="#000000" [(ngModel)]="color">
+        <input type="color" rgba>
     </div>
 
 </div>

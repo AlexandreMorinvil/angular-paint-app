@@ -19,6 +19,7 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
 import { CreateNewDrawingDialogService } from './services/create-new-drawing-dialog/create-new-drawing-dialog.service';
 
 // Attribute components
+import { AttributeColorComponent } from './components/attributes-panel/attribute-color/attributes-color.component';
 import { AttributeTextureComponent } from './components/attributes-panel/attribute-texture/attributes-texture.component';
 import { AttributeTracingComponent } from './components/attributes-panel/attribute-tracing/attributes-tracing.component';
 import { AttributeWidthComponent } from './components/attributes-panel/attribute-width/attributes-width.component';
@@ -27,6 +28,10 @@ import { AttributeWidthComponent } from './components/attributes-panel/attribute
     declarations: [
         AppComponent,
         AttributesPanelComponent,
+        AttributeTextureComponent,
+        AttributeTracingComponent,
+        AttributeWidthComponent,
+        AttributeColorComponent,
         EditorPageComponent,
         SidebarComponent,
         DrawingComponent,
@@ -34,9 +39,6 @@ import { AttributeWidthComponent } from './components/attributes-panel/attribute
         TooltipComponent,
         WorkspaceComponent,
         CreateNewDrawingDialogComponent,
-        AttributeTracingComponent,
-        AttributeWidthComponent,
-        AttributeTextureComponent,
     ],
 
     imports: [
