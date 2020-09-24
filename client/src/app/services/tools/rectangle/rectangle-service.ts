@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
+import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
+import { WidthService } from '@app/services/tool-modifier/width/width.service';
 
 export enum MouseButton {
     Left = 0,
@@ -18,39 +21,24 @@ enum Color {
     vert = '#008000',
 }
 
-enum LineWidth {
-    onePixel = 1,
-    twoPixel = 2,
-    threePixel = 3,
-    fourPixel = 4,
-    fivePixel = 5,
-}
-
-enum TypeLayout {
-    Full = 'Full',
-    Contour = 'Contour',
-    FullWithContour = 'FullWithContour',
-}
-
 @Injectable({
     providedIn: 'root',
 })
 export class RectangleService extends Tool {
     private pathData: Vec2[];
     private shiftDown: boolean = false;
-    public primaryColor: string;
-    public secondaryColor: string;
-    public lineWidth: number;
-    public typeLayout: string;
-    public lineDash: number;
+    primaryColor: string;
+    secondaryColor: string;
+    typeLayout: string;
+    lineDash: number;
 
-    constructor(drawingService: DrawingService) {
-        super(drawingService, 'rectangle', '1');
+    constructor(drawingService: DrawingService, private tracingService: TracingService, private widthService: WidthService) {
+        super(drawingService, new Description('rectangle', '1', 'rectangle_icon.png'));
+        this.modifiers.push(this.widthService);
+        this.modifiers.push(this.tracingService);
         this.clearPath();
         this.primaryColor = Color.vert;
         this.secondaryColor = Color.noir;
-        this.lineWidth = LineWidth.fourPixel;
-        this.typeLayout = TypeLayout.FullWithContour;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -81,7 +69,7 @@ export class RectangleService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
 
-            //On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
+            // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawRectangle(this.drawingService.previewCtx, this.pathData);
         }
@@ -99,46 +87,26 @@ export class RectangleService extends Tool {
         this.drawRectangle(this.drawingService.previewCtx, this.pathData);
     }
 
+    setAttribute(ctx: CanvasRenderingContext2D): void {
+        ctx.lineWidth = this.widthService.getWidth();
+        ctx.fillStyle = this.primaryColor;
+        ctx.strokeStyle = this.secondaryColor;
+        if (this.tracingService.getHasFill()) ctx.fill();
+        if (this.tracingService.getHasContour()) ctx.stroke();
+    }
+
     private drawRectangle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
-        let lastMouseMoveCoord = path[path.length - 1];
+        const lastMouseMoveCoord = path[path.length - 1];
         let width = lastMouseMoveCoord.x - this.mouseDownCoord.x;
         let height = lastMouseMoveCoord.y - this.mouseDownCoord.y;
         if (this.shiftDown) {
-            let squareSide = Math.abs(Math.min(height, width));
-            if (height < 0 && width >= 0) {
-                height = -1 * squareSide;
-                width = squareSide;
-            } else if (height >= 0 && width < 0) {
-                width = -1 * squareSide;
-                height = squareSide;
-            } else if (height < 0 && width < 0) {
-                width = -1 * squareSide;
-                height = -1 * squareSide;
-            } else if (height >= 0 && width >= 0) {
-                width = squareSide;
-                height = squareSide;
-            }
+            height = width = Math.min(height, width); // draw square on shift pressed
         }
         ctx.rect(this.mouseDownCoord.x, this.mouseDownCoord.y, width, height);
         console.log(this.mouseDownCoord.x, this.mouseDownCoord.y, width, height);
         this.setAttribute(ctx);
-        ctx.setLineDash([0]); //pour les pointillés autours
-    }
-
-    public setAttribute(ctx: CanvasRenderingContext2D) {
-        if (this.typeLayout == TypeLayout.Full) {
-            ctx.fillStyle = this.primaryColor;
-            ctx.fill();
-        } else if (this.typeLayout == TypeLayout.Contour) {
-            ctx.strokeStyle = this.secondaryColor;
-            ctx.stroke();
-        } else if (this.typeLayout == TypeLayout.FullWithContour) {
-            ctx.fillStyle = this.primaryColor;
-            ctx.strokeStyle = this.secondaryColor;
-            ctx.fill();
-            ctx.stroke();
-        }
+        ctx.setLineDash([0]);
     }
 
     private clearPath(): void {

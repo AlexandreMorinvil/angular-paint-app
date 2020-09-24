@@ -1,22 +1,19 @@
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { Description } from './description';
+import { ToolModifier } from './tool-modifier';
 import { Vec2 } from './vec2';
 
 // Ceci est justifié vu qu'on a des fonctions qui seront gérés par les classes enfant
 // tslint:disable:no-empty
 export abstract class Tool {
-    private _name: string;
-    private _shortcut: string;
+    private description: Description;
+    protected modifiers: ToolModifier[] = [];
 
     mouseDownCoord: Vec2;
     mouseDown: boolean = false;
 
-    constructor(
-        protected drawingService: DrawingService, 
-        name: string,
-        shortcut: string
-        ) {
-        this._name = name;
-        this._shortcut = shortcut;
+    constructor(protected drawingService: DrawingService, description: Description) {
+        this.description = description;
     }
 
     onMouseDown(event: MouseEvent): void {}
@@ -24,26 +21,30 @@ export abstract class Tool {
     onMouseUp(event: MouseEvent): void {}
 
     onMouseMove(event: MouseEvent): void {}
-    
-    onWidthChange(width : number): void {}
 
-    onColorChange(color : string): void {}
+    onColorChange(color: string): void {}
 
     onShiftDown(event: KeyboardEvent): void {}
 
     onShiftUp(event: KeyboardEvent): void {}
 
-    onTextureChange(texture:number):void {}
-
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };
     }
 
+    needsModifierManager(modifier: ToolModifier): boolean {
+        return this.modifiers.includes(modifier);
+    }
+
     get name(): string {
-        return this._name;
+        return this.description.name;
     }
 
     get shortcut(): string {
-        return this._shortcut;
+        return this.description.shortcut;
+    }
+
+    get iconDirectory(): string {
+        return this.description.iconDirectory;
     }
 }
