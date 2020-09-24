@@ -1,4 +1,3 @@
-import { DrawingService } from '@app/services/drawing/drawing.service';
 import { Injectable } from '@angular/core';
 import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
