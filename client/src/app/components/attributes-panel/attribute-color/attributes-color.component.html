@@ -5,13 +5,28 @@
         <button class="confirmation-button confirm" (click)="assign()">Confirmer</button>
     </div>
     <div class="grid-color-selected">
-        <div>
-            <label class="centered" for="primary-color">Primaire</label>
-            <input class="centered" name="primary-color" type="color" [value]="primaryColorDisplayed" [(ngModel)]="primaryColorDisplayed" />
-        </div>
-        <div>
-            <label class="centered" for="secondary-color">Secondaire</label>
-            <input class="centered" name="secondary-color" type="color" [value]="secondaryColorDisplayed" [(ngModel)]="secondaryColorDisplayed" />
-        </div>
+        <h3 class="area-title-primary">Primaire</h3>
+        <h3 class="area-title-secondary">Secondaire</h3>
+
+        <label class="centered area-label-color" for="primary-color secondary-color">Couleur</label>
+        <label class="centered area-label-opacity" for="secondary-opacity secondary-opacity">Opacité</label>
+
+        <input
+            class="centered area-color-primary"
+            name="primary-color"
+            type="color"
+            [value]="primaryColorDisplayed"
+            [(ngModel)]="primaryColorDisplayed"
+        />
+        <input
+            class="centered area-color-secondary"
+            name="secondary-color"
+            type="color"
+            [value]="secondaryColorDisplayed"
+            [(ngModel)]="secondaryColorDisplayed"
+        />
+
+        <input class="centered area-opacity-primary" name="primary-opacity" min="0" max="1" step=".01" type="number" [value]="1" />
+        <input class="centered area-opacity-secondary" name="secondary-opacity" min="0" max="1" step=".01" type="number" [value]="1" />
     </div>
 </div>
