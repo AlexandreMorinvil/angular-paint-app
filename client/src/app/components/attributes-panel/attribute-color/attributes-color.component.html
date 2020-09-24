@@ -32,7 +32,7 @@
             type="number"
             [value]="primaryOpacityDisplayed"
             [(ngModel)]="primaryOpacityDisplayed"
-            onkeydown="return false" 
+            onkeydown="return false"
         />
         <input
             class="centered area-opacity-secondary"
@@ -43,8 +43,17 @@
             type="number"
             [value]="secondaryOpacityDisplayed"
             [(ngModel)]="secondaryOpacityDisplayed"
-            onkeydown="return false" 
+            onkeydown="return false"
         />
+    </div>
+    <div class="grid-previous-colors">
+        <button
+            *ngFor="let color of getListOfPreviousColors()"
+            (click)="selectPrimaryColor(color)"
+            (contextmenu)="selectSecondaryColor(color)"
+            [style]="'background-color:' + color"
+            oncontextmenu="return false"
+        ></button>
     </div>
     <div class="confirmation-zone">
         <div class="grid-confirmation" *ngIf="needConfirmation()">

@@ -12,11 +12,26 @@ export class ColorService extends ToolModifier {
     private secondaryColor: string = '#ffffff';
     private secondaryColorOpacity: number = 1;
     private previousColors: string[] = [];
-    private maxPreviousColorIndex: number = 9;
+    private previousColorCount: number = 10;
 
     constructor() {
         super();
-        for (let i = 0; i < this.maxPreviousColorIndex; i++) this.previousColors.push(COLOR_WHITE);
+        for (let i = 0; i < this.previousColorCount; i++) this.previousColors.push(COLOR_WHITE);
+        this.previousColors.pop();
+        this.previousColors.pop();
+        this.previousColors.push(this.secondaryColor);
+        this.previousColors.push(this.primaryColor);
+    }
+
+    intertwinColors(): void {
+        const temporaryColor: string = this.primaryColor;
+        const temporaryOpacity: number = this.primaryColorOpacity;
+
+        this.primaryColor = this.secondaryColor;
+        this.primaryColorOpacity = this.secondaryColorOpacity;
+
+        this.secondaryColor = temporaryColor;
+        this.secondaryColorOpacity = temporaryOpacity;
     }
 
     getPrimaryColor(): string {
@@ -57,14 +72,12 @@ export class ColorService extends ToolModifier {
         if (this.validateOpacity(opacity)) this.secondaryColorOpacity = opacity;
     }
 
-    getNthPreviousColor(index: number): string {
-        if (index >= this.maxPreviousColorIndex) return this.previousColors[this.maxPreviousColorIndex];
-        else if (index <= 0) this.previousColors[0];
-        return this.previousColors[index] || COLOR_WHITE;
+    getPreviousColors(): string[] {
+        return this.previousColors;
     }
 
     private updatePreviousColors(newColor: string) {
-        for (let i = 0; i < this.maxPreviousColorIndex; i++) if (i > 0) this.previousColors[i] = this.previousColors[i - 1];
+        for (let i = this.previousColors.length - 1; i > 0; i--) if (i > 0) this.previousColors[i] = this.previousColors[i - 1];
         this.previousColors[0] = newColor;
     }
 

@@ -59,19 +59,28 @@ export class AttributeColorComponent {
         this.secondaryOpacity = validValue;
     }
 
+    getListOfPreviousColors() {
+        return this.colorService.getPreviousColors();
+    }
+
     intertwinColors() {
-        const temporaryColor:string = this.colorService.getPrimaryColor();
-        const temporaryOpacity:number = this.colorService.getPrimaryColorOpacity();
-        
-        this.colorService.setPrimaryColor(this.colorService.getSecondaryColor());
-        this.colorService.setPrimaryColorOpacity(this.colorService.getSecondaryColorOpacity());
+        this.colorService.intertwinColors();
+
         this.primaryColor = this.colorService.getPrimaryColor();
         this.primaryOpacity = this.colorService.getPrimaryColorOpacity();
 
-        this.colorService.setSecondaryColor(temporaryColor);
-        this.colorService.setSecondaryColorOpacity(temporaryOpacity);
         this.secondaryColor = this.colorService.getSecondaryColor();
         this.secondaryOpacity = this.colorService.getSecondaryColorOpacity();
+    }
+
+    selectPrimaryColor(color:string) {
+        this.colorService.setPrimaryColor(color);
+        this.primaryColor = this.colorService.getPrimaryColor();
+    }
+
+    selectSecondaryColor(color:string) {
+        this.colorService.setSecondaryColor(color);
+        this.secondaryColor = this.colorService.getSecondaryColor();
     }
 
     assign(): void {
