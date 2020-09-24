@@ -51,5 +51,17 @@ h3 {
     display: block;
     font-size: calc(var(--sidebar-width) * 0.3);
     text-align: center;
-    margin: 0;
+    margin: auto;
+}
+
+.confirmation-zone {
+    height: 40px;
+    overflow: hidden;
+}
+
+.button-inversion {
+    font-size: calc(var(--sidebar-width) * 0.35);
+    background-color: rgb(33, 33, 59);
+    padding: 0 initial;
+    height: auto;
 }

@@ -25,7 +25,7 @@ export class ColorService extends ToolModifier {
 
     setPrimaryColor(color: string): void {
         if (this.validateColor(color)) {
-            if (color !== this.primaryColor) this.updatePreviousColors(color);
+            if (color !== this.primaryColor && color !== this.secondaryColor) this.updatePreviousColors(color);
             this.primaryColor = color;
         }
     }
@@ -44,7 +44,7 @@ export class ColorService extends ToolModifier {
 
     setSecondaryColor(color: string): void {
         if (this.validateColor(color)) {
-            if (color !== this.secondaryColor) this.updatePreviousColors(color);
+            if (color !== this.primaryColor && color !== this.secondaryColor) this.updatePreviousColors(color);
             this.secondaryColor = color;
         }
     }

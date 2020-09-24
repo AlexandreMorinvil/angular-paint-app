@@ -40,7 +40,8 @@ input[type='checkbox'] {
     margin: 0;
 }
 
-.confirmation-button {
+.confirmation-button,
+.action-button {
     color: white;
     padding: 5px 0;
     border: solid black 2px;
@@ -58,7 +59,8 @@ input[type='checkbox'] {
     border-color: rgb(37, 37, 100);
 }
 
-.confirmation-button:hover {
+.confirmation-button:hover,
+.action-button:hover {
     filter: brightness(90%);
 }
 
