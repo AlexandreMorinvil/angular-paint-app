@@ -1,9 +1,9 @@
 <div class="container">
     <h2>Traçage</h2>
     <div class="grid-input-value">
-        <label class="offset" for="fill">Remplissage</label>
+        <label for="fill">Remplissage</label>
         <input class="centered" name="fill" type=checkbox [value]="fill" [(ngModel)]="fill">
-        <label class="offset" for="contour">Contour</label>
+        <label for="contour">Contour</label>
         <input class="centered" name="contour" type=checkbox [value]="contour" [(ngModel)]="contour">
     </div>
     <div class="grid-confirmation" *ngIf="needConfirmation()">
