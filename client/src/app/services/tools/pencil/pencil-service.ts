@@ -18,7 +18,7 @@ export enum MouseButton {
 })
 export class PencilService extends Tool {
     private pathData: Vec2[];
-    private color: string = '#000000';
+    color: string = '#000000';
 
     constructor(drawingService: DrawingService, private widthService: WidthService) {
         super(drawingService, new Description('crayon', 'c', 'pencil_icon.png'));
@@ -48,15 +48,28 @@ export class PencilService extends Tool {
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
-            this.pathData.push(mousePosition);
-
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawLine(this.drawingService.previewCtx, this.pathData);
+ 
+            if (this.isInCanvas(mousePosition)) {
+                this.pathData.push(mousePosition);
+                // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                this.drawLine(this.drawingService.previewCtx, this.pathData);
+            }
+            else {
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                this.clearPath();
+            }
+ 
         }
     }
 
     onColorChange(color: string): void {
         this.color = color;
+    }
+
+    private isInCanvas(mousePosition: Vec2): boolean {
+        return (mousePosition.x <= this.drawingService.previewCtx.canvas.width &&
+            mousePosition.y <= this.drawingService.previewCtx.canvas.height);
     }
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {

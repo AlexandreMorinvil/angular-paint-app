@@ -8,6 +8,7 @@ import { PencilService } from './pencil-service';
 describe('PencilService', () => {
     let service: PencilService;
     let mouseEvent: MouseEvent;
+    let mouseEvent2: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
     let baseCtxStub: CanvasRenderingContext2D;
@@ -33,6 +34,12 @@ describe('PencilService', () => {
         mouseEvent = {
             offsetX: 25,
             offsetY: 25,
+            button: 0,
+        } as MouseEvent;
+        
+        mouseEvent2 = {
+            offsetX: 1200,
+            offsetY: 500,
             button: 0,
         } as MouseEvent;
     });
@@ -110,5 +117,23 @@ describe('PencilService', () => {
         expect(imageData.data[2]).toEqual(0); // B
         // tslint:disable-next-line:no-magic-numbers
         expect(imageData.data[3]).not.toEqual(0); // A
+    });
+
+    it(' onMouseMove should not call drawLine if mouse is not on canvas', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+
+        service.onMouseMove(mouseEvent2);
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect(drawLineSpy).not.toHaveBeenCalled();
+    });
+
+    it(' onColorChange should change the color of the pencil', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+        let color : string = "#eb4034"
+
+        service.onColorChange(color);
+        expect(service.color).toEqual("#eb4034");
     });
 });
