@@ -42,7 +42,8 @@ export class BrushService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-            this.drawLine(this.drawingService.baseCtx, this.pathData);
+            let lineFinished: boolean = true;
+            this.drawLine(this.drawingService.baseCtx, this.pathData, lineFinished);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
         this.mouseDown = false;
@@ -53,17 +54,18 @@ export class BrushService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
+            let lineFinished: boolean = false;
 
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawLine(this.drawingService.previewCtx, this.pathData);
+            this.drawLine(this.drawingService.previewCtx, this.pathData, lineFinished);
         }
     }
 
-    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[], lineFinished: boolean): void {
         switch (this.textureService.getTexture()) {
             case TextureEnum.shadowTexture: {
-                this.ShadowTexture(ctx, path);
+                this.ShadowTexture(ctx, path, lineFinished);
                 break;
             }
             case TextureEnum.gradientTexture: {
@@ -92,7 +94,7 @@ export class BrushService extends Tool {
         this.pathData = [];
     }
 
-    private ShadowTexture(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    private ShadowTexture(ctx: CanvasRenderingContext2D, path: Vec2[], lineFinished: boolean): void {
         // parameters of the line and the shadow
         ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
         ctx.strokeStyle = this.colorService.getPrimaryColor();
@@ -101,11 +103,17 @@ export class BrushService extends Tool {
         ctx.lineWidth = this.widthService.getWidth();
         ctx.shadowBlur = 5;
         // First pixel
-        ctx.fillRect(path[0].x, path[0].y, this.widthService.getWidth(), this.widthService.getWidth());
+        ctx.fillRect(
+            path[0].x - this.widthService.getWidth()/2,
+            path[0].y - this.widthService.getWidth()/2,
+            this.widthService.getWidth(),
+            this.widthService.getWidth()
+        );
         // Drawing of the line
         ctx.beginPath();
+
         for (const point of path) {
-            ctx.lineTo(point.x, point.y);
+           ctx.lineTo(point.x, point.y);
         }
         ctx.stroke();
         ctx.shadowBlur = 0;
@@ -121,7 +129,11 @@ export class BrushService extends Tool {
         // first pixel
         for (let i = 0; i < 4; i++) {
             ctx.globalAlpha = 1 - 0.25 * i;
-            ctx.fillRect(path[0].x, path[0].y + this.widthService.getWidth() * i, 1, this.widthService.getWidth() / 2);
+            ctx.fillRect(
+                path[0].x,
+                path[0].y + this.widthService.getWidth() * i,
+                1,
+                this.widthService.getWidth()/2);
         }
 
         // drawing of the line
@@ -139,10 +151,20 @@ export class BrushService extends Tool {
         ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
         ctx.fillStyle = this.colorService.getPrimaryColor();
         // first pixel
-        ctx.fillRect(path[0].x, path[0].y, this.widthService.getWidth() + 5, this.widthService.getWidth() + 5);
+        ctx.fillRect(
+          path[0].x - this.widthService.getWidth()/2,
+          path[0].y - this.widthService.getWidth()/2,
+          this.widthService.getWidth() + 5,
+          this.widthService.getWidth() + 5
+        );
         // Drawing of the squares
         for (const point of path) {
-            ctx.fillRect(point.x, point.y, this.widthService.getWidth() + 5, this.widthService.getWidth() + 5);
+            ctx.fillRect(
+              point.x - this.widthService.getWidth()/2,
+              point.y - this.widthService.getWidth()/2,
+              this.widthService.getWidth() + 5,
+              this.widthService.getWidth() + 5
+            );
         }
     }
 
@@ -153,9 +175,18 @@ export class BrushService extends Tool {
         ctx.fillStyle = this.colorService.getPrimaryColor();
         ctx.shadowColor = this.colorService.getPrimaryColor();
         ctx.lineWidth = this.widthService.getWidth();
-        ctx.setLineDash([4, 16]);
+
+        let dashThickness: number = 4;
+        ctx.setLineDash([dashThickness, 16]);
         // first pixel
-        ctx.fillRect(path[0].x, path[0].y, this.widthService.getWidth(), 1);
+        ctx.fillRect(
+          path[0].x,
+          path[0].y - ctx.lineWidth/2,
+          dashThickness,
+          ctx.lineWidth,
+        );
+
+
         // Drawing of the squares
         ctx.beginPath();
         for (const point of path) {
@@ -170,9 +201,7 @@ export class BrushService extends Tool {
         ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
         ctx.strokeStyle = this.colorService.getPrimaryColor();
         ctx.lineWidth = this.widthService.getWidth();
-        // first pixel
-        ctx.lineTo(path[0].x - this.widthService.getWidth(), path[0].y - this.widthService.getWidth());
-        ctx.lineTo(path[0].x + this.widthService.getWidth(), path[0].y + this.widthService.getWidth());
+
         // Drawing of the line
         ctx.beginPath();
         for (const point of path) {
