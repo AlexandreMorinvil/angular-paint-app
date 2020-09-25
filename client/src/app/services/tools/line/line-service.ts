@@ -24,6 +24,9 @@ export class LineService extends Tool {
     private countClick: number;
     private click: number;
     private timer: number;
+    private undo: ImageData[];
+    private undoLimit: number = 24;
+    private savedData: ImageData;
 
     constructor(drawingService: DrawingService) {
         super(drawingService, 'ligne', 'l');
@@ -32,6 +35,7 @@ export class LineService extends Tool {
         this.countClick = 0;
         this.click = 0;
         this.timer = 0;
+        this.undo = [];
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -52,14 +56,10 @@ export class LineService extends Tool {
     }
 
     onBackspaceDown(): void {
-        //this.mouseClick = false;
-        this.clearAllCanvas();
-        console.log('BackSpace');
-        this.pathDataSaved.pop();
-        this.pathDataSaved.pop();
-        this.drawNewLine(this.drawingService.baseCtx, this.pathDataSaved);
-        this.countClick = 0;
-        this.click = 0;
+        if (this.undo.length > 0) {
+        }
+        this.drawingService.baseCtx.putImageData(this.undo[this.undo.length - 2], 0, 0);
+        this.undo.pop();
         this.clearPath();
     }
 
@@ -80,6 +80,12 @@ export class LineService extends Tool {
                 this.pathData.push(this.mouseDownCoord);
                 this.drawLine(this.drawingService.baseCtx, this.pathData);
                 this.initialiseStartAndEndPoint();
+                this.savedData = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
+                if (this.undo.length >= this.undoLimit) {
+                    this.undo.shift();
+                }
+                this.undo.push(this.savedData);
+
                 this.clearPath();
             }
             if (this.click === 1) {
@@ -128,18 +134,6 @@ export class LineService extends Tool {
         ctx.lineWidth = this.width; //width ajustment
         ctx.stroke();
     }
-    private drawNewLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        ctx.beginPath();
-        for (let i = 0; i < this.pathDataSaved.length; i = i + 2) {
-            let firstPath = this.pathDataSaved[i];
-            let secondPath = this.pathDataSaved[i + 1];
-            ctx.moveTo(firstPath.x, firstPath.y);
-            ctx.lineTo(secondPath.x, secondPath.y);
-
-            ctx.lineWidth = this.width; //width ajustment
-            ctx.stroke();
-        }
-    }
     private isAround20Pixels(): boolean {
         let diffXPosition = this.endPosition.x - this.pathDataSaved[0].x;
         let diffYPosition = this.endPosition.y - this.pathDataSaved[0].y;
@@ -185,11 +179,5 @@ export class LineService extends Tool {
     }
     private clearPathSaved(): void {
         this.pathDataSaved = [];
-    }
-
-    private clearAllCanvas(): void {
-        this.drawingService.clearCanvas(this.drawingService.baseCtx);
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.clearPath();
     }
 }
