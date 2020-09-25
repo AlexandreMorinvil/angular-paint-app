@@ -68,6 +68,8 @@ export class DrawingComponent implements AfterViewInit {
     keyEventUp(event: KeyboardEvent) {
         if (event.key === 'Shift') {
             this.toolbox.getCurrentTool().onShiftUp(event);
+        } else if (event.keyCode == 32) {
+            this.toolbox.getCurrentTool().onBackspaceDown(event);
         } else {
             for (let i in this.toolbox.getAvailableTools()) {
                 if (this.toolbox.getAvailableTools()[i].shortcut === event.key.toLowerCase()) {

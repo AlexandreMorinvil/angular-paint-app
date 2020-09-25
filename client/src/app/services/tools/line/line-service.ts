@@ -17,29 +17,21 @@ export enum MouseButton {
 export class LineService extends Tool {
     private pathData: Vec2[];
     private width: number = 1;
+    private startXPosition: number;
+    private startYPosition: number;
+    private endXPosition: number;
+    private endYPosition: number;
+    private countClick: number;
+    private click: number;
+    private timer: number;
 
     constructor(drawingService: DrawingService) {
         super(drawingService, 'ligne', 'l');
         this.clearPath();
+        this.countClick = 0;
+        this.click = 0;
+        this.timer = 0;
     }
-
-    onMouseDown(event: MouseEvent): void {
-        /* this.mouseDown = event.button === MouseButton.Left;
-        if (this.mouseDown) {
-            this.clearPath();
-            this.mouseDownCoord = this.getPositionFromMouse(event);
-            this.pathData.push(this.mouseDownCoord);
-        } */
-    }
-
-    /* onMouseUp(event: MouseEvent): void {
-        if (this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
-            this.pathData.push(mousePosition);
-        }
-        this.mouseDown = false;
-        this.clearPath();
-    } */
 
     onMouseMove(event: MouseEvent): void {
         if (this.mouseClick) {
@@ -50,13 +42,18 @@ export class LineService extends Tool {
                 this.pathData[0] = this.mouseDownCoord;
                 this.pathData.push(mousePosition);
                 this.drawLine(this.drawingService.previewCtx, this.pathData);
-
                 // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             } else {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.clearPath();
             }
         }
+    }
+
+    onBackspaceDown(): void {
+        this.mouseClick = false;
+        this.clearAllCanvas();
+        console.log('BackSpace');
     }
 
     onEscapeDown(): void {
@@ -68,20 +65,40 @@ export class LineService extends Tool {
 
     onMouseClick(event: MouseEvent): void {
         this.mouseClick = event.button === MouseButton.Left;
+
         if (this.mouseClick) {
-            this.mouseDownCoord = this.getPositionFromMouse(event);
-            this.pathData.push(this.mouseDownCoord);
-            this.drawLine(this.drawingService.baseCtx, this.pathData);
-            this.clearPath();
+            this.countClick++;
+            this.click++;
+            console.log(this.click);
+            if (this.click === 1) {
+                this.timer = setTimeout(() => {
+                    this.click = 0;
+                    this.onMouseClickEvent(event);
+                }, 300);
+            } else if (this.click === 2) {
+                clearTimeout(this.timer);
+                this.click = 0;
+                this.onMouseDoubleClickEvent(event);
+            }
         }
-        this.mouseClick = true;
-        console.log('Mouse is clicked!!!');
     }
 
-    onMouseDblClick(): void {
-        this.mouseClick = false;
+    private onMouseDoubleClickEvent(event: MouseEvent): void {
+        this.onMouseClickEvent(event);
+        console.log('doubleClick');
+        if (this.isAround20Pixels()) {
+            this.mouseClick = false;
+            this.clearPath();
+        }
+    }
+
+    private onMouseClickEvent(event: MouseEvent): void {
+        console.log('click');
+        this.mouseDownCoord = this.getPositionFromMouse(event);
+        this.pathData.push(this.mouseDownCoord);
+        this.initialiseStartAndEndPoint();
+        this.drawLine(this.drawingService.baseCtx, this.pathData);
         this.clearPath();
-        console.log('Mouse is double clicked!!!');
     }
 
     private isInCanvas(mousePosition: Vec2): boolean {
@@ -99,16 +116,57 @@ export class LineService extends Tool {
         ctx.stroke();
     }
 
-    /*  private drawLinePreview(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-      ctx.beginPath();
-      for (const point of path) {
-          ctx.lineTo(point.x, point.y);
-      }
-      ctx.lineWidth = this.width; //width ajustment
-      ctx.stroke();
-     } */
+    private isAround20Pixels(): boolean {
+        let diffXPosition = this.endXPosition - this.startXPosition;
+        let diffYPosition = this.endYPosition - this.startYPosition;
+        let xSideTriangleSquared = Math.pow(diffXPosition, 2);
+        let ySideTriangleSquared = Math.pow(diffYPosition, 2);
+        let hypothenus = Math.sqrt(xSideTriangleSquared + ySideTriangleSquared);
+        console.log(hypothenus + ' hypothenus');
+        if (hypothenus <= 20) {
+            // on est en bas de 20 pixels
+            return true;
+        }
+        return false;
+    }
+
+    private initialiseStartAndEndPoint(): void {
+        if (this.countClick == 1) {
+            //first click
+            this.startXPosition = this.mouseDownCoord.x;
+            this.startYPosition = this.mouseDownCoord.y;
+            //console.log(this.startXPosition);
+            //console.log(this.startYPosition);
+            //console.log('startPosition');
+        } else if (this.countClick == 2) {
+            //second click
+            this.endXPosition = this.mouseDownCoord.x;
+            this.endYPosition = this.mouseDownCoord.y;
+            //console.log(this.endXPosition);
+            //console.log(this.endYPosition);
+            //console.log('endPosition');
+        } else {
+            //others click
+            this.startXPosition = this.endXPosition;
+            this.startYPosition = this.endYPosition;
+            //console.log(this.startXPosition);
+            //console.log(this.startYPosition);
+            //console.log('startPosition');
+            this.endXPosition = this.mouseDownCoord.x;
+            this.endYPosition = this.mouseDownCoord.y;
+            //console.log(this.endXPosition);
+            //console.log(this.endYPosition);
+            //console.log('endPosition');
+        }
+    }
 
     private clearPath(): void {
         this.pathData = [];
+    }
+
+    private clearAllCanvas(): void {
+        this.drawingService.clearCanvas(this.drawingService.baseCtx);
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.clearPath();
     }
 }
