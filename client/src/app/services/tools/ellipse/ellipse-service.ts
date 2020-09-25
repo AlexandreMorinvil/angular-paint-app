@@ -104,8 +104,9 @@ export class EllipseService extends Tool {
         let mouseMoveCoord = path[path.length - 1];
         let width = mouseMoveCoord.x - this.mouseDownCoord.x + this.lineWidth;
         let height = mouseMoveCoord.y - this.mouseDownCoord.y + this.lineWidth;
-
-        ctx.rect(this.mouseDownCoord.x - this.lineWidth / 2, this.mouseDownCoord.y - this.lineWidth / 2, width, height);
+        let startX = this.mouseDownCoord.x - this.lineWidth / 2;
+        let startY = this.mouseDownCoord.y - this.lineWidth / 2;
+        ctx.rect(startX, startY, width, height);
         ctx.setLineDash([6]); //abitrary number!!!
         ctx.lineWidth = 1;
         ctx.stroke();
