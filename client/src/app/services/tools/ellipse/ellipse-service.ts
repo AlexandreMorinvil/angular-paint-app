@@ -102,10 +102,10 @@ export class EllipseService extends Tool {
     public drawPreviewRect(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         let mouseMoveCoord = path[path.length - 1];
-        let width = mouseMoveCoord.x - this.mouseDownCoord.x;
-        let height = mouseMoveCoord.y - this.mouseDownCoord.y;
+        let width = mouseMoveCoord.x - this.mouseDownCoord.x + this.lineWidth;
+        let height = mouseMoveCoord.y - this.mouseDownCoord.y + this.lineWidth;
 
-        ctx.rect(this.mouseDownCoord.x, this.mouseDownCoord.y, width, height);
+        ctx.rect(this.mouseDownCoord.x - this.lineWidth / 2, this.mouseDownCoord.y - this.lineWidth / 2, width, height);
         ctx.setLineDash([6]); //abitrary number!!!
         ctx.lineWidth = 1;
         ctx.stroke();
