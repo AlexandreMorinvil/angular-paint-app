@@ -16,11 +16,11 @@ export enum MouseButton {
 })
 export class LineService extends Tool {
     private pathData: Vec2[];
+    private pathDataSaved: Vec2[];
+
     private width: number = 1;
-    private startXPosition: number;
-    private startYPosition: number;
-    private endXPosition: number;
-    private endYPosition: number;
+    private startPosition: Vec2;
+    private endPosition: Vec2;
     private countClick: number;
     private click: number;
     private timer: number;
@@ -28,6 +28,7 @@ export class LineService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService, 'ligne', 'l');
         this.clearPath();
+        this.clearPathSaved();
         this.countClick = 0;
         this.click = 0;
         this.timer = 0;
@@ -51,9 +52,15 @@ export class LineService extends Tool {
     }
 
     onBackspaceDown(): void {
-        this.mouseClick = false;
+        //this.mouseClick = false;
         this.clearAllCanvas();
         console.log('BackSpace');
+        this.pathDataSaved.pop();
+        this.pathDataSaved.pop();
+        this.drawNewLine(this.drawingService.baseCtx, this.pathDataSaved);
+        this.countClick = 0;
+        this.click = 0;
+        this.clearPath();
     }
 
     onEscapeDown(): void {
@@ -65,16 +72,21 @@ export class LineService extends Tool {
 
     onMouseClick(event: MouseEvent): void {
         this.mouseClick = event.button === MouseButton.Left;
-
         if (this.mouseClick) {
             this.countClick++;
             this.click++;
-            console.log(this.click);
+            if (this.click == 1) {
+                this.mouseDownCoord = this.getPositionFromMouse(event);
+                this.pathData.push(this.mouseDownCoord);
+                this.drawLine(this.drawingService.baseCtx, this.pathData);
+                this.initialiseStartAndEndPoint();
+                this.clearPath();
+            }
             if (this.click === 1) {
                 this.timer = setTimeout(() => {
                     this.click = 0;
-                    this.onMouseClickEvent(event);
-                }, 300);
+                    console.log('click');
+                }, 200);
             } else if (this.click === 2) {
                 clearTimeout(this.timer);
                 this.click = 0;
@@ -84,21 +96,22 @@ export class LineService extends Tool {
     }
 
     private onMouseDoubleClickEvent(event: MouseEvent): void {
-        this.onMouseClickEvent(event);
+        this.mouseClick = false;
         console.log('doubleClick');
-        if (this.isAround20Pixels()) {
-            this.mouseClick = false;
-            this.clearPath();
-        }
-    }
-
-    private onMouseClickEvent(event: MouseEvent): void {
-        console.log('click');
-        this.mouseDownCoord = this.getPositionFromMouse(event);
-        this.pathData.push(this.mouseDownCoord);
-        this.initialiseStartAndEndPoint();
-        this.drawLine(this.drawingService.baseCtx, this.pathData);
         this.clearPath();
+        if (this.isAround20Pixels()) {
+            this.drawingService.baseCtx.beginPath();
+            let firstPath = this.pathDataSaved[0];
+            let lastPath = this.pathDataSaved[this.pathDataSaved.length - 1];
+            this.drawingService.baseCtx.moveTo(firstPath.x, firstPath.y);
+            this.drawingService.baseCtx.lineTo(lastPath.x, lastPath.y);
+
+            this.drawingService.baseCtx.lineWidth = this.width; //width ajustment
+            this.drawingService.baseCtx.stroke();
+        }
+        this.clearPathSaved();
+        this.countClick = 0;
+        this.click = 0;
     }
 
     private isInCanvas(mousePosition: Vec2): boolean {
@@ -115,15 +128,26 @@ export class LineService extends Tool {
         ctx.lineWidth = this.width; //width ajustment
         ctx.stroke();
     }
+    private drawNewLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+        ctx.beginPath();
+        for (let i = 0; i < this.pathDataSaved.length; i = i + 2) {
+            let firstPath = this.pathDataSaved[i];
+            let secondPath = this.pathDataSaved[i + 1];
+            ctx.moveTo(firstPath.x, firstPath.y);
+            ctx.lineTo(secondPath.x, secondPath.y);
 
+            ctx.lineWidth = this.width; //width ajustment
+            ctx.stroke();
+        }
+    }
     private isAround20Pixels(): boolean {
-        let diffXPosition = this.endXPosition - this.startXPosition;
-        let diffYPosition = this.endYPosition - this.startYPosition;
+        let diffXPosition = this.endPosition.x - this.pathDataSaved[0].x;
+        let diffYPosition = this.endPosition.y - this.pathDataSaved[0].y;
         let xSideTriangleSquared = Math.pow(diffXPosition, 2);
         let ySideTriangleSquared = Math.pow(diffYPosition, 2);
         let hypothenus = Math.sqrt(xSideTriangleSquared + ySideTriangleSquared);
         console.log(hypothenus + ' hypothenus');
-        if (hypothenus <= 20) {
+        if (hypothenus <= 200) {
             // on est en bas de 20 pixels
             return true;
         }
@@ -133,35 +157,34 @@ export class LineService extends Tool {
     private initialiseStartAndEndPoint(): void {
         if (this.countClick == 1) {
             //first click
-            this.startXPosition = this.mouseDownCoord.x;
-            this.startYPosition = this.mouseDownCoord.y;
-            //console.log(this.startXPosition);
-            //console.log(this.startYPosition);
-            //console.log('startPosition');
+            this.startPosition = this.mouseDownCoord;
+            console.log(this.startPosition.x);
+            console.log(this.startPosition.y);
+            this.pathDataSaved.push(this.startPosition);
         } else if (this.countClick == 2) {
             //second click
-            this.endXPosition = this.mouseDownCoord.x;
-            this.endYPosition = this.mouseDownCoord.y;
-            //console.log(this.endXPosition);
-            //console.log(this.endYPosition);
-            //console.log('endPosition');
+            this.endPosition = this.mouseDownCoord;
+            console.log(this.endPosition.x);
+            console.log(this.endPosition.y);
+            this.pathDataSaved.push(this.endPosition);
         } else {
             //others click
-            this.startXPosition = this.endXPosition;
-            this.startYPosition = this.endYPosition;
-            //console.log(this.startXPosition);
-            //console.log(this.startYPosition);
-            //console.log('startPosition');
-            this.endXPosition = this.mouseDownCoord.x;
-            this.endYPosition = this.mouseDownCoord.y;
-            //console.log(this.endXPosition);
-            //console.log(this.endYPosition);
-            //console.log('endPosition');
+            this.startPosition = this.endPosition;
+            console.log(this.startPosition.x);
+            console.log(this.startPosition.y);
+            this.endPosition = this.mouseDownCoord;
+            console.log(this.endPosition.x);
+            console.log(this.endPosition.y);
+            this.pathDataSaved.push(this.startPosition);
+            this.pathDataSaved.push(this.endPosition);
         }
     }
 
     private clearPath(): void {
         this.pathData = [];
+    }
+    private clearPathSaved(): void {
+        this.pathDataSaved = [];
     }
 
     private clearAllCanvas(): void {
