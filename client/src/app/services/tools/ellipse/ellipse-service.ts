@@ -31,8 +31,8 @@ export class EllipseService extends Tool {
         this.clearPath();
         this.typeTrace = TypeTrace.FullContour;
         this.primaryColor = '#ff0000'; //red
-        this.secondaryColor = '#000000'; //black
-        this.lineWidth = 6;
+        this.secondaryColor = '#00000'; //vert
+        this.lineWidth = 20;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -102,11 +102,13 @@ export class EllipseService extends Tool {
     public drawPreviewRect(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         let mouseMoveCoord = path[path.length - 1];
-        let width = mouseMoveCoord.x - this.mouseDownCoord.x + this.lineWidth;
-        let height = mouseMoveCoord.y - this.mouseDownCoord.y + this.lineWidth;
-        let startX = this.mouseDownCoord.x - this.lineWidth / 2;
-        let startY = this.mouseDownCoord.y - this.lineWidth / 2;
+
+        let width = mouseMoveCoord.x - this.mouseDownCoord.x;
+        let height = mouseMoveCoord.y - this.mouseDownCoord.y;
+        let startX = this.mouseDownCoord.x;
+        let startY = this.mouseDownCoord.y;
         ctx.rect(startX, startY, width, height);
+
         ctx.setLineDash([6]); //abitrary number!!!
         ctx.lineWidth = 1;
         ctx.stroke();
@@ -160,6 +162,7 @@ export class EllipseService extends Tool {
         }
         if (this.typeTrace == TypeTrace.Full) {
             ctx.fillStyle = this.primaryColor;
+
             ctx.fill();
         }
         if (this.typeTrace == TypeTrace.FullContour) {

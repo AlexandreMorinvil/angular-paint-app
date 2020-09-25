@@ -17,45 +17,41 @@ export enum MouseButton {
 export class LineService extends Tool {
     private pathData: Vec2[];
     private width: number = 1;
-    private mouseUp: boolean;
-    private shiftDown: boolean;
 
     constructor(drawingService: DrawingService) {
-        super(drawingService, 'ligne', 'L');
+        super(drawingService, 'ligne', 'l');
         this.clearPath();
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.mouseDown = event.button === MouseButton.Left;
+        /* this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
-            this.mouseUp = false;
+            this.clearPath();
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
-            console.log(this.mouseDownCoord);
-            this.drawLine(this.drawingService.baseCtx, this.pathData);
-            this.clearPath();
-        }
+        } */
     }
 
-    onMouseUp(event: MouseEvent): void {
+    /* onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
         }
-
-        this.mouseUp = true;
         this.mouseDown = false;
-    }
+        this.clearPath();
+    } */
 
     onMouseMove(event: MouseEvent): void {
-        if (this.mouseUp && !this.mouseDown) {
+        if (this.mouseClick) {
             const mousePosition = this.getPositionFromMouse(event);
 
             if (this.isInCanvas(mousePosition)) {
-                this.pathData.push(mousePosition);
-                // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                this.pathData[0] = this.mouseDownCoord;
+                this.pathData.push(mousePosition);
                 this.drawLine(this.drawingService.previewCtx, this.pathData);
+
+                // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             } else {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.clearPath();
@@ -63,26 +59,29 @@ export class LineService extends Tool {
         }
     }
 
-    onBackSpaceDown(): void {}
-
     onEscapeDown(): void {
-        this.mouseUp = false;
+        this.mouseClick = false;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.clearPath();
-        //console.log('Escape was pressed!!!');
+        console.log('Escape was pressed!!!');
+    }
+
+    onMouseClick(event: MouseEvent): void {
+        this.mouseClick = event.button === MouseButton.Left;
+        if (this.mouseClick) {
+            this.mouseDownCoord = this.getPositionFromMouse(event);
+            this.pathData.push(this.mouseDownCoord);
+            this.drawLine(this.drawingService.baseCtx, this.pathData);
+            this.clearPath();
+        }
+        this.mouseClick = true;
+        console.log('Mouse is clicked!!!');
     }
 
     onMouseDblClick(): void {
-        this.mouseUp = false;
+        this.mouseClick = false;
         this.clearPath();
-        //console.log('Mouse is double clicked!!!');
-    }
-
-    onShiftDown(): void {
-        this.shiftDown = true;
-    }
-    onShiftUp(): void {
-        this.shiftDown = false;
+        console.log('Mouse is double clicked!!!');
     }
 
     private isInCanvas(mousePosition: Vec2): boolean {
@@ -99,6 +98,15 @@ export class LineService extends Tool {
         ctx.lineWidth = this.width; //width ajustment
         ctx.stroke();
     }
+
+    /*  private drawLinePreview(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+      ctx.beginPath();
+      for (const point of path) {
+          ctx.lineTo(point.x, point.y);
+      }
+      ctx.lineWidth = this.width; //width ajustment
+      ctx.stroke();
+     } */
 
     private clearPath(): void {
         this.pathData = [];
