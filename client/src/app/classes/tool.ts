@@ -22,8 +22,6 @@ export abstract class Tool {
 
     onMouseMove(event: MouseEvent): void {}
 
-    onColorChange(color: string): void {}
-
     onShiftDown(event: KeyboardEvent): void {}
 
     onShiftUp(event: KeyboardEvent): void {}

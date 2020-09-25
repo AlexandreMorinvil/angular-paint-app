@@ -39,13 +39,4 @@ export class AttributesPanelComponent {
     needsTracingAttribute(): boolean {
         return this.currentTool.needsModifierManager(this.tracingService);
     }
-
-    set color(item: string) {
-        this.colorUse = item;
-        this.toolboxService.getCurrentTool().onColorChange(this.colorUse);
-    }
-
-    get color(): string {
-        return this.colorUse;
-    }
 }

@@ -21,13 +21,13 @@ h2 {
 }
 
 select,
-input[type="range"] {
+input[type='range'] {
     font-size: 1em;
     width: 90%;
     margin: auto;
 }
 
-input[type="checkbox"] {
+input[type='checkbox'] {
     width: 20px;
     height: 20px;
     margin: auto;
@@ -40,7 +40,8 @@ input[type="checkbox"] {
     margin: 0;
 }
 
-.confirmation-button {
+.confirmation-button,
+.action-button {
     color: white;
     padding: 5px 0;
     border: solid black 2px;
@@ -58,7 +59,8 @@ input[type="checkbox"] {
     border-color: rgb(37, 37, 100);
 }
 
-.confirmation-button:hover {
+.confirmation-button:hover,
+.action-button:hover {
     filter: brightness(90%);
 }
 
