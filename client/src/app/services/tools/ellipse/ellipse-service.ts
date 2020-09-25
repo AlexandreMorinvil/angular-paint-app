@@ -88,12 +88,19 @@ export class EllipseService extends Tool {
 
         let centerX = (mouseMoveCoord.x + this.mouseDownCoord.x) / 2;
         let centerY = (mouseMoveCoord.y + this.mouseDownCoord.y) / 2;
-
-        let radiusX = Math.abs(mouseMoveCoord.x - this.mouseDownCoord.x) / 2;
-        let radiusY = Math.abs(mouseMoveCoord.y - this.mouseDownCoord.y) / 2;
-
-        ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI * 2, false);
         ctx.lineWidth = this.lineWidth;
+
+        if (this.typeTrace == (TypeTrace.FullContour || TypeTrace.Contour)) {
+            let radiusX = Math.abs(Math.abs(mouseMoveCoord.x - this.mouseDownCoord.x) / 2 - this.lineWidth / 2);
+            let radiusY = Math.abs(Math.abs(mouseMoveCoord.y - this.mouseDownCoord.y) / 2 - this.lineWidth / 2);
+
+            ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI * 2, false);
+        } else if (this.typeTrace == TypeTrace.Full) {
+            let radiusX = Math.abs(mouseMoveCoord.x - this.mouseDownCoord.x) / 2;
+            let radiusY = Math.abs(mouseMoveCoord.y - this.mouseDownCoord.y) / 2;
+
+            ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI * 2, false);
+        }
 
         this.drawingService.previewCtx.setLineDash([0]); //set line dash to default when drawing Ellipse
         this.applyTrace(ctx);
@@ -114,16 +121,16 @@ export class EllipseService extends Tool {
         ctx.stroke();
     }
 
-    onShiftDown(event: KeyboardEvent): void {
+    onShiftDown(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
         this.drawCircle(this.drawingService.previewCtx, this.pathData);
     }
 
-    onShiftUp(event: KeyboardEvent): void {
+    onShiftUp(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.drawEllipse(this.drawingService.previewCtx, this.pathData);
         this.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
+        this.drawEllipse(this.drawingService.previewCtx, this.pathData);
     }
 
     public drawCircle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
@@ -159,17 +166,15 @@ export class EllipseService extends Tool {
         if (this.typeTrace == TypeTrace.Contour) {
             ctx.strokeStyle = this.secondaryColor;
             ctx.stroke();
-        }
-        if (this.typeTrace == TypeTrace.Full) {
+        } else if (this.typeTrace == TypeTrace.Full) {
             ctx.fillStyle = this.primaryColor;
-
             ctx.fill();
-        }
-        if (this.typeTrace == TypeTrace.FullContour) {
+        } else if (this.typeTrace == TypeTrace.FullContour) {
+            ctx.globalAlpha = 0.5;
             ctx.fillStyle = this.primaryColor;
             ctx.strokeStyle = this.secondaryColor;
-            ctx.fill();
             ctx.stroke();
+            ctx.fill();
         }
     }
 

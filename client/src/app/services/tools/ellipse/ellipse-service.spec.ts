@@ -152,6 +152,35 @@ describe('EllipseService', () => {
         expect(drawCircleSpy).toHaveBeenCalled();
     });
 
+    it(' should call drawEllipse with trace of type Contour', () => {
+        service.typeTrace = TypeTrace.Contour;
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+
+        service.onMouseMove(mouseEvent);
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect(drawEllipseSpy).toHaveBeenCalled();
+    });
+
+    it(' should call drawEllipse with trace of type Full', () => {
+        service.typeTrace = TypeTrace.Full;
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+
+        service.onMouseMove(mouseEvent);
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect(drawEllipseSpy).toHaveBeenCalled();
+    });
+    it(' should call drawEllipse with trace of type FullContour', () => {
+        service.typeTrace = TypeTrace.FullContour;
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+
+        service.onMouseMove(mouseEvent);
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect(drawEllipseSpy).toHaveBeenCalled();
+    });
+
     it(' should call applyTrace', () => {
         mouseEvent = { offsetX: 50, offsetY: 9, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseDown(mouseEvent);
@@ -189,8 +218,32 @@ describe('EllipseService', () => {
         expect(baseCtxStub.fillStyle).toBe('#ff0000');
     });
 
+    it(' onShiftDown should call drawCircle and drawPreviewRect', () => {
+        mouseEvent = { offsetX: 50, offsetY: 9, button: 0, shiftKey: true } as MouseEvent;
+        service.onMouseDown(mouseEvent);
+        mouseEvent = { offsetX: 20, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
+        service.onMouseMove(mouseEvent);
+
+        service.onShiftDown();
+
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect(drawCircleSpy).toHaveBeenCalled();
+    });
+
+    it(' onShiftUp should call drawEllipse and drawPreviewRect', () => {
+        mouseEvent = { offsetX: 50, offsetY: 9, button: 0, shiftKey: false } as MouseEvent;
+        service.onMouseDown(mouseEvent);
+        mouseEvent = { offsetX: 20, offsetY: 10, button: 0, shiftKey: false } as MouseEvent;
+        service.onMouseMove(mouseEvent);
+
+        service.onShiftUp();
+
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect(drawEllipseSpy).toHaveBeenCalled();
+    });
+
     // Exemple de test d'intégration qui est quand même utile
-    it(' should change the pixel of the canvas ', () => {
+    /* it(' should change the pixel of the canvas ', () => {
         mouseEvent = { offsetX: 0, offsetY: 0, button: 0 } as MouseEvent;
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 1, offsetY: 0, button: 0 } as MouseEvent;
@@ -203,5 +256,5 @@ describe('EllipseService', () => {
         expect(imageData.data[2]).toEqual(0); // B
         // tslint:disable-next-line:no-magic-numbers
         expect(imageData.data[3]).not.toEqual(0); // A
-    });
+    }); */
 });
