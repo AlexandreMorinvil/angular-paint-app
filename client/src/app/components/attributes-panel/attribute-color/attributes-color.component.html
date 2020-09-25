@@ -1,0 +1,67 @@
+<div class="container">
+    <h2>Couleur</h2>
+    <div class="grid-color-selected">
+        <button class="action-button button-inversion" (click)="intertwinColors()">&#8646;</button>
+        <h3 class="area-title-primary">Primaire</h3>
+        <h3 class="area-title-secondary">Secondaire</h3>
+
+        <label class="centered area-label-color" for="primary-color secondary-color">Couleur</label>
+        <label class="centered area-label-opacity" for="secondary-opacity secondary-opacity">Opacité</label>
+
+        <input
+            class="centered area-color-primary"
+            name="primary-color"
+            type="color"
+            [value]="primaryColorDisplayed"
+            [(ngModel)]="primaryColorDisplayed"
+        />
+        <input
+            class="centered area-color-secondary"
+            name="secondary-color"
+            type="color"
+            [value]="secondaryColorDisplayed"
+            [(ngModel)]="secondaryColorDisplayed"
+        />
+
+        <input
+            class="centered area-opacity-primary"
+            name="primary-opacity"
+            min="0"
+            max="1"
+            step=".01"
+            type="number"
+            [value]="primaryOpacityDisplayed"
+            [(ngModel)]="primaryOpacityDisplayed"
+            onkeydown="return false"
+        />
+        <input
+            class="centered area-opacity-secondary"
+            name="secondary-opacity"
+            min="0"
+            max="1"
+            step=".01"
+            type="number"
+            [value]="secondaryOpacityDisplayed"
+            [(ngModel)]="secondaryOpacityDisplayed"
+            onkeydown="return false"
+        />
+    </div>
+    <div class="grid-previous-colors">
+        <button
+            *ngFor="let color of getListOfPreviousColors()"
+            (click)="selectPrimaryColor(color)"
+            (contextmenu)="selectSecondaryColor(color)"
+            [style]="'background-color:' + color"
+            oncontextmenu="return false"
+        ></button>
+    </div>
+    <div class="confirmation-zone">
+        <div class="grid-confirmation" *ngIf="needConfirmation()">
+            <button class="confirmation-button cancel" (click)="revert()">Annuler</button>
+            <button class="confirmation-button confirm" (click)="assign()">Confirmer</button>
+        </div>
+        <div class="centered" *ngIf="!needConfirmation()">
+            <p>Sélectionner les couleurs</p>
+        </div>
+    </div>
+</div>

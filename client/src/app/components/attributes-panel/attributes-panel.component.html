@@ -1,6 +1,6 @@
 <div class="container container-flex">
     <div class="title">
-        <img [src]="currentTool.iconDirectory" [alt]="currentTool.name">
+        <img [src]="currentTool.iconDirectory" [alt]="currentTool.name" />
         <h1>{{ capitalizeFirstLetter(currentTool.name) }}</h1>
     </div>
 
@@ -8,9 +8,5 @@
     <app-attributes-texture class="section" *ngIf="needsTextureAttribute()"></app-attributes-texture>
     <app-attributes-tracing class="section" *ngIf="needsTracingAttribute()"></app-attributes-tracing>
 
-    <div class="section">
-        <label for="name">Couleur</label>
-        <input type="color" value="#000000" [(ngModel)]="color">
-    </div>
-
+    <app-attributes-color class="section"></app-attributes-color>
 </div>

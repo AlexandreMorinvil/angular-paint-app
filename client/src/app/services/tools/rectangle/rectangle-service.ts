@@ -3,6 +3,7 @@ import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
 
@@ -14,31 +15,21 @@ export enum MouseButton {
     Forward = 4,
 }
 
-enum Color {
-    rouge = '#ff0000',
-    noir = '#000000',
-    bleu = '#0000ff',
-    vert = '#008000',
-}
-
 @Injectable({
     providedIn: 'root',
 })
 export class RectangleService extends Tool {
     private pathData: Vec2[];
     private shiftDown: boolean = false;
-    primaryColor: string;
-    secondaryColor: string;
     typeLayout: string;
     lineDash: number;
 
-    constructor(drawingService: DrawingService, private tracingService: TracingService, private widthService: WidthService) {
+    constructor(drawingService: DrawingService, private colorService: ColorService, private tracingService: TracingService, private widthService: WidthService) {
         super(drawingService, new Description('rectangle', '1', 'rectangle_icon.png'));
+        this.modifiers.push(this.colorService);
         this.modifiers.push(this.widthService);
         this.modifiers.push(this.tracingService);
         this.clearPath();
-        this.primaryColor = Color.vert;
-        this.secondaryColor = Color.noir;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -89,9 +80,11 @@ export class RectangleService extends Tool {
 
     setAttribute(ctx: CanvasRenderingContext2D): void {
         ctx.lineWidth = this.widthService.getWidth();
-        ctx.fillStyle = this.primaryColor;
-        ctx.strokeStyle = this.secondaryColor;
+        ctx.fillStyle = this.colorService.getPrimaryColor();
+        ctx.strokeStyle = this.colorService.getSecondaryColor();
+        ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
         if (this.tracingService.getHasFill()) ctx.fill();
+        ctx.globalAlpha = this.colorService.getSecondaryColorOpacity();
         if (this.tracingService.getHasContour()) ctx.stroke();
     }
 

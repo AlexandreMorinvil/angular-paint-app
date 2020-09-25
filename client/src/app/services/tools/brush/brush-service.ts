@@ -1,9 +1,9 @@
-import { DrawingService } from '@app/services/drawing/drawing.service';
 import { Injectable } from '@angular/core';
 import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TextureEnum, TextureService } from '@app/services/tool-modifier/texture/texture.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
 
@@ -20,14 +20,13 @@ export enum MouseButton {
 })
 export class BrushService extends Tool {
     private pathData: Vec2[];
-    private color: string = '#000000';
 
-    constructor(drawingService: DrawingService, private textureService: TextureService, private widthService: WidthService) {
+    constructor(drawingService: DrawingService, private colorService: ColorService, private textureService: TextureService, private widthService: WidthService) {
         super(drawingService, new Description('pinceau', 'w', 'brush_icon.png'));
+        this.modifiers.push(this.colorService);
         this.modifiers.push(this.widthService);
         this.modifiers.push(this.textureService);
         this.clearPath();
-        this.color = '#000000';
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -58,10 +57,6 @@ export class BrushService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawLine(this.drawingService.previewCtx, this.pathData);
         }
-    }
-
-    onColorChange(color: string): void {
-        this.color = color;
     }
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
@@ -98,9 +93,10 @@ export class BrushService extends Tool {
 
     private ShadowTexture(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         // parameters of the line and the shadow
-        ctx.strokeStyle = this.color;
-        ctx.shadowColor = this.color;
-        ctx.fillStyle = this.color;
+        ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
+        ctx.strokeStyle = this.colorService.getPrimaryColor();
+        ctx.shadowColor = this.colorService.getPrimaryColor();
+        ctx.fillStyle = this.colorService.getPrimaryColor();
         ctx.lineWidth = this.widthService.getWidth();
         ctx.shadowBlur = 5;
         // First pixel
@@ -116,8 +112,9 @@ export class BrushService extends Tool {
 
     private GradientTexture(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         // parameters of the line
-        ctx.strokeStyle = this.color;
-        ctx.fillStyle = this.color;
+        ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
+        ctx.strokeStyle = this.colorService.getPrimaryColor();
+        ctx.fillStyle = this.colorService.getPrimaryColor();
         ctx.lineWidth = this.widthService.getWidth();
 
         // first pixel
@@ -138,7 +135,8 @@ export class BrushService extends Tool {
 
     private SquareTexture(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         // parameters of the line
-        ctx.fillStyle = this.color;
+        ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
+        ctx.fillStyle = this.colorService.getPrimaryColor();
         // first pixel
         ctx.fillRect(path[0].x, path[0].y, this.widthService.getWidth() + 5, this.widthService.getWidth() + 5);
         // Drawing of the squares
@@ -149,9 +147,10 @@ export class BrushService extends Tool {
 
     private DashTexture(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         // parameters of the line
-        ctx.strokeStyle = this.color;
-        ctx.fillStyle = this.color;
-        ctx.shadowColor = this.color;
+        ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
+        ctx.strokeStyle = this.colorService.getPrimaryColor();
+        ctx.fillStyle = this.colorService.getPrimaryColor();
+        ctx.shadowColor = this.colorService.getPrimaryColor();
         ctx.lineWidth = this.widthService.getWidth();
         ctx.setLineDash([4, 16]);
         // first pixel
@@ -167,7 +166,8 @@ export class BrushService extends Tool {
 
     private ZigzagTexture(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         // parameters of the line
-        ctx.strokeStyle = this.color;
+        ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
+        ctx.strokeStyle = this.colorService.getPrimaryColor();
         ctx.lineWidth = this.widthService.getWidth();
         // first pixel
         ctx.lineTo(path[0].x - this.widthService.getWidth(), path[0].y - this.widthService.getWidth());

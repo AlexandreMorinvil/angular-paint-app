@@ -3,6 +3,7 @@ import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
 
@@ -22,13 +23,12 @@ export class EllipseService extends Tool {
     primaryColor: string;
     secondaryColor: string;
 
-    constructor(drawingService: DrawingService, private tracingService: TracingService, private widthService: WidthService) {
+    constructor(drawingService: DrawingService, private colorService: ColorService, private tracingService: TracingService, private widthService: WidthService) {
         super(drawingService, new Description('ellipse', '2', 'ellipse_icon.png'));
+        this.modifiers.push(this.colorService);
         this.modifiers.push(this.widthService);
         this.modifiers.push(this.tracingService);
         this.clearPath();
-        this.primaryColor = '#ff0000'; // red
-        this.secondaryColor = '#000000'; // black
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -147,9 +147,12 @@ export class EllipseService extends Tool {
     }
 
     applyTrace(ctx: CanvasRenderingContext2D): void {
-        ctx.fillStyle = this.primaryColor;
-        ctx.strokeStyle = this.secondaryColor;
+        ctx.lineWidth = this.widthService.getWidth();
+        ctx.fillStyle = this.colorService.getPrimaryColor();
+        ctx.strokeStyle = this.colorService.getSecondaryColor();
+        ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
         if (this.tracingService.getHasFill()) ctx.fill();
+        ctx.globalAlpha = this.colorService.getSecondaryColorOpacity();
         if (this.tracingService.getHasContour()) ctx.stroke();
     }
 
