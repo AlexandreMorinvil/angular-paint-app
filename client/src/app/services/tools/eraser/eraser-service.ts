@@ -52,18 +52,44 @@ export class EraserService extends Tool {
 
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawLine(this.drawingService.previewCtx, this.pathData);
+            this.drawLine(this.drawingService.baseCtx, this.pathData);
         }
+        this.EraserVisual(event);
     }
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+        ctx.lineWidth = this.widthService.getWidth(); // width ajustment
+        ctx.strokeStyle = this.eraserColor;
+        ctx.fillStyle = this.eraserColor;
+        const startingPointAdjustment = 2;
+        ctx.fillRect(
+          path[0].x - this.widthService.getWidth() / startingPointAdjustment,
+          path[0].y - this.widthService.getWidth() / startingPointAdjustment,
+          this.widthService.getWidth(),
+          this.widthService.getWidth(),
+    );
         ctx.beginPath();
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
         }
-        ctx.lineWidth = this.widthService.getWidth(); // width ajustment
-        ctx.strokeStyle = this.eraserColor
         ctx.stroke();
+    }
+
+    private EraserVisual(event: MouseEvent): void{
+      this.drawingService.previewCtx.strokeStyle = '#000000';
+      this.drawingService.previewCtx.fillStyle ='#FFFFFF';
+      this.drawingService.previewCtx.lineWidth = 1;
+      this.drawingService.clearCanvas(this.drawingService.previewCtx);
+      this.drawingService.previewCtx.strokeRect(event.offsetX - this.widthService.getWidth() / 2,
+        event.offsetY - this.widthService.getWidth() / 2,
+        this.widthService.getWidth() + 1,
+        this.widthService.getWidth() + 1,
+      );
+      this.drawingService.previewCtx.fillRect(event.offsetX - this.widthService.getWidth() / 2,
+        event.offsetY - this.widthService.getWidth() / 2,
+        this.widthService.getWidth() + 1,
+        this.widthService.getWidth() + 1,
+      );
     }
 
     private clearPath(): void {
