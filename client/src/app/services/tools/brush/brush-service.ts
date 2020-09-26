@@ -42,8 +42,7 @@ export class BrushService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-            let lineFinished: boolean = true;
-            this.drawLine(this.drawingService.baseCtx, this.pathData, lineFinished);
+            this.drawLine(this.drawingService.baseCtx, this.pathData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
         this.mouseDown = false;
@@ -54,34 +53,33 @@ export class BrushService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-            let lineFinished: boolean = false;
 
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawLine(this.drawingService.previewCtx, this.pathData, lineFinished);
+            this.drawLine(this.drawingService.previewCtx, this.pathData);
         }
     }
 
-    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[], lineFinished: boolean): void {
+    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         switch (this.textureService.getTexture()) {
             case TextureEnum.shadowTexture: {
-                this.ShadowTexture(ctx, path, lineFinished);
+                this.shadowTexture(ctx, path );
                 break;
             }
             case TextureEnum.gradientTexture: {
-                this.GradientTexture(ctx, path);
+                this.gradientTexture(ctx, path);
                 break;
             }
             case TextureEnum.squareTexture: {
-                this.SquareTexture(ctx, path);
+                this.squareTexture(ctx, path);
                 break;
             }
             case TextureEnum.dashTexture: {
-                this.DashTexture(ctx, path);
+                this.dashTexture(ctx, path);
                 break;
             }
             case TextureEnum.zigzagTexture: {
-                this.ZigzagTexture(ctx, path);
+                this.zigzagTexture(ctx, path);
                 break;
             }
             default: {
@@ -94,7 +92,7 @@ export class BrushService extends Tool {
         this.pathData = [];
     }
 
-    private ShadowTexture(ctx: CanvasRenderingContext2D, path: Vec2[], lineFinished: boolean): void {
+    private shadowTexture(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         // parameters of the line and the shadow
         ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
         ctx.strokeStyle = this.colorService.getPrimaryColor();
@@ -119,7 +117,7 @@ export class BrushService extends Tool {
         ctx.shadowBlur = 0;
     }
 
-    private GradientTexture(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    private gradientTexture(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         // parameters of the line
         ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
         ctx.strokeStyle = this.colorService.getPrimaryColor();
@@ -146,7 +144,7 @@ export class BrushService extends Tool {
         ctx.globalAlpha = 1;
     }
 
-    private SquareTexture(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    private squareTexture(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         // parameters of the line
         ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
         ctx.fillStyle = this.colorService.getPrimaryColor();
@@ -168,7 +166,7 @@ export class BrushService extends Tool {
         }
     }
 
-    private DashTexture(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    private dashTexture(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         // parameters of the line
         ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
         ctx.strokeStyle = this.colorService.getPrimaryColor();
@@ -196,7 +194,7 @@ export class BrushService extends Tool {
         ctx.setLineDash([]);
     }
 
-    private ZigzagTexture(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    private zigzagTexture(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         // parameters of the line
         ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
         ctx.strokeStyle = this.colorService.getPrimaryColor();
