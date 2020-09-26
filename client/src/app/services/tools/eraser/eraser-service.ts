@@ -18,6 +18,7 @@ export enum MouseButton {
 })
 export class EraserService extends Tool {
     private pathData: Vec2[];
+    private eraserColor: string = "#FFFFFF"
 
     constructor(drawingService: DrawingService, private widthService: WidthService) {
         super(drawingService, new Description('efface', 'e', 'erase_icon.png'));
@@ -57,15 +58,11 @@ export class EraserService extends Tool {
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
-        ctx.fillRect(path[0].x, path[0].y, this.widthService.getWidth(), this.widthService.getWidth());
-
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
         }
         ctx.lineWidth = this.widthService.getWidth(); // width ajustment
-        if (ctx.lineWidth < 5)
-            ctx.lineWidth = 5;
-        ctx.strokeStyle = "#FFFFFF"
+        ctx.strokeStyle = this.eraserColor
         ctx.stroke();
     }
 
