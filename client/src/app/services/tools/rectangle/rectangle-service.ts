@@ -20,11 +20,8 @@ export enum MouseButton {
 })
 export class RectangleService extends Tool {
     private pathData: Vec2[];
-    private shiftDown: boolean = false;
     typeLayout: string;
     lineDash: number;
-    primaryColor: string;
-    secondaryColor: string;
 
     constructor(
         drawingService: DrawingService,
@@ -55,7 +52,7 @@ export class RectangleService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.drawRectangle(this.drawingService.baseCtx, this.pathData);
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            //this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawingService.previewCtx.setLineDash([0]);
         }
         this.mouseDown = false;
@@ -73,15 +70,15 @@ export class RectangleService extends Tool {
         }
     }
 
-    onShiftDown(event: KeyboardEvent): void {
+    onShiftDown(): void {
         this.shiftDown = true;
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        //this.drawingService.clearCanvas(this.drawingService.previewCtx); pas besoin
         this.drawRectangle(this.drawingService.previewCtx, this.pathData);
     }
 
-    onShiftUp(event: KeyboardEvent): void {
+    onShiftUp(): void {
         this.shiftDown = false;
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        //this.drawingService.clearCanvas(this.drawingService.previewCtx); as besoin
         this.drawRectangle(this.drawingService.previewCtx, this.pathData);
     }
 
@@ -91,7 +88,20 @@ export class RectangleService extends Tool {
         let width = lastMouseMoveCoord.x - this.mouseDownCoord.x;
         let height = lastMouseMoveCoord.y - this.mouseDownCoord.y;
         if (this.shiftDown) {
-            height = width = Math.min(height, width); // draw square on shift pressed
+            let squareSide = Math.abs(Math.min(height, width));
+            if (height < 0 && width >= 0) {
+                height = -1 * squareSide;
+                width = squareSide;
+            } else if (height >= 0 && width < 0) {
+                width = -1 * squareSide;
+                height = squareSide;
+            } else if (height < 0 && width < 0) {
+                width = -1 * squareSide;
+                height = -1 * squareSide;
+            } else if (height >= 0 && width >= 0) {
+                width = squareSide;
+                height = squareSide;
+            }
         }
         ctx.rect(this.mouseDownCoord.x, this.mouseDownCoord.y, width, height);
         console.log(this.mouseDownCoord.x, this.mouseDownCoord.y, width, height);
