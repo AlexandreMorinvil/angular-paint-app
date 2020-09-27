@@ -151,7 +151,6 @@ describe('RectangleService', () => {
     });
 
     /*
-
     it(' should call onShiftPress if key shift is pressed', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = false;
