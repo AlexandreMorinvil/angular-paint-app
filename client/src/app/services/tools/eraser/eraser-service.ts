@@ -22,6 +22,7 @@ export class EraserService extends Tool {
 
     constructor(drawingService: DrawingService, private widthService: WidthService) {
         super(drawingService, new Description('efface', 'e', 'erase_icon.png'));
+        this.minWidth = 5;
         this.modifiers.push(this.widthService);
         this.clearPath();
     }
