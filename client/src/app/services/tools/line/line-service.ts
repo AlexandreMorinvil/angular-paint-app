@@ -28,16 +28,17 @@ export enum AlignmentAngle {
 export class LineService extends Tool {
     private pathData: Vec2[];
     private pathDataSaved: Vec2[];
+    private savedImage: ImageData;
+    private undo: ImageData[];
+    private timer: number;
 
-    private width: number = 1;
     private startPosition: Vec2;
     private endPosition: Vec2;
+    private width: number = 1;
     private countClick: number;
     private click: number;
-    private timer: number;
-    private undo: ImageData[];
-    private undoLimit: number = 24;
-    private savedData: ImageData;
+    private currentCountLine: number;
+    private isCloseShape: boolean;
     alignmentCoord: Vec2;
 
     constructor(drawingService: DrawingService) {
@@ -48,6 +49,7 @@ export class LineService extends Tool {
         this.click = 0;
         this.timer = 0;
         this.undo = [];
+        this.currentCountLine = 0;
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -83,11 +85,13 @@ export class LineService extends Tool {
     }
 
     onBackspaceDown(): void {
-        if (this.undo.length > 0) {
+        if (this.undo.length > 1) {
+            this.clearPath();
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawingService.baseCtx.putImageData(this.undo[this.undo.length - 2], 0, 0);
+            this.undo.pop();
+            console.log('Backspace was pressed');
         }
-        this.drawingService.baseCtx.putImageData(this.undo[this.undo.length - 2], 0, 0);
-        this.undo.pop();
-        this.clearPath();
     }
 
     onEscapeDown(): void {
@@ -105,15 +109,11 @@ export class LineService extends Tool {
             if (this.click == 1 && !event.shiftKey) {
                 this.mouseDownCoord = this.getPositionFromMouse(event);
                 this.pathData.push(this.mouseDownCoord);
-
                 this.drawLine(this.drawingService.baseCtx, this.pathData);
                 this.initialiseStartAndEndPoint();
-                this.savedData = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
-                if (this.undo.length >= this.undoLimit) {
-                    this.undo.shift();
-                }
-                this.undo.push(this.savedData);
-
+                this.savedImage = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
+                this.undo.push(this.savedImage);
+                console.log('save');
                 this.clearPath();
             }
 
@@ -138,27 +138,20 @@ export class LineService extends Tool {
                 clearTimeout(this.timer);
                 this.click = 0;
                 this.onMouseDoubleClickEvent(event);
+                this.mouseClick = false;
             }
         }
     }
 
     private onMouseDoubleClickEvent(event: MouseEvent): void {
-        this.mouseClick = false;
         console.log('doubleClick');
         this.clearPath();
         if (this.isAround20Pixels()) {
-            this.drawingService.baseCtx.beginPath();
-            let firstPath = this.pathDataSaved[0];
-            let lastPath = this.pathDataSaved[this.pathDataSaved.length - 1];
-            this.drawingService.baseCtx.moveTo(firstPath.x, firstPath.y);
-            this.drawingService.baseCtx.lineTo(lastPath.x, lastPath.y);
-
-            this.drawingService.baseCtx.lineWidth = this.width; //width ajustment
-            this.drawingService.baseCtx.stroke();
+            this.closeShape();
+            console.log('ShapeClose');
         }
-        this.clearPathSaved();
+        this.currentCountLine = 0;
         this.countClick = 0;
-        this.click = 0;
     }
 
     private isInCanvas(mousePosition: Vec2): boolean {
@@ -176,38 +169,47 @@ export class LineService extends Tool {
         ctx.stroke();
     }
     private isAround20Pixels(): boolean {
-        let diffXPosition = this.endPosition.x - this.pathDataSaved[0].x;
-        let diffYPosition = this.endPosition.y - this.pathDataSaved[0].y;
+        let firstCurrentPoint = this.pathDataSaved[this.pathDataSaved.length - this.currentCountLine * 2];
+        let diffXPosition = this.pathDataSaved[this.pathDataSaved.length - 1].x - firstCurrentPoint.x;
+        let diffYPosition = this.pathDataSaved[this.pathDataSaved.length - 1].y - firstCurrentPoint.y;
         let xSideTriangleSquared = Math.pow(diffXPosition, 2);
         let ySideTriangleSquared = Math.pow(diffYPosition, 2);
         let hypothenus = Math.sqrt(xSideTriangleSquared + ySideTriangleSquared);
-        console.log(hypothenus + ' hypothenus');
         if (hypothenus <= 200) {
-            // on est en bas de 20 pixels
+            // on est en bas de 200 pixels
             return true;
         }
         return false;
+    }
+
+    private closeShape(): void {
+        this.isCloseShape = true;
+        this.drawingService.baseCtx.beginPath();
+        let firstPath = this.pathDataSaved[this.pathDataSaved.length - this.currentCountLine * 2];
+        let lastPath = this.pathDataSaved[this.pathDataSaved.length - 1];
+        this.drawingService.baseCtx.moveTo(firstPath.x, firstPath.y);
+        this.drawingService.baseCtx.lineTo(lastPath.x, lastPath.y);
+        this.drawingService.baseCtx.lineWidth = this.width; //width ajustment
+        this.drawingService.baseCtx.stroke();
     }
 
     private initialiseStartAndEndPoint(): void {
         if (this.countClick == 1) {
             //first click
             this.startPosition = this.mouseDownCoord;
-
             this.pathDataSaved.push(this.startPosition);
         } else if (this.countClick == 2) {
             //second click
             this.endPosition = this.mouseDownCoord;
-
             this.pathDataSaved.push(this.endPosition);
+            this.currentCountLine++;
         } else {
             //others click
             this.startPosition = this.endPosition;
-
             this.endPosition = this.mouseDownCoord;
-
             this.pathDataSaved.push(this.startPosition);
             this.pathDataSaved.push(this.endPosition);
+            this.currentCountLine++;
         }
     }
     drawAlignLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
