@@ -128,7 +128,7 @@ describe('RectangleService', () => {
 
     it(' should call setAttribute when type of Layout Full with the color green', () => {
         service.typeLayout = 'Full';
-        service.primaryColor = 'green';
+        //service.primaryColor = 'green';
         service.setAttribute(baseCtxStub);
         expect(setAttributeSpy).toHaveBeenCalled();
         expect(baseCtxStub.fillStyle).toBe('#008000');
@@ -136,7 +136,7 @@ describe('RectangleService', () => {
 
     it(' should call setAttribute when type of Layout Contour with the color blue', () => {
         service.typeLayout = 'Contour';
-        service.secondaryColor = 'blue';
+        //service.secondaryColor = 'blue';
         service.setAttribute(baseCtxStub);
         expect(setAttributeSpy).toHaveBeenCalled();
         expect(baseCtxStub.strokeStyle).toBe('#0000ff');
@@ -144,8 +144,10 @@ describe('RectangleService', () => {
 
     it(' should call setAttribute when type of Layout FullWithContour with the color blue for contour and red for fill ', () => {
         service.typeLayout = 'FullWithContour';
+        /*
         service.primaryColor = 'red';
         service.secondaryColor = 'blue';
+        */
         service.setAttribute(baseCtxStub);
         expect(setAttributeSpy).toHaveBeenCalled();
         expect(baseCtxStub.strokeStyle).toBe('#0000ff');
