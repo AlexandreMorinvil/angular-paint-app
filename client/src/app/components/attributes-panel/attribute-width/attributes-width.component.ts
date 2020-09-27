@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
+import { ToolboxService } from '@app/services/toolbox/toolbox.service'
 
 @Component({
     selector: 'app-attributes-width',
@@ -9,16 +10,16 @@ import { WidthService } from '@app/services/tool-modifier/width/width.service';
 export class AttributeWidthComponent {
     private width: number;
 
-    constructor(private widthService: WidthService) {
-        this.width = this.widthService.getWidth();
+    constructor(private widthService: WidthService, private toolboxService: ToolboxService) {
+        this.width = this.boundWidth(this.widthService.getWidth());
     }
 
     set widthDisplayed(value: number) {
-        this.width = value;
+        this.width = this.boundWidth(value);
     }
 
     get widthDisplayed(): number {
-        return this.width;
+        return this.boundWidth(this.width);
     }
 
     getMaxValue(): number {
@@ -26,7 +27,7 @@ export class AttributeWidthComponent {
     }
 
     getMinValue(): number {
-        return this.widthService.MIN_ATTRIBUTE_WIDTH;
+        return this.toolboxService.getCurrentTool().getMinWidth;
     }
 
     assign(): void {
@@ -39,5 +40,11 @@ export class AttributeWidthComponent {
 
     needConfirmation(): boolean {
         return this.width !== this.widthService.getWidth();
+    }
+
+    private boundWidth(value: number): number{
+        if (value <= this.toolboxService.getCurrentTool().getMinWidth) return this.toolboxService.getCurrentTool().getMinWidth;
+        else if (value >= this.getMaxValue()) return this.getMaxValue();
+        else return value;
     }
 }
