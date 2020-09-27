@@ -13,6 +13,7 @@ describe('RectangleService', () => {
     let previewCtxStub: CanvasRenderingContext2D;
     let drawRectangleSpy: jasmine.Spy<any>;
     let setAttributeSpy: jasmine.Spy<any>;
+    let onShiftDownSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -24,6 +25,8 @@ describe('RectangleService', () => {
         service = TestBed.inject(RectangleService);
         drawRectangleSpy = spyOn<any>(service, 'drawRectangle').and.callThrough();
         setAttributeSpy = spyOn<any>(service, 'setAttribute').and.callThrough();
+        onShiftDownSpy = spyOn<any>(service, 'onShiftDown').and.callThrough();
+
         // Configuration du spy du service
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
@@ -87,6 +90,26 @@ describe('RectangleService', () => {
         expect(drawRectangleSpy).toHaveBeenCalled();
     });
 
+    it(' onMouseMove should  call drawRectangle if mouse was already down and shift is pressed down', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = false;
+        mouseEvent = { shiftKey: true } as MouseEvent;
+
+        service.onMouseMove(mouseEvent);
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect(drawRectangleSpy).toHaveBeenCalled();
+    });
+
+    it(' onMouseMove should  call drawRectangle if mouse down and shift is pressed down', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+        mouseEvent = { shiftKey: true } as MouseEvent;
+
+        service.onMouseMove(mouseEvent);
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect(drawRectangleSpy).toHaveBeenCalled();
+    });
+
     it(' onMouseMove should not call drawRectangle if mouse was not already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = false;
@@ -128,7 +151,7 @@ describe('RectangleService', () => {
 
     it(' should call setAttribute when type of Layout Full with the color green', () => {
         service.typeLayout = 'Full';
-        //service.primaryColor = 'green';
+        service.primaryColor = 'green';
         service.setAttribute(baseCtxStub);
         expect(setAttributeSpy).toHaveBeenCalled();
         expect(baseCtxStub.fillStyle).toBe('#008000');
@@ -136,7 +159,7 @@ describe('RectangleService', () => {
 
     it(' should call setAttribute when type of Layout Contour with the color blue', () => {
         service.typeLayout = 'Contour';
-        //service.secondaryColor = 'blue';
+        service.secondaryColor = 'blue';
         service.setAttribute(baseCtxStub);
         expect(setAttributeSpy).toHaveBeenCalled();
         expect(baseCtxStub.strokeStyle).toBe('#0000ff');
@@ -144,10 +167,8 @@ describe('RectangleService', () => {
 
     it(' should call setAttribute when type of Layout FullWithContour with the color blue for contour and red for fill ', () => {
         service.typeLayout = 'FullWithContour';
-        /*
-        service.primaryColor = 'red';
-        service.secondaryColor = 'blue';
-        */
+        service.secondaryColor = 'red';
+        service.primaryColor = 'blue';
         service.setAttribute(baseCtxStub);
         expect(setAttributeSpy).toHaveBeenCalled();
         expect(baseCtxStub.strokeStyle).toBe('#0000ff');

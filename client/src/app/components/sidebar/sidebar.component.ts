@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { Tool } from '@app/classes/tool';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
 
@@ -8,7 +9,7 @@ import { ToolboxService } from '@app/services/toolbox/toolbox.service';
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-    constructor(private toolboxSevice: ToolboxService) {}
+    constructor(private toolboxSevice: ToolboxService, private router: Router) {}
 
     getListOfTools(): Tool[] {
         return this.toolboxSevice.getAvailableTools();
@@ -24,5 +25,9 @@ export class SidebarComponent {
 
     formatTooltipMessage(tool: Tool): string {
         return 'Outil : ' + tool.name + '\n( Raccourci: ' + tool.shortcut + ' )';
+    }
+
+    navigateToMain(): void {
+        this.router.navigate(['home']);
     }
 }

@@ -23,8 +23,15 @@ export class RectangleService extends Tool {
     private shiftDown: boolean = false;
     typeLayout: string;
     lineDash: number;
+    primaryColor: string;
+    secondaryColor: string;
 
-    constructor(drawingService: DrawingService, private colorService: ColorService, private tracingService: TracingService, private widthService: WidthService) {
+    constructor(
+        drawingService: DrawingService,
+        private colorService: ColorService,
+        private tracingService: TracingService,
+        private widthService: WidthService,
+    ) {
         super(drawingService, new Description('rectangle', '1', 'rectangle_icon.png'));
         this.modifiers.push(this.colorService);
         this.modifiers.push(this.widthService);
@@ -78,16 +85,6 @@ export class RectangleService extends Tool {
         this.drawRectangle(this.drawingService.previewCtx, this.pathData);
     }
 
-    setAttribute(ctx: CanvasRenderingContext2D): void {
-        ctx.lineWidth = this.widthService.getWidth();
-        ctx.fillStyle = this.colorService.getPrimaryColor();
-        ctx.strokeStyle = this.colorService.getSecondaryColor();
-        ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
-        if (this.tracingService.getHasFill()) ctx.fill();
-        ctx.globalAlpha = this.colorService.getSecondaryColorOpacity();
-        if (this.tracingService.getHasContour()) ctx.stroke();
-    }
-
     private drawRectangle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         const lastMouseMoveCoord = path[path.length - 1];
@@ -100,6 +97,16 @@ export class RectangleService extends Tool {
         console.log(this.mouseDownCoord.x, this.mouseDownCoord.y, width, height);
         this.setAttribute(ctx);
         ctx.setLineDash([0]);
+    }
+
+    setAttribute(ctx: CanvasRenderingContext2D): void {
+        ctx.lineWidth = this.widthService.getWidth();
+        ctx.fillStyle = this.colorService.getPrimaryColor();
+        ctx.strokeStyle = this.colorService.getSecondaryColor();
+        ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
+        if (this.tracingService.getHasFill()) ctx.fill();
+        ctx.globalAlpha = this.colorService.getSecondaryColorOpacity();
+        if (this.tracingService.getHasContour()) ctx.stroke();
     }
 
     private clearPath(): void {
