@@ -11,11 +11,11 @@ export class AttributeWidthComponent {
     private width: number;
 
     constructor(private widthService: WidthService, private toolboxService: ToolboxService) {
-        this.width = this.boundWidth(this.widthService.getWidth());
+        this.width = this.widthService.getWidth();
     }
 
     set widthDisplayed(value: number) {
-        this.width = this.boundWidth(value);
+        this.width = value;
     }
 
     get widthDisplayed(): number {
@@ -43,8 +43,9 @@ export class AttributeWidthComponent {
     }
 
     private boundWidth(value: number): number{
-        if (value <= this.toolboxService.getCurrentTool().getMinWidth) return this.toolboxService.getCurrentTool().getMinWidth;
+        if (value <= this.getMinValue()) return this.getMinValue();
         else if (value >= this.getMaxValue()) return this.getMaxValue();
         else return value;
     }
 }
+
