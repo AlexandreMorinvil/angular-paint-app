@@ -150,6 +150,11 @@ export class LineService extends Tool {
             this.closeShape();
             console.log('ShapeClose');
         }
+        if (this.isCloseShape) {
+            this.savedImage = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
+            this.undo.push(this.savedImage);
+            this.isCloseShape = false;
+        }
         this.currentCountLine = 0;
         this.countClick = 0;
     }
