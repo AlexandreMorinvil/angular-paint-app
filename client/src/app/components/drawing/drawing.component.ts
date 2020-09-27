@@ -1,21 +1,17 @@
-//import { variable } from '@angular/compiler/src/output/output_ast';
+// import { variable } from '@angular/compiler/src/output/output_ast';
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
-import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
-
+import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzone-size.service';
 
 // TODO : Avoir un fichier séparé pour les constantes ?
 export const DEFAULT_WIDTH = 1000;
 export const DEFAULT_HEIGHT = 800;
-
-
 @Component({
     selector: 'app-drawing',
     templateUrl: './drawing.component.html',
     styleUrls: ['./drawing.component.scss'],
 })
-
 export class DrawingComponent implements AfterViewInit {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
 
@@ -23,11 +19,13 @@ export class DrawingComponent implements AfterViewInit {
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
-    private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
-    colorUse = "#000000";
-    sizePoint = 1;
-    
-    constructor(private drawingService: DrawingService, public toolbox: ToolboxService) {}
+    // private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT }; // get height and  width from service
+    colorUse: string = '#000000';
+    sizePoint: number = 1;
+
+    hasBeenDrawnOnto: boolean;
+
+    constructor(private drawingService: DrawingService, public toolbox: ToolboxService, private workzoneSizeService: WorkzoneSizeService) {}
 
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -35,6 +33,24 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
+        this.hasBeenDrawnOnto = false;
+    }
+
+    resetDrawing(): void {
+        this.drawingService.clearCanvas(this.baseCtx);
+        this.drawingService.clearCanvas(this.previewCtx);
+        this.hasBeenDrawnOnto = false;
+    }
+
+    @HostListener('document:keydown.control.o', ['$event'])
+    createNewDrawingKeyboardEvent(event: KeyboardEvent): void {
+        event.preventDefault();
+
+        if (!this.hasBeenDrawnOnto) {
+            this.resetDrawing();
+        } else if (confirm('Voulez-vous abandonner le dessin en cours?')) {
+            this.resetDrawing();
+        }
     }
 
     @HostListener('mousemove', ['$event'])
@@ -45,6 +61,7 @@ export class DrawingComponent implements AfterViewInit {
     @HostListener('mousedown', ['$event'])
     onMouseDown(event: MouseEvent): void {
         this.toolbox.getCurrentTool().onMouseDown(event);
+        this.hasBeenDrawnOnto = true;
     }
 
     @HostListener('mouseup', ['$event'])
@@ -53,12 +70,11 @@ export class DrawingComponent implements AfterViewInit {
     }
 
     @HostListener('window:keyup', ['$event'])
-    keyEventUp(event: KeyboardEvent) {
+    keyEventUp(event: KeyboardEvent): void {
         if (event.key === 'Shift') {
             this.toolbox.getCurrentTool().onShiftUp(event);
-        }
-        else {
-            for (let i in this.toolbox.getAvailableTools()) {
+        } else {
+            for (const i in this.toolbox.getAvailableTools()) {
                 if (this.toolbox.getAvailableTools()[i].shortcut === event.key.toLowerCase()) {
                     this.toolbox.setSelectedTool(this.toolbox.getAvailableTools()[i]);
                 }
@@ -70,15 +86,17 @@ export class DrawingComponent implements AfterViewInit {
     onShiftDown(event: KeyboardEvent) {
         if (event.key == 'Shift') {
             this.toolbox.getCurrentTool().onShiftDown(event);
+            this.hasBeenDrawnOnto = true;
         }
     }
 
     get width(): number {
-        return this.canvasSize.x;
+        // return this.canvasSize.x;
+        return this.workzoneSizeService.drawingZoneWidth;
     }
 
     get height(): number {
-        return this.canvasSize.y;
+        // return this.canvasSize.y;
+        return this.workzoneSizeService.drawingZoneHeight;
     }
-
 }

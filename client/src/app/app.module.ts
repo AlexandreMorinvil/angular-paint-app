@@ -9,29 +9,25 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app/app.component';
 import { AttributesPanelComponent } from './components/attributes-panel/attributes-panel.component';
-import { CreateNewDrawingDialogComponent } from './components/create-new-drawing-dialog/create-new-drawing-dialog.component';
 import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorPageComponent } from './components/editor-page/editor-page.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
-import { CreateNewDrawingDialogService } from './services/create-new-drawing-dialog/create-new-drawing-dialog.service';
 import { TooltipComponent } from './components/tooltip/tooltip.component';
 import { WorkspaceComponent } from './components/workspace/workspace.component';
-
 
 @NgModule({
     declarations: [
         AppComponent,
         AttributesPanelComponent,
-        EditorPageComponent, 
+        EditorPageComponent,
         SidebarComponent,
         DrawingComponent,
         MainPageComponent,
         TooltipComponent,
         WorkspaceComponent,
-        CreateNewDrawingDialogComponent
     ],
-    
+
     imports: [
         BrowserAnimationsModule,
         BrowserModule,
@@ -43,8 +39,8 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
         MatInputModule,
         ReactiveFormsModule,
     ],
-    entryComponents: [CreateNewDrawingDialogComponent],
-    providers: [{ provide: MAT_DIALOG_DATA, useValue: [] }, CreateNewDrawingDialogService],
+    entryComponents: [],
+    providers: [{ provide: MAT_DIALOG_DATA, useValue: [] }],
     bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
