@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AttributeTracingComponent } from './attributes-tracing.component';
+import { AttributeColorComponent } from './attributes-color.component';
 
-describe('AttributeTracingComponent', () => {
-    let component: AttributeTracingComponent;
-    let fixture: ComponentFixture<AttributeTracingComponent>;
+describe('AttributeColorComponent', () => {
+    let component: AttributeColorComponent;
+    let fixture: ComponentFixture<AttributeColorComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [AttributeTracingComponent],
+            declarations: [AttributeColorComponent],
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(AttributeTracingComponent);
+        fixture = TestBed.createComponent(AttributeColorComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
