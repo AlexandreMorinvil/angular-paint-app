@@ -12,16 +12,16 @@ export class TracingService extends ToolModifier {
         super();
     }
 
-    getHasContour(): boolean {
-        return this.hasContour;
-    }
-
     setHasFill(input: boolean): void {
         this.hasFill = input;
     }
 
     getHasFill(): boolean {
         return this.hasFill;
+    }
+
+    getHasContour(): boolean {
+        return this.hasContour;
     }
 
     setHasContour(input: boolean): void {

@@ -7,28 +7,12 @@ import { TracingService } from '@app/services/tool-modifier/tracing/tracing.serv
     styleUrls: ['./attributes-tracing.component.scss', '../attributes-section.component.scss'],
 })
 export class AttributeTracingComponent {
-    private hasContour: boolean;
-    private hasFill: boolean;
+    hasContour: boolean;
+    hasFill: boolean;
 
     constructor(private tracingService: TracingService) {
-        this.contour = this.tracingService.getHasContour();
-        this.fill = this.tracingService.getHasFill();
-    }
-
-    get contour(): boolean {
-        return this.hasContour;
-    }
-
-    set contour(value: boolean) {
-        this.hasContour = value;
-    }
-
-    get fill(): boolean {
-        return this.hasFill;
-    }
-
-    set fill(value: boolean) {
-        this.hasFill = value;
+        this.hasContour = this.tracingService.getHasContour();
+        this.hasFill = this.tracingService.getHasFill();
     }
 
     assign(): void {
