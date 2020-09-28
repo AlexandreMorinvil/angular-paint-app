@@ -58,7 +58,7 @@ export class EraserService extends Tool {
     }
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        ctx.lineWidth = this.widthService.getWidth(); // width ajustment
+        ctx.lineWidth = Math.max(this.widthService.getWidth(), this.minWidth); // width ajustment
         ctx.strokeStyle = this.eraserColor;
         ctx.fillStyle = this.eraserColor;
         const startingPointAdjustment = 2;
