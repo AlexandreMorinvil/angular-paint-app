@@ -6,7 +6,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TextureEnum, TextureService } from '@app/services/tool-modifier/texture/texture.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
-//test
+
 export enum MouseButton {
     Left = 0,
     Middle = 1,
@@ -87,9 +87,6 @@ export class BrushService extends Tool {
                 this.zigzagTexture(ctx, path);
                 break;
             }
-            /*default: {
-                break;
-            }*/
         }
     }
 

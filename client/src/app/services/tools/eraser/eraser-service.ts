@@ -18,11 +18,11 @@ export enum MouseButton {
 })
 export class EraserService extends Tool {
     private pathData: Vec2[];
-    private eraserColor: string = "#FFFFFF"
+    private eraserColor: string = '#FFFFFF';
+    minWidth: number = 5;
 
     constructor(drawingService: DrawingService, private widthService: WidthService) {
         super(drawingService, new Description('efface', 'e', 'erase_icon.png'));
-        this.minWidth = 5;
         this.modifiers.push(this.widthService);
         this.clearPath();
     }
@@ -63,11 +63,11 @@ export class EraserService extends Tool {
         ctx.fillStyle = this.eraserColor;
         const startingPointAdjustment = 2;
         ctx.fillRect(
-          path[0].x - this.widthService.getWidth() / startingPointAdjustment,
-          path[0].y - this.widthService.getWidth() / startingPointAdjustment,
-          this.widthService.getWidth(),
-          this.widthService.getWidth(),
-    );
+            path[0].x - this.widthService.getWidth() / startingPointAdjustment,
+            path[0].y - this.widthService.getWidth() / startingPointAdjustment,
+            this.widthService.getWidth(),
+            this.widthService.getWidth(),
+        );
         ctx.beginPath();
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
@@ -75,22 +75,18 @@ export class EraserService extends Tool {
         ctx.stroke();
     }
 
-    private eraserVisual(event: MouseEvent): void{
-      this.drawingService.previewCtx.strokeStyle = '#000000';
-      this.drawingService.previewCtx.fillStyle ='#FFFFFF';
-      this.drawingService.previewCtx.lineWidth = 1;
-      let squareWidth: number = Math.max(this.widthService.getWidth(), this.getMinWidth);
-      this.drawingService.clearCanvas(this.drawingService.previewCtx);
-      this.drawingService.previewCtx.strokeRect(event.offsetX - squareWidth / 2,
-        event.offsetY - squareWidth / 2,
-        squareWidth + 1,
-        squareWidth + 1,
-      );
-      this.drawingService.previewCtx.fillRect(event.offsetX - squareWidth / 2,
-        event.offsetY - squareWidth / 2,
-        squareWidth + 1,
-        squareWidth + 1,
-      );
+    private eraserVisual(event: MouseEvent): void {
+        const borderColor = '#000000';
+        const borderWidth = 1;
+        const squareWidth: number = Math.max(this.widthService.getWidth(), this.minWidth);
+
+        this.drawingService.previewCtx.strokeStyle = borderColor;
+        this.drawingService.previewCtx.fillStyle = this.eraserColor;
+        this.drawingService.previewCtx.lineWidth = borderWidth;
+
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawingService.previewCtx.strokeRect(event.offsetX - squareWidth / 2, event.offsetY - squareWidth / 2, squareWidth + 1, squareWidth + 1);
+        this.drawingService.previewCtx.fillRect(event.offsetX - squareWidth / 2, event.offsetY - squareWidth / 2, squareWidth + 1, squareWidth + 1);
     }
 
     private clearPath(): void {
