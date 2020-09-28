@@ -52,8 +52,6 @@ export class RectangleService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.drawRectangle(this.drawingService.baseCtx, this.pathData);
-            //this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawingService.previewCtx.setLineDash([0]);
         }
         this.mouseDown = false;
         this.clearPath();
@@ -98,7 +96,7 @@ export class RectangleService extends Tool {
             } else if (height < 0 && width < 0) {
                 width = -1 * squareSide;
                 height = -1 * squareSide;
-            } else if (height >= 0 && width >= 0) {
+            } else {
                 width = squareSide;
                 height = squareSide;
             }
@@ -113,9 +111,13 @@ export class RectangleService extends Tool {
         ctx.fillStyle = this.colorService.getPrimaryColor();
         ctx.strokeStyle = this.colorService.getSecondaryColor();
         ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
-        if (this.tracingService.getHasFill()) ctx.fill();
+        if (this.tracingService.getHasFill()) {
+            ctx.fill();
+        }
         ctx.globalAlpha = this.colorService.getSecondaryColorOpacity();
-        if (this.tracingService.getHasContour()) ctx.stroke();
+        if (this.tracingService.getHasContour()) {
+            ctx.stroke();
+        }
     }
 
     private clearPath(): void {

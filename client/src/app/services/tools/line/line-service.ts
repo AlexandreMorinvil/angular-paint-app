@@ -44,7 +44,6 @@ export class LineService extends Tool {
     private savedImage: ImageData;
     private undo: ImageData[];
     private click: number;
-    private isCloseShape: boolean;
     alignmentCoord: Vec2;
     private isPointWithJunction: boolean;
     private countClick: number;
@@ -55,7 +54,7 @@ export class LineService extends Tool {
         private tracingService: TracingService,
         private widthService: WidthService,
     ) {
-        super(drawingService, new Description('line', 'l', 'line_icon.png'));
+        super(drawingService, new Description('line', 'L', 'line_icon.png'));
         this.clearPath();
         this.clearPathSaved();
         this.click = 0;
@@ -96,13 +95,26 @@ export class LineService extends Tool {
     }
 
     onBackspaceDown(): void {
-        if (this.undo.length > 1) {
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.mouseDownCoord = this.pathDataSaved[this.pathDataSaved.length - 2];
-            this.pathDataSaved.pop();
-            this.clearPath();
-            this.drawingService.baseCtx.putImageData(this.undo[this.undo.length - 2], 0, 0);
-            this.undo.pop();
+        if (this.undo.length > 0) {
+            if (this.pathDataSaved.length > 0) {
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                this.mouseDownCoord = this.pathDataSaved[this.pathDataSaved.length - 2];
+                this.pathDataSaved.pop();
+                this.drawingService.baseCtx.putImageData(this.undo[this.undo.length - 2], 0, 0);
+                this.undo.pop();
+            } else {
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                this.clearPath();
+                this.drawingService.baseCtx.putImageData(this.undo[this.undo.length - 1], 0, 0);
+                this.undo.pop();
+                console.log('version A');
+            }
+            // } else {
+            // this.clearPath();
+            //this.drawingService.baseCtx.putImageData(this.undo[this.undo.length - 1], 0, 0);
+            //  this.undo.pop();
+            //  console.log('version B');
+            // }
         }
     }
 
@@ -126,6 +138,8 @@ export class LineService extends Tool {
                     this.drawJunction(this.drawingService.baseCtx, this.pathData);
                 }
                 this.savedPoints();
+                console.log('a');
+                console.log(this.undo.length);
                 this.clearPath();
                 this.countClick++;
             }
@@ -135,11 +149,13 @@ export class LineService extends Tool {
                 this.pathData[0] = this.alignmentCoord;
                 this.mouseDownCoord = this.alignmentCoord;
                 this.countClick++;
+                console.log('b');
 
                 if (this.countClick != 1) {
                     this.drawJunction(this.drawingService.baseCtx, this.pathData);
                 }
                 this.savedPoints();
+                console.log(this.undo.length);
             }
             if (this.click === 1) {
                 timer = setTimeout(() => {
@@ -158,12 +174,6 @@ export class LineService extends Tool {
         this.clearPath();
         if (this.isAround20Pixels()) {
             this.closeShape();
-            if (this.isCloseShape) {
-                this.savedImage = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
-                this.undo.push(this.savedImage);
-                console.log('SAVE IMAGE');
-                this.isCloseShape = false;
-            }
         }
         this.countClick = 0;
         this.clearPathSaved();
@@ -188,11 +198,10 @@ export class LineService extends Tool {
 
     private drawJunction(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         if (this.isPointWithJunction) {
+            ctx.beginPath();
             const radius = JunctionSize.twoPixel;
-
             const startCenterX = this.mouseDownCoord.x;
             const startCenterY = this.mouseDownCoord.y;
-
             ctx.arc(startCenterX, startCenterY, radius, 0, Math.PI * 2);
             ctx.fill();
         }
@@ -214,7 +223,6 @@ export class LineService extends Tool {
     }
 
     private closeShape(): void {
-        this.isCloseShape = true;
         this.drawingService.baseCtx.beginPath();
         let firstPath = this.pathDataSaved[0];
         let lastPath = this.pathDataSaved[this.pathDataSaved.length - 1];

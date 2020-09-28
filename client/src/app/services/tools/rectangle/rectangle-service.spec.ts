@@ -7,7 +7,6 @@ import { RectangleService } from './rectangle-service';
 describe('RectangleService', () => {
     let service: RectangleService;
     let mouseEvent: MouseEvent;
-    //let mouseEvent2: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
     let baseCtxStub: CanvasRenderingContext2D;
@@ -37,13 +36,6 @@ describe('RectangleService', () => {
             button: 0,
             shiftKey: false,
         } as MouseEvent;
-
-        /* mouseEvent2 = {
-            movementX: 0,
-            movementY: 0,
-            button: 0,
-            shiftKey: true,
-        } as MouseEvent;*/
     });
 
     it('should be created', () => {
@@ -152,8 +144,10 @@ describe('RectangleService', () => {
     });
 
     it(' should set attribute shift Down to true on shift key pressed', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
-        service.mouseDown = true;
+        mouseEvent = { offsetX: 50, offsetY: 60, button: 0 } as MouseEvent;
+        service.onMouseDown(mouseEvent);
+        service.shiftDown = true;
+        mouseEvent = { offsetX: 40, offsetY: 50, button: 0 } as MouseEvent;
         service.onMouseMove(mouseEvent);
         const event = new KeyboardEvent('keydown', {
             key: 'Shift',
@@ -163,9 +157,11 @@ describe('RectangleService', () => {
         expect(drawRectangleSpy).toHaveBeenCalled();
     });
 
-    it(' should call set attribute shift Down to false on shift key up', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
-        service.mouseDown = true;
+    it(' should set attribute shift Down to false on shift key up', () => {
+        mouseEvent = { offsetX: 50, offsetY: 60, button: 0 } as MouseEvent;
+        service.onMouseDown(mouseEvent);
+        service.shiftDown = true;
+        mouseEvent = { offsetX: 40, offsetY: 50, button: 0 } as MouseEvent;
         service.onMouseMove(mouseEvent);
         const event = new KeyboardEvent('keyup', {
             key: 'Shift',
@@ -174,81 +170,74 @@ describe('RectangleService', () => {
         expect(service.shiftDown).toEqual(false);
         expect(drawRectangleSpy).toHaveBeenCalled();
     });
-    /*
 
     it('on drawing a rectangle and shift pressed if height is negatif and width positif should stay negative and positif', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
-        //service.mouseDown = true;
-        mouseEvent2 = { movementX: 30, movementY: -6, button: 0, shiftKey: true } as MouseEvent;
-        service.onMouseDown(mouseEvent2);
-        expect(service.mouseDownCoord.x).toEqual(6);
-        expect(service.mouseDownCoord.y).toEqual(-6);
+        mouseEvent = { offsetX: 50, offsetY: 60, button: 0 } as MouseEvent;
+        service.onMouseDown(mouseEvent);
+        service.shiftDown = true;
+        mouseEvent = { offsetX: 60, offsetY: 50, button: 0 } as MouseEvent;
+        service.onMouseMove(mouseEvent);
+        expect(drawRectangleSpy).toHaveBeenCalled();
     });
 
     it('on drawing a rectangle and shift pressed if height is negatif and width negatif should stay negative and negatif', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
-        //service.mouseDown = true;
-        mouseEvent2 = { movementX: -30, movementY: -6, button: 0, shiftKey: true } as MouseEvent;
-        service.onMouseDown(mouseEvent2);
-        expect(service.mouseDownCoord.x).toEqual(-6);
-        expect(service.mouseDownCoord.y).toEqual(-6);
+        mouseEvent = { offsetX: 50, offsetY: 60, button: 0 } as MouseEvent;
+        service.onMouseDown(mouseEvent);
+        service.shiftDown = true;
+        mouseEvent = { offsetX: 40, offsetY: 50, button: 0 } as MouseEvent;
+        service.onMouseMove(mouseEvent);
+        expect(drawRectangleSpy).toHaveBeenCalled();
     });
 
     it('on drawing a rectangle and shift pressed if height is positif and width positif should stay positif and positif', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
-        //service.mouseDown = true;
-        mouseEvent2 = { movementX: 30, movementY: 6, button: 0, shiftKey: true } as MouseEvent;
-        service.onMouseDown(mouseEvent2);
-        expect(service.mouseDownCoord.x).toEqual(6);
-        expect(service.mouseDownCoord.y).toEqual(6);
+        mouseEvent = { offsetX: 50, offsetY: 60, button: 0 } as MouseEvent;
+        service.onMouseDown(mouseEvent);
+        service.shiftDown = true;
+        mouseEvent = { offsetX: 60, offsetY: 70, button: 0 } as MouseEvent;
+        service.onMouseMove(mouseEvent);
+        expect(drawRectangleSpy).toHaveBeenCalled();
     });
 
     it('on drawing a rectangle and shift pressed if height is positif and width negatif should stay positif and negatif', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
-        //service.mouseDown = true;
-        mouseEvent2 = { movementX: -30, movementY: 6, button: 0, shiftKey: true } as MouseEvent;
-        service.onMouseDown(mouseEvent2);
-        expect(service.mouseDownCoord.x).toEqual(-6);
-        expect(service.mouseDownCoord.y).toEqual(6);
-    });
-
-    /*it(' should call set the right Attribute when type of Layout Full with the color green', () => {
-        service.typeLayout = 'Full';
-        service.primaryColor = 'green';
-        service.setAttribute(baseCtxStub);
-        expect(setAttributeSpy).toHaveBeenCalled();
-        expect(baseCtxStub.fillStyle).toBe('green');
-    });
-
-    it(' should call the right Attribute when type of Layout Contour with the color blue', () => {
-        service.typeLayout = 'Contour';
-        color.setSecondaryColor('blue');
-        service.setAttribute(baseCtxStub);
-        expect(setAttributeSpy).toHaveBeenCalled();
-        expect(baseCtxStub.strokeStyle).toBe('blue');
-    });
-
-    it(' should call setAttribute when type of Layout FullWithContour with the color blue for contour and red for fill ', () => {
-        service.typeLayout = 'FullWithContour';
-        service.secondaryColor = 'red';
-        service.primaryColor = 'blue';
-        service.setAttribute(baseCtxStub);
-        expect(setAttributeSpy).toHaveBeenCalled();
-        expect(baseCtxStub.strokeStyle).toBe('#0000ff');
-        expect(baseCtxStub.fillStyle).toBe('#ff0000');
-    });
-
-    it(' should change the pixel of the canvas ', () => {
-        mouseEvent = { offsetX: 0, offsetY: 0, button: 0 } as MouseEvent;
+        mouseEvent = { offsetX: 50, offsetY: 60, button: 0 } as MouseEvent;
         service.onMouseDown(mouseEvent);
-        mouseEvent = { offsetX: 1, offsetY: 0, button: 0 } as MouseEvent;
-        service.onMouseUp(mouseEvent);
-        // Premier pixel seulement
-        const imageData: ImageData = baseCtxStub.getImageData(0, 0, 1, 1);
-        expect(imageData.data[0]).toEqual(0); // R
-        expect(imageData.data[1]).toEqual(0); // G
-        expect(imageData.data[2]).toEqual(0); // B
-        // tslint:disable-next-line:no-magic-numbers
-        expect(imageData.data[3]).not.toEqual(0); // A
-    });*/
+        service.shiftDown = true;
+        mouseEvent = { offsetX: 40, offsetY: 70, button: 0 } as MouseEvent;
+        service.onMouseMove(mouseEvent);
+        expect(drawRectangleSpy).toHaveBeenCalled();
+    });
+
+    it('on draw Rectangle should call set Attribute', () => {
+        mouseEvent = { offsetX: 50, offsetY: 60, button: 0 } as MouseEvent;
+        service.onMouseDown(mouseEvent);
+        service.shiftDown = true;
+        mouseEvent = { offsetX: 40, offsetY: 70, button: 0 } as MouseEvent;
+        service.onMouseMove(mouseEvent);
+        expect(setAttributeSpy).toHaveBeenCalled();
+    });
+    /*
+    it('on set Attribute sould set fill if shape has fill ', () => {
+        service.setAttribute(previewCtxStub);
+        tracingService.setHasFill(true);
+        //expect(previewCtxStub.fill()).toHaveBeenCalled();
+    });
+
+    it('on set Attribute sould not set fill if shape has not fill ', () => {
+        service.setAttribute(previewCtxStub);
+        tracingService.setHasFill(false);
+        expect(previewCtxStub.fill()).not.toHaveBeenCalled();
+    });
+
+    it('on set Attribute sould set countour if shape has countour ', () => {
+        service.setAttribute(previewCtxStub);
+        tracingService.setHasContour(true);
+        expect(previewCtxStub.stroke()).toHaveBeenCalled();
+    });
+
+    it('on set Attribute sould not set countour if shape has no countour ', () => {
+        service.setAttribute(previewCtxStub);
+        tracingService.setHasContour(false);
+        expect(previewCtxStub.stroke()).not.toHaveBeenCalled();
+    });
+    */
 });
