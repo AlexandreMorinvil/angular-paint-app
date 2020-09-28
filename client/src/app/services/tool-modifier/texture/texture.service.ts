@@ -13,6 +13,7 @@ export enum TextureEnum {
     providedIn: 'root',
 })
 export class TextureService extends ToolModifier {
+    readonly DEFAULT_TEXTURE:string = TextureEnum.shadowTexture;
     private listTextures: string[];
     private texture: string = TextureEnum.shadowTexture;
 

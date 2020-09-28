@@ -27,7 +27,7 @@ describe('AttributeTracingComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('the color input and opacity of the component should be initiated with the values of the color service', () => {
+    it('the hasFill and hasContour of the component should be initiated with the values of the texture service', () => {
         const componentHasFill: boolean = component.hasFill;
         const componentHasContour: boolean = component.hasContour;
 
@@ -69,13 +69,13 @@ describe('AttributeTracingComponent', () => {
         expect(hasContour).toEqual(iniitialHasContour);
     });
 
-    it('if a new hasContour value is there should be a need for a confirmation', () => {
+    it('if there is a new hasContour value there should be a need for a confirmation', () => {
         component.hasContour = !component.hasContour;
         const needForConfirmation: boolean = component.needConfirmation();
         expect(needForConfirmation).toEqual(true);
     });
 
-    it('if a new hasContour value is there should be a need for a confirmation', () => {
+    it('if there is a new hasContour value there should be a need for a confirmation', () => {
         component.hasFill = !component.hasFill;
         const needForConfirmation: boolean = component.needConfirmation();
         expect(needForConfirmation).toEqual(true);
