@@ -48,7 +48,7 @@ export abstract class Tool {
         return this.description.iconDirectory;
     }
 
-    get getMinWidth(): number{
-      return this.minWidth;
+    get getMinWidth(): number {
+        return this.minWidth;
     }
 }

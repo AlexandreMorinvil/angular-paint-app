@@ -26,5 +26,5 @@ describe('TextureService', () => {
     it('should do nothing if the texture does not exist', () => {
         service.setTexture('erreur');
         expect(service.getTexture()).toEqual('ombrée');
-  });
+    });
 });

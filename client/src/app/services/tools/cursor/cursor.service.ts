@@ -23,6 +23,7 @@ export class CursorService extends Tool {
     dotsize: number = 10;
     clickOnAnchor: boolean = false;
     anchorHit: number = 0;
+    // tslint:disable-next-line:no-any
     imageData: any;
 
     constructor(drawingService: DrawingService) {
@@ -63,6 +64,7 @@ export class CursorService extends Tool {
                 case 2:
                     this.moveWidth(this.mouseDownCoord.x);
                     break;
+                // tslint:disable-next-line:no-magic-numbers
                 case 3:
                     this.moveHeight(this.mouseDownCoord.y);
                     break;
@@ -73,7 +75,7 @@ export class CursorService extends Tool {
         }
     }
 
-    moveWidth(mouseDownCoordX: number) {
+    moveWidth(mouseDownCoordX: number): void {
         if (mouseDownCoordX >= minSurfaceSize) {
             this.drawingService.previewCtx.canvas.width = mouseDownCoordX;
         } else {
@@ -81,7 +83,7 @@ export class CursorService extends Tool {
         }
     }
 
-    moveHeight(mouseDownCoordY: number) {
+    moveHeight(mouseDownCoordY: number): void {
         if (mouseDownCoordY >= minSurfaceSize) {
             this.drawingService.previewCtx.canvas.height = mouseDownCoordY;
         } else {
@@ -123,6 +125,7 @@ export class CursorService extends Tool {
         y = Math.pow(mouse.y - canvas.height, 2);
         if (x + y <= dotSizeSquare) {
             this.clickOnAnchor = true;
+            // tslint:disable-next-line:no-magic-numbers
             this.anchorHit = 3;
         }
 
