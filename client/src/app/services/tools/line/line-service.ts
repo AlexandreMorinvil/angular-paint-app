@@ -131,15 +131,20 @@ export class LineService extends Tool {
                 this.countClick++;
             }
             if (this.click == 1 && event.shiftKey) {
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                this.drawAlignLine(this.drawingService.baseCtx, this.pathData);
                 this.pathData[0] = this.alignmentCoord;
                 this.mouseDownCoord = this.alignmentCoord;
+                if (this.countClick != 1) {
+                    this.drawJunction(this.drawingService.baseCtx, this.pathData);
+                }
                 this.countClick++;
             }
             if (this.click === 1) {
                 timer = setTimeout(() => {
                     this.click = 0;
                 }, 200);
-            } else if (this.click === 2 && !event.shiftKey) {
+            } else if (this.click === 2) {
                 clearTimeout(timer);
                 this.click = 0;
                 this.onMouseDoubleClickEvent(event);
