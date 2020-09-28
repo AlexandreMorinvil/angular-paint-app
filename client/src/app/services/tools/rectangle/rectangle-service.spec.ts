@@ -7,7 +7,7 @@ import { RectangleService } from './rectangle-service';
 describe('RectangleService', () => {
     let service: RectangleService;
     let mouseEvent: MouseEvent;
-    let mouseEvent2: MouseEvent;
+    //let mouseEvent2: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
     let baseCtxStub: CanvasRenderingContext2D;
@@ -38,11 +38,12 @@ describe('RectangleService', () => {
             shiftKey: false,
         } as MouseEvent;
 
-        mouseEvent2 = {
-            offsetX: 1200,
-            offsetY: 500,
+        /* mouseEvent2 = {
+            movementX: 0,
+            movementY: 0,
             button: 0,
-        } as MouseEvent;
+            shiftKey: true,
+        } as MouseEvent;*/
     });
 
     it('should be created', () => {
@@ -150,51 +151,66 @@ describe('RectangleService', () => {
         expect(mouseEvent.offsetX !== mouseEvent.offsetY);
     });
 
-    /*
-    it(' should call onShiftPress if key shift is pressed', () => {
+    it(' should set attribute shift Down to true on shift key pressed', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
-        service.mouseDown = false;
-        mouseEvent = { shiftKey: true } as MouseEvent;
+        service.mouseDown = true;
         service.onMouseMove(mouseEvent);
-        expect(service.onShiftDown()).toHaveBeenCalled();
-    });
-
-    it(' should not call onShiftPress if key shift is not pressed', () => {
-       service.mouseDownCoord = { x: 0, y: 0 };
-        service.mouseDown = false;
-        mouseEvent = { shiftKey: true } as MouseEvent;
-        service.onMouseMove(mouseEvent);
-        expect(service.onShiftDown(keyEvent)).not.toHaveBeenCalled();
-    });
-
-    it(' onShiftDown should set attribut shiftDown to true', () => {
-        const keyEventData = { isTrusted: true, code: 'Shift' };
-        const keyEvent = new KeyboardEvent('keydown', keyEventData);
-        service.onShiftDown(keyEvent);
+        const event = new KeyboardEvent('keydown', {
+            key: 'Shift',
+        });
+        service.onShiftDown(event);
         expect(service.shiftDown).toEqual(true);
+        expect(drawRectangleSpy).toHaveBeenCalled();
     });
 
-    it(' onShiftUp should set attribut shiftDown to false', () => {
-        const keyEventData = { isTrusted: true, code: 'Shift' };
-        const keyEvent = new KeyboardEvent('keydown', keyEventData);
-        service.onShiftUp(keyEvent);
+    it(' should call set attribute shift Down to false on shift key up', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+        service.onMouseMove(mouseEvent);
+        const event = new KeyboardEvent('keyup', {
+            key: 'Shift',
+        });
+        service.onShiftUp(event);
         expect(service.shiftDown).toEqual(false);
-    });
-
-    it(' onShiftDown should call draw Rectangle', () => {
-        const keyEventData = { isTrusted: true, code: 'Shift' };
-        const keyEvent = new KeyboardEvent('keydown', keyEventData);
-        service.onShiftDown(keyEvent);
         expect(drawRectangleSpy).toHaveBeenCalled();
     });
+    /*
 
-    it(' onShiftUp should call draw Rectangle', () => {
-        const keyEventData = { isTrusted: true, code: 'Shift' };
-        const keyEvent = new KeyboardEvent('keydown', keyEventData);
-        service.onShiftUp(keyEvent);
-        expect(drawRectangleSpy).toHaveBeenCalled();
+    it('on drawing a rectangle and shift pressed if height is negatif and width positif should stay negative and positif', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        //service.mouseDown = true;
+        mouseEvent2 = { movementX: 30, movementY: -6, button: 0, shiftKey: true } as MouseEvent;
+        service.onMouseDown(mouseEvent2);
+        expect(service.mouseDownCoord.x).toEqual(6);
+        expect(service.mouseDownCoord.y).toEqual(-6);
     });
 
+    it('on drawing a rectangle and shift pressed if height is negatif and width negatif should stay negative and negatif', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        //service.mouseDown = true;
+        mouseEvent2 = { movementX: -30, movementY: -6, button: 0, shiftKey: true } as MouseEvent;
+        service.onMouseDown(mouseEvent2);
+        expect(service.mouseDownCoord.x).toEqual(-6);
+        expect(service.mouseDownCoord.y).toEqual(-6);
+    });
+
+    it('on drawing a rectangle and shift pressed if height is positif and width positif should stay positif and positif', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        //service.mouseDown = true;
+        mouseEvent2 = { movementX: 30, movementY: 6, button: 0, shiftKey: true } as MouseEvent;
+        service.onMouseDown(mouseEvent2);
+        expect(service.mouseDownCoord.x).toEqual(6);
+        expect(service.mouseDownCoord.y).toEqual(6);
+    });
+
+    it('on drawing a rectangle and shift pressed if height is positif and width negatif should stay positif and negatif', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        //service.mouseDown = true;
+        mouseEvent2 = { movementX: -30, movementY: 6, button: 0, shiftKey: true } as MouseEvent;
+        service.onMouseDown(mouseEvent2);
+        expect(service.mouseDownCoord.x).toEqual(-6);
+        expect(service.mouseDownCoord.y).toEqual(6);
+    });
 
     /*it(' should call set the right Attribute when type of Layout Full with the color green', () => {
         service.typeLayout = 'Full';

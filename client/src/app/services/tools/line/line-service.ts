@@ -43,12 +43,12 @@ export class LineService extends Tool {
     private pathDataSaved: Vec2[];
     private savedImage: ImageData;
     private undo: ImageData[];
-    private timer: number;
     private width: number = 1;
     private click: number;
     private isCloseShape: boolean;
     alignmentCoord: Vec2;
     private isPointWithJunction: boolean;
+    private countClick: number;
 
     constructor(
         drawingService: DrawingService,
@@ -60,13 +60,13 @@ export class LineService extends Tool {
         this.clearPath();
         this.clearPathSaved();
         this.click = 0;
+        this.countClick = 0;
         this.undo = [];
-        this.timer = 0;
+
         this.modifiers.push(this.colorService);
         this.modifiers.push(this.widthService);
         this.modifiers.push(this.tracingService);
         this.isPointWithJunction = true;
-        this.clearPath();
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -114,6 +114,7 @@ export class LineService extends Tool {
     }
 
     onMouseClick(event: MouseEvent): void {
+        let timer;
         this.mouseClick = event.button === MouseButton.Left;
         if (this.mouseClick) {
             this.click++;
@@ -122,21 +123,24 @@ export class LineService extends Tool {
                 this.pathData.push(this.mouseDownCoord);
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.drawLine(this.drawingService.baseCtx, this.pathData);
-                this.drawJunction(this.drawingService.baseCtx, this.pathData);
-
+                if (this.countClick != 0) {
+                    this.drawJunction(this.drawingService.baseCtx, this.pathData);
+                }
                 this.savedPoints();
                 this.clearPath();
+                this.countClick++;
             }
             if (this.click == 1 && event.shiftKey) {
                 this.pathData[0] = this.alignmentCoord;
                 this.mouseDownCoord = this.alignmentCoord;
+                this.countClick++;
             }
             if (this.click === 1) {
-                this.timer = setTimeout(() => {
+                timer = setTimeout(() => {
                     this.click = 0;
                 }, 200);
             } else if (this.click === 2 && !event.shiftKey) {
-                clearTimeout(this.timer);
+                clearTimeout(timer);
                 this.click = 0;
                 this.onMouseDoubleClickEvent(event);
                 this.mouseClick = false;
@@ -155,6 +159,7 @@ export class LineService extends Tool {
                 this.isCloseShape = false;
             }
         }
+        this.countClick = 0;
         this.clearPathSaved();
     }
 
@@ -209,6 +214,8 @@ export class LineService extends Tool {
         this.drawingService.baseCtx.moveTo(firstPath.x, firstPath.y);
         this.drawingService.baseCtx.lineTo(lastPath.x, lastPath.y);
         this.drawingService.baseCtx.stroke();
+        this.mouseDownCoord = this.pathDataSaved[0];
+        this.drawJunction(this.drawingService.baseCtx, this.pathData);
     }
 
     private savedPoints(): void {

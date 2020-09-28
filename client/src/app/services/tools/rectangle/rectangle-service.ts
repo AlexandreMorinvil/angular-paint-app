@@ -43,6 +43,8 @@ export class RectangleService extends Tool {
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
         }
+        console.log(event.offsetX);
+        console.log(event.offsetY);
     }
 
     onMouseUp(event: MouseEvent): void {
@@ -68,13 +70,13 @@ export class RectangleService extends Tool {
         }
     }
 
-    onShiftDown(): void {
+    onShiftDown(event: KeyboardEvent): void {
         this.shiftDown = true;
         //this.drawingService.clearCanvas(this.drawingService.previewCtx); pas besoin
         this.drawRectangle(this.drawingService.previewCtx, this.pathData);
     }
 
-    onShiftUp(): void {
+    onShiftUp(event: KeyboardEvent): void {
         this.shiftDown = false;
         //this.drawingService.clearCanvas(this.drawingService.previewCtx); as besoin
         this.drawRectangle(this.drawingService.previewCtx, this.pathData);
@@ -102,7 +104,6 @@ export class RectangleService extends Tool {
             }
         }
         ctx.rect(this.mouseDownCoord.x, this.mouseDownCoord.y, width, height);
-        console.log(this.mouseDownCoord.x, this.mouseDownCoord.y, width, height);
         this.setAttribute(ctx);
         ctx.setLineDash([0]);
     }
