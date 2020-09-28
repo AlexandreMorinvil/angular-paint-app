@@ -41,7 +41,6 @@ describe('ColorService', () => {
         expect(secondaryOpacity).toEqual(DEFAULT_OPACITY);
     });
 
-
     it('should accept numbers between 0 and 0xffffff as the color number provided to the color setter', () => {
         const properColor = '#aabbcc';
 

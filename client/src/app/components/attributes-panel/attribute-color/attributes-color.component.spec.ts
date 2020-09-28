@@ -68,7 +68,7 @@ describe('AttributeColorComponent', () => {
         expect(secondaryColor).toEqual(newColor);
     });
 
-    it('the color input for primary and secondary color should accept the number 0 as the rgb color number upon confirmation of the color choice', () => {
+    it('the color input for primary and secondary color should accept the number 0 as the rgb color number upon confirmation', () => {
         const newColor = '#0';
 
         component.primaryColor = newColor;
@@ -83,7 +83,7 @@ describe('AttributeColorComponent', () => {
         expect(validateColorSpy.calls.count()).toEqual(2);
     });
 
-    it('the color input for primary and secondary color should accept the number 0xffffff as the rgb color number upon confirmation of the color choice', () => {
+    it('the color input for primary and secondary color should accept the number 0xffffff as the rgb color number upon confirmation', () => {
         const newColor = '#ffffff';
 
         component.primaryColor = newColor;
@@ -98,7 +98,7 @@ describe('AttributeColorComponent', () => {
         expect(validateColorSpy.calls.count()).toEqual(2);
     });
 
-    it('the primary and secondary color should not change if a color not respecting the format "#rrggbb" as the input color upon confirmation', () => {
+    it('the primary and secondary color should not change if a color not respecting the format "#rrggbb" as the input upon confirmation', () => {
         const newColor = 'ffffff';
 
         const initialPrimaryColor = component.primaryColor;
@@ -118,7 +118,7 @@ describe('AttributeColorComponent', () => {
 
     // Opacity tests
 
-    it('the opacity input for primary and secondary color should accept numbers between 0 and 1 as the opacity input upon confirmation of the color choice', () => {
+    it('the opacity input for primary and secondary color should accept numbers between 0 and 1 as the opacity input upon confirmation', () => {
         const newOpacity = 0.25;
 
         component.primaryOpacity = newOpacity;
@@ -133,7 +133,7 @@ describe('AttributeColorComponent', () => {
         expect(validateOpacitySpy.calls.count()).toEqual(2);
     });
 
-    it('the opacity setter for primary and secondary color should accept the number 0 as the opacity input upon confirmation of the color choice', () => {
+    it('the opacity setter for primary and secondary color should accept the number 0 as the opacity input upon confirmation', () => {
         const newOpacity = 0;
 
         component.primaryOpacity = newOpacity;
@@ -148,7 +148,7 @@ describe('AttributeColorComponent', () => {
         expect(validateOpacitySpy.calls.count()).toEqual(2);
     });
 
-    it('the opacity input for primary and secondary color should accept the number 1 as the opacity input upon confirmation of the color choice', () => {
+    it('the opacity input for primary and secondary color should accept the number 1 as the opacity input upon confirmation', () => {
         const newOpacity = 1;
 
         component.primaryOpacity = newOpacity;
@@ -163,7 +163,7 @@ describe('AttributeColorComponent', () => {
         expect(validateOpacitySpy.calls.count()).toEqual(2);
     });
 
-    it('the opacity input for primary and secondary color should accept the number 1 as the opacity input upon confirmation of the color choice', () => {
+    it('the opacity input for primary and secondary color should accept the number 1 as the opacity input upon confirmation', () => {
         const newOpacity = 1;
 
         component.primaryOpacity = newOpacity;
@@ -300,7 +300,7 @@ describe('AttributeColorComponent', () => {
     // Quick color selection
 
     it('the quick color selection method should accept an rgb color betwwen 0 and 0xffffff without needing a confirmation', () => {
-        const assignSpy:jasmine.Spy<any> = spyOn<any>(component, 'assign');
+        const assignSpy: jasmine.Spy<any> = spyOn<any>(component, 'assign');
         const newColor = '#aabbcc';
 
         component.selectPrimaryColorsQuick(newColor);
@@ -314,8 +314,8 @@ describe('AttributeColorComponent', () => {
         expect(assignSpy.calls.count()).toEqual(0);
     });
 
-    it('the color input for primary and secondary color should accept the number 0 as the rgb color number upon confirmation of the color choice', () => {
-        const assignSpy:jasmine.Spy<any> = spyOn<any>(component, 'assign');
+    it('the color input for primary and secondary color should accept the number 0 as the rgb color number upon confirmation', () => {
+        const assignSpy: jasmine.Spy<any> = spyOn<any>(component, 'assign');
         const newColor = '#0';
 
         component.selectPrimaryColorsQuick(newColor);
@@ -329,8 +329,8 @@ describe('AttributeColorComponent', () => {
         expect(assignSpy.calls.count()).toEqual(0);
     });
 
-    it('the color input for primary and secondary color should accept the number 0xffffff as the rgb color number upon confirmation of the color choice', () => {
-        const assignSpy:jasmine.Spy<any> = spyOn<any>(component, 'assign');
+    it('the color input for primary and secondary color should accept the number 0xffffff as the rgb color number upon confirmation', () => {
+        const assignSpy: jasmine.Spy<any> = spyOn<any>(component, 'assign');
         const newColor = '#ffffff';
 
         component.selectPrimaryColorsQuick(newColor);
@@ -344,8 +344,8 @@ describe('AttributeColorComponent', () => {
         expect(assignSpy.calls.count()).toEqual(0);
     });
 
-    it('the primary and secondary color should not change if a color not respecting the format "#rrggbb" as the input color upon confirmation', () => {
-        const assignSpy:jasmine.Spy<any> = spyOn<any>(component, 'assign');
+    it('the primary and secondary color should not change if a color not respecting the format "#rrggbb" as the input upon confirmation', () => {
+        const assignSpy: jasmine.Spy<any> = spyOn<any>(component, 'assign');
         const newColor = 'ffffff';
 
         const initialPrimaryColor = component.primaryColor;

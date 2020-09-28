@@ -19,11 +19,11 @@ export class AttributeColorComponent {
         this.secondaryOpacity = this.colorService.getSecondaryColorOpacity();
     }
 
-    getListOfPreviousColors() {
+    getListOfPreviousColors(): string[] {
         return this.colorService.getPreviousColors();
     }
 
-    intertwineColors() {
+    intertwineColors(): void {
         this.colorService.intertwineColors();
 
         this.primaryColor = this.colorService.getPrimaryColor();
@@ -33,12 +33,12 @@ export class AttributeColorComponent {
         this.secondaryOpacity = this.colorService.getSecondaryColorOpacity();
     }
 
-    selectPrimaryColorsQuick(color:string) {
+    selectPrimaryColorsQuick(color: string): void {
         this.colorService.setPrimaryColor(color);
         this.primaryColor = this.colorService.getPrimaryColor();
     }
 
-    selectSecondaryColorQuick(color:string) {
+    selectSecondaryColorQuick(color: string): void {
         this.colorService.setSecondaryColor(color);
         this.secondaryColor = this.colorService.getSecondaryColor();
     }
