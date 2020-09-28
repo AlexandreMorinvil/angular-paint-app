@@ -135,10 +135,12 @@ export class LineService extends Tool {
                 this.drawAlignLine(this.drawingService.baseCtx, this.pathData);
                 this.pathData[0] = this.alignmentCoord;
                 this.mouseDownCoord = this.alignmentCoord;
+                this.countClick++;
+
                 if (this.countClick != 1) {
                     this.drawJunction(this.drawingService.baseCtx, this.pathData);
                 }
-                this.countClick++;
+                this.savedPoints();
             }
             if (this.click === 1) {
                 timer = setTimeout(() => {
@@ -239,7 +241,10 @@ export class LineService extends Tool {
 
         ctx.moveTo(firstPath.x, firstPath.y);
         ctx.lineWidth = this.width; //width ajustment
-
+        ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
+        ctx.lineWidth = this.widthService.getWidth(); // width ajustment
+        ctx.strokeStyle = this.colorService.getPrimaryColor(); // color of the line
+        ctx.fillStyle = this.colorService.getPrimaryColor(); // color of the starting point
         switch (alignmentAngle) {
             case 0:
                 ctx.lineTo(lastPath.x, firstPath.y);
