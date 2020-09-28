@@ -9,6 +9,7 @@ describe('CursorService', () => {
     let mouseEvent25: MouseEvent;
     let mouseEvent500: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
+    // tslint:disable:no-any
     let drawnAnchorSpy: jasmine.Spy<any>;
     let checkHitSpy: jasmine.Spy<any>;
     let moveHeightSpy: jasmine.Spy<any>;
@@ -28,12 +29,14 @@ describe('CursorService', () => {
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         });
         service = TestBed.inject(CursorService);
+        // tslint:disable:no-any
         drawnAnchorSpy = spyOn<any>(service, 'drawnAnchor').and.callThrough();
         checkHitSpy = spyOn<any>(service, 'checkHit').and.callThrough();
         moveHeightSpy = spyOn<any>(service, 'moveHeight').and.callThrough();
         moveWidthSpy = spyOn<any>(service, 'moveWidth').and.callThrough();
 
-        service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
+        // tslint:disable:no-string-literal
+        service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
         service['drawingService'].canvas = canvasStub;
 
@@ -77,6 +80,7 @@ describe('CursorService', () => {
         service.mouseDownCoord = { x: 600, y: 700 };
         service.mouseDown = true;
         service.clickOnAnchor = true;
+        // tslint:disable-next-line:no-magic-numbers
         service.anchorHit = 3;
 
         service.onMouseMove(mouseEvent500);
@@ -123,6 +127,8 @@ describe('CursorService', () => {
     });
 
     it(' checkHit should set anchorHit to 1', () => {
+        // tslint:disable:no-magic-numbers
+        // tslint:disable:no-string-literal
         service.mouseDownCoord = { x: 1000, y: 800 };
         service.dotsize = 10;
         service['drawingService'].canvas.width = 1000;
@@ -134,6 +140,8 @@ describe('CursorService', () => {
     });
 
     it(' checkHit should set anchorHit to 2', () => {
+        // tslint:disable:no-magic-numbers
+        // tslint:disable:no-string-literal
         service.mouseDownCoord = { x: 1000, y: 400 };
         service.dotsize = 10;
         service['drawingService'].canvas.width = 1000;
@@ -145,6 +153,8 @@ describe('CursorService', () => {
     });
 
     it(' checkHit should set anchorHit to 3', () => {
+        // tslint:disable:no-magic-numbers
+        // tslint:disable:no-string-literal
         service.mouseDownCoord = { x: 500, y: 800 };
         service.dotsize = 10;
         service['drawingService'].canvas.width = 1000;

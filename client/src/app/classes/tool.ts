@@ -11,6 +11,7 @@ export abstract class Tool {
 
     mouseDownCoord: Vec2;
     mouseDown: boolean = false;
+    minWidth: number = 1;
     shiftDown: boolean = false;
 
     constructor(protected drawingService: DrawingService, description: Description) {
@@ -45,5 +46,9 @@ export abstract class Tool {
 
     get iconDirectory(): string {
         return this.description.iconDirectory;
+    }
+
+    get getMinWidth(): number {
+        return this.minWidth;
     }
 }

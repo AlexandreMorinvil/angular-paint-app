@@ -87,9 +87,6 @@ export class BrushService extends Tool {
                 this.zigzagTexture(ctx, path);
                 break;
             }
-            default: {
-                break;
-            }
         }
     }
 
