@@ -29,6 +29,7 @@ describe('PencilService', () => {
         // Configuration du spy du service
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
+        // tslint:disable:no-string-literal
         service['drawingService'].previewCtx = previewCtxStub;
 
         mouseEvent = {
@@ -126,14 +127,5 @@ describe('PencilService', () => {
         service.onMouseMove(mouseEvent2);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawLineSpy).not.toHaveBeenCalled();
-    });
-
-    it(' onColorChange should change the color of the pencil', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
-        service.mouseDown = true;
-        //let color : string = "#eb4034"
-
-        //service.onColorChange(color);
-        //expect(service.color).toEqual("#eb4034");
     });
 });
