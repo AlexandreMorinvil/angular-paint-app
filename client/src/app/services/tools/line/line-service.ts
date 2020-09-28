@@ -26,6 +26,15 @@ export enum AlignmentAngle {
     bottomRight = 315,
 }
 
+export enum JunctionSize {
+    onePixel = 1,
+    twoPixel = 2,
+    threePixel = 3,
+    fourPixel = 4,
+    fivePixel = 5,
+    sixPixel = 6,
+}
+
 @Injectable({
     providedIn: 'root',
 })
@@ -35,15 +44,11 @@ export class LineService extends Tool {
     private savedImage: ImageData;
     private undo: ImageData[];
     private timer: number;
-
-    private startPosition: Vec2;
-    private endPosition: Vec2;
     private width: number = 1;
-    private countClick: number;
     private click: number;
-    private currentCountLine: number;
     private isCloseShape: boolean;
     alignmentCoord: Vec2;
+    private isPointWithJunction: boolean;
 
     constructor(
         drawingService: DrawingService,
@@ -54,14 +59,13 @@ export class LineService extends Tool {
         super(drawingService, new Description('line', 'l', 'line_icon.png'));
         this.clearPath();
         this.clearPathSaved();
-        this.countClick = 0;
         this.click = 0;
         this.undo = [];
         this.timer = 0;
-        this.currentCountLine = 0;
         this.modifiers.push(this.colorService);
         this.modifiers.push(this.widthService);
         this.modifiers.push(this.tracingService);
+        this.isPointWithJunction = true;
         this.clearPath();
     }
 
@@ -93,16 +97,13 @@ export class LineService extends Tool {
     }
 
     onBackspaceDown(): void {
-        if (this.undo.length > 0) {
+        if (this.undo.length > 1) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.mouseDownCoord = this.pathDataSaved[this.pathDataSaved.length - 2];
             this.pathDataSaved.pop();
-            this.pathDataSaved.pop();
-            this.mouseDownCoord = this.pathDataSaved[this.pathDataSaved.length - 1];
-            this.currentCountLine--;
             this.clearPath();
             this.drawingService.baseCtx.putImageData(this.undo[this.undo.length - 2], 0, 0);
             this.undo.pop();
-            console.log(this.undo.length);
         }
     }
 
@@ -115,17 +116,15 @@ export class LineService extends Tool {
     onMouseClick(event: MouseEvent): void {
         this.mouseClick = event.button === MouseButton.Left;
         if (this.mouseClick) {
-            this.countClick++;
             this.click++;
             if (this.click == 1 && !event.shiftKey) {
                 this.mouseDownCoord = this.getPositionFromMouse(event);
                 this.pathData.push(this.mouseDownCoord);
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.drawLine(this.drawingService.baseCtx, this.pathData);
-                this.initialiseStartAndEndPoint();
-                //this.savedImage = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
-                //this.undo.push(this.savedImage);
-                console.log(this.undo.length);
+                this.drawJunction(this.drawingService.baseCtx, this.pathData);
+
+                this.savedPoints();
                 this.clearPath();
             }
             if (this.click == 1 && event.shiftKey) {
@@ -149,14 +148,14 @@ export class LineService extends Tool {
         this.clearPath();
         if (this.isAround20Pixels()) {
             this.closeShape();
+            if (this.isCloseShape) {
+                this.savedImage = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
+                this.undo.push(this.savedImage);
+                console.log('SAVE IMAGE');
+                this.isCloseShape = false;
+            }
         }
-        if (this.isCloseShape) {
-            this.savedImage = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
-            this.undo.push(this.savedImage);
-            console.log(this.undo.length);
-        }
-        this.currentCountLine = 0;
-        this.countClick = 0;
+        this.clearPathSaved();
     }
 
     private isInCanvas(mousePosition: Vec2): boolean {
@@ -175,14 +174,27 @@ export class LineService extends Tool {
         ctx.fillStyle = this.colorService.getPrimaryColor(); // color of the starting point
         ctx.stroke();
     }
+
+    private drawJunction(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+        if (this.isPointWithJunction) {
+            ctx.beginPath();
+            const centerX = this.mouseDownCoord.x;
+            const centerY = this.mouseDownCoord.y;
+            const radius = JunctionSize.twoPixel;
+            ctx.ellipse(centerX, centerY, radius, radius, 0, 0, Math.PI * 2, false);
+            ctx.fill();
+        }
+    }
     private isAround20Pixels(): boolean {
-        let firstCurrentPoint = this.pathDataSaved[this.pathDataSaved.length - this.currentCountLine * 2];
-        let diffXPosition = this.pathDataSaved[this.pathDataSaved.length - 1].x - firstCurrentPoint.x;
-        let diffYPosition = this.pathDataSaved[this.pathDataSaved.length - 1].y - firstCurrentPoint.y;
+        let firstCurrentPoint = this.pathDataSaved[0];
+        let lastCurrentPoint = this.pathDataSaved[this.pathDataSaved.length - 1];
+        let diffXPosition = lastCurrentPoint.x - firstCurrentPoint.x;
+        let diffYPosition = lastCurrentPoint.y - firstCurrentPoint.y;
         let xSideTriangleSquared = Math.pow(diffXPosition, 2);
         let ySideTriangleSquared = Math.pow(diffYPosition, 2);
         let hypothenus = Math.sqrt(xSideTriangleSquared + ySideTriangleSquared);
-        if (hypothenus <= 20) {
+        if (hypothenus <= 200) {
+            console.log(hypothenus);
             // on est en bas de 200 pixels sa ferme la forme
             return true;
         }
@@ -192,32 +204,17 @@ export class LineService extends Tool {
     private closeShape(): void {
         this.isCloseShape = true;
         this.drawingService.baseCtx.beginPath();
-        let firstPath = this.pathDataSaved[this.pathDataSaved.length - this.currentCountLine * 2];
+        let firstPath = this.pathDataSaved[0];
         let lastPath = this.pathDataSaved[this.pathDataSaved.length - 1];
         this.drawingService.baseCtx.moveTo(firstPath.x, firstPath.y);
         this.drawingService.baseCtx.lineTo(lastPath.x, lastPath.y);
-        this.drawingService.baseCtx.lineWidth = this.width; //width ajustment
         this.drawingService.baseCtx.stroke();
     }
 
-    private initialiseStartAndEndPoint(): void {
-        if (this.countClick == 1) {
-            //first click
-            this.startPosition = this.mouseDownCoord;
-            this.pathDataSaved.push(this.startPosition);
-        } else if (this.countClick == 2) {
-            //second click
-            this.endPosition = this.mouseDownCoord;
-            this.pathDataSaved.push(this.endPosition);
-            this.currentCountLine++;
-        } else {
-            //others click
-            this.startPosition = this.endPosition;
-            this.endPosition = this.mouseDownCoord;
-            this.pathDataSaved.push(this.startPosition);
-            this.pathDataSaved.push(this.endPosition);
-            this.currentCountLine++;
-        }
+    private savedPoints(): void {
+        console.log(this.mouseDownCoord);
+        this.pathDataSaved.push(this.mouseDownCoord);
+        console.log('saveeee');
         this.savedImage = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
         this.undo.push(this.savedImage);
     }

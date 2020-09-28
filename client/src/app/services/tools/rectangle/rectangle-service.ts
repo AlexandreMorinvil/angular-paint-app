@@ -20,8 +20,6 @@ export enum MouseButton {
 })
 export class RectangleService extends Tool {
     private pathData: Vec2[];
-    typeLayout: string;
-    lineDash: number;
 
     constructor(
         drawingService: DrawingService,
