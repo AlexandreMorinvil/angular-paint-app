@@ -228,8 +228,8 @@ describe('ColorService', () => {
     it('should have the default primary and secondary colors in the previous color list upon creation of the service', () => {
         const previousColorList = colorService.getPreviousColors();
 
-        expect(previousColorList[0]).toEqual(colorService.DEFAULT_PRIMARY_COLOR);
-        expect(previousColorList[1]).toEqual(colorService.DEFAULT_SECONDARY_COLOR);
+        expect(previousColorList[1]).toEqual(colorService.DEFAULT_PRIMARY_COLOR);
+        expect(previousColorList[0]).toEqual(colorService.DEFAULT_SECONDARY_COLOR);
     });
 
     it('setting a new opacity for the primary or secondary color should not modify the previous colors list', () => {
@@ -240,8 +240,8 @@ describe('ColorService', () => {
 
         const previousColorList = colorService.getPreviousColors();
 
-        expect(previousColorList[0]).toEqual(colorService.DEFAULT_PRIMARY_COLOR);
-        expect(previousColorList[1]).toEqual(colorService.DEFAULT_SECONDARY_COLOR);
+        expect(previousColorList[1]).toEqual(colorService.DEFAULT_PRIMARY_COLOR);
+        expect(previousColorList[0]).toEqual(colorService.DEFAULT_SECONDARY_COLOR);
     });
 
     it('setting a new color as the primary color should set it as the first color of the previous colors list', () => {
@@ -257,7 +257,7 @@ describe('ColorService', () => {
         const repetitiveColor = '#111111';
         const newColors = [repetitiveColor, '#222222', repetitiveColor];
 
-        for (let color of newColors) colorService.setPrimaryColor(color);
+        for (const color of newColors) colorService.setPrimaryColor(color);
         const previousColorList = colorService.getPreviousColors();
         const repetitiveColorOccurences = previousColorList.reduce((a, v) => (v === repetitiveColor ? a + 1 : a), 0);
 
@@ -268,7 +268,7 @@ describe('ColorService', () => {
         const repetitiveColor = '#111111';
         const newColors = [repetitiveColor, '#222222', repetitiveColor];
 
-        for (let color of newColors) colorService.setSecondaryColor(color);
+        for (const color of newColors) colorService.setSecondaryColor(color);
         const previousColorList = colorService.getPreviousColors();
         const repetitiveColorOccurences = previousColorList.reduce((a, v) => (v === repetitiveColor ? a + 1 : a), 0);
 
