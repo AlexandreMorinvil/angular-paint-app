@@ -38,7 +38,7 @@ export class CursorService extends Tool {
             this.drawingService.baseCtx.canvas.height,
         );
         this.mouseDownCoord = this.getPositionFromMouse(event);
-        this.drawnAnchor(this.drawingService.baseCtx, this.drawingService.canvas);
+        this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
         this.checkHit(this.mouseDownCoord, this.drawingService.canvas);
         this.mouseDown = true;
     }
