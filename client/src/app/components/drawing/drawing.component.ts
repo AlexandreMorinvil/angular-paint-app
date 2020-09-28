@@ -1,10 +1,8 @@
-//import { variable } from '@angular/compiler/src/output/output_ast';
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
 
-// TODO : Avoir un fichier séparé pour les constantes ?
 export const DEFAULT_WIDTH = 1000;
 export const DEFAULT_HEIGHT = 800;
 
@@ -23,8 +21,8 @@ export class DrawingComponent implements AfterViewInit {
     private previewCtx: CanvasRenderingContext2D;
     private editCtx: CanvasRenderingContext2D;
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
-    colorUse = '#000000';
-    sizePoint = 1;
+    colorUse: string = '#000000';
+    sizePoint: number = 1;
 
     constructor(private drawingService: DrawingService, public toolbox: ToolboxService) {}
 
@@ -65,14 +63,11 @@ export class DrawingComponent implements AfterViewInit {
     }
 
     @HostListener('window:keyup', ['$event'])
-    keyEventUp(event: KeyboardEvent) {
+    keyEventUp(event: KeyboardEvent): void {
         if (event.key === 'Shift') {
             this.toolbox.getCurrentTool().onShiftUp(event);
-        }
-        if (event.keyCode == 32) {
-            this.toolbox.getCurrentTool().onBackSpaceDown(event);
         } else {
-            for (let i in this.toolbox.getAvailableTools()) {
+            for (const i in this.toolbox.getAvailableTools()) {
                 if (this.toolbox.getAvailableTools()[i].shortcut === event.key.toLowerCase()) {
                     this.toolbox.setSelectedTool(this.toolbox.getAvailableTools()[i]);
                 }
@@ -88,8 +83,8 @@ export class DrawingComponent implements AfterViewInit {
     }
 
     @HostListener('window:keydown', ['$event'])
-    onShiftDown(event: KeyboardEvent) {
-        if (event.key == 'Shift') {
+    onShiftDown(event: KeyboardEvent): void {
+        if (event.key === 'Shift') {
             this.toolbox.getCurrentTool().onShiftDown(event);
         }
     }
