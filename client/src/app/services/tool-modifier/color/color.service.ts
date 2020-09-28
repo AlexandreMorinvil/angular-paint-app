@@ -1,26 +1,35 @@
 import { Injectable } from '@angular/core';
 import { ToolModifier } from '@app/classes/tool-modifier';
 
-const COLOR_WHITE: string = '#ffffff';
+const COLOR_WHITE = '#ffffff';
+const COLOR_BLACK = '#000000';
+
+const MAXIMUM_COLOR_NUMBER = 0xffffff;
+const MINIMUM_COLOR_NUMBER = 0x000000;
 
 @Injectable({
     providedIn: 'root',
 })
 export class ColorService extends ToolModifier {
-    private primaryColor: string = '#000000';
-    private primaryColorOpacity: number = 1;
-    private secondaryColor: string = '#ffffff';
-    private secondaryColorOpacity: number = 1;
+    // Default values
+    readonly DEFAULT_PRIMARY_COLOR: string = COLOR_BLACK;
+    readonly DEFAULT_SECONDARY_COLOR: string = COLOR_WHITE;
+    readonly DEFAULT_OPACITY: number = 1;
+
+    // Attributes
+    private primaryColor: string = this.DEFAULT_PRIMARY_COLOR;
+    private primaryColorOpacity: number = this.DEFAULT_OPACITY;
+    private secondaryColor: string = this.DEFAULT_SECONDARY_COLOR;
+    private secondaryColorOpacity: number = this.DEFAULT_OPACITY;
     private previousColors: string[] = [];
     private previousColorCount: number = 10;
 
     constructor() {
         super();
-        for (let i = 0; i < this.previousColorCount; i++) this.previousColors.push(COLOR_WHITE);
-        this.previousColors.pop();
-        this.previousColors.pop();
+        const colorSelectionCount = 2;
         this.previousColors.push(this.secondaryColor);
         this.previousColors.push(this.primaryColor);
+        for (let i = 0; i < this.previousColorCount - colorSelectionCount; i++) this.previousColors.push(COLOR_WHITE);
     }
 
     intertwinColors(): void {
@@ -40,7 +49,7 @@ export class ColorService extends ToolModifier {
 
     setPrimaryColor(color: string): void {
         if (this.validateColor(color)) {
-            if (color !== this.primaryColor && color !== this.secondaryColor) this.updatePreviousColors(color);
+            this.updatePreviousColors(color);
             this.primaryColor = color;
         }
     }
@@ -59,7 +68,7 @@ export class ColorService extends ToolModifier {
 
     setSecondaryColor(color: string): void {
         if (this.validateColor(color)) {
-            if (color !== this.primaryColor && color !== this.secondaryColor) this.updatePreviousColors(color);
+            this.updatePreviousColors(color);
             this.secondaryColor = color;
         }
     }
@@ -77,7 +86,17 @@ export class ColorService extends ToolModifier {
     }
 
     private updatePreviousColors(newColor: string) {
-        for (let i = this.previousColors.length - 1; i > 0; i--) if (i > 0) this.previousColors[i] = this.previousColors[i - 1];
+        // Verify if the color is already present in the list of previous colors
+        let oldIndexOfNewColor = this.previousColors.length - 1;
+        for (let i = 0; i < this.previousColors.length; i++) {
+            if (this.previousColors[i] === newColor) {
+                oldIndexOfNewColor = i;
+                break;
+            }
+        }
+
+        // Add the color and shift the list of previous colors
+        for (let i = oldIndexOfNewColor; i > 0; i--) if (i > 0) this.previousColors[i] = this.previousColors[i - 1];
         this.previousColors[0] = newColor;
     }
 
@@ -92,8 +111,8 @@ export class ColorService extends ToolModifier {
 
         // Validate that the string is in the range 0x000000 and 0xffffff
 
-        if (!(inputHexadecimalNumber >= 0x000000)) return false;
-        if (!(inputHexadecimalNumber <= 0xffffff)) return false;
+        if (!(inputHexadecimalNumber >= MINIMUM_COLOR_NUMBER)) return false;
+        if (!(inputHexadecimalNumber <= MAXIMUM_COLOR_NUMBER)) return false;
 
         // Confirm the validity
         return true;
