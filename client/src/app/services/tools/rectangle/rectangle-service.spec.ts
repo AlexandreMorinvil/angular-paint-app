@@ -2,10 +2,12 @@ import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { RectangleService } from './rectangle-service';
 
 describe('RectangleService', () => {
     let service: RectangleService;
+    let tracingService: TracingService;
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
@@ -22,6 +24,7 @@ describe('RectangleService', () => {
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         });
         service = TestBed.inject(RectangleService);
+        tracingService = TestBed.inject(TracingService);
         drawRectangleSpy = spyOn<any>(service, 'drawRectangle').and.callThrough();
         setAttributeSpy = spyOn<any>(service, 'setAttribute').and.callThrough();
 
@@ -29,6 +32,7 @@ describe('RectangleService', () => {
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
+        service['tracingService'] = tracingService;
 
         mouseEvent = {
             offsetX: 25,
@@ -215,6 +219,13 @@ describe('RectangleService', () => {
         service.onMouseMove(mouseEvent);
         expect(setAttributeSpy).toHaveBeenCalled();
     });
+
+    it('on set Attribute sould set fill if shape has fill ', () => {
+        tracingService.setHasFill(true);
+        service.setAttribute(previewCtxStub);
+        expect(previewCtxStub.fill()).toHaveBeenCalled();
+    });
+
     /*
     it('on set Attribute sould set fill if shape has fill ', () => {
         service.setAttribute(previewCtxStub);

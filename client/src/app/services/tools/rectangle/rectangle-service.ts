@@ -36,7 +36,6 @@ export class RectangleService extends Tool {
 
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
-
         if (this.mouseDown) {
             this.clearPath();
 
@@ -61,7 +60,6 @@ export class RectangleService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawRectangle(this.drawingService.previewCtx, this.pathData);
@@ -70,13 +68,11 @@ export class RectangleService extends Tool {
 
     onShiftDown(event: KeyboardEvent): void {
         this.shiftDown = true;
-        //this.drawingService.clearCanvas(this.drawingService.previewCtx); pas besoin
         this.drawRectangle(this.drawingService.previewCtx, this.pathData);
     }
 
     onShiftUp(event: KeyboardEvent): void {
         this.shiftDown = false;
-        //this.drawingService.clearCanvas(this.drawingService.previewCtx); as besoin
         this.drawRectangle(this.drawingService.previewCtx, this.pathData);
     }
 
@@ -86,16 +82,16 @@ export class RectangleService extends Tool {
         let width = lastMouseMoveCoord.x - this.mouseDownCoord.x;
         let height = lastMouseMoveCoord.y - this.mouseDownCoord.y;
         if (this.shiftDown) {
-            let squareSide = Math.abs(Math.min(height, width));
+            const squareSide = Math.abs(Math.min(height, width));
             if (height < 0 && width >= 0) {
-                height = -1 * squareSide;
+                height = -squareSide;
                 width = squareSide;
             } else if (height >= 0 && width < 0) {
-                width = -1 * squareSide;
+                width = -squareSide;
                 height = squareSide;
             } else if (height < 0 && width < 0) {
-                width = -1 * squareSide;
-                height = -1 * squareSide;
+                width = -squareSide;
+                height = -squareSide;
             } else {
                 width = squareSide;
                 height = squareSide;

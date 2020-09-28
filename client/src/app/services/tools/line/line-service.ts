@@ -107,14 +107,7 @@ export class LineService extends Tool {
                 this.clearPath();
                 this.drawingService.baseCtx.putImageData(this.undo[this.undo.length - 1], 0, 0);
                 this.undo.pop();
-                console.log('version A');
             }
-            // } else {
-            // this.clearPath();
-            //this.drawingService.baseCtx.putImageData(this.undo[this.undo.length - 1], 0, 0);
-            //  this.undo.pop();
-            //  console.log('version B');
-            // }
         }
     }
 
@@ -138,7 +131,6 @@ export class LineService extends Tool {
                     this.drawJunction(this.drawingService.baseCtx, this.pathData);
                 }
                 this.savedPoints();
-                console.log('a');
                 console.log(this.undo.length);
                 this.clearPath();
                 this.countClick++;
@@ -149,8 +141,6 @@ export class LineService extends Tool {
                 this.pathData[0] = this.alignmentCoord;
                 this.mouseDownCoord = this.alignmentCoord;
                 this.countClick++;
-                console.log('b');
-
                 if (this.countClick != 1) {
                     this.drawJunction(this.drawingService.baseCtx, this.pathData);
                 }
@@ -234,9 +224,7 @@ export class LineService extends Tool {
     }
 
     private savedPoints(): void {
-        console.log(this.mouseDownCoord);
         this.pathDataSaved.push(this.mouseDownCoord);
-        console.log('saveeee');
         this.savedImage = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
         this.undo.push(this.savedImage);
     }
