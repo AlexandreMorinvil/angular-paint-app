@@ -43,7 +43,6 @@ export class LineService extends Tool {
     private pathDataSaved: Vec2[];
     private savedImage: ImageData;
     private undo: ImageData[];
-    private width: number = 1;
     private click: number;
     private isCloseShape: boolean;
     alignmentCoord: Vec2;
@@ -189,11 +188,12 @@ export class LineService extends Tool {
 
     private drawJunction(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         if (this.isPointWithJunction) {
-            ctx.beginPath();
-            const centerX = this.mouseDownCoord.x;
-            const centerY = this.mouseDownCoord.y;
             const radius = JunctionSize.twoPixel;
-            ctx.ellipse(centerX, centerY, radius, radius, 0, 0, Math.PI * 2, false);
+
+            const startCenterX = this.mouseDownCoord.x;
+            const startCenterY = this.mouseDownCoord.y;
+
+            ctx.arc(startCenterX, startCenterY, radius, 0, Math.PI * 2);
             ctx.fill();
         }
     }
@@ -240,7 +240,6 @@ export class LineService extends Tool {
         const lengthX = Math.abs(lastPath.x - firstPath.x);
 
         ctx.moveTo(firstPath.x, firstPath.y);
-        ctx.lineWidth = this.width; //width ajustment
         ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
         ctx.lineWidth = this.widthService.getWidth(); // width ajustment
         ctx.strokeStyle = this.colorService.getPrimaryColor(); // color of the line
