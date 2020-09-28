@@ -11,6 +11,7 @@ describe('EllipseService', () => {
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
+    // tslint:disable:no-any
     let drawEllipseSpy: jasmine.Spy<any>;
     let drawCircleSpy: jasmine.Spy<any>;
     let applyTraceSpy: jasmine.Spy<any>;
@@ -24,6 +25,7 @@ describe('EllipseService', () => {
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         });
         service = TestBed.inject(EllipseService);
+        // tslint:disable:no-any
         drawEllipseSpy = spyOn<any>(service, 'drawEllipse').and.callThrough();
         drawCircleSpy = spyOn<any>(service, 'drawCircle').and.callThrough();
         applyTraceSpy = spyOn<any>(service, 'applyTrace').and.callThrough();

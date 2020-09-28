@@ -12,6 +12,7 @@ describe('RectangleService', () => {
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
+    // tslint:disable:no-any
     let drawRectangleSpy: jasmine.Spy<any>;
     let setAttributeSpy: jasmine.Spy<any>;
 
@@ -23,6 +24,7 @@ describe('RectangleService', () => {
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         });
         service = TestBed.inject(RectangleService);
+        // tslint:disable:no-any
         drawRectangleSpy = spyOn<any>(service, 'drawRectangle').and.callThrough();
         setAttributeSpy = spyOn<any>(service, 'setAttribute').and.callThrough();
 
