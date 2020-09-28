@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
-
 import { BrushService } from '@app/services/tools/brush/brush-service';
 import { CursorService } from '@app/services/tools/cursor/cursor.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse-service';

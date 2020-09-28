@@ -12,6 +12,7 @@ export abstract class Tool {
     mouseDownCoord: Vec2;
     mouseDown: boolean = false;
     minWidth: number = 1;
+    shiftDown: boolean = false;
 
     constructor(protected drawingService: DrawingService, description: Description) {
         this.description = description;
