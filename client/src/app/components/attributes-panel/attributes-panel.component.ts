@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
+import { Tool } from '@app/classes/tool';
+import { TextureService } from '@app/services/tool-modifier/texture/texture.service';
+import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
+import { WidthService } from '@app/services/tool-modifier/width/width.service';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
-import { TextureEnum } from '@app/services/tools/brush/brush-service';
 
 @Component({
     selector: 'app-attributes-panel',
@@ -8,48 +11,32 @@ import { TextureEnum } from '@app/services/tools/brush/brush-service';
     styleUrls: ['./attributes-panel.component.scss'],
 })
 export class AttributesPanelComponent {
+    colorUse: string = '#000000';
 
-    toolbox: ToolboxService; 
-    colorUse = "#000000";
-    sizePoint= 1;
-    textureUse = 0;
-    textures = TextureEnum;
-    enumKeys: any[] = [];
-    
-    constructor(toolboxService: ToolboxService) {
-        this.toolbox = toolboxService;
-        this.enumKeys = Object.keys(this.textures).filter(f => !isNaN(Number(f)));
+    constructor(
+        private toolboxService: ToolboxService,
+        private widthService: WidthService,
+        private textureService: TextureService,
+        private tracingService: TracingService,
+    ) {}
+
+    get currentTool(): Tool {
+        return this.toolboxService.getCurrentTool();
     }
 
-    set color(item:string){
-        this.colorUse = item;
-        this.toolbox.getCurrentTool().onColorChange(this.colorUse);
+    capitalizeFirstLetter(str: string): string {
+        return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
-    get color(): string {
-        return this.colorUse;
-    }
-    
-    set size(item:number){
-        this.sizePoint = item;
-        this.toolbox.getCurrentTool().onWidthChange(this.sizePoint);
+    needsWidthAttribute(): boolean {
+        return this.currentTool.needsModifierManager(this.widthService);
     }
 
-    get size(): number {
-        return this.sizePoint;
+    needsTextureAttribute(): boolean {
+        return this.currentTool.needsModifierManager(this.textureService);
     }
 
-    change(value: TextureEnum) {
-        this.texture = value;
+    needsTracingAttribute(): boolean {
+        return this.currentTool.needsModifierManager(this.tracingService);
     }
-
-    set texture(item:TextureEnum){
-        this.textureUse = item;
-        this.toolbox.getCurrentTool().onTextureChange(this.textureUse);
-    }
-
-    get texture(): TextureEnum {
-        return this.textureUse;
-    }
-
 }

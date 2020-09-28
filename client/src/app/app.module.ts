@@ -8,6 +8,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app/app.component';
+// Attribute components
+import { AttributeColorComponent } from './components/attributes-panel/attribute-color/attributes-color.component';
+import { AttributeTextureComponent } from './components/attributes-panel/attribute-texture/attributes-texture.component';
+import { AttributeTracingComponent } from './components/attributes-panel/attribute-tracing/attributes-tracing.component';
+import { AttributeWidthComponent } from './components/attributes-panel/attribute-width/attributes-width.component';
 import { AttributesPanelComponent } from './components/attributes-panel/attributes-panel.component';
 import { CreateNewDrawingDialogComponent } from './components/create-new-drawing-dialog/create-new-drawing-dialog.component';
 import { DrawingComponent } from './components/drawing/drawing.component';
@@ -22,6 +27,10 @@ import { CreateNewDrawingDialogService } from './services/create-new-drawing-dia
     declarations: [
         AppComponent,
         AttributesPanelComponent,
+        AttributeTextureComponent,
+        AttributeTracingComponent,
+        AttributeWidthComponent,
+        AttributeColorComponent,
         EditorPageComponent,
         SidebarComponent,
         DrawingComponent,

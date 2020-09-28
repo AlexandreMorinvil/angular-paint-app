@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 
@@ -12,7 +12,7 @@ export interface DialogData {
     templateUrl: './create-new-drawing-dialog.component.html',
     styleUrls: ['./create-new-drawing-dialog.component.scss'],
 })
-export class CreateNewDrawingDialogComponent implements OnInit {
+export class CreateNewDrawingDialogComponent {
     constructor(
         public dialogRef: MatDialogRef<CreateNewDrawingDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: DialogData,
@@ -27,6 +27,4 @@ export class CreateNewDrawingDialogComponent implements OnInit {
         this.router.navigate(['editor']);
         this.dialogRef.close();
     }
-
-    ngOnInit(): void {}
 }

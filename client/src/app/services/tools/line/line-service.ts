@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
+import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ColorService } from '@app/services/tool-modifier/color/color.service';
+import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
+import { WidthService } from '@app/services/tool-modifier/width/width.service';
 
 export enum MouseButton {
     Left = 0,
@@ -41,15 +45,24 @@ export class LineService extends Tool {
     private isCloseShape: boolean;
     alignmentCoord: Vec2;
 
-    constructor(drawingService: DrawingService) {
-        super(drawingService, 'ligne', 'l');
+    constructor(
+        drawingService: DrawingService,
+        private colorService: ColorService,
+        private tracingService: TracingService,
+        private widthService: WidthService,
+    ) {
+        super(drawingService, new Description('line', 'l', 'line_icon.png'));
         this.clearPath();
         this.clearPathSaved();
         this.countClick = 0;
         this.click = 0;
-        this.timer = 0;
         this.undo = [];
+        this.timer = 0;
         this.currentCountLine = 0;
+        this.modifiers.push(this.colorService);
+        this.modifiers.push(this.widthService);
+        this.modifiers.push(this.tracingService);
+        this.clearPath();
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -74,23 +87,22 @@ export class LineService extends Tool {
         }
     }
 
-    /* onShiftDown() {
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.drawAlignLine(this.drawingService.previewCtx, this.pathData);
-    } */
     onShiftUp() {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawLine(this.drawingService.previewCtx, this.pathData);
-        console.log('shift UP!!!');
     }
 
     onBackspaceDown(): void {
-        if (this.undo.length > 1) {
-            this.clearPath();
+        if (this.undo.length > 0) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.pathDataSaved.pop();
+            this.pathDataSaved.pop();
+            this.mouseDownCoord = this.pathDataSaved[this.pathDataSaved.length - 1];
+            this.currentCountLine--;
+            this.clearPath();
             this.drawingService.baseCtx.putImageData(this.undo[this.undo.length - 2], 0, 0);
             this.undo.pop();
-            console.log('Backspace was pressed');
+            console.log(this.undo.length);
         }
     }
 
@@ -98,7 +110,6 @@ export class LineService extends Tool {
         this.mouseClick = false;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.clearPath();
-        console.log('Escape was pressed!!!');
     }
 
     onMouseClick(event: MouseEvent): void {
@@ -109,30 +120,21 @@ export class LineService extends Tool {
             if (this.click == 1 && !event.shiftKey) {
                 this.mouseDownCoord = this.getPositionFromMouse(event);
                 this.pathData.push(this.mouseDownCoord);
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.drawLine(this.drawingService.baseCtx, this.pathData);
                 this.initialiseStartAndEndPoint();
-                this.savedImage = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
-                this.undo.push(this.savedImage);
-                console.log('save');
+                //this.savedImage = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
+                //this.undo.push(this.savedImage);
+                console.log(this.undo.length);
                 this.clearPath();
             }
-
             if (this.click == 1 && event.shiftKey) {
-                this.drawAlignLine(this.drawingService.baseCtx, this.pathData);
                 this.pathData[0] = this.alignmentCoord;
                 this.mouseDownCoord = this.alignmentCoord;
-                /* this.initialiseStartAndEndPoint();
-                this.savedData = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
-                if (this.undo.length >= this.undoLimit) {
-                    this.undo.shift();
-                }
-                this.undo.push(this.savedData); */
             }
-
             if (this.click === 1) {
                 this.timer = setTimeout(() => {
                     this.click = 0;
-                    console.log('click');
                 }, 200);
             } else if (this.click === 2 && !event.shiftKey) {
                 clearTimeout(this.timer);
@@ -144,16 +146,14 @@ export class LineService extends Tool {
     }
 
     private onMouseDoubleClickEvent(event: MouseEvent): void {
-        console.log('doubleClick');
         this.clearPath();
         if (this.isAround20Pixels()) {
             this.closeShape();
-            console.log('ShapeClose');
         }
         if (this.isCloseShape) {
             this.savedImage = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
             this.undo.push(this.savedImage);
-            this.isCloseShape = false;
+            console.log(this.undo.length);
         }
         this.currentCountLine = 0;
         this.countClick = 0;
@@ -169,8 +169,10 @@ export class LineService extends Tool {
         let lastPath = path[path.length - 1];
         ctx.moveTo(firstPath.x, firstPath.y);
         ctx.lineTo(lastPath.x, lastPath.y);
-
-        ctx.lineWidth = this.width; //width ajustment
+        ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
+        ctx.lineWidth = this.widthService.getWidth(); // width ajustment
+        ctx.strokeStyle = this.colorService.getPrimaryColor(); // color of the line
+        ctx.fillStyle = this.colorService.getPrimaryColor(); // color of the starting point
         ctx.stroke();
     }
     private isAround20Pixels(): boolean {
@@ -180,8 +182,8 @@ export class LineService extends Tool {
         let xSideTriangleSquared = Math.pow(diffXPosition, 2);
         let ySideTriangleSquared = Math.pow(diffYPosition, 2);
         let hypothenus = Math.sqrt(xSideTriangleSquared + ySideTriangleSquared);
-        if (hypothenus <= 200) {
-            // on est en bas de 200 pixels
+        if (hypothenus <= 20) {
+            // on est en bas de 200 pixels sa ferme la forme
             return true;
         }
         return false;
@@ -216,6 +218,8 @@ export class LineService extends Tool {
             this.pathDataSaved.push(this.endPosition);
             this.currentCountLine++;
         }
+        this.savedImage = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
+        this.undo.push(this.savedImage);
     }
     drawAlignLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
@@ -309,9 +313,6 @@ export class LineService extends Tool {
     findAlignmentAngle(path: Vec2[]): number {
         const mouseMoveCoord = path[path.length - 1];
         const mouseDownCoord = path[0];
-        //console.log('mouseMoveCoord x:' + mouseMoveCoord.x + ' y:' + mouseMoveCoord.y);
-        //console.log('mouseDownCoord x: ' + mouseDownCoord.x + ' y: ' + mouseDownCoord.y);
-
         const pointX = mouseMoveCoord.x - mouseDownCoord.x;
         const pointY = mouseMoveCoord.y - mouseDownCoord.y;
 
@@ -319,13 +320,10 @@ export class LineService extends Tool {
 
         if (mouseMoveCoord.y <= mouseDownCoord.y) {
             alignmentAngle = Math.abs(360 - Math.abs(Math.atan2(pointY, pointX) * 180) / Math.PI);
-            //console.log(alignmentAngle);
             const roundedAngle = this.roundToNearestAngle(alignmentAngle);
             return roundedAngle;
         } else {
             alignmentAngle = Math.abs(Math.atan2(pointY, pointX) * 180) / Math.PI;
-            //console.log(alignmentAngle);
-
             const roundedAngle = this.roundToNearestAngle(alignmentAngle);
             return roundedAngle;
         }

@@ -31,15 +31,15 @@ export class ToolboxService {
         this.availableTools.push(lineService);
     }
 
-    public getAvailableTools(): Tool[] {
+    getAvailableTools(): Tool[] {
         return this.availableTools;
     }
 
-    public getCurrentTool(): Tool {
+    getCurrentTool(): Tool {
         return this.currentTool;
     }
 
-    public setSelectedTool(selectedTool: Tool): void {
+    setSelectedTool(selectedTool: Tool): void {
         this.currentTool = selectedTool;
     }
 }

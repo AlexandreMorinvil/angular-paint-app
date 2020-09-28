@@ -1,14 +1,15 @@
-.wrapper {
-    display: grid;
-    grid-template-columns: auto;
-    grid-template-rows: 50px 50px;
+.container {
+    --attribute-panel-color: rgb(47, 46, 63);
+    --attribute-panel-section-color: rgb(62, 51, 78);
+    --attribute-panel-contrast-color: rgb(37, 36, 53);
 }
 
 .container {
     box-sizing: border-box;
+    color: white;
     height: 100vh;
     width: var(--attributes-panel-width);
-    background-color: rgb(47, 46, 63);
+    background-color: var(--attribute-panel-color);
     border-right: 1px solid rgb(13, 13, 39);
     overflow: visible;
 }
@@ -16,4 +17,44 @@
 .container-flex {
     display: flex;
     flex-direction: column;
+}
+
+// Title
+.title {
+    display: flex;
+    margin: 2px 0;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: calc(var(--sidebar-width) * 2);
+    background-color: var(--attribute-panel-section-color);
+    border-bottom: solid var(--attribute-panel-contrast-color) 2px;
+}
+
+.title h1 {
+    font-size: calc(var(--sidebar-width) * 0.4);
+    text-align: center;
+    width: 100%;
+    margin: 0 0 10px;
+}
+
+.title img {
+    height: var(--sidebar-width);
+    width: var(--sidebar-width);
+    margin: auto;
+}
+
+// Sections
+.section {
+    margin: 2px 0 0;
+    padding: 10px 15px 20px;
+    border-top: solid var(--attribute-panel-contrast-color) 2px;
+    background-color: var(--attribute-panel-section-color);
+    border-bottom: solid var(--attribute-panel-contrast-color) 2px;
+}
+
+.section:last-child {
+    margin-top: auto;
+    margin-bottom: 0px;
+    border-bottom: none;
 }

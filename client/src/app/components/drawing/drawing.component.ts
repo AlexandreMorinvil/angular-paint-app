@@ -1,4 +1,3 @@
-//import { variable } from '@angular/compiler/src/output/output_ast';
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -65,13 +64,13 @@ export class DrawingComponent implements AfterViewInit {
     }
 
     @HostListener('window:keyup', ['$event'])
-    keyEventUp(event: KeyboardEvent) {
+    keyEventUp(event: KeyboardEvent): void {
         if (event.key === 'Shift') {
             this.toolbox.getCurrentTool().onShiftUp(event);
         } else if (event.keyCode == 32) {
             this.toolbox.getCurrentTool().onBackspaceDown(event);
         } else {
-            for (let i in this.toolbox.getAvailableTools()) {
+            for (const i in this.toolbox.getAvailableTools()) {
                 if (this.toolbox.getAvailableTools()[i].shortcut === event.key.toLowerCase()) {
                     this.toolbox.setSelectedTool(this.toolbox.getAvailableTools()[i]);
                 }
@@ -87,8 +86,8 @@ export class DrawingComponent implements AfterViewInit {
     }
 
     @HostListener('window:keydown', ['$event'])
-    onShiftDown(event: KeyboardEvent) {
-        if (event.key == 'Shift') {
+    onShiftDown(event: KeyboardEvent): void {
+        if (event.key === 'Shift') {
             this.toolbox.getCurrentTool().onShiftDown(event);
         }
     }

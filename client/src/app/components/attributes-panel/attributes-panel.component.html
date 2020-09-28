@@ -1,30 +1,12 @@
 <div class="container container-flex">
-    <p style="color:white">Panneau d'attributs</p>
-
-    <div class="wrapper">
-        <div>
-            <label for="name" style="color:white">Size</label>
-            <br>
-            <input value="1" [(ngModel)]="size">
-        </div>
-
-        <div>
-            <label for="name" style="color:white">Color</label>
-            <br>
-            <input value="#000000" [(ngModel)]="color">
-        </div>
-
-        <div>
-            <label for="name" style="color:white">Texture</label>
-            <br>
-            <select (change)="change($event.target.value)">
-                <option *ngFor="let texture of enumKeys"
-                [value]="texture">{{textures[texture]}}</option>
-          </select>
-        </div>
-     
-
-
+    <div class="title">
+        <img [src]="currentTool.iconDirectory" [alt]="currentTool.name" />
+        <h1>{{ capitalizeFirstLetter(currentTool.name) }}</h1>
     </div>
 
+    <app-attributes-width class="section" *ngIf="needsWidthAttribute()"> </app-attributes-width>
+    <app-attributes-texture class="section" *ngIf="needsTextureAttribute()"></app-attributes-texture>
+    <app-attributes-tracing class="section" *ngIf="needsTracingAttribute()"></app-attributes-tracing>
+
+    <app-attributes-color class="section"></app-attributes-color>
 </div>

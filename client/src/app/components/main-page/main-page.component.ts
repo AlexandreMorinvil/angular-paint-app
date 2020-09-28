@@ -5,11 +5,6 @@ import { Message } from '@common/communication/message';
 import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-export interface DialogData {
-    animal: string;
-    name: string;
-}
-
 @Component({
     selector: 'app-main-page',
     templateUrl: './main-page.component.html',
@@ -21,7 +16,7 @@ export class MainPageComponent {
 
     constructor(private basicService: IndexService, public createNewDrawingDialogService: CreateNewDrawingDialogService) {}
 
-    openCreateNewDrawingDialog(): void {
+    openUserGuide(): void {
         this.createNewDrawingDialogService.openDialog();
     }
 
