@@ -51,7 +51,6 @@ export class EraserService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
 
-            // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawLine(this.drawingService.baseCtx, this.pathData);
         }
@@ -80,16 +79,19 @@ export class EraserService extends Tool {
       this.drawingService.previewCtx.strokeStyle = '#000000';
       this.drawingService.previewCtx.fillStyle ='#FFFFFF';
       this.drawingService.previewCtx.lineWidth = 1;
+      let squareWidth: number;
+      if (this.widthService.getWidth() <= 5) squareWidth = 5;
+      else squareWidth = this.widthService.getWidth()
       this.drawingService.clearCanvas(this.drawingService.previewCtx);
-      this.drawingService.previewCtx.strokeRect(event.offsetX - this.widthService.getWidth() / 2,
-        event.offsetY - this.widthService.getWidth() / 2,
-        this.widthService.getWidth() + 1,
-        this.widthService.getWidth() + 1,
+      this.drawingService.previewCtx.strokeRect(event.offsetX - squareWidth / 2,
+        event.offsetY - squareWidth / 2,
+        squareWidth + 1,
+        squareWidth + 1,
       );
-      this.drawingService.previewCtx.fillRect(event.offsetX - this.widthService.getWidth() / 2,
-        event.offsetY - this.widthService.getWidth() / 2,
-        this.widthService.getWidth() + 1,
-        this.widthService.getWidth() + 1,
+      this.drawingService.previewCtx.fillRect(event.offsetX - squareWidth / 2,
+        event.offsetY - squareWidth / 2,
+        squareWidth + 1,
+        squareWidth + 1,
       );
     }
 
