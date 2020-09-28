@@ -54,7 +54,7 @@ export class EraserService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawLine(this.drawingService.baseCtx, this.pathData);
         }
-        this.EraserVisual(event);
+        this.eraserVisual(event);
     }
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
@@ -75,13 +75,11 @@ export class EraserService extends Tool {
         ctx.stroke();
     }
 
-    private EraserVisual(event: MouseEvent): void{
+    private eraserVisual(event: MouseEvent): void{
       this.drawingService.previewCtx.strokeStyle = '#000000';
       this.drawingService.previewCtx.fillStyle ='#FFFFFF';
       this.drawingService.previewCtx.lineWidth = 1;
-      let squareWidth: number;
-      if (this.widthService.getWidth() <= 5) squareWidth = 5;
-      else squareWidth = this.widthService.getWidth()
+      let squareWidth: number = Math.max(this.widthService.getWidth(), this.getMinWidth);
       this.drawingService.clearCanvas(this.drawingService.previewCtx);
       this.drawingService.previewCtx.strokeRect(event.offsetX - squareWidth / 2,
         event.offsetY - squareWidth / 2,
