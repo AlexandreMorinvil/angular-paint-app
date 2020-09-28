@@ -188,6 +188,7 @@ export class LineService extends Tool {
 
     private drawJunction(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         if (this.isPointWithJunction) {
+            ctx.beginPath();
             const radius = JunctionSize.twoPixel;
 
             const startCenterX = this.mouseDownCoord.x;
