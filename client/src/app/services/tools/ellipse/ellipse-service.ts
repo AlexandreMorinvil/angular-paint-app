@@ -108,6 +108,7 @@ export class EllipseService extends Tool {
 
         ctx.rect(this.mouseDownCoord.x, this.mouseDownCoord.y, width, height);
         ctx.setLineDash([6]); // abitrary number!!!
+        ctx.strokeStyle = 'black';
         ctx.lineWidth = 1;
         ctx.stroke();
     }
