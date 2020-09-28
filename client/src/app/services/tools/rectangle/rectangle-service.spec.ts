@@ -15,6 +15,7 @@ describe('RectangleService', () => {
     let previewCtxStub: CanvasRenderingContext2D;
     let drawRectangleSpy: jasmine.Spy<any>;
     let setAttributeSpy: jasmine.Spy<any>;
+    let ctxFillSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -27,12 +28,14 @@ describe('RectangleService', () => {
         tracingService = TestBed.inject(TracingService);
         drawRectangleSpy = spyOn<any>(service, 'drawRectangle').and.callThrough();
         setAttributeSpy = spyOn<any>(service, 'setAttribute').and.callThrough();
-
+        
         // Configuration du spy du service
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
         service['tracingService'] = tracingService;
+        
+        ctxFillSpy = spyOn<any>(service['drawingService'].previewCtx, 'fill').and.callThrough();
 
         mouseEvent = {
             offsetX: 25,
@@ -223,7 +226,13 @@ describe('RectangleService', () => {
     it('on set Attribute sould set fill if shape has fill ', () => {
         tracingService.setHasFill(true);
         service.setAttribute(previewCtxStub);
-        expect(previewCtxStub.fill()).toHaveBeenCalled();
+        expect(ctxFillSpy).toHaveBeenCalled();
+    });
+
+    it('on set Attribute sould set fill if shape has fill ', () => {
+        tracingService.setHasFill(false);
+        service.setAttribute(previewCtxStub);
+        expect(ctxFillSpy).not.toHaveBeenCalled();
     });
 
     /*
