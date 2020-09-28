@@ -32,7 +32,7 @@ export class ColorService extends ToolModifier {
         for (let i = 0; i < this.previousColorCount - colorSelectionCount; i++) this.previousColors.push(COLOR_WHITE);
     }
 
-    intertwinColors(): void {
+    intertwineColors(): void {
         const temporaryColor: string = this.primaryColor;
         const temporaryOpacity: number = this.primaryColorOpacity;
 

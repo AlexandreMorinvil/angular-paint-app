@@ -41,6 +41,21 @@ describe('ColorService', () => {
         expect(secondaryOpacity).toEqual(DEFAULT_OPACITY);
     });
 
+
+    it('should accept numbers between 0 and 0xffffff as the color number provided to the color setter', () => {
+        const properColor = '#aabbcc';
+
+        colorService.setPrimaryColor(properColor);
+        colorService.setSecondaryColor(properColor);
+
+        const primaryColor: string = colorService.getPrimaryColor();
+        const secondaryColor: string = colorService.getSecondaryColor();
+
+        expect(primaryColor).toEqual(properColor);
+        expect(secondaryColor).toEqual(properColor);
+        expect(validateColorSpy.calls.count()).toEqual(2);
+    });
+
     it('should accept the number 0 as the color number provided to the color setter', () => {
         const properColor = '#0';
 
@@ -111,28 +126,14 @@ describe('ColorService', () => {
         expect(validateColorSpy.calls.count()).toEqual(2);
     });
 
-    it('should accept numbers above between 0 and 0xffffff as the color number provided to the color setter', () => {
-        const properColor = '#aabbcc';
-
-        colorService.setPrimaryColor(properColor);
-        colorService.setSecondaryColor(properColor);
-
-        const primaryColor: string = colorService.getPrimaryColor();
-        const secondaryColor: string = colorService.getSecondaryColor();
-
-        expect(primaryColor).toEqual(properColor);
-        expect(secondaryColor).toEqual(properColor);
-        expect(validateColorSpy.calls.count()).toEqual(2);
-    });
-
-    it('should intertwin the primary and the secondary color when using the method intertwinColors', () => {
+    it('should intertwin the primary and the secondary color when using the method intertwineColors', () => {
         const initialPrimaryColor = '#aabbcc';
         const initialSecondaryColor = '#112233';
 
         colorService.setPrimaryColor(initialPrimaryColor);
         colorService.setSecondaryColor(initialSecondaryColor);
 
-        colorService.intertwinColors();
+        colorService.intertwineColors();
 
         const primaryColor: string = colorService.getPrimaryColor();
         const secondaryColor: string = colorService.getSecondaryColor();
