@@ -7,7 +7,7 @@ import { RectangleService } from './rectangle-service';
 describe('RectangleService', () => {
     let service: RectangleService;
     let mouseEvent: MouseEvent;
-    let mouseEvent2: MouseEvent;
+    // let mouseEvent2: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
     let baseCtxStub: CanvasRenderingContext2D;
@@ -38,11 +38,11 @@ describe('RectangleService', () => {
             shiftKey: false,
         } as MouseEvent;
 
-        mouseEvent2 = {
-            offsetX: 1200,
-            offsetY: 500,
-            button: 0,
-        } as MouseEvent;
+        // mouseEvent2 = {
+        //     offsetX: 1200,
+        //     offsetY: 500,
+        //     button: 0,
+        // } as MouseEvent;
     });
 
     it('should be created', () => {
