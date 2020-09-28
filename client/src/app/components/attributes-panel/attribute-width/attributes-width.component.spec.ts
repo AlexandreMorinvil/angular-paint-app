@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { AttributeWidthComponent } from './attributes-width.component';
 
 describe('AttributeWidthComponent', () => {

@@ -27,8 +27,8 @@ button {
     border-style: none;
     border-right: inherit;
     border-bottom: 1px solid rgb(53, 53, 79);
-    color:white;
-    outline:none;
+    color: white;
+    outline: none;
 
     display: flex;
     justify-content: center;
@@ -47,6 +47,15 @@ button.active {
 
 .tooltip {
     visibility: hidden;
+}
+
+.home-button {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+#ome-image {
+    background-color: red;
 }
 
 .has-tooltip:hover .tooltip {
