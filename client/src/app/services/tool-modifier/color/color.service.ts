@@ -85,7 +85,7 @@ export class ColorService extends ToolModifier {
         return this.previousColors;
     }
 
-    private updatePreviousColors(newColor: string) {
+    private updatePreviousColors(newColor: string): void {
         // Verify if the color is already present in the list of previous colors
         let oldIndexOfNewColor = this.previousColors.length - 1;
         for (let i = 0; i < this.previousColors.length; i++) {
@@ -96,11 +96,11 @@ export class ColorService extends ToolModifier {
         }
 
         // Add the color and shift the list of previous colors
-        for (let i = oldIndexOfNewColor; i > 0; i--) if (i > 0) this.previousColors[i] = this.previousColors[i - 1];
+        for (let i = oldIndexOfNewColor; i > 0; i--) this.previousColors[i] = this.previousColors[i - 1];
         this.previousColors[0] = newColor;
     }
 
-    private validateColor(input: String): boolean {
+    private validateColor(input: string): boolean {
         // Validate that the input starts with "#"
         if (!(input.charAt(0) === '#')) return false;
 
