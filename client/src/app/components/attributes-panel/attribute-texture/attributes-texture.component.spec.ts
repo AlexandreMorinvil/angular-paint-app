@@ -56,7 +56,7 @@ describe('AttributeTextureComponent', () => {
         expect(texture).toEqual(initialTexutreValue);
     });
 
-    it('The input texture value should revert to its original value when cancelling the input change', () => {
+    it('the input texture value should revert to its original value when cancelling the input change', () => {
         const newTextureValue = TextureEnum.gradientTexture;
 
         const initialTexture = component.texture;
@@ -69,7 +69,7 @@ describe('AttributeTextureComponent', () => {
         expect(texture).toEqual(initialTexture);
     });
 
-    it('if a non existing texutre is inserted the texture should not change', () => {
+    it('if the texture is changed, there should be a need for confirmation', () => {
         component.texture = TextureEnum.gradientTexture;
         const needForConfirmation: boolean = component.needConfirmation();
         expect(needForConfirmation).toEqual(true);
