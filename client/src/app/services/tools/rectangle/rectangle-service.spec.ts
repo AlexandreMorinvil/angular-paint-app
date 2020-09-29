@@ -16,6 +16,7 @@ describe('RectangleService', () => {
     let drawRectangleSpy: jasmine.Spy<any>;
     let setAttributeSpy: jasmine.Spy<any>;
     let ctxFillSpy: jasmine.Spy<any>;
+    let ctxContourSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -36,6 +37,7 @@ describe('RectangleService', () => {
         service['tracingService'] = tracingService;
 
         ctxFillSpy = spyOn<any>(service['drawingService'].previewCtx, 'fill').and.callThrough();
+        ctxContourSpy = spyOn<any>(service['drawingService'].previewCtx, 'stroke').and.callThrough();
 
         mouseEvent = {
             offsetX: 25,
@@ -64,7 +66,7 @@ describe('RectangleService', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
-            button: 1, // TODO: Have an enum accessible
+            button: 1,
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);
@@ -238,12 +240,12 @@ describe('RectangleService', () => {
     it('on set Attribute should set contour if shape has countour ', () => {
         tracingService.setHasContour(true);
         service.setAttribute(previewCtxStub);
-        expect(ctxFillSpy).toHaveBeenCalled();
+        expect(ctxContourSpy).toHaveBeenCalled();
     });
 
     it('on set Attribute should not set contour if shape has no contour ', () => {
         tracingService.setHasContour(false);
         service.setAttribute(previewCtxStub);
-        expect(ctxFillSpy).not.toHaveBeenCalled();
+        expect(ctxContourSpy).not.toHaveBeenCalled();
     });
 });
