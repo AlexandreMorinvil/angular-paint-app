@@ -6,9 +6,10 @@ import { ToolModifier } from '@app/classes/tool-modifier';
 })
 export class JunctionService extends ToolModifier {
     readonly DEFAULT_HAS_JONCTION_POINT: boolean = true;
-    readonly MAX_JONCTION_DIAMETER: number = 50;
-    readonly MIN_JONCTION_DIAMETER: number = 1;
-    private diameter: number = this.MIN_JONCTION_DIAMETER;
+    readonly DEFAULT_JUNCTION_DIAMETER: number = 5;
+    readonly MAX_JUNCTION_DIAMETER: number = 50;
+    readonly MIN_JUNCTION_DIAMETER: number = 1;
+    private diameter: number = this.DEFAULT_JUNCTION_DIAMETER;
     private hasJunctionPoint: boolean = this.DEFAULT_HAS_JONCTION_POINT;
 
     constructor() {
@@ -16,8 +17,8 @@ export class JunctionService extends ToolModifier {
     }
 
     setDiameter(input: number): void {
-        if (input >= this.MAX_JONCTION_DIAMETER) this.diameter = this.MAX_JONCTION_DIAMETER;
-        else if (input <= this.MIN_JONCTION_DIAMETER) this.diameter = this.MIN_JONCTION_DIAMETER;
+        if (input >= this.MAX_JUNCTION_DIAMETER) this.diameter = this.MAX_JUNCTION_DIAMETER;
+        else if (input <= this.MIN_JUNCTION_DIAMETER) this.diameter = this.MIN_JUNCTION_DIAMETER;
         else this.diameter = input;
     }
 
