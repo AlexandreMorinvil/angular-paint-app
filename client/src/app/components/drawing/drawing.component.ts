@@ -38,25 +38,11 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.hasBeenDrawnOnto = false;
     }
 
-    resetDrawing(): void {
-        this.drawingService.clearCanvas(this.baseCtx);
-        this.drawingService.clearCanvas(this.previewCtx);
-        this.drawingService.hasBeenDrawnOnto = false;
-    }
-
-    resetDrawingWithWarning(): void {
-        if (!this.drawingService.hasBeenDrawnOnto) {
-            this.resetDrawing();
-        } else if (confirm('Voulez-vous abandonner le dessin en cours?')) {
-            this.resetDrawing();
-        }
-    }
-
     @HostListener('document:keydown.control.o', ['$event'])
     createNewDrawingKeyboardEvent(event: KeyboardEvent): void {
         event.preventDefault();
 
-        this.resetDrawingWithWarning();
+        this.drawingService.resetDrawingWithWarning();
     }
 
     @HostListener('mousemove', ['$event'])
