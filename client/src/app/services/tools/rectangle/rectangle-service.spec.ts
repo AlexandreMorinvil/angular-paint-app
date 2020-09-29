@@ -28,13 +28,13 @@ describe('RectangleService', () => {
         tracingService = TestBed.inject(TracingService);
         drawRectangleSpy = spyOn<any>(service, 'drawRectangle').and.callThrough();
         setAttributeSpy = spyOn<any>(service, 'setAttribute').and.callThrough();
-        
+
         // Configuration du spy du service
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
         service['tracingService'] = tracingService;
-        
+
         ctxFillSpy = spyOn<any>(service['drawingService'].previewCtx, 'fill').and.callThrough();
 
         mouseEvent = {
@@ -223,41 +223,27 @@ describe('RectangleService', () => {
         expect(setAttributeSpy).toHaveBeenCalled();
     });
 
-    it('on set Attribute sould set fill if shape has fill ', () => {
+    it('on set Attribute should set fill if shape has fill ', () => {
         tracingService.setHasFill(true);
         service.setAttribute(previewCtxStub);
         expect(ctxFillSpy).toHaveBeenCalled();
     });
 
-    it('on set Attribute sould set fill if shape has fill ', () => {
+    it('on set Attribute should not set fill if shape has fill ', () => {
         tracingService.setHasFill(false);
         service.setAttribute(previewCtxStub);
         expect(ctxFillSpy).not.toHaveBeenCalled();
     });
 
-    /*
-    it('on set Attribute sould set fill if shape has fill ', () => {
-        service.setAttribute(previewCtxStub);
-        tracingService.setHasFill(true);
-        //expect(previewCtxStub.fill()).toHaveBeenCalled();
-    });
-
-    it('on set Attribute sould not set fill if shape has not fill ', () => {
-        service.setAttribute(previewCtxStub);
-        tracingService.setHasFill(false);
-        expect(previewCtxStub.fill()).not.toHaveBeenCalled();
-    });
-
-    it('on set Attribute sould set countour if shape has countour ', () => {
-        service.setAttribute(previewCtxStub);
+    it('on set Attribute should set contour if shape has countour ', () => {
         tracingService.setHasContour(true);
-        expect(previewCtxStub.stroke()).toHaveBeenCalled();
+        service.setAttribute(previewCtxStub);
+        expect(ctxFillSpy).toHaveBeenCalled();
     });
 
-    it('on set Attribute sould not set countour if shape has no countour ', () => {
-        service.setAttribute(previewCtxStub);
+    it('on set Attribute should not set contour if shape has no contour ', () => {
         tracingService.setHasContour(false);
-        expect(previewCtxStub.stroke()).not.toHaveBeenCalled();
+        service.setAttribute(previewCtxStub);
+        expect(ctxFillSpy).not.toHaveBeenCalled();
     });
-    */
 });
