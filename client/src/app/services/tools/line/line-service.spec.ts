@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
+import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { LineService } from './line-service';
 
@@ -45,34 +46,41 @@ describe('LineService', () => {
         expect(service).toBeTruthy();
     });
 
-    /*it(' mouseDown should set mouseDownCoord to correct position', () => {
+    it(' mouseClick should set mouseDownCoord to correct position', () => {
         const expectedResult: Vec2 = { x: 25, y: 25 };
-        service.onMouseDown(mouseEvent);
+        service.onMouseClick(mouseEvent);
         expect(service.mouseDownCoord).toEqual(expectedResult);
     });
 
-    it(' mouseDown should set mouseDown property to true on left click', () => {
-        service.onMouseDown(mouseEvent);
-        expect(service.mouseDown).toEqual(true);
+    it(' mouseClick should set mouseClick property to true on left click', () => {
+        service.onMouseClick(mouseEvent);
+        expect(service.mouseClick).toEqual(true);
     });
 
-    it(' mouseDown should set mouseDown property to false on right click', () => {
+    it(' mouseClick should set mouseDown property to false on right click', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
             button: 1, // TODO: Avoir ceci dans un enum accessible
         } as MouseEvent;
-        service.onMouseDown(mouseEventRClick);
-        expect(service.mouseDown).toEqual(false);
+        service.onMouseClick(mouseEventRClick);
+        expect(service.mouseClick).toEqual(false);
     });
 
-    it(' onMouseUp should call drawLine if mouse was already down', () => {
+    it(' onMouseClick should call drawLine if mouse is Click one time and shift key is press', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
-        service.mouseDown = true;
-
-        service.onMouseUp(mouseEvent);
+        service.mouseClick = true;
+        const mouseEvent = {
+            offsetX: 25,
+            offsetY: 25,
+            button: 1,
+            shiftKey: true,
+        } as MouseEvent;
+        service.onMouseClick(mouseEvent);
         expect(drawLineSpy).toHaveBeenCalled();
     });
+
+    /*
 
     it(' onMouseUp should not call drawLine if mouse was not already down', () => {
         service.mouseDown = false;

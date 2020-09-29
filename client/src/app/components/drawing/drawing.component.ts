@@ -67,7 +67,7 @@ export class DrawingComponent implements AfterViewInit {
     keyEventUp(event: KeyboardEvent): void {
         if (event.key === 'Shift') {
             this.toolbox.getCurrentTool().onShiftUp(event);
-        } else if (event.key === 'Backspace') {
+        } else if (event.keyCode == 32) {
             this.toolbox.getCurrentTool().onBackspaceDown(event);
         } else {
             for (const i in this.toolbox.getAvailableTools()) {

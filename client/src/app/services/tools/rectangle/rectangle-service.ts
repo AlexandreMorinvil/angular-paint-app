@@ -38,12 +38,9 @@ export class RectangleService extends Tool {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.clearPath();
-
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
         }
-        console.log(event.offsetX);
-        console.log(event.offsetY);
     }
 
     onMouseUp(event: MouseEvent): void {
