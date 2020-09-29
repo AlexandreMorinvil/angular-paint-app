@@ -51,6 +51,10 @@ export class DrawingComponent implements AfterViewInit {
     createNewDrawingKeyboardEvent(event: KeyboardEvent): void {
         event.preventDefault();
 
+        this.resetDrawingWithWarning();
+    }
+
+    resetDrawingWithWarning(): void {
         if (!this.hasBeenDrawnOnto) {
             this.resetDrawing();
         } else if (confirm('Voulez-vous abandonner le dessin en cours?')) {
