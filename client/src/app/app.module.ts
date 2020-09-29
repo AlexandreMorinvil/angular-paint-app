@@ -11,6 +11,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app/app.component';
 // Attribute components
 import { AttributeColorComponent } from './components/attributes-panel/attribute-color/attributes-color.component';
+import { AttributeJonctionComponent } from './components/attributes-panel/attribute-jonction/attributes-jonction.component';
 import { AttributeTextureComponent } from './components/attributes-panel/attribute-texture/attributes-texture.component';
 import { AttributeTracingComponent } from './components/attributes-panel/attribute-tracing/attributes-tracing.component';
 import { AttributeWidthComponent } from './components/attributes-panel/attribute-width/attributes-width.component';
@@ -27,7 +28,7 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
     declarations: [
         AppComponent,
         AttributesPanelComponent,
-        AttributesPanelComponent,
+        AttributeJonctionComponent,
         AttributeTextureComponent,
         AttributeTracingComponent,
         AttributeWidthComponent,
