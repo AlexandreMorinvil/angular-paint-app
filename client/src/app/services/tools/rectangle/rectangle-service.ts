@@ -20,8 +20,6 @@ export enum MouseButton {
 })
 export class RectangleService extends Tool {
     private pathData: Vec2[];
-    typeLayout: string;
-    lineDash: number;
 
     constructor(
         drawingService: DrawingService,
@@ -38,22 +36,19 @@ export class RectangleService extends Tool {
 
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
-
         if (this.mouseDown) {
             this.clearPath();
-
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
         }
     }
 
     onMouseUp(event: MouseEvent): void {
+        this.resetBorder();
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.drawRectangle(this.drawingService.baseCtx, this.pathData);
-            //this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawingService.previewCtx.setLineDash([0]);
         }
         this.mouseDown = false;
         this.clearPath();
@@ -63,22 +58,29 @@ export class RectangleService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            if (!this.isInCanvas(mousePosition)) {
+                if (mousePosition.x >= this.drawingService.baseCtx.canvas.width) {
+                    this.drawingService.previewCtx.canvas.width = mousePosition.x;
+                }
+                if (mousePosition.y >= this.drawingService.baseCtx.canvas.height) {
+                    this.drawingService.previewCtx.canvas.height = mousePosition.y;
+                }
+            } else {
+                this.resetBorder();
+            }
             this.drawRectangle(this.drawingService.previewCtx, this.pathData);
         }
     }
 
-    onShiftDown(): void {
+    onShiftDown(event: KeyboardEvent): void {
         this.shiftDown = true;
-        //this.drawingService.clearCanvas(this.drawingService.previewCtx); pas besoin
         this.drawRectangle(this.drawingService.previewCtx, this.pathData);
     }
 
-    onShiftUp(): void {
+    onShiftUp(event: KeyboardEvent): void {
         this.shiftDown = false;
-        //this.drawingService.clearCanvas(this.drawingService.previewCtx); as besoin
         this.drawRectangle(this.drawingService.previewCtx, this.pathData);
     }
 
@@ -88,23 +90,22 @@ export class RectangleService extends Tool {
         let width = lastMouseMoveCoord.x - this.mouseDownCoord.x;
         let height = lastMouseMoveCoord.y - this.mouseDownCoord.y;
         if (this.shiftDown) {
-            let squareSide = Math.abs(Math.min(height, width));
+            const squareSide = Math.abs(Math.min(height, width));
             if (height < 0 && width >= 0) {
-                height = -1 * squareSide;
+                height = -squareSide;
                 width = squareSide;
             } else if (height >= 0 && width < 0) {
-                width = -1 * squareSide;
+                width = -squareSide;
                 height = squareSide;
             } else if (height < 0 && width < 0) {
-                width = -1 * squareSide;
-                height = -1 * squareSide;
-            } else if (height >= 0 && width >= 0) {
+                width = -squareSide;
+                height = -squareSide;
+            } else {
                 width = squareSide;
                 height = squareSide;
             }
         }
         ctx.rect(this.mouseDownCoord.x, this.mouseDownCoord.y, width, height);
-        console.log(this.mouseDownCoord.x, this.mouseDownCoord.y, width, height);
         this.setAttribute(ctx);
         ctx.setLineDash([0]);
     }
@@ -114,12 +115,25 @@ export class RectangleService extends Tool {
         ctx.fillStyle = this.colorService.getPrimaryColor();
         ctx.strokeStyle = this.colorService.getSecondaryColor();
         ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
-        if (this.tracingService.getHasFill()) ctx.fill();
+        if (this.tracingService.getHasFill()) {
+            ctx.fill();
+        }
         ctx.globalAlpha = this.colorService.getSecondaryColorOpacity();
-        if (this.tracingService.getHasContour()) ctx.stroke();
+        if (this.tracingService.getHasContour()) {
+            ctx.stroke();
+        }
     }
 
     private clearPath(): void {
         this.pathData = [];
+    }
+
+    private isInCanvas(mousePosition: Vec2): boolean {
+        return mousePosition.x <= this.drawingService.baseCtx.canvas.width && mousePosition.y <= this.drawingService.baseCtx.canvas.height;
+    }
+
+    private resetBorder(): void {
+        this.drawingService.previewCtx.canvas.width = this.drawingService.baseCtx.canvas.width;
+        this.drawingService.previewCtx.canvas.height = this.drawingService.baseCtx.canvas.height;
     }
 }
