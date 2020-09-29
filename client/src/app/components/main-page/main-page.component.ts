@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { CreateNewDrawingDialogService } from '@app/services/create-new-drawing-dialog/create-new-drawing-dialog.service';
 import { IndexService } from '@app/services/index/index.service';
+import { UserGuideModalService } from '@app/services/user-guide-modal/user-guide-modal.service';
 import { Message } from '@common/communication/message';
 import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -14,10 +14,10 @@ export class MainPageComponent {
     readonly title: string = 'LOG2990';
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
-    constructor(private basicService: IndexService, public createNewDrawingDialogService: CreateNewDrawingDialogService) {}
+    constructor(private basicService: IndexService, public userGuideModalService: UserGuideModalService) {}
 
-    openCreateNewDrawingDialog(): void {
-        this.createNewDrawingDialogService.openDialog();
+    openUserGuide(): void {
+        this.userGuideModalService.openUserGuide();
     }
 
     sendTimeToServer(): void {
