@@ -2,12 +2,13 @@ import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { RectangleService } from './rectangle-service';
 
 describe('RectangleService', () => {
     let service: RectangleService;
+    let tracingService: TracingService;
     let mouseEvent: MouseEvent;
-    // let mouseEvent2: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
     let baseCtxStub: CanvasRenderingContext2D;
@@ -15,6 +16,8 @@ describe('RectangleService', () => {
     // tslint:disable:no-any
     let drawRectangleSpy: jasmine.Spy<any>;
     let setAttributeSpy: jasmine.Spy<any>;
+    let ctxFillSpy: jasmine.Spy<any>;
+    let ctxContourSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -24,7 +27,7 @@ describe('RectangleService', () => {
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         });
         service = TestBed.inject(RectangleService);
-        // tslint:disable:no-any
+        tracingService = TestBed.inject(TracingService);
         drawRectangleSpy = spyOn<any>(service, 'drawRectangle').and.callThrough();
         setAttributeSpy = spyOn<any>(service, 'setAttribute').and.callThrough();
 
@@ -32,6 +35,10 @@ describe('RectangleService', () => {
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
+        service['tracingService'] = tracingService;
+
+        ctxFillSpy = spyOn<any>(service['drawingService'].previewCtx, 'fill').and.callThrough();
+        ctxContourSpy = spyOn<any>(service['drawingService'].previewCtx, 'stroke').and.callThrough();
 
         mouseEvent = {
             offsetX: 25,
@@ -39,12 +46,6 @@ describe('RectangleService', () => {
             button: 0,
             shiftKey: false,
         } as MouseEvent;
-
-        // mouseEvent2 = {
-        //     offsetX: 1200,
-        //     offsetY: 500,
-        //     button: 0,
-        // } as MouseEvent;
     });
 
     it('should be created', () => {
@@ -66,7 +67,7 @@ describe('RectangleService', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
-            button: 1, // TODO: Have an enum accessible
+            button: 1,
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);
@@ -152,89 +153,100 @@ describe('RectangleService', () => {
         expect(mouseEvent.offsetX !== mouseEvent.offsetY);
     });
 
-    /*
-    it(' should call onShiftPress if key shift is pressed', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
-        service.mouseDown = false;
-        mouseEvent = { shiftKey: true } as MouseEvent;
-        service.onMouseMove(mouseEvent);
-        expect(service.onShiftDown()).toHaveBeenCalled();
-    });
-
-    it(' should not call onShiftPress if key shift is not pressed', () => {
-       service.mouseDownCoord = { x: 0, y: 0 };
-        service.mouseDown = false;
-        mouseEvent = { shiftKey: true } as MouseEvent;
-        service.onMouseMove(mouseEvent);
-        expect(service.onShiftDown(keyEvent)).not.toHaveBeenCalled();
-    });
-
-    it(' onShiftDown should set attribut shiftDown to true', () => {
-        const keyEventData = { isTrusted: true, code: 'Shift' };
-        const keyEvent = new KeyboardEvent('keydown', keyEventData);
-        service.onShiftDown(keyEvent);
-        expect(service.shiftDown).toEqual(true);
-    });
-
-    it(' onShiftUp should set attribut shiftDown to false', () => {
-        const keyEventData = { isTrusted: true, code: 'Shift' };
-        const keyEvent = new KeyboardEvent('keydown', keyEventData);
-        service.onShiftUp(keyEvent);
-        expect(service.shiftDown).toEqual(false);
-    });
-
-    it(' onShiftDown should call draw Rectangle', () => {
-        const keyEventData = { isTrusted: true, code: 'Shift' };
-        const keyEvent = new KeyboardEvent('keydown', keyEventData);
-        service.onShiftDown(keyEvent);
-        expect(drawRectangleSpy).toHaveBeenCalled();
-    });
-
-    it(' onShiftUp should call draw Rectangle', () => {
-        const keyEventData = { isTrusted: true, code: 'Shift' };
-        const keyEvent = new KeyboardEvent('keydown', keyEventData);
-        service.onShiftUp(keyEvent);
-        expect(drawRectangleSpy).toHaveBeenCalled();
-    });
-
-
-    /*it(' should call set the right Attribute when type of Layout Full with the color green', () => {
-        service.typeLayout = 'Full';
-        service.primaryColor = 'green';
-        service.setAttribute(baseCtxStub);
-        expect(setAttributeSpy).toHaveBeenCalled();
-        expect(baseCtxStub.fillStyle).toBe('green');
-    });
-
-    it(' should call the right Attribute when type of Layout Contour with the color blue', () => {
-        service.typeLayout = 'Contour';
-        color.setSecondaryColor('blue');
-        service.setAttribute(baseCtxStub);
-        expect(setAttributeSpy).toHaveBeenCalled();
-        expect(baseCtxStub.strokeStyle).toBe('blue');
-    });
-
-    it(' should call setAttribute when type of Layout FullWithContour with the color blue for contour and red for fill ', () => {
-        service.typeLayout = 'FullWithContour';
-        service.secondaryColor = 'red';
-        service.primaryColor = 'blue';
-        service.setAttribute(baseCtxStub);
-        expect(setAttributeSpy).toHaveBeenCalled();
-        expect(baseCtxStub.strokeStyle).toBe('#0000ff');
-        expect(baseCtxStub.fillStyle).toBe('#ff0000');
-    });
-
-    it(' should change the pixel of the canvas ', () => {
-        mouseEvent = { offsetX: 0, offsetY: 0, button: 0 } as MouseEvent;
+    it(' should set attribute shift Down to true on shift key pressed', () => {
+        mouseEvent = { offsetX: 50, offsetY: 60, button: 0 } as MouseEvent;
         service.onMouseDown(mouseEvent);
-        mouseEvent = { offsetX: 1, offsetY: 0, button: 0 } as MouseEvent;
-        service.onMouseUp(mouseEvent);
-        // Premier pixel seulement
-        const imageData: ImageData = baseCtxStub.getImageData(0, 0, 1, 1);
-        expect(imageData.data[0]).toEqual(0); // R
-        expect(imageData.data[1]).toEqual(0); // G
-        expect(imageData.data[2]).toEqual(0); // B
-        // tslint:disable-next-line:no-magic-numbers
-        expect(imageData.data[3]).not.toEqual(0); // A
-    });*/
+        service.shiftDown = true;
+        mouseEvent = { offsetX: 40, offsetY: 50, button: 0 } as MouseEvent;
+        service.onMouseMove(mouseEvent);
+        const event = new KeyboardEvent('keydown', {
+            key: 'Shift',
+        });
+        service.onShiftDown(event);
+        expect(service.shiftDown).toEqual(true);
+        expect(drawRectangleSpy).toHaveBeenCalled();
+    });
+
+    it(' should set attribute shift Down to false on shift key up', () => {
+        mouseEvent = { offsetX: 50, offsetY: 60, button: 0 } as MouseEvent;
+        service.onMouseDown(mouseEvent);
+        service.shiftDown = true;
+        mouseEvent = { offsetX: 40, offsetY: 50, button: 0 } as MouseEvent;
+        service.onMouseMove(mouseEvent);
+        const event = new KeyboardEvent('keyup', {
+            key: 'Shift',
+        });
+        service.onShiftUp(event);
+        expect(service.shiftDown).toEqual(false);
+        expect(drawRectangleSpy).toHaveBeenCalled();
+    });
+
+    it('on drawing a rectangle and shift pressed if height is negatif and width positif should stay negative and positif', () => {
+        mouseEvent = { offsetX: 50, offsetY: 60, button: 0 } as MouseEvent;
+        service.onMouseDown(mouseEvent);
+        service.shiftDown = true;
+        mouseEvent = { offsetX: 60, offsetY: 50, button: 0 } as MouseEvent;
+        service.onMouseMove(mouseEvent);
+        expect(drawRectangleSpy).toHaveBeenCalled();
+    });
+
+    it('on drawing a rectangle and shift pressed if height is negatif and width negatif should stay negative and negatif', () => {
+        mouseEvent = { offsetX: 50, offsetY: 60, button: 0 } as MouseEvent;
+        service.onMouseDown(mouseEvent);
+        service.shiftDown = true;
+        mouseEvent = { offsetX: 40, offsetY: 50, button: 0 } as MouseEvent;
+        service.onMouseMove(mouseEvent);
+        expect(drawRectangleSpy).toHaveBeenCalled();
+    });
+
+    it('on drawing a rectangle and shift pressed if height is positif and width positif should stay positif and positif', () => {
+        mouseEvent = { offsetX: 50, offsetY: 60, button: 0 } as MouseEvent;
+        service.onMouseDown(mouseEvent);
+        service.shiftDown = true;
+        mouseEvent = { offsetX: 60, offsetY: 70, button: 0 } as MouseEvent;
+        service.onMouseMove(mouseEvent);
+        expect(drawRectangleSpy).toHaveBeenCalled();
+    });
+
+    it('on drawing a rectangle and shift pressed if height is positif and width negatif should stay positif and negatif', () => {
+        mouseEvent = { offsetX: 50, offsetY: 60, button: 0 } as MouseEvent;
+        service.onMouseDown(mouseEvent);
+        service.shiftDown = true;
+        mouseEvent = { offsetX: 40, offsetY: 70, button: 0 } as MouseEvent;
+        service.onMouseMove(mouseEvent);
+        expect(drawRectangleSpy).toHaveBeenCalled();
+    });
+
+    it('on draw Rectangle should call set Attribute', () => {
+        mouseEvent = { offsetX: 50, offsetY: 60, button: 0 } as MouseEvent;
+        service.onMouseDown(mouseEvent);
+        service.shiftDown = true;
+        mouseEvent = { offsetX: 40, offsetY: 70, button: 0 } as MouseEvent;
+        service.onMouseMove(mouseEvent);
+        expect(setAttributeSpy).toHaveBeenCalled();
+    });
+
+    it('on set Attribute should set fill if shape has fill ', () => {
+        tracingService.setHasFill(true);
+        service.setAttribute(previewCtxStub);
+        expect(ctxFillSpy).toHaveBeenCalled();
+    });
+
+    it('on set Attribute should not set fill if shape has fill ', () => {
+        tracingService.setHasFill(false);
+        service.setAttribute(previewCtxStub);
+        expect(ctxFillSpy).not.toHaveBeenCalled();
+    });
+
+    it('on set Attribute should set contour if shape has countour ', () => {
+        tracingService.setHasContour(true);
+        service.setAttribute(previewCtxStub);
+        expect(ctxContourSpy).toHaveBeenCalled();
+    });
+
+    it('on set Attribute should not set contour if shape has no contour ', () => {
+        tracingService.setHasContour(false);
+        service.setAttribute(previewCtxStub);
+        expect(ctxContourSpy).not.toHaveBeenCalled();
+    });
 });
