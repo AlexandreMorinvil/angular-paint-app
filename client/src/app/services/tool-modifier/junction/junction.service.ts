@@ -4,12 +4,12 @@ import { ToolModifier } from '@app/classes/tool-modifier';
 @Injectable({
     providedIn: 'root',
 })
-export class JonctionService extends ToolModifier {
+export class JunctionService extends ToolModifier {
     readonly DEFAULT_HAS_JONCTION_POINT: boolean = true;
     readonly MAX_JONCTION_DIAMETER: number = 50;
     readonly MIN_JONCTION_DIAMETER: number = 1;
     private diameter: number = this.MIN_JONCTION_DIAMETER;
-    private hasJonctionPoint: boolean = this.DEFAULT_HAS_JONCTION_POINT;
+    private hasJunctionPoint: boolean = this.DEFAULT_HAS_JONCTION_POINT;
 
     constructor() {
         super();
@@ -25,12 +25,12 @@ export class JonctionService extends ToolModifier {
         return this.diameter;
     }
 
-    setHasJonctionPoint(input: boolean): void {
-        this.hasJonctionPoint = input;
+    setHasJunctionPoint(input: boolean): void {
+        this.hasJunctionPoint = input;
     }
 
-    getHasJonctionPoint(): boolean {
-        return this.hasJonctionPoint;
+    getHasJunctionPoint(): boolean {
+        return this.hasJunctionPoint;
     }
 
 }

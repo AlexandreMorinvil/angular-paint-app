@@ -1,21 +1,21 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
-import { AttributeWidthComponent } from './attributes-width.component';
+import { AttributeJunctionComponent } from './attributes-junction.component';
 
-describe('AttributeWidthComponent', () => {
-    let component: AttributeWidthComponent;
-    let fixture: ComponentFixture<AttributeWidthComponent>;
+describe('AttributeJunctionComponent', () => {
+    let component: AttributeJunctionComponent;
+    let fixture: ComponentFixture<AttributeJunctionComponent>;
     let widthService: WidthService;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [AttributeWidthComponent],
+            declarations: [AttributeJunctionComponent],
             providers: [WidthService],
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(AttributeWidthComponent);
+        fixture = TestBed.createComponent(AttributeJunctionComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
 

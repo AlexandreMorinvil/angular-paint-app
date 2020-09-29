@@ -1,11 +1,11 @@
 <div class="container">
-    <h2>Épaisseur</h2>
+    <h2>Jonctions</h2>
     <div class="grid-input-value">
         <div class="centered">
             <label for="width" style="display: none;">Taille</label>
-            <input type=range [min]="getMinValue()" [max]="getMaxValue()" [value]="widthDisplayed" [(ngModel)]="widthDisplayed">
+            <input type=range [min]="getMinValue()" [max]="getMaxValue()" [value]="diameter" [(ngModel)]="diameter">
         </div>
-        <p class="centered"> {{ widthDisplayed }} px </p>
+        <p class="centered"> {{ diameter }} px </p>
     </div>
     <div class="grid-confirmation" *ngIf="needConfirmation()">
         <button class="confirmation-button cancel" (click)="revert()">Annuler</button>
