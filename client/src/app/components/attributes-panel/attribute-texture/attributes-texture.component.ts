@@ -7,18 +7,10 @@ import { TextureService } from '@app/services/tool-modifier/texture/texture.serv
     styleUrls: ['./attributes-texture.component.scss', '../attributes-section.component.scss'],
 })
 export class AttributeTextureComponent {
-    private texture: string;
+    texture: string;
 
     constructor(private textureService: TextureService) {
         this.texture = this.textureService.getTexture();
-    }
-
-    set textureDisplayed(value: string) {
-        this.texture = value;
-    }
-
-    get textureDisplayed(): string {
-        return this.texture;
     }
 
     getListTextures(): string[] {

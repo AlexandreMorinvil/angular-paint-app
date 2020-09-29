@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
-import { ToolboxService } from '@app/services/toolbox/toolbox.service'
+import { ToolboxService } from '@app/services/toolbox/toolbox.service';
 
 @Component({
     selector: 'app-attributes-width',
@@ -8,6 +8,9 @@ import { ToolboxService } from '@app/services/toolbox/toolbox.service'
     styleUrls: ['./attributes-width.component.scss', '../attributes-section.component.scss'],
 })
 export class AttributeWidthComponent {
+    // The interfacing of the with as a private variable is ncessary to force the input element of
+    // the DOM to be reactive to the modifications of the value, the max value and the min value
+    //  because of the getter and setter.
     private width: number;
 
     constructor(private widthService: WidthService, private toolboxService: ToolboxService) {
@@ -19,7 +22,7 @@ export class AttributeWidthComponent {
     }
 
     get widthDisplayed(): number {
-        return this.boundWidth(this.width);
+        return this.width;
     }
 
     getMaxValue(): number {
@@ -27,7 +30,7 @@ export class AttributeWidthComponent {
     }
 
     getMinValue(): number {
-        return this.toolboxService.getCurrentTool().getMinWidth;
+        return Math.max(this.toolboxService.getCurrentTool().minWidth, this.widthService.MIN_ATTRIBUTE_WIDTH);
     }
 
     assign(): void {
@@ -41,11 +44,4 @@ export class AttributeWidthComponent {
     needConfirmation(): boolean {
         return this.width !== this.widthService.getWidth();
     }
-
-    private boundWidth(value: number): number{
-        if (value <= this.getMinValue()) return this.getMinValue();
-        else if (value >= this.getMaxValue()) return this.getMaxValue();
-        else return value;
-    }
 }
-

@@ -56,7 +56,6 @@ describe('AttributeColorComponent', () => {
 
     it('color input for primary and secondary color should accept numbers between 0 and 0xffffff as the rgb color number upon confirmation of the color choice', () => {
         const newColor = '#aabbcc';
-
         component.primaryColor = newColor;
         component.secondaryColor = newColor;
         component.assign();
@@ -70,7 +69,6 @@ describe('AttributeColorComponent', () => {
 
     it('the color input for primary and secondary color should accept the number 0 as the rgb color number upon confirmation', () => {
         const newColor = '#0';
-
         component.primaryColor = newColor;
         component.secondaryColor = newColor;
         component.assign();
@@ -85,7 +83,6 @@ describe('AttributeColorComponent', () => {
 
     it('the color input for primary and secondary color should accept the number 0xffffff as the rgb color number upon confirmation', () => {
         const newColor = '#ffffff';
-
         component.primaryColor = newColor;
         component.secondaryColor = newColor;
         component.assign();
@@ -100,7 +97,6 @@ describe('AttributeColorComponent', () => {
 
     it('the primary and secondary color should not change if a color not respecting the format "#rrggbb" as the input upon confirmation', () => {
         const newColor = 'ffffff';
-
         const initialPrimaryColor = component.primaryColor;
         const initialSecondaryColor = component.secondaryColor;
 
@@ -120,7 +116,6 @@ describe('AttributeColorComponent', () => {
 
     it('the opacity input for primary and secondary color should accept numbers between 0 and 1 as the opacity input upon confirmation', () => {
         const newOpacity = 0.25;
-
         component.primaryOpacity = newOpacity;
         component.secondaryOpacity = newOpacity;
         component.assign();
@@ -135,7 +130,6 @@ describe('AttributeColorComponent', () => {
 
     it('the opacity setter for primary and secondary color should accept the number 0 as the opacity input upon confirmation', () => {
         const newOpacity = 0;
-
         component.primaryOpacity = newOpacity;
         component.secondaryOpacity = newOpacity;
         component.assign();
@@ -150,7 +144,6 @@ describe('AttributeColorComponent', () => {
 
     it('the opacity input for primary and secondary color should accept the number 1 as the opacity input upon confirmation', () => {
         const newOpacity = 1;
-
         component.primaryOpacity = newOpacity;
         component.secondaryOpacity = newOpacity;
         component.assign();
@@ -165,7 +158,6 @@ describe('AttributeColorComponent', () => {
 
     it('the opacity input for primary and secondary color should accept the number 1 as the opacity input upon confirmation', () => {
         const newOpacity = 1;
-
         component.primaryOpacity = newOpacity;
         component.secondaryOpacity = newOpacity;
         component.assign();
@@ -180,7 +172,6 @@ describe('AttributeColorComponent', () => {
 
     it('confirming an opacity above 1 in hte opacity input should not modify the opacity', () => {
         const newOpacity = 1.5;
-
         const initialPrimaryOpacity: number = component.primaryOpacity;
         const initialSecondaryOpacity: number = component.secondaryOpacity;
 
@@ -198,7 +189,6 @@ describe('AttributeColorComponent', () => {
 
     it('confirming an opacity below 0 in hte opacity input should not modify the opacity', () => {
         const newOpacity = -1.5;
-
         const initialPrimaryOpacity: number = component.primaryOpacity;
         const initialSecondaryOpacity: number = component.secondaryOpacity;
 
@@ -244,7 +234,6 @@ describe('AttributeColorComponent', () => {
 
     it('the method revert should return the colors to the values kept in the color service', () => {
         const newColor = '#111111';
-
         const initialPrimaryColor: string = component.primaryColor;
         const initialSecondaryColor: string = component.secondaryColor;
 
@@ -263,37 +252,29 @@ describe('AttributeColorComponent', () => {
 
     it('if a new color is selected for the primary color there should be a need for a confirmation', () => {
         const newColor = '#111111';
-
         component.primaryColor = newColor;
         const needForConfirmation: boolean = component.needConfirmation();
-
         expect(needForConfirmation).toEqual(true);
     });
 
     it('if a new color is selected for the secondary color there should be a need for a confirmation', () => {
         const newColor = '#111111';
-
         component.secondaryColor = newColor;
         const needForConfirmation: boolean = component.needConfirmation();
-
         expect(needForConfirmation).toEqual(true);
     });
 
     it('if a new opacity is selected for the primary color there should be a need for a confirmation', () => {
         const newOpacity = 0.6;
-
         component.primaryOpacity = newOpacity;
         const needForConfirmation: boolean = component.needConfirmation();
-
         expect(needForConfirmation).toEqual(true);
     });
 
     it('if a new opacity is selected for the second color there should be a need for a confirmation', () => {
         const newOpacity = 0.6;
-
         component.secondaryOpacity = newOpacity;
         const needForConfirmation: boolean = component.needConfirmation();
-
         expect(needForConfirmation).toEqual(true);
     });
 
