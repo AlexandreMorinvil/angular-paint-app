@@ -23,7 +23,12 @@ export class EllipseService extends Tool {
     primaryColor: string;
     secondaryColor: string;
 
-    constructor(drawingService: DrawingService, private colorService: ColorService, private tracingService: TracingService, private widthService: WidthService) {
+    constructor(
+        drawingService: DrawingService,
+        private colorService: ColorService,
+        private tracingService: TracingService,
+        private widthService: WidthService,
+    ) {
         super(drawingService, new Description('ellipse', '2', 'ellipse_icon.png'));
         this.modifiers.push(this.colorService);
         this.modifiers.push(this.widthService);
@@ -81,15 +86,21 @@ export class EllipseService extends Tool {
     drawEllipse(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         const mouseMoveCoord = path[path.length - 1];
-
         const centerX = (mouseMoveCoord.x + this.mouseDownCoord.x) / 2;
         const centerY = (mouseMoveCoord.y + this.mouseDownCoord.y) / 2;
 
         const radiusX = Math.abs(mouseMoveCoord.x - this.mouseDownCoord.x) / 2;
         const radiusY = Math.abs(mouseMoveCoord.y - this.mouseDownCoord.y) / 2;
 
-        ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI * 2, false);
-        ctx.lineWidth = this.widthService.getWidth();
+        if (this.tracingService.getHasContour()) {
+            const contourRadiusX = Math.abs(radiusX - this.widthService.getWidth() / 2);
+            const contourRadiusY = Math.abs(radiusY - this.widthService.getWidth() / 2);
+            ctx.ellipse(centerX, centerY, contourRadiusX, contourRadiusY, 0, 0, Math.PI * 2, false);
+        }
+        if (this.tracingService.getHasFill() && !this.tracingService.getHasContour()) {
+            ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI * 2, false);
+            ctx.lineWidth = this.widthService.getWidth();
+        }
 
         this.drawingService.previewCtx.setLineDash([0]); // set line dash to default when drawing Ellipse
         this.applyTrace(ctx);
@@ -100,39 +111,45 @@ export class EllipseService extends Tool {
         const mouseMoveCoord = path[path.length - 1];
         const width = mouseMoveCoord.x - this.mouseDownCoord.x;
         const height = mouseMoveCoord.y - this.mouseDownCoord.y;
+        const startX = this.mouseDownCoord.x;
+        const startY = this.mouseDownCoord.y;
 
-        ctx.rect(this.mouseDownCoord.x, this.mouseDownCoord.y, width, height);
-        ctx.setLineDash([6]); // abitrary number!!!
+        ctx.rect(startX, startY, width, height);
+        // tslint:disable:no-magic-numbers
+        ctx.strokeStyle = 'black';
+        ctx.setLineDash([6]);
         ctx.lineWidth = 1;
         ctx.stroke();
     }
 
-    onShiftDown(event: KeyboardEvent): void {
+    onShiftDown(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
         this.drawCircle(this.drawingService.previewCtx, this.pathData);
     }
 
-    onShiftUp(event: KeyboardEvent): void {
+    onShiftUp(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
         this.drawEllipse(this.drawingService.previewCtx, this.pathData);
     }
 
     drawCircle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
-        const mouseMoveCoord = path[path.length - 1];
 
-        let radius = Math.abs(mouseMoveCoord.y - this.mouseDownCoord.y) / 2;
+        const mouseMoveCoord = path[path.length - 1];
+        const radius = Math.abs(mouseMoveCoord.y - this.mouseDownCoord.y) / 2;
         const centerY = (mouseMoveCoord.y + this.mouseDownCoord.y) / 2;
         const lengthPreview = Math.abs(mouseMoveCoord.x - this.mouseDownCoord.x);
 
         if (lengthPreview <= 2 * radius && mouseMoveCoord.x >= this.mouseDownCoord.x) {
-            radius = Math.abs(mouseMoveCoord.x - this.mouseDownCoord.x) / 2;
+            const radiusX = Math.abs(mouseMoveCoord.x - this.mouseDownCoord.x) / 2;
             const centerX = Math.abs(mouseMoveCoord.x + this.mouseDownCoord.x) / 2;
-            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.arc(centerX, centerY, radiusX, 0, 2 * Math.PI);
         } else if (lengthPreview <= 2 * radius && mouseMoveCoord.x <= this.mouseDownCoord.x) {
-            radius = Math.abs(mouseMoveCoord.x - this.mouseDownCoord.x) / 2;
+            const radiusX = Math.abs(mouseMoveCoord.x - this.mouseDownCoord.x) / 2;
             const centerX = Math.abs(mouseMoveCoord.x + this.mouseDownCoord.x) / 2;
-            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.arc(centerX, centerY, radiusX, 0, 2 * Math.PI);
         } else if (lengthPreview >= 2 * radius && mouseMoveCoord.x <= this.mouseDownCoord.x) {
             const centerX = this.mouseDownCoord.x - radius;
             ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
@@ -151,9 +168,13 @@ export class EllipseService extends Tool {
         ctx.fillStyle = this.colorService.getPrimaryColor();
         ctx.strokeStyle = this.colorService.getSecondaryColor();
         ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
-        if (this.tracingService.getHasFill()) ctx.fill();
+        if (this.tracingService.getHasFill()) {
+            ctx.fill();
+        }
         ctx.globalAlpha = this.colorService.getSecondaryColorOpacity();
-        if (this.tracingService.getHasContour()) ctx.stroke();
+        if (this.tracingService.getHasContour()) {
+            ctx.stroke();
+        }
     }
 
     clearPath(): void {

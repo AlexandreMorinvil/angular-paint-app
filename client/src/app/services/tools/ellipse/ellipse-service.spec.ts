@@ -2,15 +2,22 @@ import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ColorService } from '@app/services/tool-modifier/color/color.service';
+import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { EllipseService } from './ellipse-service';
 
 describe('EllipseService', () => {
     let service: EllipseService;
+    let tracingService: TracingService;
+    let colorService: ColorService;
+
     let mouseEvent: MouseEvent;
+
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
+
     // tslint:disable:no-any
     let drawEllipseSpy: jasmine.Spy<any>;
     let drawCircleSpy: jasmine.Spy<any>;
@@ -19,12 +26,16 @@ describe('EllipseService', () => {
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
 
         TestBed.configureTestingModule({
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         });
         service = TestBed.inject(EllipseService);
+        tracingService = TestBed.inject(TracingService);
+        colorService = TestBed.inject(ColorService);
+
         // tslint:disable:no-any
         drawEllipseSpy = spyOn<any>(service, 'drawEllipse').and.callThrough();
         drawCircleSpy = spyOn<any>(service, 'drawCircle').and.callThrough();
@@ -62,7 +73,7 @@ describe('EllipseService', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
-            button: 1, // TODO: Have an enum accessible
+            button: 1,
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);
@@ -154,56 +165,150 @@ describe('EllipseService', () => {
         expect(drawCircleSpy).toHaveBeenCalled();
     });
 
-    it(' should call applyTrace', () => {
+    it(' should call applyTrace with trace of type contour', () => {
+        tracingService.setHasContour(true);
+        tracingService.getHasContour();
+
+        service.applyTrace(previewCtxStub);
+        expect(applyTraceSpy).toHaveBeenCalled();
+        // expect(previewCtxStub.stroke()).toHaveBeenCalled();
+    });
+
+    it(' should call applyTrace with trace of type full', () => {
+        tracingService.setHasFill(true);
+        tracingService.getHasFill();
+
+        service.applyTrace(previewCtxStub);
+        expect(applyTraceSpy).toHaveBeenCalled();
+        // expect(previewCtxStub.fill()).toHaveBeenCalled();
+    });
+
+    it(' should call applyTrace with trace of type Full and Contour', () => {
+        tracingService.setHasFill(false);
+        tracingService.getHasFill();
+        tracingService.setHasContour(true);
+        tracingService.getHasContour();
+
+        service.applyTrace(previewCtxStub);
+        expect(applyTraceSpy).toHaveBeenCalled();
+        // expect(previewCtxStub.fill()).toHaveBeenCalled();
+        // expect(previewCtxStub.stroke()).toHaveBeenCalled();
+    });
+
+    it(' should call applyTrace with trace of type not Full and not Contour', () => {
+        tracingService.setHasContour(false);
+        tracingService.getHasContour();
+        tracingService.setHasFill(false);
+        tracingService.getHasFill();
+
+        service.applyTrace(previewCtxStub);
+        expect(applyTraceSpy).toHaveBeenCalled();
+
+        // expect(previewCtxStub.stroke()).not.toHaveBeenCalled();
+        // expect(previewCtxStub.fill()).not.toHaveBeenCalled();
+        // expect(previewCtxStub.stroke()).not.toHaveBeenCalled();
+    });
+
+    it(' should call drawEllipse with fill and no contour', () => {
+        tracingService.setHasContour(false);
+        tracingService.getHasContour();
+        tracingService.setHasFill(true);
+        tracingService.getHasFill();
+
         mouseEvent = { offsetX: 50, offsetY: 9, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 20, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
 
+        service.drawEllipse(previewCtxStub, service.pathData);
+
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect(drawEllipseSpy).toHaveBeenCalled();
+        expect(applyTraceSpy).toHaveBeenCalled();
+        // expect(previewCtxStub.fill()).toHaveBeenCalled();
+        // expect(previewCtxStub.stroke()).not.toHaveBeenCalled();
+    });
+    it(' should call applyTrace on drawEllipse', () => {
+        mouseEvent = { offsetX: 50, offsetY: 9, button: 0, shiftKey: true } as MouseEvent;
+        service.onMouseDown(mouseEvent);
+        mouseEvent = { offsetX: 20, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
+        service.onMouseMove(mouseEvent);
+
+        service.drawEllipse(previewCtxStub, service.pathData);
+
         expect(applyTraceSpy).toHaveBeenCalled();
     });
 
     it(' should call applyTrace for trace of type Contour with the color blue', () => {
-        // service.typeTrace = TypeTrace.Contour;
-        service.secondaryColor = 'blue';
-        service.applyTrace(baseCtxStub);
+        mouseEvent = { offsetX: 50, offsetY: 9, button: 0, shiftKey: true } as MouseEvent;
+        service.onMouseDown(mouseEvent);
+        mouseEvent = { offsetX: 20, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
+        service.onMouseMove(mouseEvent);
 
-        expect(baseCtxStub.strokeStyle).toBe('#0000ff');
+        tracingService.setHasContour(true);
+        tracingService.getHasContour();
+        colorService.setSecondaryColor('#0000ff');
+
+        service.applyTrace(previewCtxStub);
+
+        expect(previewCtxStub.strokeStyle).toBe('#0000ff');
     });
 
     it(' should call applyTrace for trace of type Full with the color red', () => {
-        // service.typeTrace = TypeTrace.Full;
-        service.primaryColor = 'red';
+        mouseEvent = { offsetX: 50, offsetY: 9, button: 0, shiftKey: true } as MouseEvent;
+        service.onMouseDown(mouseEvent);
+        mouseEvent = { offsetX: 20, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
+        service.onMouseMove(mouseEvent);
 
-        service.applyTrace(baseCtxStub);
+        tracingService.setHasFill(true);
+        tracingService.getHasFill();
+        colorService.setPrimaryColor('#ff0000');
 
-        expect(baseCtxStub.fillStyle).toBe('#ff0000');
+        service.applyTrace(previewCtxStub);
+
+        expect(previewCtxStub.fillStyle).toBe('#ff0000');
     });
 
     it(' should call applyTrace for trace of type fullContour', () => {
-        // service.typeTrace = TypeTrace.FullContour;
-        service.primaryColor = 'red';
-        service.secondaryColor = 'blue';
+        mouseEvent = { offsetX: 50, offsetY: 9, button: 0, shiftKey: true } as MouseEvent;
+        service.onMouseDown(mouseEvent);
+        mouseEvent = { offsetX: 20, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
+        service.onMouseMove(mouseEvent);
 
-        service.applyTrace(baseCtxStub);
-        expect(baseCtxStub.strokeStyle).toBe('#0000ff');
-        expect(baseCtxStub.fillStyle).toBe('#ff0000');
+        tracingService.setHasFill(true);
+        tracingService.getHasFill();
+        tracingService.setHasContour(true);
+        tracingService.getHasContour();
+        colorService.setPrimaryColor('#ff0000');
+        colorService.setSecondaryColor('#0000ff');
+
+        service.applyTrace(previewCtxStub);
+
+        expect(previewCtxStub.strokeStyle).toBe('#0000ff');
+        expect(previewCtxStub.fillStyle).toBe('#ff0000');
     });
 
-    // Exemple de test d'intégration qui est quand même utile
-    it(' should change the pixel of the canvas ', () => {
-        mouseEvent = { offsetX: 0, offsetY: 0, button: 0 } as MouseEvent;
+    it(' onShiftDown should call drawCircle and drawPreviewRect', () => {
+        mouseEvent = { offsetX: 50, offsetY: 9, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseDown(mouseEvent);
-        mouseEvent = { offsetX: 1, offsetY: 0, button: 0 } as MouseEvent;
-        service.onMouseUp(mouseEvent);
+        mouseEvent = { offsetX: 20, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
+        service.onMouseMove(mouseEvent);
 
-        // Premier pixel seulement
-        const imageData: ImageData = baseCtxStub.getImageData(0, 0, 1, 1);
-        expect(imageData.data[0]).toEqual(0); // R
-        expect(imageData.data[1]).toEqual(0); // G
-        expect(imageData.data[2]).toEqual(0); // B
-        // tslint:disable-next-line:no-magic-numbers
-        expect(imageData.data[3]).not.toEqual(0); // A
+        service.onShiftDown();
+
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect(drawCircleSpy).toHaveBeenCalled();
+    });
+
+    it(' onShiftUp should call drawEllipse and drawPreviewRect', () => {
+        mouseEvent = { offsetX: 50, offsetY: 9, button: 0, shiftKey: false } as MouseEvent;
+        service.onMouseDown(mouseEvent);
+        mouseEvent = { offsetX: 20, offsetY: 10, button: 0, shiftKey: false } as MouseEvent;
+        service.onMouseMove(mouseEvent);
+
+        service.onShiftUp();
+
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect(drawEllipseSpy).toHaveBeenCalled();
     });
 });
