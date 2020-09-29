@@ -126,6 +126,35 @@ describe('CursorService', () => {
         expect(service.anchorHit).toEqual(0);
     });
 
+    it(' mouseMove should not go in if', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+        service.clickOnAnchor = false;
+        service.anchorHit = 1;
+
+        service.onMouseMove(mouseEvent500);
+        expect(moveHeightSpy).not.toHaveBeenCalled();
+        expect(moveWidthSpy).not.toHaveBeenCalled();
+    });
+
+    it(' mouseUp should set values to false, set up new height and width on basectx, redraw anchor and image', () => {
+        // tslint:disable:no-magic-numbers
+        // tslint:disable:no-string-literal
+        service.mouseDownCoord = { x: 600, y: 700 };
+        service.mouseDown = true;
+        service.clickOnAnchor = true;
+        service['drawingService'].previewCtx.canvas.height = 1000;
+        service['drawingService'].previewCtx.canvas.width = 1200;
+
+        service.onMouseDown(mouseEvent500); // needed to create ImageData
+        service.onMouseUp(mouseEvent500);
+        expect(service.clickOnAnchor).toEqual(false);
+        expect(service.mouseDown).toEqual(false);
+        expect(drawnAnchorSpy).toHaveBeenCalled();
+        expect(service['drawingService'].baseCtx.canvas.height).toEqual(service['drawingService'].previewCtx.canvas.height);
+        expect(service['drawingService'].baseCtx.canvas.width).toEqual(service['drawingService'].previewCtx.canvas.width);
+    });
+
     it(' checkHit should set anchorHit to 1', () => {
         // tslint:disable:no-magic-numbers
         // tslint:disable:no-string-literal

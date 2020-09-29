@@ -3,6 +3,7 @@ import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { BrushService } from '@app/services/tools/brush/brush-service';
+import { CursorService } from '@app/services/tools/cursor/cursor.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse-service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
@@ -31,6 +32,7 @@ describe('DrawingComponent', () => {
                 { provide: DrawingService, useValue: drawingStub },
                 { provide: RectangleService, useValue: toolStub },
                 { provide: EllipseService, useValue: toolStub },
+                { provide: CursorService, useValue: toolStub },
             ],
         }).compileComponents();
     }));
@@ -81,23 +83,30 @@ describe('DrawingComponent', () => {
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
     });
     it('sould call the tool pencil when pressing the key C', () => {
+        // tslint:disable:triple-equals
+        // tslint:disable:no-unused-expression
         const event = {} as KeyboardEvent;
         event.key == 'C';
         component.keyEventUp(event);
         expect(component.toolbox.getCurrentTool()).toBe(toolStub);
     });
     it('sould call the tool rectangle when pressing the key 1', () => {
+        // tslint:disable:triple-equals
+        // tslint:disable:no-unused-expression
         const event = {} as KeyboardEvent;
         event.key == '1';
         component.keyEventUp(event);
         expect(component.toolbox.getCurrentTool()).toBe(toolStub);
     });
     it('sould call no tool by default', () => {
+        // tslint:disable:triple-equals
+        // tslint:disable:no-unused-expression
         const event = {} as KeyboardEvent;
         event.key == 'default';
         component.keyEventUp(event);
 
         it(' should call the default tool when receiving a keyup event', () => {
+            // tslint:disable:no-shadowed-variable
             const event = {} as KeyboardEvent;
             component.keyEventUp(event);
 
@@ -105,6 +114,7 @@ describe('DrawingComponent', () => {
         });
 
         it(' should call the crayon tool when receiving a keyup event of c', () => {
+            // tslint:disable:no-shadowed-variable
             const event = new KeyboardEvent('key', {
                 key: 'c',
             });
@@ -114,6 +124,7 @@ describe('DrawingComponent', () => {
         });
 
         it(' should call the ellipse tool when receiving the keyup event of 2', () => {
+            // tslint:disable:no-shadowed-variable
             const event = new KeyboardEvent('key', {
                 key: '2',
             });
