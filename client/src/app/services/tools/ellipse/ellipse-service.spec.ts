@@ -4,13 +4,14 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
+import { WidthService } from '@app/services/tool-modifier/width/width.service';
 import { EllipseService } from './ellipse-service';
 
 describe('EllipseService', () => {
     let service: EllipseService;
     let tracingService: TracingService;
     let colorService: ColorService;
-
+    let widthService: WidthService;
     let mouseEvent: MouseEvent;
 
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
@@ -24,6 +25,7 @@ describe('EllipseService', () => {
     let applyTraceSpy: jasmine.Spy<any>;
     let ctxFillSpy: jasmine.Spy<any>;
     let ctxContourSpy: jasmine.Spy<any>;
+    let getWidthSpy: jasmine.Spy<any>;
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
@@ -36,6 +38,7 @@ describe('EllipseService', () => {
         service = TestBed.inject(EllipseService);
         tracingService = TestBed.inject(TracingService);
         colorService = TestBed.inject(ColorService);
+        widthService = TestBed.inject(WidthService);
         // tslint:disable:no-any
         drawEllipseSpy = spyOn<any>(service, 'drawEllipse').and.callThrough();
         drawCircleSpy = spyOn<any>(service, 'drawCircle').and.callThrough();
@@ -48,6 +51,8 @@ describe('EllipseService', () => {
 
         ctxFillSpy = spyOn<any>(service['drawingService'].previewCtx, 'fill').and.callThrough();
         ctxContourSpy = spyOn<any>(service['drawingService'].previewCtx, 'stroke').and.callThrough();
+        getWidthSpy = spyOn<any>(widthService, 'getWidth').and.callThrough();
+
         mouseEvent = {
             offsetX: 25,
             offsetY: 25,
@@ -210,7 +215,7 @@ describe('EllipseService', () => {
         expect(ctxFillSpy).not.toHaveBeenCalled();
     });
 
-    it(' on drawEllipse with fill and no contour should set lineWidth', () => {
+    it(' on drawEllipse with fill and no contour should call getWidth', () => {
         tracingService.setHasContour(false);
         tracingService.getHasContour();
         tracingService.setHasFill(true);
@@ -225,6 +230,7 @@ describe('EllipseService', () => {
 
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawEllipseSpy).toHaveBeenCalled();
+        expect(getWidthSpy).toHaveBeenCalled();
     });
     it(' should call applyTrace on drawEllipse', () => {
         mouseEvent = { offsetX: 50, offsetY: 9, button: 0, shiftKey: true } as MouseEvent;
