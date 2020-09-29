@@ -47,6 +47,7 @@ export class EllipseService extends Tool {
     }
 
     onMouseUp(event: MouseEvent): void {
+        this.resetBorder();
         if (event.shiftKey) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
@@ -64,15 +65,25 @@ export class EllipseService extends Tool {
     }
 
     onMouseMove(event: MouseEvent): void {
+        const mousePosition = this.getPositionFromMouse(event);
+        if (!this.isInCanvas(mousePosition) && this.mouseDown) {
+            if (mousePosition.x >= this.drawingService.baseCtx.canvas.width) {
+                this.drawingService.previewCtx.canvas.width = mousePosition.x;
+            }
+            if (mousePosition.y >= this.drawingService.baseCtx.canvas.height) {
+                this.drawingService.previewCtx.canvas.height = mousePosition.y;
+            }
+        }
+        else{
+            this.resetBorder();
+        }
         if (event.shiftKey && this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
 
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawCircle(this.drawingService.previewCtx, this.pathData);
             this.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
         } else if (this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
 
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
@@ -179,5 +190,15 @@ export class EllipseService extends Tool {
 
     clearPath(): void {
         this.pathData = [];
+    }
+
+    private isInCanvas(mousePosition: Vec2): boolean {
+        return (mousePosition.x <= this.drawingService.baseCtx.canvas.width &&
+            mousePosition.y <= this.drawingService.baseCtx.canvas.height);
+    }
+
+    private resetBorder():void{
+        this.drawingService.previewCtx.canvas.width = 		this.drawingService.baseCtx.canvas.width;
+        this.drawingService.previewCtx.canvas.height = 		this.drawingService.baseCtx.canvas.height;
     }
 }
