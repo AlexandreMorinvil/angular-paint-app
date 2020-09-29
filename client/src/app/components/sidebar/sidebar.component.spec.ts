@@ -25,13 +25,12 @@ describe('SidebarComponent', () => {
     let toolserviceMock: ToolboxService;
     // tslint:disable:no-any
     let toolboxSpy: any;
-    let routerSpy: any;
+    let routerSpy: jasmine.Spy<any>;
 
     beforeEach(async(() => {
         toolStub = new ToolStub({} as DrawingService, {} as Description);
         drawingStub = new DrawingService();
         toolboxSpy = jasmine.createSpyObj('toolboxSpy', ['getAvailableTools', 'getCurrentTool', 'setSelectedTool']);
-        routerSpy = { navigate: jasmine.createSpy('navigate') };
         toolserviceMock = new ToolboxService(
             {} as CursorService,
             {} as PencilService,
@@ -62,6 +61,7 @@ describe('SidebarComponent', () => {
         fixture = TestBed.createComponent(SidebarComponent);
         component = fixture.componentInstance;
         component['toolboxSevice'] = toolserviceMock;
+        routerSpy = spyOn<any>(component['router'], 'navigate').and.callThrough();
         fixture.detectChanges();
     });
 
