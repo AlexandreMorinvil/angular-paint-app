@@ -55,6 +55,11 @@ export class DrawingComponent implements AfterViewInit {
         this.toolbox.getCurrentTool().onMouseClick(event);
     }
 
+    @HostListener('dblclick', ['$event'])
+    onMouseDblClick(event: MouseEvent): void {
+        this.toolbox.getCurrentTool().onMouseDblClick(event);
+    }
+
     @HostListener('window:keyup', ['$event'])
     keyEventUp(event: KeyboardEvent): void {
         if (event.key === 'Shift') {
@@ -74,6 +79,8 @@ export class DrawingComponent implements AfterViewInit {
     onShiftDown(event: KeyboardEvent): void {
         if (event.key === 'Shift') {
             this.toolbox.getCurrentTool().onShiftDown(event);
+        } else if (event.key == 'Escape') {
+            this.toolbox.getCurrentTool().onEscapeDown(event);
         }
     }
 
