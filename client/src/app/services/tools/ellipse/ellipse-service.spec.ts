@@ -171,7 +171,7 @@ describe('EllipseService', () => {
 
         service.applyTrace(previewCtxStub);
         expect(applyTraceSpy).toHaveBeenCalled();
-        //expect(previewCtxStub.stroke()).toHaveBeenCalled();
+        // expect(previewCtxStub.stroke()).toHaveBeenCalled();
     });
 
     it(' should call applyTrace with trace of type full', () => {
@@ -180,7 +180,7 @@ describe('EllipseService', () => {
 
         service.applyTrace(previewCtxStub);
         expect(applyTraceSpy).toHaveBeenCalled();
-        //expect(previewCtxStub.fill()).toHaveBeenCalled();
+        // expect(previewCtxStub.fill()).toHaveBeenCalled();
     });
 
     it(' should call applyTrace with trace of type Full and Contour', () => {
@@ -191,8 +191,8 @@ describe('EllipseService', () => {
 
         service.applyTrace(previewCtxStub);
         expect(applyTraceSpy).toHaveBeenCalled();
-        //expect(previewCtxStub.fill()).toHaveBeenCalled();
-        //expect(previewCtxStub.stroke()).toHaveBeenCalled();
+        // expect(previewCtxStub.fill()).toHaveBeenCalled();
+        // expect(previewCtxStub.stroke()).toHaveBeenCalled();
     });
 
     it(' should call applyTrace with trace of type not Full and not Contour', () => {
@@ -204,9 +204,9 @@ describe('EllipseService', () => {
         service.applyTrace(previewCtxStub);
         expect(applyTraceSpy).toHaveBeenCalled();
 
-        //expect(previewCtxStub.stroke()).not.toHaveBeenCalled();
-        //expect(previewCtxStub.fill()).not.toHaveBeenCalled();
-        //expect(previewCtxStub.stroke()).not.toHaveBeenCalled();
+        // expect(previewCtxStub.stroke()).not.toHaveBeenCalled();
+        // expect(previewCtxStub.fill()).not.toHaveBeenCalled();
+        // expect(previewCtxStub.stroke()).not.toHaveBeenCalled();
     });
 
     it(' should call drawEllipse with fill and no contour', () => {
@@ -225,8 +225,8 @@ describe('EllipseService', () => {
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawEllipseSpy).toHaveBeenCalled();
         expect(applyTraceSpy).toHaveBeenCalled();
-        //expect(previewCtxStub.fill()).toHaveBeenCalled();
-        //expect(previewCtxStub.stroke()).not.toHaveBeenCalled();
+        // expect(previewCtxStub.fill()).toHaveBeenCalled();
+        // expect(previewCtxStub.stroke()).not.toHaveBeenCalled();
     });
     it(' should call applyTrace on drawEllipse', () => {
         mouseEvent = { offsetX: 50, offsetY: 9, button: 0, shiftKey: true } as MouseEvent;
