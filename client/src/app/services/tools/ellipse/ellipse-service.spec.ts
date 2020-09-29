@@ -22,7 +22,8 @@ describe('EllipseService', () => {
     let drawEllipseSpy: jasmine.Spy<any>;
     let drawCircleSpy: jasmine.Spy<any>;
     let applyTraceSpy: jasmine.Spy<any>;
-
+    let ctxFillSpy: jasmine.Spy<any>;
+    let ctxContourSpy: jasmine.Spy<any>;
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
@@ -35,7 +36,6 @@ describe('EllipseService', () => {
         service = TestBed.inject(EllipseService);
         tracingService = TestBed.inject(TracingService);
         colorService = TestBed.inject(ColorService);
-
         // tslint:disable:no-any
         drawEllipseSpy = spyOn<any>(service, 'drawEllipse').and.callThrough();
         drawCircleSpy = spyOn<any>(service, 'drawCircle').and.callThrough();
@@ -46,6 +46,8 @@ describe('EllipseService', () => {
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
 
+        ctxFillSpy = spyOn<any>(service['drawingService'].previewCtx, 'fill').and.callThrough();
+        ctxContourSpy = spyOn<any>(service['drawingService'].previewCtx, 'stroke').and.callThrough();
         mouseEvent = {
             offsetX: 25,
             offsetY: 25,
@@ -171,7 +173,7 @@ describe('EllipseService', () => {
 
         service.applyTrace(previewCtxStub);
         expect(applyTraceSpy).toHaveBeenCalled();
-        // expect(previewCtxStub.stroke()).toHaveBeenCalled();
+        expect(ctxContourSpy).toHaveBeenCalled();
     });
 
     it(' should call applyTrace with trace of type full', () => {
@@ -180,19 +182,19 @@ describe('EllipseService', () => {
 
         service.applyTrace(previewCtxStub);
         expect(applyTraceSpy).toHaveBeenCalled();
-        // expect(previewCtxStub.fill()).toHaveBeenCalled();
+        expect(ctxFillSpy).toHaveBeenCalled();
     });
 
     it(' should call applyTrace with trace of type Full and Contour', () => {
-        tracingService.setHasFill(false);
+        tracingService.setHasFill(true);
         tracingService.getHasFill();
-        tracingService.setHasContour(true);
+        tracingService.setHasContour(false);
         tracingService.getHasContour();
 
         service.applyTrace(previewCtxStub);
         expect(applyTraceSpy).toHaveBeenCalled();
-        // expect(previewCtxStub.fill()).toHaveBeenCalled();
-        // expect(previewCtxStub.stroke()).toHaveBeenCalled();
+        expect(ctxContourSpy).toHaveBeenCalled();
+        expect(ctxFillSpy).toHaveBeenCalled();
     });
 
     it(' should call applyTrace with trace of type not Full and not Contour', () => {
@@ -204,12 +206,11 @@ describe('EllipseService', () => {
         service.applyTrace(previewCtxStub);
         expect(applyTraceSpy).toHaveBeenCalled();
 
-        // expect(previewCtxStub.stroke()).not.toHaveBeenCalled();
-        // expect(previewCtxStub.fill()).not.toHaveBeenCalled();
-        // expect(previewCtxStub.stroke()).not.toHaveBeenCalled();
+        expect(ctxContourSpy).not.toHaveBeenCalled();
+        expect(ctxFillSpy).not.toHaveBeenCalled();
     });
 
-    it(' should call drawEllipse with fill and no contour', () => {
+    it(' on drawEllipse with fill and no contour should set lineWidth', () => {
         tracingService.setHasContour(false);
         tracingService.getHasContour();
         tracingService.setHasFill(true);
@@ -224,9 +225,6 @@ describe('EllipseService', () => {
 
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawEllipseSpy).toHaveBeenCalled();
-        expect(applyTraceSpy).toHaveBeenCalled();
-        // expect(previewCtxStub.fill()).toHaveBeenCalled();
-        // expect(previewCtxStub.stroke()).not.toHaveBeenCalled();
     });
     it(' should call applyTrace on drawEllipse', () => {
         mouseEvent = { offsetX: 50, offsetY: 9, button: 0, shiftKey: true } as MouseEvent;
