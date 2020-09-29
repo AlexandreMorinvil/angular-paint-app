@@ -12,6 +12,7 @@ export class AttributeJunctionComponent {
 
     constructor(private junctionService: JunctionService) {
         this.diameter = this.junctionService.getDiameter();
+        this.hasJunctionPoint= this.junctionService.getHasJunctionPoint();
     }
 
     getMaxValue(): number {

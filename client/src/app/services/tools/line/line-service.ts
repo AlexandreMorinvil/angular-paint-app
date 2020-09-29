@@ -36,8 +36,6 @@ export class LineService extends Tool {
     private undo: ImageData[];
     private click: number;
     alignmentCoord: Vec2;
-    private isPointsWithJunction: boolean;
-    private junctionPointsDiameter: number;
     constructor(
         drawingService: DrawingService,
         private colorService: ColorService,
@@ -53,8 +51,6 @@ export class LineService extends Tool {
         this.modifiers.push(this.colorService);
         this.modifiers.push(this.widthService);
         this.modifiers.push(this.junctionService);
-        this.isPointsWithJunction = true;
-        this.junctionPointsDiameter = 6;
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -169,9 +165,9 @@ export class LineService extends Tool {
     }
 
     private drawJunction(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        if (this.isPointsWithJunction) {
+        if (this.junctionService.getHasJunctionPoint()) {
             ctx.beginPath();
-            const radius = this.junctionPointsDiameter / 2;
+            const radius = this.junctionService.getDiameter() / 2;
             const startCenterX = this.mouseDownCoord.x;
             const startCenterY = this.mouseDownCoord.y;
             ctx.arc(startCenterX, startCenterY, radius, 0, Math.PI * 2);
