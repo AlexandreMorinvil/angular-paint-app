@@ -86,14 +86,13 @@ export class LineService extends Tool {
 
     onBackspaceDown(): void {
         if (this.undo.length > 1) {
-            //if (this.pathDataSaved.length > 0) {
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.mouseDownCoord = this.pathDataSaved[this.pathDataSaved.length - 2];
-            this.pathDataSaved.pop();
-            this.clearPath(); //Ajouter pour faire fonctionner temporairement back
-            this.drawingService.baseCtx.putImageData(this.undo[this.undo.length - 2], 0, 0);
-            this.undo.pop();
-            //}
+            if (this.pathDataSaved.length > 0) {
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                this.mouseDownCoord = this.pathDataSaved[this.pathDataSaved.length - 2];
+                this.pathDataSaved.pop();
+                this.drawingService.baseCtx.putImageData(this.undo[this.undo.length - 2], 0, 0);
+                this.undo.pop();
+            }
         }
     }
 
