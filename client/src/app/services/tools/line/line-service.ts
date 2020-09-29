@@ -106,6 +106,8 @@ export class LineService extends Tool {
 
     onMouseClick(event: MouseEvent): void {
         let timer;
+        console.log('pressed!');
+
         this.mouseClick = event.button === MouseButton.Left;
         if (this.mouseClick) {
             this.click++;

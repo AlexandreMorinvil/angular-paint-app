@@ -50,6 +50,11 @@ export class DrawingComponent implements AfterViewInit {
         this.toolbox.getCurrentTool().onMouseUp(event);
     }
 
+    @HostListener('click', ['$event'])
+    onMouseClick(event: MouseEvent): void {
+        this.toolbox.getCurrentTool().onMouseClick(event);
+    }
+
     @HostListener('window:keyup', ['$event'])
     keyEventUp(event: KeyboardEvent): void {
         if (event.key === 'Shift') {
