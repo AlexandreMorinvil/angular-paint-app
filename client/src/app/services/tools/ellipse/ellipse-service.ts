@@ -73,8 +73,7 @@ export class EllipseService extends Tool {
             if (mousePosition.y >= this.drawingService.baseCtx.canvas.height) {
                 this.drawingService.previewCtx.canvas.height = mousePosition.y;
             }
-        }
-        else{
+        } else {
             this.resetBorder();
         }
         if (event.shiftKey && this.mouseDown) {
@@ -193,12 +192,11 @@ export class EllipseService extends Tool {
     }
 
     private isInCanvas(mousePosition: Vec2): boolean {
-        return (mousePosition.x <= this.drawingService.baseCtx.canvas.width &&
-            mousePosition.y <= this.drawingService.baseCtx.canvas.height);
+        return mousePosition.x <= this.drawingService.baseCtx.canvas.width && mousePosition.y <= this.drawingService.baseCtx.canvas.height;
     }
 
-    private resetBorder():void{
-        this.drawingService.previewCtx.canvas.width = 		this.drawingService.baseCtx.canvas.width;
-        this.drawingService.previewCtx.canvas.height = 		this.drawingService.baseCtx.canvas.height;
+    private resetBorder(): void {
+        this.drawingService.previewCtx.canvas.width = this.drawingService.baseCtx.canvas.width;
+        this.drawingService.previewCtx.canvas.height = this.drawingService.baseCtx.canvas.height;
     }
 }
