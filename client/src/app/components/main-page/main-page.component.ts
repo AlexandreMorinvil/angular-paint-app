@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CreateNewDrawingDialogService } from '@app/services/create-new-drawing-dialog/create-new-drawing-dialog.service';
+import { UserGuideModalService } from '@app/services/user-guide-modal/user-guide-modal.service';
 
 @Component({
     selector: 'app-main-page',
@@ -7,9 +7,9 @@ import { CreateNewDrawingDialogService } from '@app/services/create-new-drawing-
     styleUrls: ['./main-page.component.scss'],
 })
 export class MainPageComponent {
-    constructor(public createNewDrawingDialogService: CreateNewDrawingDialogService) {}
+    constructor(public userGuideModalService: UserGuideModalService) {}
 
     openUserGuide(): void {
-        this.createNewDrawingDialogService.openDialog();
+        this.userGuideModalService.openUserGuide();
     }
 }
