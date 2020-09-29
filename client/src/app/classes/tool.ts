@@ -11,6 +11,7 @@ export abstract class Tool {
 
     mouseDownCoord: Vec2;
     mouseDown: boolean = false;
+    mouseClick: boolean = false;
     minWidth: number = 1;
     shiftDown: boolean = false;
 
@@ -23,6 +24,14 @@ export abstract class Tool {
     onMouseUp(event: MouseEvent): void {}
 
     onMouseMove(event: MouseEvent): void {}
+
+    onEscapeDown(event: KeyboardEvent): void {}
+
+    onBackspaceDown(event: KeyboardEvent): void {}
+
+    onMouseClick(event: MouseEvent): void {}
+
+    onMouseDblClick(event: MouseEvent): void {}
 
     onShiftDown(event: KeyboardEvent): void {}
 

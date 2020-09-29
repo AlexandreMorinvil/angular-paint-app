@@ -5,7 +5,6 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
-import { CursorService } from '@app/services/tools/cursor/cursor.service';
 import { EllipseService } from './ellipse-service';
 
 describe('EllipseService', () => {
@@ -13,7 +12,6 @@ describe('EllipseService', () => {
     let tracingService: TracingService;
     let colorService: ColorService;
     let widthService: WidthService;
-    let cursorService: CursorService;
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     let canvasStub: HTMLCanvasElement;
@@ -40,7 +38,6 @@ describe('EllipseService', () => {
         tracingService = TestBed.inject(TracingService);
         colorService = TestBed.inject(ColorService);
         widthService = TestBed.inject(WidthService);
-        cursorService = TestBed.inject(CursorService);
         // tslint:disable:no-any
         drawEllipseSpy = spyOn<any>(service, 'drawEllipse').and.callThrough();
         drawCircleSpy = spyOn<any>(service, 'drawCircle').and.callThrough();
@@ -51,6 +48,8 @@ describe('EllipseService', () => {
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
         service['drawingService'].canvas = canvasStub;
+        service['drawingService'].canvas.width = 1000;
+        service['drawingService'].canvas.height = 800;
 
         ctxFillSpy = spyOn<any>(service['drawingService'].previewCtx, 'fill').and.callThrough();
         ctxContourSpy = spyOn<any>(service['drawingService'].previewCtx, 'stroke').and.callThrough();
@@ -110,7 +109,6 @@ describe('EllipseService', () => {
         service.mouseDown = true;
 
         service.onMouseMove(mouseEvent);
-        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawEllipseSpy).toHaveBeenCalled();
     });
 
@@ -129,7 +127,6 @@ describe('EllipseService', () => {
         mouseEvent = { shiftKey: true } as MouseEvent;
 
         service.onMouseMove(mouseEvent);
-        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawCircleSpy).toHaveBeenCalled();
     });
 
@@ -178,37 +175,34 @@ describe('EllipseService', () => {
     it(' onMouseMove should call drawCircle if mouse down and shift is pressed down  ', () => {
         // top right
         mouseEvent = { offsetX: 10, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
-        service.onMouseMove(mouseEvent);
+        service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 9, offsetY: 9, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
 
-        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawCircleSpy).toHaveBeenCalled();
     });
 
-    it(' onMouseMove should change width height of canvas with the position of mouse in y ', () => {
+    it(' onMouseMove should change height of canvas with the position of mouse in y ', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
-        cursorService.clickOnAnchor = true;
-        cursorService.anchorHit = 2;
         const baseHeight = 800;
 
         mouseEvent = { offsetX: 1, offsetY: 1, button: 0, shiftKey: false } as MouseEvent;
         service.onMouseMove(mouseEvent);
         expect(previewCtxStub.canvas.height).toEqual(baseHeight);
 
-        mouseEvent = { offsetX: 500, offsetY: 1500, button: 0, shiftKey: false } as MouseEvent;
+        mouseEvent = { offsetX: 500, offsetY: 1200, button: 0, shiftKey: false } as MouseEvent;
         service.onMouseMove(mouseEvent);
         expect(previewCtxStub.canvas.height).toBe(mouseEvent.offsetY);
     });
 
     it(' onMouseMove should change width of canvas with the position of mouse in x', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
-        cursorService.clickOnAnchor = true;
-        cursorService.anchorHit = 2;
         const baseWidth = 1000;
 
         mouseEvent = { offsetX: 0, offsetY: 0, button: 0, shiftKey: false } as MouseEvent;
-        service.onMouseDown(mouseEvent);
+        service.onMouseMove(mouseEvent);
         expect(previewCtxStub.canvas.width).toEqual(baseWidth);
 
         mouseEvent = { offsetX: 1200, offsetY: 500, button: 0, shiftKey: false } as MouseEvent;

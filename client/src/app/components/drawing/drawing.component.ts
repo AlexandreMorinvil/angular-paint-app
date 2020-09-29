@@ -21,9 +21,6 @@ export class DrawingComponent implements AfterViewInit {
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private editCtx: CanvasRenderingContext2D;
-    // private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT }; // get height and  width from service
-    colorUse: string = '#000000';
-    sizePoint: number = 1;
 
     hasBeenDrawnOnto: boolean;
 
@@ -78,10 +75,22 @@ export class DrawingComponent implements AfterViewInit {
         this.toolbox.getCurrentTool().onMouseUp(event);
     }
 
+    @HostListener('click', ['$event'])
+    onMouseClick(event: MouseEvent): void {
+        this.toolbox.getCurrentTool().onMouseClick(event);
+    }
+
+    @HostListener('dblclick', ['$event'])
+    onMouseDblClick(event: MouseEvent): void {
+        this.toolbox.getCurrentTool().onMouseDblClick(event);
+    }
+
     @HostListener('window:keyup', ['$event'])
     keyEventUp(event: KeyboardEvent): void {
         if (event.key === 'Shift') {
             this.toolbox.getCurrentTool().onShiftUp(event);
+        } else if (event.key === 'Backspace') {
+            this.toolbox.getCurrentTool().onBackspaceDown(event);
         } else {
             for (const i in this.toolbox.getAvailableTools()) {
                 if (this.toolbox.getAvailableTools()[i].shortcut === event.key.toLowerCase()) {
@@ -95,6 +104,8 @@ export class DrawingComponent implements AfterViewInit {
     onShiftDown(event: KeyboardEvent): void {
         if (event.key === 'Shift') {
             this.toolbox.getCurrentTool().onShiftDown(event);
+        } else if (event.key == 'Escape') {
+            this.toolbox.getCurrentTool().onEscapeDown(event);
             this.hasBeenDrawnOnto = true;
         }
     }

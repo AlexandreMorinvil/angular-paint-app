@@ -1,21 +1,22 @@
 // tslint:disable:ordered-imports
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Description } from '@app/classes/description';
 import { HttpClientModule } from '@angular/common/http';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ToolboxService } from '@app/services/toolbox/toolbox.service';
 import { BrushService } from '@app/services/tools/brush/brush-service';
 import { CursorService } from '@app/services/tools/cursor/cursor.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse-service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
+import { LineService } from '@app/services/tools/line/line-service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
-import { ToolboxService } from '@app/services/toolbox/toolbox.service';
 import { SidebarComponent } from './sidebar.component';
 // tslint:disable:prettier
-class ToolStub extends Tool{}
+class ToolStub extends Tool {}
 
 describe('SidebarComponent', () => {
     let component: SidebarComponent;
@@ -38,6 +39,7 @@ describe('SidebarComponent', () => {
             {} as EraserService,
             {} as RectangleService,
             {} as EllipseService,
+            {} as LineService,
         );
 
         TestBed.configureTestingModule({
@@ -45,6 +47,7 @@ describe('SidebarComponent', () => {
             declarations: [SidebarComponent],
             providers: [
                 { provide: PencilService, useValue: toolStub },
+                { provide: LineService, useValue: toolStub },
                 { provide: BrushService, useValue: toolStub },
                 { provide: DrawingService, useValue: drawingStub },
                 { provide: RectangleService, useValue: toolStub },
