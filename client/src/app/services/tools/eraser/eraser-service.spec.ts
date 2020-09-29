@@ -2,15 +2,13 @@ import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { PencilService } from './pencil-service';
+import { EraserService } from './eraser-service';
 
 // tslint:disable:no-any
-describe('PencilService', () => {
-    let service: PencilService;
+describe('EraserService', () => {
+    let service: EraserService;
     let mouseEvent: MouseEvent;
-    let mouseEvent2: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
-
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let drawLineSpy: jasmine.Spy<any>;
@@ -23,13 +21,12 @@ describe('PencilService', () => {
         TestBed.configureTestingModule({
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         });
-        service = TestBed.inject(PencilService);
+        service = TestBed.inject(EraserService);
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
 
         // Configuration du spy du service
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
-        // tslint:disable:no-string-literal
         service['drawingService'].previewCtx = previewCtxStub;
 
         mouseEvent = {
@@ -37,16 +34,6 @@ describe('PencilService', () => {
             offsetY: 25,
             button: 0,
         } as MouseEvent;
-
-        mouseEvent2 = {
-            offsetX: 1200,
-            offsetY: 500,
-            button: 0,
-        } as MouseEvent;
-    });
-
-    it('should be created', () => {
-        expect(service).toBeTruthy();
     });
 
     it(' mouseDown should set mouseDownCoord to correct position', () => {
@@ -100,32 +87,6 @@ describe('PencilService', () => {
         service.mouseDown = false;
 
         service.onMouseMove(mouseEvent);
-        expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
-        expect(drawLineSpy).not.toHaveBeenCalled();
-    });
-
-    // Exemple de test d'intégration qui est quand même utile
-    it(' should change the pixel of the canvas ', () => {
-        mouseEvent = { offsetX: 0, offsetY: 0, button: 0 } as MouseEvent;
-        service.onMouseDown(mouseEvent);
-        mouseEvent = { offsetX: 1, offsetY: 0, button: 0 } as MouseEvent;
-        service.onMouseUp(mouseEvent);
-
-        // Premier pixel seulement
-        const imageData: ImageData = baseCtxStub.getImageData(0, 0, 1, 1);
-        expect(imageData.data[0]).toEqual(0); // R
-        expect(imageData.data[1]).toEqual(0); // G
-        expect(imageData.data[2]).toEqual(0); // B
-        // tslint:disable-next-line:no-magic-numbers
-        expect(imageData.data[3]).not.toEqual(0); // A
-    });
-
-    it(' onMouseMove should not call drawLine if mouse is not on canvas', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
-        service.mouseDown = true;
-
-        service.onMouseMove(mouseEvent2);
-        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
 });

@@ -1,9 +1,9 @@
+import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { TextureEnum, TextureService } from '@app/services/tool-modifier/texture/texture.service';
 import { BrushService } from './brush-service';
-import { TestBed } from '@angular/core/testing';
 
 // tslint:disable:no-any
 describe('BrushService', () => {

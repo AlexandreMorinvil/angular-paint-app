@@ -13,6 +13,7 @@ describe('RectangleService', () => {
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
+    // tslint:disable:no-any
     let drawRectangleSpy: jasmine.Spy<any>;
     let setAttributeSpy: jasmine.Spy<any>;
     let ctxFillSpy: jasmine.Spy<any>;

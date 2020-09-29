@@ -12,6 +12,7 @@ export abstract class Tool {
     mouseDownCoord: Vec2;
     mouseDown: boolean = false;
     mouseClick: boolean = false;
+    minWidth: number = 1;
     shiftDown: boolean = false;
 
     constructor(protected drawingService: DrawingService, description: Description) {
@@ -24,10 +25,6 @@ export abstract class Tool {
 
     onMouseMove(event: MouseEvent): void {}
 
-    onWidthChange(width: number): void {}
-
-    onColorChange(color: string): void {}
-
     onEscapeDown(event: KeyboardEvent): void {}
 
     onBackspaceDown(event: KeyboardEvent): void {}
@@ -39,8 +36,6 @@ export abstract class Tool {
     onShiftDown(event: KeyboardEvent): void {}
 
     onShiftUp(event: KeyboardEvent): void {}
-
-    onTextureChange(texture: number): void {}
 
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };

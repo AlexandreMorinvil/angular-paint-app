@@ -26,15 +26,6 @@ export enum AlignmentAngle {
     bottomRight = 315,
 }
 
-export enum JunctionSize {
-    onePixel = 1,
-    twoPixel = 2,
-    threePixel = 3,
-    fourPixel = 4,
-    fivePixel = 5,
-    sixPixel = 6,
-}
-
 @Injectable({
     providedIn: 'root',
 })
