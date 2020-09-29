@@ -47,6 +47,7 @@ export class RectangleService extends Tool {
     }
 
     onMouseUp(event: MouseEvent): void {
+        this.resetBorder();
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
@@ -62,6 +63,17 @@ export class RectangleService extends Tool {
             this.pathData.push(mousePosition);
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            if (!this.isInCanvas(mousePosition)) {
+                if (mousePosition.x >= this.drawingService.baseCtx.canvas.width) {
+                    this.drawingService.previewCtx.canvas.width = mousePosition.x;
+                }
+                if (mousePosition.y >= this.drawingService.baseCtx.canvas.height) {
+                    this.drawingService.previewCtx.canvas.height = mousePosition.y;
+                }
+            }
+            else{
+                this.resetBorder();
+            }
             this.drawRectangle(this.drawingService.previewCtx, this.pathData);
         }
     }
@@ -118,5 +130,15 @@ export class RectangleService extends Tool {
 
     private clearPath(): void {
         this.pathData = [];
+    }
+
+    private isInCanvas(mousePosition: Vec2): boolean {
+        return (mousePosition.x <= this.drawingService.baseCtx.canvas.width &&
+            mousePosition.y <= this.drawingService.baseCtx.canvas.height);
+    }
+
+    private resetBorder():void{
+        this.drawingService.previewCtx.canvas.width = this.drawingService.baseCtx.canvas.width;
+        this.drawingService.previewCtx.canvas.height = this.drawingService.baseCtx.canvas.height;
     }
 }
