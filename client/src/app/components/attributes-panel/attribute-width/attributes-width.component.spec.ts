@@ -10,6 +10,7 @@ describe('AttributeWidthComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [AttributeWidthComponent],
+            providers: [WidthService],
         }).compileComponents();
     }));
 
@@ -45,7 +46,7 @@ describe('AttributeWidthComponent', () => {
     it('if a width below the minimal accepted width is inserted the width should not change upon confirmation', () => {
         const newWidth = widthService.MIN_ATTRIBUTE_WIDTH - 1;
 
-        const initialWidth:number = component.widthDisplayed;
+        const initialWidth: number = component.widthDisplayed;
         component.widthDisplayed = newWidth;
         component.assign();
 
@@ -57,7 +58,7 @@ describe('AttributeWidthComponent', () => {
     it('if a width above the maximal accepted width is inserted the width should not change upon confirmation', () => {
         const newWidth = widthService.MAX_ATTRIBUTE_WIDTH + 1;
 
-        const initialWidth:number = component.widthDisplayed;
+        const initialWidth: number = component.widthDisplayed;
         component.widthDisplayed = newWidth;
         component.assign();
 
@@ -69,7 +70,7 @@ describe('AttributeWidthComponent', () => {
     it('the input width value should revert to its original value when cancelling the input change', () => {
         const newWidth = 17;
 
-        const initialWidth:number = component.widthDisplayed;
+        const initialWidth: number = component.widthDisplayed;
 
         component.widthDisplayed = newWidth;
         component.revert();

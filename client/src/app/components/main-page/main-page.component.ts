@@ -5,11 +5,6 @@ import { Message } from '@common/communication/message';
 import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-export interface DialogData {
-    animal: string;
-    name: string;
-}
-
 @Component({
     selector: 'app-main-page',
     templateUrl: './main-page.component.html',
