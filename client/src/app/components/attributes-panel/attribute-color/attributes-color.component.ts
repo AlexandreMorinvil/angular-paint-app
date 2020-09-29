@@ -7,10 +7,10 @@ import { ColorService } from '@app/services/tool-modifier/color/color.service';
     styleUrls: ['./attributes-color.component.scss', '../attributes-section.component.scss'],
 })
 export class AttributeColorComponent {
-    private primaryColor: string;
-    private secondaryColor: string;
-    private primaryOpacity: number;
-    private secondaryOpacity: number;
+    primaryColor: string;
+    secondaryColor: string;
+    primaryOpacity: number;
+    secondaryOpacity: number;
 
     constructor(private colorService: ColorService) {
         this.primaryColor = this.colorService.getPrimaryColor();
@@ -19,52 +19,12 @@ export class AttributeColorComponent {
         this.secondaryOpacity = this.colorService.getSecondaryColorOpacity();
     }
 
-    get primaryColorDisplayed(): string {
-        return this.primaryColor;
-    }
-
-    set primaryColorDisplayed(value: string) {
-        this.primaryColor = value;
-    }
-
-    get secondaryColorDisplayed(): string {
-        return this.secondaryColor;
-    }
-
-    set secondaryColorDisplayed(value: string) {
-        this.secondaryColor = value;
-    }
-
-    get primaryOpacityDisplayed(): number {
-        let displayedValue: number = Math.min(this.primaryOpacity, 1);
-        displayedValue = Math.max(displayedValue, 0);
-        return displayedValue;
-    }
-
-    set primaryOpacityDisplayed(value: number) {
-        let validValue: number = Math.min(value, 1);
-        validValue = Math.max(validValue, 0);
-        this.primaryOpacity = validValue;
-    }
-
-    get secondaryOpacityDisplayed(): number {
-        let displayedValue: number = Math.min(this.secondaryOpacity, 1);
-        displayedValue = Math.max(displayedValue, 0);
-        return displayedValue;
-    }
-
-    set secondaryOpacityDisplayed(value: number) {
-        let validValue: number = Math.min(value, 1);
-        validValue = Math.max(validValue, 0);
-        this.secondaryOpacity = validValue;
-    }
-
-    getListOfPreviousColors() {
+    getListOfPreviousColors(): string[] {
         return this.colorService.getPreviousColors();
     }
 
-    intertwinColors() {
-        this.colorService.intertwinColors();
+    intertwineColors(): void {
+        this.colorService.intertwineColors();
 
         this.primaryColor = this.colorService.getPrimaryColor();
         this.primaryOpacity = this.colorService.getPrimaryColorOpacity();
@@ -73,12 +33,12 @@ export class AttributeColorComponent {
         this.secondaryOpacity = this.colorService.getSecondaryColorOpacity();
     }
 
-    selectPrimaryColor(color:string) {
+    selectPrimaryColorsQuick(color: string): void {
         this.colorService.setPrimaryColor(color);
         this.primaryColor = this.colorService.getPrimaryColor();
     }
 
-    selectSecondaryColor(color:string) {
+    selectSecondaryColorQuick(color: string): void {
         this.colorService.setSecondaryColor(color);
         this.secondaryColor = this.colorService.getSecondaryColor();
     }
@@ -88,6 +48,10 @@ export class AttributeColorComponent {
         this.colorService.setSecondaryColor(this.secondaryColor);
         this.colorService.setPrimaryColorOpacity(this.primaryOpacity);
         this.colorService.setSecondaryColorOpacity(this.secondaryOpacity);
+        this.primaryColor = this.colorService.getPrimaryColor();
+        this.secondaryColor = this.colorService.getSecondaryColor();
+        this.primaryOpacity = this.colorService.getPrimaryColorOpacity();
+        this.secondaryOpacity = this.colorService.getSecondaryColorOpacity();
     }
 
     revert(): void {

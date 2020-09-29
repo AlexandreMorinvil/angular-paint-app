@@ -3,6 +3,9 @@ import { WidthService } from './width.service';
 
 describe('WidthService', () => {
     let service: WidthService;
+
+    // The disablement of the "any" tslint rule is justified in this situation as the prototype
+    // of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
     // tslint:disable:no-any
     let setWidthSpy: jasmine.Spy<any>;
     let getWidthSpy: jasmine.Spy<any>;
@@ -27,18 +30,18 @@ describe('WidthService', () => {
         expect(getWidthSpy).toHaveBeenCalled();
     });
 
-    it(' setWidth should set width to the 50', () => {
+    it(' setWidth should set width to the 50 if input is above 50', () => {
         const width = 75;
-        const maxWidth = 50;
+        const maxWidth = service.MAX_ATTRIBUTE_WIDTH;
         service.setWidth(width);
         expect(setWidthSpy).toHaveBeenCalled();
         expect(service.getWidth()).toEqual(maxWidth);
         expect(getWidthSpy).toHaveBeenCalled();
     });
 
-    it(' setWidth should set width to 1', () => {
+    it(' setWidth should set width to 1 if input is below 1', () => {
         const width = 0;
-        const minWidth = 1;
+        const minWidth = service.MIN_ATTRIBUTE_WIDTH;
         service.setWidth(width);
         expect(setWidthSpy).toHaveBeenCalled();
         expect(service.getWidth()).toEqual(minWidth);
