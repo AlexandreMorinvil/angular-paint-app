@@ -23,7 +23,12 @@ export class EllipseService extends Tool {
     primaryColor: string;
     secondaryColor: string;
 
-    constructor(drawingService: DrawingService, private colorService: ColorService, private tracingService: TracingService, private widthService: WidthService) {
+    constructor(
+        drawingService: DrawingService,
+        private colorService: ColorService,
+        private tracingService: TracingService,
+        private widthService: WidthService,
+    ) {
         super(drawingService, new Description('ellipse', '2', 'ellipse_icon.png'));
         this.modifiers.push(this.colorService);
         this.modifiers.push(this.widthService);

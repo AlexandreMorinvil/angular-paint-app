@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
-import { ToolboxService } from '@app/services/toolbox/toolbox.service'
+import { ToolboxService } from '@app/services/toolbox/toolbox.service';
 
 @Component({
     selector: 'app-attributes-width',
@@ -45,4 +45,3 @@ export class AttributeWidthComponent {
         return this.width !== this.widthService.getWidth();
     }
 }
-
