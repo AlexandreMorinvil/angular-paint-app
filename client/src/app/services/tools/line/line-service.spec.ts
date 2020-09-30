@@ -360,10 +360,15 @@ describe('LineService', () => {
         service.click = 0;
         mouseEvent = { offsetX: 40, offsetY: 50, button: 0, shiftKey: false } as MouseEvent;
         service.onMouseClick(mouseEvent);
+        service.click = 0;
         mouseEvent = { offsetX: 100, offsetY: 100, button: 0, shiftKey: false } as MouseEvent;
         service.onMouseMove(mouseEvent);
         service.onMouseClick(mouseEvent);
         service.click = 0;
+        mouseEvent = { offsetX: 150, offsetY: 150, button: 0, shiftKey: false } as MouseEvent;
+        service.onMouseMove(mouseEvent);
+        service.onMouseClick(mouseEvent);
+        service.onBackspaceDown();
         service.onBackspaceDown();
 
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
@@ -371,54 +376,44 @@ describe('LineService', () => {
         expect(service.mouseDownCoord.y).toEqual(50);
     });
 
-    it('on Backspace should be able to perform multples times in a row', () => {
+    it('Backspace should not work with only one junction', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseClick = true;
         service.click = 0;
-
         mouseEvent = { offsetX: 40, offsetY: 50, button: 0, shiftKey: false } as MouseEvent;
         service.onMouseClick(mouseEvent);
-        service.onMouseMove(mouseEvent);
-        service.mouseClick = true;
-
-
-        mouseEvent = { offsetX: 45, offsetY: 55, button: 0, shiftKey: false } as MouseEvent;
-        service.onMouseMove(mouseEvent);
-        service.onMouseClick(mouseEvent);
-        service.mouseClick = true;
-
-        mouseEvent = { offsetX: 50, offsetY: 60, button: 0, shiftKey: false } as MouseEvent;
-        service.onMouseMove(mouseEvent);
-        service.onMouseClick(mouseEvent);
-        service.mouseClick = true;
-
-        mouseEvent = { offsetX: 55, offsetY: 65, button: 0, shiftKey: false } as MouseEvent;
-        service.onMouseMove(mouseEvent);
-        service.onMouseClick(mouseEvent);
-        service.mouseClick = true;
-
-
-        service.click = 0;
-
         service.onBackspaceDown();
-        service.onBackspaceDown();
-        service.onBackspaceDown();
-        service.onBackspaceDown();
-        service.onBackspaceDown();
-        service.onBackspaceDown();
-        service.onBackspaceDown();
-        service.onBackspaceDown();
-        service.onBackspaceDown();
-        service.onBackspaceDown();
-        service.onBackspaceDown();
-        service.onBackspaceDown();
-
-
 
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-        expect(service.mouseDownCoord.y).toEqual(0);
-        //expect(service.mouseDownCoord.y).toEqual(50);
+        expect(service.mouseDownCoord.x).toBeUndefined;
+        expect(service.mouseDownCoord.y).toBeUndefined;
     });
+
+    it('on Backspace should not work after finishing the drawing', () => {
+      service.mouseDownCoord = { x: 0, y: 0 };
+      service.mouseClick = true;
+      service.click = 0;
+      mouseEvent = { offsetX: 40, offsetY: 50, button: 0, shiftKey: false } as MouseEvent;
+      service.onMouseClick(mouseEvent);
+      service.click = 0;
+      mouseEvent = { offsetX: 100, offsetY: 100, button: 0, shiftKey: false } as MouseEvent;
+      service.onMouseMove(mouseEvent);
+      service.onMouseClick(mouseEvent);
+      service.click = 0;
+      mouseEvent = { offsetX: 150, offsetY: 150, button: 0, shiftKey: false } as MouseEvent;
+      service.onMouseMove(mouseEvent);
+      service.onMouseClick(mouseEvent);
+      service.onMouseClick(mouseEvent);
+      service.onBackspaceDown();
+      service.onBackspaceDown();
+
+      expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect(service.mouseDownCoord.x).toBeUndefined;
+        expect(service.mouseDownCoord.y).toBeUndefined;
+  });
+
+
+
 
     /*
 
