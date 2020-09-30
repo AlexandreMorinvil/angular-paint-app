@@ -33,5 +33,4 @@ export class JunctionService extends ToolModifier {
     getHasJunctionPoint(): boolean {
         return this.hasJunctionPoint;
     }
-
 }

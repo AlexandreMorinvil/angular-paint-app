@@ -1,88 +1,118 @@
-// import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-// import { WidthService } from '@app/services/tool-modifier/width/width.service';
-// import { AttributeJunctionComponent } from './attributes-junction.component';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { JunctionService } from '@app/services/tool-modifier/junction/junction.service';
+import { AttributeJunctionComponent } from './attributes-junction.component';
 
-// describe('AttributeJunctionComponent', () => {
-//     let component: AttributeJunctionComponent;
-//     let fixture: ComponentFixture<AttributeJunctionComponent>;
-//     let widthService: WidthService;
+describe('AttributeJunctionComponent', () => {
+    let component: AttributeJunctionComponent;
+    let fixture: ComponentFixture<AttributeJunctionComponent>;
+    let junctionService: JunctionService;
 
-//     beforeEach(async(() => {
-//         TestBed.configureTestingModule({
-//             declarations: [AttributeJunctionComponent],
-//             providers: [WidthService],
-//         }).compileComponents();
-//     }));
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            declarations: [AttributeJunctionComponent],
+            providers: [JunctionService],
+        }).compileComponents();
+    }));
 
-//     beforeEach(() => {
-//         fixture = TestBed.createComponent(AttributeJunctionComponent);
-//         component = fixture.componentInstance;
-//         fixture.detectChanges();
+    beforeEach(() => {
+        fixture = TestBed.createComponent(AttributeJunctionComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
 
-//         widthService = TestBed.inject(WidthService);
-//     });
+        junctionService = TestBed.inject(JunctionService);
+    });
 
-//     it('should create', () => {
-//         expect(component).toBeTruthy();
-//     });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 
-//     it('the width of the component should be initiated with the values of the width service', () => {
-//         const componentWidth: number = component.widthDisplayed;
-//         const serviceWidth: number = widthService.getWidth();
-//         expect(componentWidth).toEqual(serviceWidth);
-//     });
+    it('the juntion diameter of the component should be initiated to the values of the junction service', () => {
+        const componentDiameter: number = component.diameter;
+        const serviceDiameter: number = junctionService.getDiameter();
+        expect(componentDiameter).toEqual(serviceDiameter);
+    });
 
-//     it('the width should change to the input value upon confirmation of the width choice', () => {
-//         const newWidth = 27;
+    it('the diameter should change to the input diameter upon confirmation of the junction parameters choice', () => {
+        const newWidth = 27;
 
-//         component.widthDisplayed = newWidth;
-//         component.assign();
+        component.diameter = newWidth;
+        component.assign();
 
-//         const width: number = widthService.getWidth();
+        const width: number = junctionService.getDiameter();
 
-//         expect(width).toEqual(newWidth);
-//     });
+        expect(width).toEqual(newWidth);
+    });
 
-//     it('if a width below the minimal accepted width is inserted the width should not change upon confirmation', () => {
-//         const newWidth = widthService.MIN_ATTRIBUTE_WIDTH - 1;
+    it('the hasJunctionPoint should change to the input hasJunctionPoint upon confirmation of the junction parameters choice', () => {
+        const newHasJunctionPoint = true;
 
-//         const initialWidth: number = component.widthDisplayed;
-//         component.widthDisplayed = newWidth;
-//         component.assign();
+        component.hasJunctionPoint = newHasJunctionPoint;
+        component.assign();
 
-//         const width: number = widthService.getWidth();
+        const hasJunctionPoint: boolean = junctionService.getHasJunctionPoint();
 
-//         expect(width).toEqual(initialWidth);
-//     });
+        expect(hasJunctionPoint).toEqual(newHasJunctionPoint);
+    });
 
-//     it('if a width above the maximal accepted width is inserted the width should not change upon confirmation', () => {
-//         const newWidth = widthService.MAX_ATTRIBUTE_WIDTH + 1;
+    it('if a diameter below the minimal accepted value is inserted the diameter should go to the minimal diameter change upon confirmation', () => {
+        const newDiameter = junctionService.MIN_JUNCTION_DIAMETER - 1;
+        const minimalDiameter = junctionService.MIN_JUNCTION_DIAMETER;
 
-//         const initialWidth: number = component.widthDisplayed;
-//         component.widthDisplayed = newWidth;
-//         component.assign();
+        component.diameter = newDiameter;
+        component.assign();
 
-//         const width: number = widthService.getWidth();
+        const diameter: number = junctionService.getDiameter();
 
-//         expect(width).toEqual(initialWidth);
-//     });
+        expect(diameter).toEqual(minimalDiameter);
+    });
 
-//     it('the input width value should revert to its original value when cancelling the input change', () => {
-//         const newWidth = 17;
+    it('if a diameter above the maximal accepted diameter is inserted the diameter should change to the maximal diameter upon confirmation', () => {
+        const newDiameter = junctionService.MAX_JUNCTION_DIAMETER + 1;
+        const maximalDiameter = junctionService.MAX_JUNCTION_DIAMETER;
 
-//         const initialWidth: number = component.widthDisplayed;
+        component.diameter = newDiameter;
+        component.assign();
 
-//         component.widthDisplayed = newWidth;
-//         component.revert();
+        const diameter: number = junctionService.getDiameter();
 
-//         const width: number = widthService.getWidth();
+        expect(diameter).toEqual(maximalDiameter);
+    });
 
-//         expect(width).toEqual(initialWidth);
-//     });
+    it('the input diameter value should revert to its original value when cancelling the input change', () => {
+        const newDiameter = 17;
 
-//     it('if the width is changed, there should be a need for confirmation', () => {
-//         component.widthDisplayed = component.widthDisplayed + 1;
-//         const needForConfirmation: boolean = component.needConfirmation();
-//         expect(needForConfirmation).toEqual(true);
-//     });
-// });
+        const initialDiameter: number = component.diameter;
+
+        component.diameter = newDiameter;
+        component.revert();
+
+        const diameter: number = junctionService.getDiameter();
+
+        expect(diameter).toEqual(initialDiameter);
+    });
+
+    it('the input hasJunctionPoint value should revert to its original value when cancelling the input change', () => {
+        const newHasJunctionPoint = true;
+
+        const initialHasJunctionPoint: boolean = component.hasJunctionPoint;
+
+        component.hasJunctionPoint = newHasJunctionPoint;
+        component.revert();
+
+        const hasJunctionPoint: boolean = junctionService.getHasJunctionPoint();
+
+        expect(hasJunctionPoint).toEqual(initialHasJunctionPoint);
+    });
+
+    it('if the width is changed, there should be a need for confirmation', () => {
+        component.diameter = component.diameter + 1;
+        const needForConfirmation: boolean = component.needConfirmation();
+        expect(needForConfirmation).toEqual(true);
+    });
+
+    it('if there is a new hasJunctionPoint value there should be a need for a confirmation', () => {
+        component.hasJunctionPoint = !component.hasJunctionPoint;
+        const needForConfirmation: boolean = component.needConfirmation();
+        expect(needForConfirmation).toEqual(true);
+    });
+});
