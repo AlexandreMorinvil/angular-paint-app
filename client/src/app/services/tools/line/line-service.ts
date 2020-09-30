@@ -30,14 +30,14 @@ export enum AlignmentAngle {
     providedIn: 'root',
 })
 export class LineService extends Tool {
-    private pathData: Vec2[];
-    private pathDataSaved: Vec2[];
-    private savedImage: ImageData;
-    private undo: ImageData[];
-    private click: number;
+    pathData: Vec2[];
+    pathDataSaved: Vec2[];
+    savedImage: ImageData;
+    undo: ImageData[];
+    click: number;
     alignmentCoord: Vec2;
-    private isPointsWithJunction: boolean;
-    private junctionPointsDiameter: number;
+    isPointsWithJunction: boolean;
+    junctionPointsDiameter: number;
     constructor(
         drawingService: DrawingService,
         private colorService: ColorService,
@@ -295,10 +295,9 @@ export class LineService extends Tool {
             return AlignmentAngle.bottomLeft;
         } else if (angle >= 247.5 && angle < 292.5) {
             return AlignmentAngle.bottom;
-        } else if (angle >= 292.5 && angle < 337.5) {
+        } else {
             return AlignmentAngle.bottomRight;
         }
-        return 1;
     }
 
     findAlignmentAngle(path: Vec2[]): number {
