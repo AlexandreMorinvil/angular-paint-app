@@ -7,6 +7,8 @@ import { LineService } from './line-service';
 describe('LineService', () => {
     // Configuration of service spy
     // tslint:disable:no-any
+    // It would be illogical to split a test file for a unique service
+    // tslint:disable:max-file-line-count
     let service: LineService;
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
@@ -43,7 +45,6 @@ describe('LineService', () => {
         savedPointSpy = spyOn<any>(service, 'savedPoints').and.callThrough();
         onMouseDoubleClickEventSpy = spyOn<any>(service, 'onMouseDoubleClickEvent').and.callThrough();
         closeShapeSpy = spyOn<any>(service, 'closeShape').and.callThrough();
-
 
         drawAlignLineSpy = spyOn<any>(service, 'drawAlignLine').and.callThrough();
         clearPathSpy = spyOn<any>(service, 'clearPath').and.callThrough();
@@ -149,35 +150,25 @@ describe('LineService', () => {
         expect(service.mouseClick).toEqual(false);
     });
 
-    it(' A triple', () => {
-      service.mouseDownCoord = { x: 0, y: 0 };
-      service.mouseClick = true;
-      expect(onMouseDoubleClickEventSpy).toHaveBeenCalled();
-      expect(service.click).toBe(0);
-      expect(service.mouseClick).toEqual(false);
-  });
-
     it(' closeShape should return if the mouse is close enough', () => {
-      service.pathDataSaved[0] = {x: 0, y:0}
-      service.pathDataSaved[1] = {x: 5, y:0}
-      mouseEvent = { offsetX: 5, offsetY: 0, button: 0, shiftKey: false } as MouseEvent;
-      service.mouseClick = true;
-      service.onMouseClick(mouseEvent);
-      service.onMouseClick(mouseEvent);
-      expect(closeShapeSpy).toHaveBeenCalled();
+        service.pathDataSaved[0] = { x: 0, y: 0 };
+        service.pathDataSaved[1] = { x: 5, y: 0 };
+        mouseEvent = { offsetX: 5, offsetY: 0, button: 0, shiftKey: false } as MouseEvent;
+        service.mouseClick = true;
+        service.onMouseClick(mouseEvent);
+        service.onMouseClick(mouseEvent);
+        expect(closeShapeSpy).toHaveBeenCalled();
     });
 
     it(' closeShape should not return if the mouse is not close enough', () => {
-      service.pathDataSaved[0] = {x: 0, y:0}
-      service.pathDataSaved[1] = {x: 5, y:10}
-      mouseEvent = { offsetX: 40, offsetY: 40, button: 0, shiftKey: false } as MouseEvent;
-      service.mouseClick = true;
-      service.onMouseClick(mouseEvent);
-      service.onMouseClick(mouseEvent);
-      expect(closeShapeSpy).not.toHaveBeenCalled();
+        service.pathDataSaved[0] = { x: 0, y: 0 };
+        service.pathDataSaved[1] = { x: 5, y: 10 };
+        mouseEvent = { offsetX: 40, offsetY: 40, button: 0, shiftKey: false } as MouseEvent;
+        service.mouseClick = true;
+        service.onMouseClick(mouseEvent);
+        service.onMouseClick(mouseEvent);
+        expect(closeShapeSpy).not.toHaveBeenCalled();
     });
-
-
 
     it('onMouseMove if mouse is Click and shift not press should not drawLine if its not in canvas', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
@@ -256,21 +247,25 @@ describe('LineService', () => {
         const correctAngle = 0;
         expect(service.roundToNearestAngle(someAngle)).toBe(correctAngle);
     });
+
     it(' roundToNearestAngle should return correct value when its called with angle of 30', () => {
         const someAngle = 30;
         const correctAngle = 45;
         expect(service.roundToNearestAngle(someAngle)).toBe(correctAngle);
     });
+
     it(' roundToNearestAngle should return correct value when its called with angle of 70', () => {
         const someAngle = 70;
         const correctAngle = 90;
         expect(service.roundToNearestAngle(someAngle)).toBe(correctAngle);
     });
+
     it(' roundToNearestAngle should return correct value when its called with angle of 130', () => {
         const someAngle = 130;
         const correctAngle = 135;
         expect(service.roundToNearestAngle(someAngle)).toBe(correctAngle);
     });
+
     it(' roundToNearestAngle should return correct value when its called with angle of 170', () => {
         const someAngle = 170;
         const correctAngle = 180;
@@ -281,11 +276,13 @@ describe('LineService', () => {
         const correctAngle = 225;
         expect(service.roundToNearestAngle(someAngle)).toBe(correctAngle);
     });
+
     it(' roundToNearestAngle should return correct value when its called with angle of 260', () => {
         const someAngle = 350;
         const correctAngle = 0;
         expect(service.roundToNearestAngle(someAngle)).toBe(correctAngle);
     });
+
     it(' roundToNearestAngle should return correct value when its called with angle of 300', () => {
         const someAngle = 300;
         const correctAngle = 315;
@@ -438,11 +435,10 @@ describe('LineService', () => {
         service.click = 0;
         mouseEvent = { offsetX: 40, offsetY: 50, button: 0, shiftKey: false } as MouseEvent;
         service.onMouseClick(mouseEvent);
+        const result = service.mouseDownCoord;
         service.onBackspaceDown();
-
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-        expect(service.mouseDownCoord.x).toBeUndefined;
-        expect(service.mouseDownCoord.y).toBeUndefined;
+        expect(service.mouseDownCoord).toEqual(result);
     });
 
     it('on Backspace should not work after finishing the drawing', () => {
@@ -460,112 +456,10 @@ describe('LineService', () => {
         service.onMouseMove(mouseEvent);
         service.onMouseClick(mouseEvent);
         service.onMouseClick(mouseEvent);
+        const result = service.mouseDownCoord;
         service.onBackspaceDown();
         service.onBackspaceDown();
-
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-        expect(service.mouseDownCoord.x).toBeUndefined;
-        expect(service.mouseDownCoord.y).toBeUndefined;
+        expect(service.mouseDownCoord).toEqual(result);
     });
-
-
-
-
-    /*
-
-    it('onMouse doubleClick should call ondDoucleClick event', () => {
-        service.mouseClick = true;
-        service.click = 0;
-        mouseEvent = { offsetX: 40, offsetY: 50, button: 0, shiftKey: false } as MouseEvent;
-        service.onMouseClick(mouseEvent);
-        service.click = 1;
-        mouseEvent = { offsetX: 60, offsetY: 70, button: 0, shiftKey: false } as MouseEvent;
-        service.onMouseClick(mouseEvent);
-        expect(service.onMouseDoubleClickEvent(mouseEvent)).toHaveBeenCalled();
-    });
-    */
-    // MARCHE PAS
-    /* it('onMouse doubleClick if isAround20Pixel should close the shape', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
-        service.mouseDown = true;
-        service.mouseClick = true;
-        service.click = 0;
-        mouseEvent = { offsetX: 2, offsetY: 2, button: 0, shiftKey: false } as MouseEvent;
-        service.onMouseClick(mouseEvent);
-        mouseEvent = { offsetX: 7, offsetY: 7, button: 0, shiftKey: false } as MouseEvent;
-        service.onMouseClick(mouseEvent);
-        service.click = 1;
-        mouseEvent = { offsetX: 40, offsetY: 50, button: 0, shiftKey: false } as MouseEvent;
-        service.onMouseClick(mouseEvent);
-        expect(service.isAround20Pixels()).toBe(true);
-        expect(service.closeShape()).toHaveBeenCalled();
-    }); */
-
-    // MARCHE PAS pass pas par le else
-    /*  it('onMouse doubleClick if isAround20Pixel should close the shape', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
-        service.mouseDown = true;
-        service.mouseClick = true;
-        service.click = 0;
-        mouseEvent = { offsetX: 10, offsetY: 10, button: 0, shiftKey: false } as MouseEvent;
-        service.onMouseClick(mouseEvent);
-        mouseEvent = { offsetX: 60, offsetY: 60, button: 0, shiftKey: false } as MouseEvent;
-        service.onMouseClick(mouseEvent);
-        service.click = 1;
-        mouseEvent = { offsetX: 100, offsetY: 100, button: 0, shiftKey: false } as MouseEvent;
-        service.onMouseClick(mouseEvent);
-        expect(service.isAround20Pixels()).toBe(false);
-        expect(service.closeShape()).not.toHaveBeenCalled();
-    }); */
-    /*
-
-    it('onMouse doubleClick should clearPath and clearPathSaved', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
-        service.mouseClick = true;
-        service.click = 0;
-        mouseEvent = { offsetX: 40, offsetY: 50, button: 0, shiftKey: false } as MouseEvent;
-        service.onMouseClick(mouseEvent);
-        mouseEvent = { offsetX: 80, offsetY: 90, button: 0, shiftKey: false } as MouseEvent;
-        service.onMouseMove(mouseEvent);
-        service.click = 1;
-        mouseEvent = { offsetX: 100, offsetY: 150, button: 0, shiftKey: false } as MouseEvent;
-        service.onMouseClick(mouseEvent);
-        expect(clearPathSpy).toHaveBeenCalled();
-        expect(clearPathSavedSpy).toHaveBeenCalled();
-    });
-    */
-    /*marche passs
-
-    it('on isAround20Pixels should return true if the distance between first and last click <=20 should return true', () => {
-        service.isPointsWithJunction = false;
-        service.mouseClick = true;
-        service.click = 0;
-        mouseEvent = { offsetX: 22, offsetY: 33, button: 0, shiftKey: false } as MouseEvent;
-        service.onMouseClick(mouseEvent);
-        mouseEvent = { offsetX: 23, offsetY: 34, button: 0, shiftKey: false } as MouseEvent;
-        service.onMouseClick(mouseEvent);
-        service.click = 1;
-        mouseEvent = { offsetX: 24, offsetY: 35, button: 0, shiftKey: false } as MouseEvent;
-        service.onMouseClick(mouseEvent);
-        //service.isAround20Pixels();
-        expect(isAround20PixelSpy).toBe(true);
-    });
-    /* maRCHE PAS
-
-    fit('on isAroud20Pixels should return true if the distance between first and last click >20 should return false', () => {
-        service.mouseClick = true;
-        service.mouseDownCoord = { x: 0, y: 0 };
-        service.click = 0;
-
-        mouseEvent = { offsetX: 0, offsetY: 0, button: 0, shiftKey: false } as MouseEvent;
-        service.onMouseClick(mouseEvent);
-        mouseEvent = { offsetX: 1000, offsetY: 1050, button: 0, shiftKey: false } as MouseEvent;
-        service.onMouseClick(mouseEvent);
-        service.click = 1;
-        service.onMouseClick(mouseEvent);
-
-        //service.isAround20Pixels();
-        expect(service.isAround20Pixels()).toEqual(false);
-    });
-    */
 });

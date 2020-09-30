@@ -109,7 +109,7 @@ export class LineService extends Tool {
                 timer = setTimeout(() => {
                     this.click = 0;
                 }, waitTime);
-            } else /*if (this.click === 2)*/ {
+            } else {
                 clearTimeout(timer);
                 this.click = 0;
                 this.onMouseDoubleClickEvent(event);
