@@ -1,6 +1,7 @@
 // tslint:disable:ordered-imports
 import { HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Description } from '@app/classes/description';
@@ -55,6 +56,9 @@ describe('SidebarComponent', () => {
                 { provide: CursorService, useValue: toolStub },
                 { provide: ToolboxService, useValue: toolboxSpy },
                 { provide: RouterModule, useValue: routerSpy },
+                { provide: MAT_DIALOG_DATA, useValue: {} },
+                { provide: MatDialogRef, useValue: {} },
+                { provide: MatDialog, useValue: {} },
             ],
         }).compileComponents();
     }));
