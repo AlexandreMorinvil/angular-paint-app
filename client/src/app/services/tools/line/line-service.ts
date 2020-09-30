@@ -132,6 +132,8 @@ export class LineService extends Tool {
                 this.clearPath();
             }
             if (this.click == 1 && event.shiftKey) {
+                this.mouseDownCoord = this.getPositionFromMouse(event);
+                this.pathData.push(this.mouseDownCoord);
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.drawAlignLine(this.drawingService.baseCtx, this.pathData);
                 this.pathData[0] = this.alignmentCoord;
@@ -143,7 +145,7 @@ export class LineService extends Tool {
         }
     }
 
-    private onMouseDoubleClickEvent(event: MouseEvent): void {
+    onMouseDoubleClickEvent(event: MouseEvent): void {
         this.clearPath();
         if (this.isAround20Pixels()) {
             this.closeShape();
@@ -151,11 +153,11 @@ export class LineService extends Tool {
         this.clearPathSaved();
     }
 
-    private isInCanvas(mousePosition: Vec2): boolean {
+    isInCanvas(mousePosition: Vec2): boolean {
         return mousePosition.x <= this.drawingService.previewCtx.canvas.width && mousePosition.y <= this.drawingService.previewCtx.canvas.height;
     }
 
-    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         let firstPath = path[0];
         let lastPath = path[path.length - 1];
@@ -168,7 +170,7 @@ export class LineService extends Tool {
         ctx.stroke();
     }
 
-    private drawJunction(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    drawJunction(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         if (this.isPointsWithJunction) {
             ctx.beginPath();
             const radius = this.junctionPointsDiameter / 2;
@@ -178,7 +180,7 @@ export class LineService extends Tool {
             ctx.fill();
         }
     }
-    private isAround20Pixels(): boolean {
+    isAround20Pixels(): boolean {
         let firstCurrentPoint = this.pathDataSaved[0];
         let lastCurrentPoint = this.pathDataSaved[this.pathDataSaved.length - 1];
         let diffXPosition = lastCurrentPoint.x - firstCurrentPoint.x;
@@ -193,7 +195,7 @@ export class LineService extends Tool {
         return false;
     }
 
-    private closeShape(): void {
+    closeShape(): void {
         this.drawingService.baseCtx.beginPath();
         let firstPath = this.pathDataSaved[0];
         let lastPath = this.pathDataSaved[this.pathDataSaved.length - 1];
@@ -204,7 +206,7 @@ export class LineService extends Tool {
         this.drawJunction(this.drawingService.baseCtx, this.pathData);
     }
 
-    private savedPoints(): void {
+    savedPoints(): void {
         this.pathDataSaved.push(this.mouseDownCoord);
         this.savedImage = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
         this.undo.push(this.savedImage);
@@ -319,10 +321,10 @@ export class LineService extends Tool {
         }
     }
 
-    private clearPath(): void {
+    clearPath(): void {
         this.pathData = [];
     }
-    private clearPathSaved(): void {
+    clearPathSaved(): void {
         this.pathDataSaved = [];
     }
 }
