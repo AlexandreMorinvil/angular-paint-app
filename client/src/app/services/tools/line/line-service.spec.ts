@@ -176,7 +176,7 @@ describe('LineService', () => {
         expect(service.roundToNearestAngle(1000)).toBe(1);
     });
 
-    fit(' drawAlignLine should call assign aligmentCoord correctly for case of angle 45', () => {
+    it(' drawAlignLine should call assign aligmentCoord correctly for case of angle 45', () => {
         mouseEvent = { offsetX: 0, offsetY: 0, button: 0, shiftKey: false } as MouseEvent;
         service.onMouseClick(mouseEvent);
         mouseEvent = { offsetX: 20, offsetY: 20, button: 0, shiftKey: true } as MouseEvent;
@@ -187,7 +187,7 @@ describe('LineService', () => {
         expect(service.alignmentCoord.x).toBe(30);
         expect(service.alignmentCoord.y).toBe(30);
     });
-    fit(' drawAlignLine should call assign aligmentCoord correctly for case of angle 90', () => {
+    it(' drawAlignLine should call assign aligmentCoord correctly for case of angle 90', () => {
         mouseEvent = { offsetX: 0, offsetY: 0, button: 0, shiftKey: false } as MouseEvent;
         service.onMouseClick(mouseEvent);
         mouseEvent = { offsetX: 20, offsetY: 20, button: 0, shiftKey: true } as MouseEvent;
@@ -198,7 +198,7 @@ describe('LineService', () => {
         expect(service.alignmentCoord.x).toBe(20);
         expect(service.alignmentCoord.y).toBe(50);
     });
-    fit(' drawAlignLine should call assign aligmentCoord correctly for case of angle 135', () => {
+    it(' drawAlignLine should call assign aligmentCoord correctly for case of angle 135', () => {
         mouseEvent = { offsetX: 0, offsetY: 0, button: 0, shiftKey: false } as MouseEvent;
         service.onMouseClick(mouseEvent);
         mouseEvent = { offsetX: 20, offsetY: 20, button: 0, shiftKey: true } as MouseEvent;
@@ -210,7 +210,7 @@ describe('LineService', () => {
         expect(service.alignmentCoord.y).toBe(30);
     });
 
-    fit(' drawAlignLine should call assign aligmentCoord correctly for case of angle 180', () => {
+    it(' drawAlignLine should call assign aligmentCoord correctly for case of angle 180', () => {
         mouseEvent = { offsetX: 0, offsetY: 0, button: 0, shiftKey: false } as MouseEvent;
         service.onMouseClick(mouseEvent);
         mouseEvent = { offsetX: 20, offsetY: 20, button: 0, shiftKey: true } as MouseEvent;
@@ -222,7 +222,7 @@ describe('LineService', () => {
         expect(service.alignmentCoord.y).toBe(20);
     });
 
-    fit(' drawAlignLine should call assign aligmentCoord correctly for case of angle 225', () => {
+    it(' drawAlignLine should call assign aligmentCoord correctly for case of angle 225', () => {
         mouseEvent = { offsetX: 0, offsetY: 0, button: 0, shiftKey: false } as MouseEvent;
         service.onMouseClick(mouseEvent);
         mouseEvent = { offsetX: 20, offsetY: 20, button: 0, shiftKey: true } as MouseEvent;
@@ -234,7 +234,7 @@ describe('LineService', () => {
         expect(service.alignmentCoord.y).toBe(10);
     });
 
-    fit(' drawAlignLine should call assign aligmentCoord correctly for case of angle 270', () => {
+    it(' drawAlignLine should call assign aligmentCoord correctly for case of angle 270', () => {
         mouseEvent = { offsetX: 0, offsetY: 0, button: 0, shiftKey: false } as MouseEvent;
         service.onMouseClick(mouseEvent);
         mouseEvent = { offsetX: 20, offsetY: 20, button: 0, shiftKey: true } as MouseEvent;
@@ -246,7 +246,7 @@ describe('LineService', () => {
         expect(service.alignmentCoord.y).toBe(10);
     });
 
-    fit(' drawAlignLine should call assign aligmentCoord correctly for case of angle 315', () => {
+    it(' drawAlignLine should call assign aligmentCoord correctly for case of angle 315', () => {
         mouseEvent = { offsetX: 0, offsetY: 0, button: 0, shiftKey: false } as MouseEvent;
         service.onMouseClick(mouseEvent);
         mouseEvent = { offsetX: 20, offsetY: 20, button: 0, shiftKey: true } as MouseEvent;
