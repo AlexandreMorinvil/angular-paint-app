@@ -84,7 +84,6 @@ describe('RectangleService', () => {
     it(' onMouseUp should call drawRectangle if mouse was already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
-
         service.onMouseUp(mouseEvent);
         expect(drawRectangleSpy).toHaveBeenCalled();
     });
@@ -92,7 +91,6 @@ describe('RectangleService', () => {
     it(' onMouseUp should not call drawRectangle if mouse was not already down', () => {
         service.mouseDown = false;
         service.mouseDownCoord = { x: 0, y: 0 };
-
         service.onMouseUp(mouseEvent);
         expect(drawRectangleSpy).not.toHaveBeenCalled();
     });
@@ -100,7 +98,6 @@ describe('RectangleService', () => {
     it(' onMouseMove should call drawRectangle if mouse was already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
-
         service.onMouseMove(mouseEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawRectangleSpy).toHaveBeenCalled();
@@ -174,21 +171,19 @@ describe('RectangleService', () => {
         expect(drawRectangleSpy).toHaveBeenCalled();
     });
 
-    it(' should set attribute shift Down to false on shift key up', () => {
+    it(' should set attribute shift Down to false on shift keyup', () => {
         mouseEvent = { offsetX: 50, offsetY: 60, button: 0 } as MouseEvent;
         service.onMouseDown(mouseEvent);
         service.shiftDown = true;
         mouseEvent = { offsetX: 40, offsetY: 50, button: 0 } as MouseEvent;
         service.onMouseMove(mouseEvent);
-        const event = new KeyboardEvent('keyup', {
-            key: 'Shift',
-        });
+        const event = new KeyboardEvent('keyup', { key: 'Shift' });
         service.onShiftUp(event);
         expect(service.shiftDown).toEqual(false);
         expect(drawRectangleSpy).toHaveBeenCalled();
     });
 
-    it('on drawing a rectangle and shift pressed if height is negatif and width positif should stay negative and positif', () => {
+    it('should draw a rectangleif height is negatif and width positif should stay negative and positif', () => {
         mouseEvent = { offsetX: 50, offsetY: 60, button: 0 } as MouseEvent;
         service.onMouseDown(mouseEvent);
         service.shiftDown = true;
@@ -197,7 +192,7 @@ describe('RectangleService', () => {
         expect(drawRectangleSpy).toHaveBeenCalled();
     });
 
-    it('on drawing a rectangle and shift pressed if height is negatif and width negatif should stay negative and negatif', () => {
+    it('should drawing a rectangle if height is negatif and width negatif', () => {
         mouseEvent = { offsetX: 50, offsetY: 60, button: 0 } as MouseEvent;
         service.onMouseDown(mouseEvent);
         service.shiftDown = true;
@@ -263,15 +258,6 @@ describe('RectangleService', () => {
         expect(setAttributeSpy).toHaveBeenCalled();
         expect(ctxContourSpy).not.toHaveBeenCalled();
         expect(ctxFillSpy).not.toHaveBeenCalled();
-    });
-
-    it('on draw Rectangle should call set Attribute', () => {
-        mouseEvent = { offsetX: 50, offsetY: 60, button: 0 } as MouseEvent;
-        service.onMouseDown(mouseEvent);
-        service.shiftDown = true;
-        mouseEvent = { offsetX: 40, offsetY: 70, button: 0 } as MouseEvent;
-        service.onMouseMove(mouseEvent);
-        expect(setAttributeSpy).toHaveBeenCalled();
     });
 
     it(' should call setAttribute for trace of type Contour with the color blue', () => {

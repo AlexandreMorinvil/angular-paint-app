@@ -74,7 +74,7 @@ export class LineService extends Tool {
         }
     }
 
-    onShiftUp() {
+    onShiftUp(event: KeyboardEvent) {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawLine(this.drawingService.previewCtx, this.pathData);
     }
@@ -100,6 +100,7 @@ export class LineService extends Tool {
     }
 
     onMouseClick(event: MouseEvent): void {
+        const waitTime = 200;
         let timer;
         this.mouseClick = event.button === MouseButton.Left;
         if (this.mouseClick) {
@@ -107,14 +108,14 @@ export class LineService extends Tool {
             if (this.click === 1) {
                 timer = setTimeout(() => {
                     this.click = 0;
-                }, 200);
+                }, waitTime);
             } else if (this.click === 2) {
                 clearTimeout(timer);
                 this.click = 0;
                 this.onMouseDoubleClickEvent(event);
                 this.mouseClick = false;
             }
-            if (this.click == 1 && !event.shiftKey) {
+            if (this.click === 1 && !event.shiftKey) {
                 this.mouseDownCoord = this.getPositionFromMouse(event);
                 this.pathData.push(this.mouseDownCoord);
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -123,7 +124,7 @@ export class LineService extends Tool {
                 this.savedPoints();
                 this.clearPath();
             }
-            if (this.click == 1 && event.shiftKey) {
+            if (this.click === 1 && event.shiftKey) {
                 this.mouseDownCoord = this.getPositionFromMouse(event);
                 this.pathData.push(this.mouseDownCoord);
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -150,8 +151,8 @@ export class LineService extends Tool {
 
     drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
-        let firstPath = path[0];
-        let lastPath = path[path.length - 1];
+        const firstPath = path[0];
+        const lastPath = path[path.length - 1];
         ctx.moveTo(firstPath.x, firstPath.y);
         ctx.lineTo(lastPath.x, lastPath.y);
         ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
@@ -172,14 +173,15 @@ export class LineService extends Tool {
         }
     }
     isAround20Pixels(): boolean {
-        let firstCurrentPoint = this.pathDataSaved[0];
-        let lastCurrentPoint = this.pathDataSaved[this.pathDataSaved.length - 1];
-        let diffXPosition = lastCurrentPoint.x - firstCurrentPoint.x;
-        let diffYPosition = lastCurrentPoint.y - firstCurrentPoint.y;
-        let xSideTriangleSquared = Math.pow(diffXPosition, 2);
-        let ySideTriangleSquared = Math.pow(diffYPosition, 2);
-        let hypothenus = Math.sqrt(xSideTriangleSquared + ySideTriangleSquared);
-        if (hypothenus <= 20) {
+        const limit20Pixels = 20;
+        const firstCurrentPoint = this.pathDataSaved[0];
+        const lastCurrentPoint = this.pathDataSaved[this.pathDataSaved.length - 1];
+        const diffXPosition = lastCurrentPoint.x - firstCurrentPoint.x;
+        const diffYPosition = lastCurrentPoint.y - firstCurrentPoint.y;
+        const xSideTriangleSquared = Math.pow(diffXPosition, 2);
+        const ySideTriangleSquared = Math.pow(diffYPosition, 2);
+        const hypothenus = Math.sqrt(xSideTriangleSquared + ySideTriangleSquared);
+        if (hypothenus <= limit20Pixels) {
             return true;
         }
         return false;
@@ -187,8 +189,8 @@ export class LineService extends Tool {
 
     closeShape(): void {
         this.drawingService.baseCtx.beginPath();
-        let firstPath = this.pathDataSaved[0];
-        let lastPath = this.pathDataSaved[this.pathDataSaved.length - 1];
+        const firstPath = this.pathDataSaved[0];
+        const lastPath = this.pathDataSaved[this.pathDataSaved.length - 1];
         this.drawingService.baseCtx.moveTo(firstPath.x, firstPath.y);
         this.drawingService.baseCtx.lineTo(lastPath.x, lastPath.y);
         this.drawingService.baseCtx.stroke();

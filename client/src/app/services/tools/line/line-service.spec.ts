@@ -43,14 +43,16 @@ describe('LineService', () => {
         drawAlignLineSpy = spyOn<any>(service, 'drawAlignLine').and.callThrough();
         clearPathSpy = spyOn<any>(service, 'clearPath').and.callThrough();
         clearPathSavedSpy = spyOn<any>(service, 'clearPathSaved').and.callThrough();
+        const canvasWidth = 1000;
+        const canvasHeight = 800;
 
         // Configuration of service spy
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
         service['drawingService'].canvas = canvasStub;
-        service['drawingService'].canvas.width = 1000;
-        service['drawingService'].canvas.height = 800;
+        service['drawingService'].canvas.width = canvasWidth;
+        service['drawingService'].canvas.height = canvasHeight;
 
         ctxStroke = spyOn<any>(service['drawingService'].previewCtx, 'stroke').and.callThrough();
 
@@ -310,7 +312,8 @@ describe('LineService', () => {
         service.mouseClick = true;
         mouseEvent = { offsetX: 40, offsetY: 50, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
-        service.onShiftUp();
+        const event = new KeyboardEvent('keyup', { key: 'Shift' });
+        service.onShiftUp(event);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawLineSpy).toHaveBeenCalled();
     });
