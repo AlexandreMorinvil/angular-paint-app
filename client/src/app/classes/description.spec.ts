@@ -3,8 +3,6 @@ import { Description } from './description';
 describe('ToolboxService', () => {
     let object: Description;
 
-    beforeEach(() => {});
-
     it('should be created', () => {
         object = new Description('a', 'b', 'c.png');
         expect(object).toBeTruthy();

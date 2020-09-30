@@ -47,8 +47,8 @@ describe('AttributesPanelComponent', () => {
     });
 
     it('the capitalizeFirstLetter function should set the first character to a capital letter', () => {
-        const inputString: string = 'string';
-        const expectedOutput: string = 'String';
+        const inputString = 'string';
+        const expectedOutput = 'String';
         const ouputString = component.capitalizeFirstLetter(inputString);
         expect(ouputString).toEqual(expectedOutput);
     });
@@ -97,7 +97,6 @@ describe('AttributesPanelComponent', () => {
         const ouput = component.needsTracingAttribute();
         expect(ouput).toEqual(expectedOutput);
     });
-
 
     it('if the current tool does not possess a tracing modifier there should be a need for a tracing atrribute modifier', () => {
         // tslint:disable-next-line:no-string-literal

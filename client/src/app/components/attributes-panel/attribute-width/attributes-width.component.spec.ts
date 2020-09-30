@@ -56,7 +56,8 @@ describe('AttributeWidthComponent', () => {
     });
 
     it('if a width above the maximal accepted width is inserted the width should change to the maximal width upon confirmation', () => {
-        const newWidth = widthService.MAX_ATTRIBUTE_WIDTH + 10;
+        const upperOffset = 10;
+        const newWidth = widthService.MAX_ATTRIBUTE_WIDTH + upperOffset;
         const maxWidth = widthService.MAX_ATTRIBUTE_WIDTH;
 
         component.widthDisplayed = newWidth;
