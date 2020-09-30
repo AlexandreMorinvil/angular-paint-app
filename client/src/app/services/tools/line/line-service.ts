@@ -66,7 +66,6 @@ export class LineService extends Tool {
                 this.pathData[0] = this.mouseDownCoord;
                 this.pathData.push(mousePosition);
                 this.drawLine(this.drawingService.previewCtx, this.pathData);
-                // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             } else {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.clearPath();
@@ -106,8 +105,6 @@ export class LineService extends Tool {
 
     onMouseClick(event: MouseEvent): void {
         let timer;
-        console.log('pressed!');
-
         this.mouseClick = event.button === MouseButton.Left;
         if (this.mouseClick) {
             this.click++;
@@ -128,7 +125,6 @@ export class LineService extends Tool {
                 this.drawLine(this.drawingService.baseCtx, this.pathData);
                 this.drawJunction(this.drawingService.baseCtx, this.pathData);
                 this.savedPoints();
-                //console.log(this.undo.length);
                 this.clearPath();
             }
             if (this.click == 1 && event.shiftKey) {
@@ -138,12 +134,11 @@ export class LineService extends Tool {
                 this.mouseDownCoord = this.alignmentCoord;
                 this.drawJunction(this.drawingService.baseCtx, this.pathData);
                 this.savedPoints();
-                console.log(this.undo.length);
             }
         }
     }
 
-    private onMouseDoubleClickEvent(event: MouseEvent): void {
+    onMouseDoubleClickEvent(event: MouseEvent): void {
         this.clearPath();
         if (this.isAround20Pixels()) {
             this.closeShape();
@@ -178,7 +173,7 @@ export class LineService extends Tool {
             ctx.fill();
         }
     }
-    private isAround20Pixels(): boolean {
+    isAround20Pixels(): boolean {
         let firstCurrentPoint = this.pathDataSaved[0];
         let lastCurrentPoint = this.pathDataSaved[this.pathDataSaved.length - 1];
         let diffXPosition = lastCurrentPoint.x - firstCurrentPoint.x;
@@ -186,8 +181,7 @@ export class LineService extends Tool {
         let xSideTriangleSquared = Math.pow(diffXPosition, 2);
         let ySideTriangleSquared = Math.pow(diffYPosition, 2);
         let hypothenus = Math.sqrt(xSideTriangleSquared + ySideTriangleSquared);
-        if (hypothenus <= 200) {
-            console.log(hypothenus);
+        if (hypothenus <= 20) {
             return true;
         }
         return false;
@@ -208,7 +202,6 @@ export class LineService extends Tool {
         this.pathDataSaved.push(this.mouseDownCoord);
         this.savedImage = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
         this.undo.push(this.savedImage);
-        console.log('newPointAdded');
     }
     drawAlignLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
@@ -227,55 +220,41 @@ export class LineService extends Tool {
                 ctx.lineTo(lastPath.x, firstPath.y);
                 ctx.stroke();
                 this.alignmentCoord = { x: lastPath.x, y: firstPath.y };
-                //console.log('0');
                 break;
             case 45:
                 ctx.lineTo(firstPath.x + lengthX, firstPath.y + lengthX);
                 ctx.stroke();
                 this.alignmentCoord = { x: firstPath.x + lengthX, y: firstPath.y + lengthX };
-                //console.log('45');
-
                 break;
             case 90:
                 ctx.lineTo(firstPath.x, lastPath.y);
                 ctx.stroke();
                 this.alignmentCoord = { x: firstPath.x, y: lastPath.y };
-                //console.log('90');
-
                 break;
             case 135:
                 ctx.lineTo(firstPath.x - lengthX, firstPath.y + lengthX);
                 ctx.stroke();
                 this.alignmentCoord = { x: firstPath.x - lengthX, y: firstPath.y + lengthX };
-                //console.log('135');
-
                 break;
             case 180:
                 ctx.lineTo(lastPath.x, firstPath.y);
                 ctx.stroke();
                 this.alignmentCoord = { x: lastPath.x, y: firstPath.y };
-                //console.log('180');
-
                 break;
             case 225:
                 ctx.lineTo(firstPath.x - lengthX, firstPath.y - lengthX);
                 ctx.stroke();
                 this.alignmentCoord = { x: firstPath.x - lengthX, y: firstPath.y - lengthX };
-                //console.log('225');
-
                 break;
             case 270:
                 ctx.lineTo(firstPath.x, lastPath.y);
                 ctx.stroke();
                 this.alignmentCoord = { x: firstPath.x, y: lastPath.y };
-                //console.log('270');
-
                 break;
             case 315:
                 ctx.lineTo(firstPath.x + lengthX, firstPath.y - lengthX);
                 ctx.stroke();
                 this.alignmentCoord = { x: firstPath.x + lengthX, y: firstPath.y - lengthX };
-                //console.log('315');
                 break;
         }
     }
