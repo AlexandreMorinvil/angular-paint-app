@@ -29,9 +29,9 @@ export class ToolboxService {
         this.availableTools.push(pencilService);
         this.availableTools.push(brushService);
         this.availableTools.push(eraserService);
+        this.availableTools.push(lineService);
         this.availableTools.push(rectangleService);
         this.availableTools.push(ellipseService);
-        this.availableTools.push(lineService);
     }
 
     getAvailableTools(): Tool[] {

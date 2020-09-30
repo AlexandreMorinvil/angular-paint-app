@@ -22,7 +22,7 @@ export class AttributeWidthComponent {
     }
 
     get widthDisplayed(): number {
-        return Math.max(this.width, this.toolboxService.getCurrentTool().minWidth) ;
+        return Math.max(this.width, this.toolboxService.getCurrentTool().minWidth);
     }
 
     getMaxValue(): number {
