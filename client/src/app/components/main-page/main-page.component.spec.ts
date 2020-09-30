@@ -41,7 +41,7 @@ describe('MainPageComponent', () => {
     });
 
     it('should open Guide', () => {
-        component.openNewUserGuide();
+        component.openUserGuide();
         expect(dialogSpy.open).toHaveBeenCalled();
     });
 });
