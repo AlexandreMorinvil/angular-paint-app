@@ -10,7 +10,7 @@ import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { DrawingComponent } from './drawing.component';
-class ToolStub extends Tool { }
+class ToolStub extends Tool {}
 
 // TODO : Déplacer dans un fichier accessible à tous
 const DEFAULT_WIDTH = 1000;
@@ -24,11 +24,12 @@ describe('DrawingComponent', () => {
     let toolboxService: ToolboxService;
     let clearCanvasSpy: jasmine.Spy<any>;
     let resetDrawingSpy: jasmine.Spy<any>;
-    //let onShiftDownSpy: jasmine.Spy<any>;
+    //let toolboxSpy: jasmine.SpyObj<ToolboxService>;
 
     beforeEach(async(() => {
         toolStub = new ToolStub({} as DrawingService, {} as Description);
         drawingStub = new DrawingService();
+        //toolboxSpy = jasmine.createSpyObj('toolboxSpy', ['getCurrentTool']);
 
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],
@@ -51,7 +52,6 @@ describe('DrawingComponent', () => {
         component['toolbox'] = toolboxService;
         clearCanvasSpy = spyOn<any>(drawingStub, 'clearCanvas').and.callThrough();
         resetDrawingSpy = spyOn<any>(component, 'resetDrawing').and.callThrough();
-        //onShiftDownSpy = spyOn<any>(toolboxService, 'onShiftDown').and.callThrough();
         fixture.detectChanges();
     });
 
@@ -71,7 +71,7 @@ describe('DrawingComponent', () => {
         expect(currentTool).toEqual(toolStub);
     });
 
-    it(" should call the tool's mouse move when receiving a mouse move event", () => {
+    it('should call the tools mouse move when receiving a mouse move event', () => {
         const event = {} as MouseEvent;
         const mouseEventSpy = spyOn(toolStub, 'onMouseMove').and.callThrough();
         component.onMouseMove(event);
@@ -79,7 +79,7 @@ describe('DrawingComponent', () => {
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
     });
 
-    it(" should call the tool's mouse down when receiving a mouse down event", () => {
+    it('should call the tools mouse down when receiving a mouse down event', () => {
         const event = {} as MouseEvent;
         const mouseEventSpy = spyOn(toolStub, 'onMouseDown').and.callThrough();
         component.onMouseDown(event);
@@ -87,12 +87,24 @@ describe('DrawingComponent', () => {
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
     });
 
-    it("should call the tool's mouse up when receiving a mouse up event", () => {
+    it('should call the tools mouse up when receiving a mouse up event', () => {
         const event = {} as MouseEvent;
         const mouseEventSpy = spyOn(toolStub, 'onMouseUp').and.callThrough();
         component.onMouseUp(event);
         expect(mouseEventSpy).toHaveBeenCalled();
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
+    });
+
+    it('should call the tool onShiftUp', () => {
+        const event = new KeyboardEvent('keyup', { 'key': 'Shift' });
+        component.keyEventUp(event);
+        //expect(toolboxService.getCurrentTool().onShiftUp(event)).toHaveBeenCalled;
+    });
+
+    it('should call the tool onBackspaceDown', () => {
+        const event = new KeyboardEvent('keyup', { 'key': 'Backspace' });
+        component.keyEventUp(event);
+        //expect(toolboxService.getCurrentTool().onShiftUp(event)).toHaveBeenCalled;
     });
 
     it('should call the tool pencil when pressing the key C', () => {
@@ -114,18 +126,24 @@ describe('DrawingComponent', () => {
     });
 
     it('should call no tool by default', () => {
-        const event = new KeyboardEvent("keyup", { "key": "default" });
+        const event = new KeyboardEvent('keyup', { 'key': 'default' });
         component.keyEventUp(event);
     });
 
     it('should call onShiftDown event', () => {
-        const event = new KeyboardEvent("keypress", { "key": "1" });
+        const event = new KeyboardEvent('keyup', { 'key': '1' });
+        component.onShiftDown(event);
+        //expect(toolboxSpy.getCurrentTool).not.toHaveBeenCalled();
+
+        const eventShift = new KeyboardEvent('keyup', { 'key': 'Shift' });
+        component.onShiftDown(eventShift);
+        //expect(toolboxSpy.getCurrentTool).toHaveBeenCalled();
+    });
+
+    it('should call onEscapeDown', () => {
+        const event = new KeyboardEvent('keyup', { 'key': 'Escape' });
         component.onShiftDown(event);
         //expect(onShiftDownSpy).not.toHaveBeenCalled();
-
-        const eventShift = new KeyboardEvent("keypress", { "key": "Shift" });
-        component.onShiftDown(eventShift);
-        //expect(onShiftDownSpy).toHaveBeenCalled();
     });
 
     it('should reset the drawing', () => {
@@ -135,7 +153,7 @@ describe('DrawingComponent', () => {
 
     it('should call resetDrawing and ask before delete with answer true', () => {
         component.hasBeenDrawnOnto = true;
-        const event = new KeyboardEvent("keypress", { "key": "o" });
+        const event = new KeyboardEvent('keyup', { 'key': 'o' });
         spyOn(window, 'confirm').and.returnValue(true);
         component.createNewDrawingKeyboardEvent(event);
         expect(resetDrawingSpy).toHaveBeenCalled();
@@ -143,7 +161,7 @@ describe('DrawingComponent', () => {
 
     it('should call resetDrawing and ask before delete with answer false', () => {
         component.hasBeenDrawnOnto = true;
-        const event = new KeyboardEvent("keypress", { "key": "o" });
+        const event = new KeyboardEvent('keyup', { 'key': 'o' });
         spyOn(window, 'confirm').and.returnValue(false);
         component.createNewDrawingKeyboardEvent(event);
         expect(resetDrawingSpy).not.toHaveBeenCalled();
@@ -151,9 +169,8 @@ describe('DrawingComponent', () => {
 
     it('should call resetDrawing and not ask before delete', () => {
         component.hasBeenDrawnOnto = false;
-        const event = new KeyboardEvent("keypress", { "key": "o" });
+        const event = new KeyboardEvent('keyup', { 'key': 'o' });
         component.createNewDrawingKeyboardEvent(event);
         expect(resetDrawingSpy).toHaveBeenCalled();
     });
-
 });
