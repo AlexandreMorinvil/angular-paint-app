@@ -4,7 +4,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
-import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
+import { JunctionService } from '@app/services/tool-modifier/junction/junction.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
 
 export enum MouseButton {
@@ -36,12 +36,10 @@ export class LineService extends Tool {
     undo: ImageData[];
     click: number;
     alignmentCoord: Vec2;
-    isPointsWithJunction: boolean;
-    junctionPointsDiameter: number;
     constructor(
         drawingService: DrawingService,
         private colorService: ColorService,
-        private tracingService: TracingService,
+        private junctionService: JunctionService,
         private widthService: WidthService,
     ) {
         super(drawingService, new Description('line', 'l', 'line_icon.png'));
@@ -52,9 +50,7 @@ export class LineService extends Tool {
 
         this.modifiers.push(this.colorService);
         this.modifiers.push(this.widthService);
-        this.modifiers.push(this.tracingService);
-        this.isPointsWithJunction = true;
-        this.junctionPointsDiameter = 6;
+        this.modifiers.push(this.junctionService);
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -166,9 +162,9 @@ export class LineService extends Tool {
     }
 
     drawJunction(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        if (this.isPointsWithJunction) {
+        if (this.junctionService.getHasJunctionPoint()) {
             ctx.beginPath();
-            const radius = this.junctionPointsDiameter / 2;
+            const radius = this.junctionService.getDiameter() / 2;
             const startCenterX = this.mouseDownCoord.x;
             const startCenterY = this.mouseDownCoord.y;
             ctx.arc(startCenterX, startCenterY, radius, 0, Math.PI * 2);

@@ -4,7 +4,6 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
 import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzone-size.service';
 
-// TODO : Avoir un fichier séparé pour les constantes ?
 export const DEFAULT_WIDTH = 1000;
 export const DEFAULT_HEIGHT = 800;
 @Component({
@@ -14,7 +13,6 @@ export const DEFAULT_HEIGHT = 800;
 })
 export class DrawingComponent implements AfterViewInit {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
-    // On utilise ce canvas pour dessiner sans affecter le dessin final
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('editCanvas', { static: false }) editCanvas: ElementRef<HTMLCanvasElement>;
 
@@ -97,7 +95,7 @@ export class DrawingComponent implements AfterViewInit {
     }
 
     @HostListener('window:keydown', ['$event'])
-    onShiftDown(event: KeyboardEvent) {
+    onShiftDown(event: KeyboardEvent): void {
         if (event.key == 'Shift') {
             this.toolbox.getCurrentTool().onShiftDown(event);
         } else if (event.key == 'Escape') {
