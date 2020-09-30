@@ -48,6 +48,7 @@ describe('EllipseService', () => {
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
         service['drawingService'].canvas = canvasStub;
+        // tslint:disable:no-magic-numbers
         service['drawingService'].canvas.width = 1000;
         service['drawingService'].canvas.height = 800;
 

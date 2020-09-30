@@ -74,7 +74,7 @@ export class LineService extends Tool {
         }
     }
 
-    onShiftUp(event: KeyboardEvent) {
+    onShiftUp(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawLine(this.drawingService.previewCtx, this.pathData);
     }
@@ -109,7 +109,7 @@ export class LineService extends Tool {
                 timer = setTimeout(() => {
                     this.click = 0;
                 }, waitTime);
-            } else if (this.click === 2) {
+            } else {
                 clearTimeout(timer);
                 this.click = 0;
                 this.onMouseDoubleClickEvent(event);
@@ -163,14 +163,12 @@ export class LineService extends Tool {
     }
 
     drawJunction(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        if (this.junctionService.getHasJunctionPoint()) {
-            ctx.beginPath();
-            const radius = this.junctionService.getDiameter() / 2;
-            const startCenterX = this.mouseDownCoord.x;
-            const startCenterY = this.mouseDownCoord.y;
-            ctx.arc(startCenterX, startCenterY, radius, 0, Math.PI * 2);
-            ctx.fill();
-        }
+        ctx.beginPath();
+        const radius = this.junctionService.getDiameter() / 2;
+        const startCenterX = this.mouseDownCoord.x;
+        const startCenterY = this.mouseDownCoord.y;
+        ctx.arc(startCenterX, startCenterY, radius, 0, Math.PI * 2);
+        ctx.fill();
     }
     isAround20Pixels(): boolean {
         const limit20Pixels = 20;
@@ -216,49 +214,50 @@ export class LineService extends Tool {
         ctx.strokeStyle = this.colorService.getPrimaryColor(); // color of the line
         ctx.fillStyle = this.colorService.getPrimaryColor(); // color of the starting point
         switch (alignmentAngle) {
-            case 0:
+            case AlignmentAngle.right:
                 ctx.lineTo(lastPath.x, firstPath.y);
                 ctx.stroke();
                 this.alignmentCoord = { x: lastPath.x, y: firstPath.y };
                 break;
-            case 45:
+            case AlignmentAngle.topRight:
                 ctx.lineTo(firstPath.x + lengthX, firstPath.y + lengthX);
                 ctx.stroke();
                 this.alignmentCoord = { x: firstPath.x + lengthX, y: firstPath.y + lengthX };
                 break;
-            case 90:
+            case AlignmentAngle.top:
                 ctx.lineTo(firstPath.x, lastPath.y);
                 ctx.stroke();
                 this.alignmentCoord = { x: firstPath.x, y: lastPath.y };
                 break;
-            case 135:
+            case AlignmentAngle.topLeft:
                 ctx.lineTo(firstPath.x - lengthX, firstPath.y + lengthX);
                 ctx.stroke();
                 this.alignmentCoord = { x: firstPath.x - lengthX, y: firstPath.y + lengthX };
                 break;
-            case 180:
+            case AlignmentAngle.left:
                 ctx.lineTo(lastPath.x, firstPath.y);
                 ctx.stroke();
                 this.alignmentCoord = { x: lastPath.x, y: firstPath.y };
                 break;
-            case 225:
+            case AlignmentAngle.bottomLeft:
                 ctx.lineTo(firstPath.x - lengthX, firstPath.y - lengthX);
                 ctx.stroke();
                 this.alignmentCoord = { x: firstPath.x - lengthX, y: firstPath.y - lengthX };
                 break;
-            case 270:
+            case AlignmentAngle.bottom:
                 ctx.lineTo(firstPath.x, lastPath.y);
                 ctx.stroke();
                 this.alignmentCoord = { x: firstPath.x, y: lastPath.y };
                 break;
-            case 315:
+            case AlignmentAngle.bottomRight:
                 ctx.lineTo(firstPath.x + lengthX, firstPath.y - lengthX);
                 ctx.stroke();
                 this.alignmentCoord = { x: firstPath.x + lengthX, y: firstPath.y - lengthX };
                 break;
         }
     }
-
+    // the number value of angle ranges is clear, and there's no need to add a self-referencing constant name if there's no other meaning
+    // tslint:disable:no-magic-numbers
     roundToNearestAngle(angle: number): number {
         if (angle >= 337.5 || angle < 22.5) {
             return AlignmentAngle.right;
@@ -284,15 +283,16 @@ export class LineService extends Tool {
         const mouseDownCoord = path[0];
         const pointX = mouseMoveCoord.x - mouseDownCoord.x;
         const pointY = mouseMoveCoord.y - mouseDownCoord.y;
-
+        const circleAngle = 360;
+        const halfCircleAngle = 180;
         let alignmentAngle: number;
 
         if (mouseMoveCoord.y <= mouseDownCoord.y) {
-            alignmentAngle = Math.abs(360 - Math.abs(Math.atan2(pointY, pointX) * 180) / Math.PI);
+            alignmentAngle = Math.abs(circleAngle - Math.abs(Math.atan2(pointY, pointX) * halfCircleAngle) / Math.PI);
             const roundedAngle = this.roundToNearestAngle(alignmentAngle);
             return roundedAngle;
         } else {
-            alignmentAngle = Math.abs(Math.atan2(pointY, pointX) * 180) / Math.PI;
+            alignmentAngle = Math.abs(Math.atan2(pointY, pointX) * halfCircleAngle) / Math.PI;
             const roundedAngle = this.roundToNearestAngle(alignmentAngle);
             return roundedAngle;
         }
