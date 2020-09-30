@@ -72,14 +72,14 @@ describe('LineService', () => {
         expect(service.mouseClick).toEqual(false);
     });
 
-    it(' onMouseClick should call drawLine if mouse is Click one time and shift key is press', () => {
+    it(' onMouseClick should call drawLine if mouse is Click one time ', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseClick = true;
         const mouseEvent = {
             offsetX: 25,
             offsetY: 25,
-            button: 1,
-            shiftKey: true,
+            button: 0,
+            shiftKey: false,
         } as MouseEvent;
         service.onMouseClick(mouseEvent);
         expect(drawLineSpy).toHaveBeenCalled();
@@ -111,6 +111,22 @@ describe('LineService', () => {
 
         service.onMouseMove(mouseEvent2);
         expect(drawLineSpy).not.toHaveBeenCalled();
+    });
+
+    it(' onMouseMove should call drawLine if click is on', () => {
+        service.mouseDownCoord = { x: 0, y: 0};
+        service.mouseClick = true;
+
+        service.onMouseMove(mouseEvent);
+        expect(drawLineSpy).toHaveBeenCalled();
+    });
+
+    it(' onMouseMove should call clearCanvas if click is on and out of canvas', () => {
+        service.mouseDownCoord = { x: 0, y: 0};
+        service.mouseClick = true;
+
+        service.onMouseMove(mouseEvent2);
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
     });
 
     it(' onMouseDoubleClick should reset count click to 0', () => {
