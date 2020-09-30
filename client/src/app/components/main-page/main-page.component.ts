@@ -9,7 +9,7 @@ import { UserGuideModalService } from '@app/services/user-guide-modal/user-guide
 export class MainPageComponent {
     constructor(public userGuideModalService: UserGuideModalService) {}
 
-    openUserGuide(): void {
+    openNewUserGuide(): void {
         this.userGuideModalService.openUserGuide();
     }
 }

@@ -171,6 +171,7 @@ describe('RectangleService', () => {
             key: 'Shift',
         });
         service.onShiftDown(event);
+
         expect(service.shiftDown).toEqual(true);
         expect(drawRectangleSpy).toHaveBeenCalled();
     });
@@ -185,6 +186,7 @@ describe('RectangleService', () => {
             key: 'Shift',
         });
         service.onShiftUp(event);
+
         expect(service.shiftDown).toEqual(false);
         expect(drawRectangleSpy).toHaveBeenCalled();
     });
@@ -195,6 +197,7 @@ describe('RectangleService', () => {
         service.shiftDown = true;
         mouseEvent = { offsetX: 60, offsetY: 50, button: 0 } as MouseEvent;
         service.onMouseMove(mouseEvent);
+
         expect(drawRectangleSpy).toHaveBeenCalled();
     });
 
@@ -204,6 +207,7 @@ describe('RectangleService', () => {
         service.shiftDown = true;
         mouseEvent = { offsetX: 40, offsetY: 50, button: 0 } as MouseEvent;
         service.onMouseMove(mouseEvent);
+
         expect(drawRectangleSpy).toHaveBeenCalled();
     });
 
@@ -213,6 +217,7 @@ describe('RectangleService', () => {
         service.shiftDown = true;
         mouseEvent = { offsetX: 60, offsetY: 70, button: 0 } as MouseEvent;
         service.onMouseMove(mouseEvent);
+
         expect(drawRectangleSpy).toHaveBeenCalled();
     });
 
@@ -222,14 +227,15 @@ describe('RectangleService', () => {
         service.shiftDown = true;
         mouseEvent = { offsetX: 40, offsetY: 70, button: 0 } as MouseEvent;
         service.onMouseMove(mouseEvent);
+
         expect(drawRectangleSpy).toHaveBeenCalled();
     });
 
     it(' should call setAttribute with trace of type contour', () => {
         tracingService.setHasContour(true);
         tracingService.getHasContour();
-
         service.setAttribute(previewCtxStub);
+
         expect(setAttributeSpy).toHaveBeenCalled();
         expect(ctxContourSpy).toHaveBeenCalled();
     });
@@ -237,8 +243,8 @@ describe('RectangleService', () => {
     it(' should call setAttribute with trace of type full', () => {
         tracingService.setHasFill(true);
         tracingService.getHasFill();
-
         service.setAttribute(previewCtxStub);
+
         expect(setAttributeSpy).toHaveBeenCalled();
         expect(ctxFillSpy).toHaveBeenCalled();
     });
@@ -248,8 +254,8 @@ describe('RectangleService', () => {
         tracingService.getHasFill();
         tracingService.setHasContour(true);
         tracingService.getHasContour();
-
         service.setAttribute(previewCtxStub);
+
         expect(setAttributeSpy).toHaveBeenCalled();
         expect(ctxContourSpy).toHaveBeenCalled();
         expect(ctxFillSpy).toHaveBeenCalled();
@@ -260,10 +266,9 @@ describe('RectangleService', () => {
         tracingService.getHasContour();
         tracingService.setHasFill(false);
         tracingService.getHasFill();
-
         service.setAttribute(previewCtxStub);
-        expect(setAttributeSpy).toHaveBeenCalled();
 
+        expect(setAttributeSpy).toHaveBeenCalled();
         expect(ctxContourSpy).not.toHaveBeenCalled();
         expect(ctxFillSpy).not.toHaveBeenCalled();
     });
