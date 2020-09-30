@@ -5,6 +5,8 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { LineService } from './line-service';
 
 describe('LineService', () => {
+    // Configuration of service spy
+    // tslint:disable:no-any
     let service: LineService;
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
@@ -31,8 +33,8 @@ describe('LineService', () => {
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         });
         service = TestBed.inject(LineService);
-
-        // tslint: disable: no - any;
+        // Configuration of service spy
+        // tslint:disable:no-any
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
         findAlignmentAngleSpy = spyOn<any>(service, 'findAlignmentAngle').and.callThrough();
         drawJunctionSpy = spyOn<any>(service, 'drawJunction').and.callThrough();
@@ -175,8 +177,13 @@ describe('LineService', () => {
         service.onMouseClick(mouseEvent);
         mouseEvent = { offsetX: 150, offsetY: 150, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
-        const alignment = Math.abs(360 - Math.abs(Math.atan2(50, 50) * 180) / Math.PI);
-        expect(alignment).toBe(315);
+        const positionX = 50;
+        const positionY = 50;
+        const circleAngle = 360;
+        const halfCircleAngle = 180;
+        const correctAngle = 315;
+        const alignment = Math.abs(circleAngle - Math.abs(Math.atan2(positionY, positionX) * halfCircleAngle) / Math.PI);
+        expect(alignment).toBe(correctAngle);
         expect(findAlignmentAngleSpy).toHaveBeenCalled();
     });
 
@@ -185,8 +192,13 @@ describe('LineService', () => {
         service.onMouseClick(mouseEvent);
         mouseEvent = { offsetX: 0, offsetY: 0, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
-        const alignment = Math.abs(360 - Math.abs(Math.atan2(10, 10) * 180) / Math.PI);
-        expect(service.roundToNearestAngle(alignment)).toBe(315);
+        const positionX = 10;
+        const positionY = 10;
+        const circleAngle = 360;
+        const halfCircleAngle = 180;
+        const correctAngle = 315;
+        const alignment = Math.abs(circleAngle - Math.abs(Math.atan2(positionY, positionX) * halfCircleAngle) / Math.PI);
+        expect(service.roundToNearestAngle(alignment)).toBe(correctAngle);
         expect(findAlignmentAngleSpy).toHaveBeenCalled();
     });
 
@@ -195,34 +207,55 @@ describe('LineService', () => {
         service.onMouseClick(mouseEvent);
         mouseEvent = { movementX: 10, movementY: -10, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
-        const alignment = Math.abs(360 - Math.abs(Math.atan2(-10, -10) * 180) / Math.PI);
-        expect(service.roundToNearestAngle(alignment)).toBe(225);
+        const positionX = -10;
+        const positionY = -10;
+        const circleAngle = 360;
+        const halfCircleAngle = 180;
+        const correctAngle = 225;
+        const alignment = Math.abs(circleAngle - Math.abs(Math.atan2(positionY, positionX) * halfCircleAngle) / Math.PI);
+        expect(service.roundToNearestAngle(alignment)).toBe(correctAngle);
         expect(findAlignmentAngleSpy).toHaveBeenCalled();
     });
 
     it(' roundToNearestAngle should return correct value when its called with angle of 350', () => {
-        expect(service.roundToNearestAngle(350)).toBe(0);
+        const someAngle = 350;
+        const correctAngle = 0;
+        expect(service.roundToNearestAngle(someAngle)).toBe(correctAngle);
     });
     it(' roundToNearestAngle should return correct value when its called with angle of 30', () => {
-        expect(service.roundToNearestAngle(30)).toBe(45);
+        const someAngle = 30;
+        const correctAngle = 45;
+        expect(service.roundToNearestAngle(someAngle)).toBe(correctAngle);
     });
     it(' roundToNearestAngle should return correct value when its called with angle of 70', () => {
-        expect(service.roundToNearestAngle(70)).toBe(90);
+        const someAngle = 70;
+        const correctAngle = 90;
+        expect(service.roundToNearestAngle(someAngle)).toBe(correctAngle);
     });
     it(' roundToNearestAngle should return correct value when its called with angle of 130', () => {
-        expect(service.roundToNearestAngle(130)).toBe(135);
+        const someAngle = 130;
+        const correctAngle = 135;
+        expect(service.roundToNearestAngle(someAngle)).toBe(correctAngle);
     });
     it(' roundToNearestAngle should return correct value when its called with angle of 170', () => {
-        expect(service.roundToNearestAngle(170)).toBe(180);
+        const someAngle = 170;
+        const correctAngle = 180;
+        expect(service.roundToNearestAngle(someAngle)).toBe(correctAngle);
     });
     it(' roundToNearestAngle should return correct value when its called with angle of 220', () => {
-        expect(service.roundToNearestAngle(220)).toBe(225);
+        const someAngle = 220;
+        const correctAngle = 225;
+        expect(service.roundToNearestAngle(someAngle)).toBe(correctAngle);
     });
     it(' roundToNearestAngle should return correct value when its called with angle of 260', () => {
-        expect(service.roundToNearestAngle(260)).toBe(270);
+        const someAngle = 350;
+        const correctAngle = 0;
+        expect(service.roundToNearestAngle(someAngle)).toBe(correctAngle);
     });
     it(' roundToNearestAngle should return correct value when its called with angle of 300', () => {
-        expect(service.roundToNearestAngle(300)).toBe(315);
+        const someAngle = 300;
+        const correctAngle = 315;
+        expect(service.roundToNearestAngle(someAngle)).toBe(correctAngle);
     });
 
     it(' drawAlignLine should call assign aligmentCoord correctly for case of angle 45', () => {
@@ -232,9 +265,11 @@ describe('LineService', () => {
         service.onMouseMove(mouseEvent);
         mouseEvent = { offsetX: 30, offsetY: 30, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
+        const correctAngleCoordX = 30;
+        const correctAngleCoordY = 30;
         expect(ctxStroke).toHaveBeenCalled();
-        expect(service.alignmentCoord.x).toBe(30);
-        expect(service.alignmentCoord.y).toBe(30);
+        expect(service.alignmentCoord.x).toBe(correctAngleCoordX);
+        expect(service.alignmentCoord.y).toBe(correctAngleCoordY);
     });
     it(' drawAlignLine should call assign aligmentCoord correctly for case of angle 90', () => {
         mouseEvent = { offsetX: 0, offsetY: 0, button: 0, shiftKey: false } as MouseEvent;
@@ -243,9 +278,11 @@ describe('LineService', () => {
         service.onMouseMove(mouseEvent);
         mouseEvent = { offsetX: 20, offsetY: 50, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
+        const correctAngleCoordX = 20;
+        const correctAngleCoordY = 50;
         expect(ctxStroke).toHaveBeenCalled();
-        expect(service.alignmentCoord.x).toBe(20);
-        expect(service.alignmentCoord.y).toBe(50);
+        expect(service.alignmentCoord.x).toBe(correctAngleCoordX);
+        expect(service.alignmentCoord.y).toBe(correctAngleCoordY);
     });
     it(' drawAlignLine should call assign aligmentCoord correctly for case of angle 135', () => {
         mouseEvent = { offsetX: 0, offsetY: 0, button: 0, shiftKey: false } as MouseEvent;
@@ -254,9 +291,11 @@ describe('LineService', () => {
         service.onMouseMove(mouseEvent);
         mouseEvent = { offsetX: 10, offsetY: 30, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
+        const correctAngleCoordX = 10;
+        const correctAngleCoordY = 30;
         expect(ctxStroke).toHaveBeenCalled();
-        expect(service.alignmentCoord.x).toBe(10);
-        expect(service.alignmentCoord.y).toBe(30);
+        expect(service.alignmentCoord.x).toBe(correctAngleCoordX);
+        expect(service.alignmentCoord.y).toBe(correctAngleCoordY);
     });
 
     it(' drawAlignLine should call assign aligmentCoord correctly for case of angle 180', () => {
@@ -266,9 +305,11 @@ describe('LineService', () => {
         service.onMouseMove(mouseEvent);
         mouseEvent = { offsetX: 10, offsetY: 20, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
+        const correctAngleCoordX = 10;
+        const correctAngleCoordY = 20;
         expect(ctxStroke).toHaveBeenCalled();
-        expect(service.alignmentCoord.x).toBe(10);
-        expect(service.alignmentCoord.y).toBe(20);
+        expect(service.alignmentCoord.x).toBe(correctAngleCoordX);
+        expect(service.alignmentCoord.y).toBe(correctAngleCoordY);
     });
 
     it(' drawAlignLine should call assign aligmentCoord correctly for case of angle 225', () => {
@@ -278,9 +319,11 @@ describe('LineService', () => {
         service.onMouseMove(mouseEvent);
         mouseEvent = { offsetX: 10, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
+        const correctAngleCoordX = 10;
+        const correctAngleCoordY = 10;
         expect(ctxStroke).toHaveBeenCalled();
-        expect(service.alignmentCoord.x).toBe(10);
-        expect(service.alignmentCoord.y).toBe(10);
+        expect(service.alignmentCoord.x).toBe(correctAngleCoordX);
+        expect(service.alignmentCoord.y).toBe(correctAngleCoordY);
     });
 
     it(' drawAlignLine should call assign aligmentCoord correctly for case of angle 270', () => {
@@ -290,9 +333,11 @@ describe('LineService', () => {
         service.onMouseMove(mouseEvent);
         mouseEvent = { offsetX: 20, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
+        const correctAngleCoordX = 20;
+        const correctAngleCoordY = 10;
         expect(ctxStroke).toHaveBeenCalled();
-        expect(service.alignmentCoord.x).toBe(20);
-        expect(service.alignmentCoord.y).toBe(10);
+        expect(service.alignmentCoord.x).toBe(correctAngleCoordX);
+        expect(service.alignmentCoord.y).toBe(correctAngleCoordY);
     });
 
     it(' drawAlignLine should call assign aligmentCoord correctly for case of angle 315', () => {
@@ -302,9 +347,11 @@ describe('LineService', () => {
         service.onMouseMove(mouseEvent);
         mouseEvent = { offsetX: 30, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
+        const correctAngleCoordX = 30;
+        const correctAngleCoordY = 10;
         expect(ctxStroke).toHaveBeenCalled();
-        expect(service.alignmentCoord.x).toBe(30);
-        expect(service.alignmentCoord.y).toBe(10);
+        expect(service.alignmentCoord.x).toBe(correctAngleCoordX);
+        expect(service.alignmentCoord.y).toBe(correctAngleCoordY);
     });
     it('onShift Up should drawLines', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
@@ -339,10 +386,11 @@ describe('LineService', () => {
         service.onMouseClick(mouseEvent);
         service.click = 0;
         service.onBackspaceDown();
-
+        const mouseDownCoordX = 40;
+        const mouseDownCoordY = 50;
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-        expect(service.mouseDownCoord.x).toEqual(40);
-        expect(service.mouseDownCoord.y).toEqual(50);
+        expect(service.mouseDownCoord.x).toEqual(mouseDownCoordX);
+        expect(service.mouseDownCoord.y).toEqual(mouseDownCoordY);
     });
 
     /*
