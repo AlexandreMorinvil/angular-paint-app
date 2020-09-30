@@ -109,7 +109,7 @@ export class LineService extends Tool {
                 timer = setTimeout(() => {
                     this.click = 0;
                 }, waitTime);
-            } else if (this.click === 2) {
+            } else /*if (this.click === 2)*/ {
                 clearTimeout(timer);
                 this.click = 0;
                 this.onMouseDoubleClickEvent(event);
@@ -163,14 +163,12 @@ export class LineService extends Tool {
     }
 
     drawJunction(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        if (this.junctionService.getHasJunctionPoint()) {
-            ctx.beginPath();
-            const radius = this.junctionService.getDiameter() / 2;
-            const startCenterX = this.mouseDownCoord.x;
-            const startCenterY = this.mouseDownCoord.y;
-            ctx.arc(startCenterX, startCenterY, radius, 0, Math.PI * 2);
-            ctx.fill();
-        }
+        ctx.beginPath();
+        const radius = this.junctionService.getDiameter() / 2;
+        const startCenterX = this.mouseDownCoord.x;
+        const startCenterY = this.mouseDownCoord.y;
+        ctx.arc(startCenterX, startCenterY, radius, 0, Math.PI * 2);
+        ctx.fill();
     }
     isAround20Pixels(): boolean {
         const limit20Pixels = 20;
