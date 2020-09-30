@@ -12,8 +12,6 @@ import { ToolboxService } from '@app/services/toolbox/toolbox.service';
     styleUrls: ['./attributes-panel.component.scss'],
 })
 export class AttributesPanelComponent {
-    colorUse: string = '#000000';
-
     constructor(
         private toolboxService: ToolboxService,
         private widthService: WidthService,
