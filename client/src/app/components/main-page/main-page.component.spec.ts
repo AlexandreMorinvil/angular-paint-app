@@ -9,7 +9,6 @@ import { MainPageComponent } from './main-page.component';
 
 describe('MainPageComponent', () => {
     let component: MainPageComponent;
-    let userGuideModalService: UserGuideModalService;
     let fixture: ComponentFixture<MainPageComponent>;
     const dialogSpy: jasmine.SpyObj<MatDialog> = jasmine.createSpyObj('MatDialog', ['open']);
     // tslint:disable-next-line: no-any
@@ -35,7 +34,6 @@ describe('MainPageComponent', () => {
         fixture = TestBed.createComponent(MainPageComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
-        component['userGuideModalService'] = userGuideModalService;
     });
 
     it('should create', () => {
@@ -43,7 +41,7 @@ describe('MainPageComponent', () => {
     });
 
     it('should open Guide', () => {
-        component.openNewUserGuide();
+        component.openUserGuide();
         expect(dialogSpy.open).toHaveBeenCalled();
     });
 });
