@@ -16,13 +16,13 @@ describe('RectangleService', () => {
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let canvasStub: HTMLCanvasElement;
-    //tslint: disable: no-any;
     let drawRectangleSpy: jasmine.Spy<any>;
     let setAttributeSpy: jasmine.Spy<any>;
     let ctxFillSpy: jasmine.Spy<any>;
     let ctxContourSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
+        // tslint: disable: no-any;
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         canvasStub = canvasTestHelper.canvas;
@@ -35,14 +35,14 @@ describe('RectangleService', () => {
         colorService = TestBed.inject(ColorService);
         drawRectangleSpy = spyOn<any>(service, 'drawRectangle').and.callThrough();
         setAttributeSpy = spyOn<any>(service, 'setAttribute').and.callThrough();
-
-        // Configuration du spy du service
+        const canvasWidth = 1000;
+        const canvasHeight = 800;
         // tslint:disable:no-string-literal
-        service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
+        service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
         service['drawingService'].canvas = canvasStub;
-        service['drawingService'].canvas.width = 1000;
-        service['drawingService'].canvas.height = 800;
+        service['drawingService'].canvas.width = canvasWidth;
+        service['drawingService'].canvas.height = canvasHeight;
         service['tracingService'] = tracingService;
 
         ctxFillSpy = spyOn<any>(service['drawingService'].previewCtx, 'fill').and.callThrough();
@@ -156,7 +156,6 @@ describe('RectangleService', () => {
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 10, offsetY: 5, button: 0, shiftKey: false } as MouseEvent;
         service.onMouseMove(mouseEvent);
-
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(mouseEvent.offsetX !== mouseEvent.offsetY);
     });
@@ -171,7 +170,6 @@ describe('RectangleService', () => {
             key: 'Shift',
         });
         service.onShiftDown(event);
-
         expect(service.shiftDown).toEqual(true);
         expect(drawRectangleSpy).toHaveBeenCalled();
     });
@@ -186,7 +184,6 @@ describe('RectangleService', () => {
             key: 'Shift',
         });
         service.onShiftUp(event);
-
         expect(service.shiftDown).toEqual(false);
         expect(drawRectangleSpy).toHaveBeenCalled();
     });
@@ -197,7 +194,6 @@ describe('RectangleService', () => {
         service.shiftDown = true;
         mouseEvent = { offsetX: 60, offsetY: 50, button: 0 } as MouseEvent;
         service.onMouseMove(mouseEvent);
-
         expect(drawRectangleSpy).toHaveBeenCalled();
     });
 
@@ -207,7 +203,6 @@ describe('RectangleService', () => {
         service.shiftDown = true;
         mouseEvent = { offsetX: 40, offsetY: 50, button: 0 } as MouseEvent;
         service.onMouseMove(mouseEvent);
-
         expect(drawRectangleSpy).toHaveBeenCalled();
     });
 
@@ -217,7 +212,6 @@ describe('RectangleService', () => {
         service.shiftDown = true;
         mouseEvent = { offsetX: 60, offsetY: 70, button: 0 } as MouseEvent;
         service.onMouseMove(mouseEvent);
-
         expect(drawRectangleSpy).toHaveBeenCalled();
     });
 
@@ -227,15 +221,14 @@ describe('RectangleService', () => {
         service.shiftDown = true;
         mouseEvent = { offsetX: 40, offsetY: 70, button: 0 } as MouseEvent;
         service.onMouseMove(mouseEvent);
-
         expect(drawRectangleSpy).toHaveBeenCalled();
     });
 
     it(' should call setAttribute with trace of type contour', () => {
         tracingService.setHasContour(true);
         tracingService.getHasContour();
-        service.setAttribute(previewCtxStub);
 
+        service.setAttribute(previewCtxStub);
         expect(setAttributeSpy).toHaveBeenCalled();
         expect(ctxContourSpy).toHaveBeenCalled();
     });
@@ -243,8 +236,8 @@ describe('RectangleService', () => {
     it(' should call setAttribute with trace of type full', () => {
         tracingService.setHasFill(true);
         tracingService.getHasFill();
-        service.setAttribute(previewCtxStub);
 
+        service.setAttribute(previewCtxStub);
         expect(setAttributeSpy).toHaveBeenCalled();
         expect(ctxFillSpy).toHaveBeenCalled();
     });
@@ -255,7 +248,6 @@ describe('RectangleService', () => {
         tracingService.setHasContour(true);
         tracingService.getHasContour();
         service.setAttribute(previewCtxStub);
-
         expect(setAttributeSpy).toHaveBeenCalled();
         expect(ctxContourSpy).toHaveBeenCalled();
         expect(ctxFillSpy).toHaveBeenCalled();
@@ -266,8 +258,8 @@ describe('RectangleService', () => {
         tracingService.getHasContour();
         tracingService.setHasFill(false);
         tracingService.getHasFill();
-        service.setAttribute(previewCtxStub);
 
+        service.setAttribute(previewCtxStub);
         expect(setAttributeSpy).toHaveBeenCalled();
         expect(ctxContourSpy).not.toHaveBeenCalled();
         expect(ctxFillSpy).not.toHaveBeenCalled();
@@ -326,11 +318,9 @@ describe('RectangleService', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
         const baseHeight = 800;
-
         mouseEvent = { offsetX: 1, offsetY: 1, button: 0, shiftKey: false } as MouseEvent;
         service.onMouseMove(mouseEvent);
         expect(previewCtxStub.canvas.height).toEqual(baseHeight);
-
         mouseEvent = { offsetX: 500, offsetY: 1200, button: 0, shiftKey: false } as MouseEvent;
         service.onMouseMove(mouseEvent);
         expect(previewCtxStub.canvas.height).toBe(mouseEvent.offsetY);
@@ -340,11 +330,9 @@ describe('RectangleService', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
         const baseWidth = 1000;
-
         mouseEvent = { offsetX: 0, offsetY: 0, button: 0, shiftKey: false } as MouseEvent;
         service.onMouseMove(mouseEvent);
         expect(previewCtxStub.canvas.width).toEqual(baseWidth);
-
         mouseEvent = { offsetX: 1200, offsetY: 500, button: 0, shiftKey: false } as MouseEvent;
         service.onMouseMove(mouseEvent);
         expect(previewCtxStub.canvas.width).toBe(mouseEvent.offsetX);

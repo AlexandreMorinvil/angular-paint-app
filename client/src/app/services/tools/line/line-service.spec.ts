@@ -6,14 +6,11 @@ import { LineService } from './line-service';
 
 describe('LineService', () => {
     let service: LineService;
-
     let mouseEvent: MouseEvent;
-
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     let canvasStub: HTMLCanvasElement;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
-
     let drawLineSpy: jasmine.Spy<any>;
     let drawJunctionSpy: jasmine.Spy<any>;
     let findAlignmentAngleSpy: jasmine.Spy<any>;
@@ -47,7 +44,7 @@ describe('LineService', () => {
         clearPathSpy = spyOn<any>(service, 'clearPath').and.callThrough();
         clearPathSavedSpy = spyOn<any>(service, 'clearPathSaved').and.callThrough();
 
-        // Configuration du spy du service
+        // Configuration of service spy
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
@@ -130,7 +127,6 @@ describe('LineService', () => {
         service.mouseClick = true;
         service.onMouseClick(mouseEvent);
         service.onMouseClick(mouseEvent);
-
         expect(onMouseDoubleClickEventSpy).toHaveBeenCalled();
         expect(service.click).toBe(0);
         expect(service.mouseClick).toEqual(false);
@@ -141,7 +137,6 @@ describe('LineService', () => {
         service.mouseClick = true;
         service.onMouseClick(mouseEvent);
         service.onMouseClick(mouseEvent);
-
         expect(onMouseDoubleClickEventSpy).toHaveBeenCalled();
         expect(service.click).toBe(0);
         expect(service.mouseClick).toEqual(false);
@@ -155,7 +150,6 @@ describe('LineService', () => {
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(clearPathSpy).toHaveBeenCalled();
         expect(drawLineSpy).not.toHaveBeenCalled();
-        //expect(savedPointSpy).toHaveBeenCalled();
     });
 
     it('onMouseMove if mouse is Click and shift is press should drawAllLines', () => {
@@ -333,6 +327,23 @@ describe('LineService', () => {
         expect(clearPathSavedSpy).toHaveBeenCalled();
     });
 
+    it('on Backspace should set mouseDown to right coordonate', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseClick = true;
+        service.click = 0;
+        mouseEvent = { offsetX: 40, offsetY: 50, button: 0, shiftKey: false } as MouseEvent;
+        service.onMouseClick(mouseEvent);
+        mouseEvent = { offsetX: 100, offsetY: 100, button: 0, shiftKey: false } as MouseEvent;
+        service.onMouseMove(mouseEvent);
+        service.onMouseClick(mouseEvent);
+        service.click = 0;
+        service.onBackspaceDown();
+
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect(service.mouseDownCoord.x).toEqual(40);
+        expect(service.mouseDownCoord.y).toEqual(50);
+    });
+
     /*
 
     it('onMouse doubleClick should call ondDoucleClick event', () => {
@@ -430,24 +441,4 @@ describe('LineService', () => {
         expect(service.isAround20Pixels()).toEqual(false);
     });
     */
-
-    it('on Backspace should set mouseDown to right coordonate', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
-        service.mouseClick = true;
-        service.click = 0;
-
-        mouseEvent = { offsetX: 40, offsetY: 50, button: 0, shiftKey: false } as MouseEvent;
-        service.onMouseClick(mouseEvent);
-
-        mouseEvent = { offsetX: 100, offsetY: 100, button: 0, shiftKey: false } as MouseEvent;
-        service.onMouseMove(mouseEvent);
-        service.onMouseClick(mouseEvent);
-        service.click = 0;
-        //mouseEvent = { offsetX: 150, offsetY: 150, button: 0, shiftKey: false } as MouseEvent;
-        service.onBackspaceDown();
-
-        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-        expect(service.mouseDownCoord.x).toEqual(40);
-        expect(service.mouseDownCoord.y).toEqual(50);
-    });
 });
