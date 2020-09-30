@@ -15,8 +15,6 @@ export class UserGuideModalService {
             data: {},
         });
 
-        dialogRef.afterClosed().subscribe((result) => {
-            console.log('The dialog was closed');
-        });
+        dialogRef.afterClosed();
     }
 }
