@@ -9,18 +9,21 @@ describe('LineService', () => {
     let mouseEvent: MouseEvent;
     let mouseEvent2: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
-
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
+    let canvasStub: HTMLCanvasElement;
     let drawLineSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        canvasStub = canvasTestHelper.canvas;
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
 
         TestBed.configureTestingModule({
-            providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
+            providers: [
+              { provide: DrawingService, useValue: drawServiceSpy },
+            ],
         });
         service = TestBed.inject(LineService);
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
@@ -29,11 +32,13 @@ describe('LineService', () => {
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
+        service['drawingService'].canvas = canvasStub;
 
         mouseEvent = {
             offsetX: 25,
             offsetY: 25,
             button: 0,
+
         } as MouseEvent;
         mouseEvent2 = {
             offsetX: 1200,
