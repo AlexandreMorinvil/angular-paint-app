@@ -74,7 +74,7 @@ export class LineService extends Tool {
         }
     }
 
-    onShiftUp(event: KeyboardEvent) {
+    onShiftUp(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawLine(this.drawingService.previewCtx, this.pathData);
     }

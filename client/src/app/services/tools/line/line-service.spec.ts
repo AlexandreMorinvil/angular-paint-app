@@ -32,7 +32,7 @@ describe('LineService', () => {
         });
         service = TestBed.inject(LineService);
 
-        //tslint: disable: no - any;
+        // tslint: disable: no - any;
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
         findAlignmentAngleSpy = spyOn<any>(service, 'findAlignmentAngle').and.callThrough();
         drawJunctionSpy = spyOn<any>(service, 'drawJunction').and.callThrough();
@@ -107,13 +107,13 @@ describe('LineService', () => {
         service.mouseClick = true;
         service.click = 0;
         service.alignmentCoord = { x: 0, y: 0 };
-        const mouseEvent = {
+        const mouseEvent2 = {
             offsetX: 25,
             offsetY: 25,
             button: 0,
             shiftKey: true,
         } as MouseEvent;
-        service.onMouseClick(mouseEvent);
+        service.onMouseClick(mouseEvent2);
 
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawAlignLineSpy).toHaveBeenCalled();
@@ -175,7 +175,7 @@ describe('LineService', () => {
         service.onMouseClick(mouseEvent);
         mouseEvent = { offsetX: 150, offsetY: 150, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
-        let alignment = Math.abs(360 - Math.abs(Math.atan2(50, 50) * 180) / Math.PI);
+        const alignment = Math.abs(360 - Math.abs(Math.atan2(50, 50) * 180) / Math.PI);
         expect(alignment).toBe(315);
         expect(findAlignmentAngleSpy).toHaveBeenCalled();
     });
@@ -185,7 +185,7 @@ describe('LineService', () => {
         service.onMouseClick(mouseEvent);
         mouseEvent = { offsetX: 0, offsetY: 0, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
-        let alignment = Math.abs(360 - Math.abs(Math.atan2(10, 10) * 180) / Math.PI);
+        const alignment = Math.abs(360 - Math.abs(Math.atan2(10, 10) * 180) / Math.PI);
         expect(service.roundToNearestAngle(alignment)).toBe(315);
         expect(findAlignmentAngleSpy).toHaveBeenCalled();
     });
@@ -195,7 +195,7 @@ describe('LineService', () => {
         service.onMouseClick(mouseEvent);
         mouseEvent = { movementX: 10, movementY: -10, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
-        let alignment = Math.abs(360 - Math.abs(Math.atan2(-10, -10) * 180) / Math.PI);
+        const alignment = Math.abs(360 - Math.abs(Math.atan2(-10, -10) * 180) / Math.PI);
         expect(service.roundToNearestAngle(alignment)).toBe(225);
         expect(findAlignmentAngleSpy).toHaveBeenCalled();
     });
@@ -311,8 +311,7 @@ describe('LineService', () => {
         service.mouseClick = true;
         mouseEvent = { offsetX: 40, offsetY: 50, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
-        const event = new KeyboardEvent('keyup', { key: 'Shift' });
-        service.onShiftUp(event);
+        service.onShiftUp();
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawLineSpy).toHaveBeenCalled();
     });
@@ -359,7 +358,7 @@ describe('LineService', () => {
         expect(service.onMouseDoubleClickEvent(mouseEvent)).toHaveBeenCalled();
     });
     */
-    //MARCHE PAS
+    // MARCHE PAS
     /* it('onMouse doubleClick if isAround20Pixel should close the shape', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
@@ -376,7 +375,7 @@ describe('LineService', () => {
         expect(service.closeShape()).toHaveBeenCalled();
     }); */
 
-    //MARCHE PAS pass pas par le else
+    // MARCHE PAS pass pas par le else
     /*  it('onMouse doubleClick if isAround20Pixel should close the shape', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
