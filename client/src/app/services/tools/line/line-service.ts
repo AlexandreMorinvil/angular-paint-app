@@ -33,10 +33,10 @@ export class LineService extends Tool {
     private pathData: Vec2[];
     private pathDataSaved: Vec2[];
     private savedImage: ImageData;
-    private undo: ImageData[];
-    private click: number;
+    undo: ImageData[];
+    click: number;
     alignmentCoord: Vec2;
-    private isPointsWithJunction: boolean;
+    isPointsWithJunction: boolean;
     private junctionPointsDiameter: number;
     constructor(
         drawingService: DrawingService,
@@ -187,7 +187,7 @@ export class LineService extends Tool {
         return false;
     }
 
-    private closeShape(): void {
+    closeShape(): void {
         this.drawingService.baseCtx.beginPath();
         let firstPath = this.pathDataSaved[0];
         let lastPath = this.pathDataSaved[this.pathDataSaved.length - 1];

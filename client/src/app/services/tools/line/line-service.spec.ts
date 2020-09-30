@@ -15,6 +15,7 @@ describe('LineService', () => {
     let clearPathSpy: jasmine.Spy<any>;
     let clearPathSavedSpy: jasmine.Spy<any>;
     let drawAlignLineSpy: jasmine.Spy<any>;
+    // let drawJunctionSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -30,6 +31,7 @@ describe('LineService', () => {
         clearPathSpy = spyOn<any>(service, 'clearPath').and.callThrough();
         clearPathSavedSpy = spyOn<any>(service, 'clearPathSaved').and.callThrough();
         drawAlignLineSpy = spyOn<any>(service, 'drawAlignLine').and.callThrough();
+        // drawJunctionSpy = spyOn<any>(service, 'drawJunction').and.callThrough();
 
         // Configuration du spy du service
         // tslint:disable:no-string-literal
@@ -69,10 +71,8 @@ describe('LineService', () => {
         expect(drawLineSpy).toHaveBeenCalled();
     });
 
-    //ne marche pas erreur dans le test ne passe pas le else
     it('onMouseMove if mouse is Click and shift not press should not drawLine if its not in canvas', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
-        //service.mouseDown = true;
         service.mouseClick = true;
         mouseEvent = { offsetX: 1500, offsetY: 1500, button: 0, shiftKey: false } as MouseEvent;
         service.onMouseMove(mouseEvent);
@@ -111,49 +111,86 @@ describe('LineService', () => {
         expect(clearPathSpy).toHaveBeenCalled();
         expect(clearPathSavedSpy).toHaveBeenCalled();
     });
-    //double click je sais pas comment l<implementer
+    //MARCHE PAS
 
-    /*it('onMouse doubleClick should clearPath and clearPathSaved', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+    it('onMouse doubleClick should call ondDoucleClick event', () => {
+        service.click = 1;
         mouseEvent = { offsetX: 40, offsetY: 50, button: 0, shiftKey: false } as MouseEvent;
         service.onMouseClick(mouseEvent);
+        expect(service.onMouseDoubleClickEvent(mouseEvent)).toHaveBeenCalled();
+    });
+    //MARCHE PAS
+    it('onMouse doubleClick if isAround20Pixel should close the shape', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+        service.mouseClick = true;
+        service.click = 0;
+        mouseEvent = { offsetX: 2, offsetY: 2, button: 0, shiftKey: false } as MouseEvent;
         service.onMouseClick(mouseEvent);
-        service.onMouseDoubleClickEvent(mouseEvent);
+        mouseEvent = { offsetX: 7, offsetY: 7, button: 0, shiftKey: false } as MouseEvent;
+        service.onMouseClick(mouseEvent);
+        service.click = 1;
+        mouseEvent = { offsetX: 40, offsetY: 50, button: 0, shiftKey: false } as MouseEvent;
+        service.onMouseClick(mouseEvent);
+        expect(service.isAround20Pixels()).toBe(true);
+        expect(service.closeShape()).toHaveBeenCalled();
+    });
+
+    //MARCHE PAS pass pas par le else
+    it('onMouse doubleClick if isAround20Pixel should close the shape', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+        service.mouseClick = true;
+        service.click = 0;
+        mouseEvent = { offsetX: 10, offsetY: 10, button: 0, shiftKey: false } as MouseEvent;
+        service.onMouseClick(mouseEvent);
+        mouseEvent = { offsetX: 60, offsetY: 60, button: 0, shiftKey: false } as MouseEvent;
+        service.onMouseClick(mouseEvent);
+        service.click = 1;
+        mouseEvent = { offsetX: 100, offsetY: 100, button: 0, shiftKey: false } as MouseEvent;
+        service.onMouseClick(mouseEvent);
+        expect(service.isAround20Pixels()).toBe(false);
+        expect(service.closeShape()).not.toHaveBeenCalled();
+    });
+
+    /*it('onMouse doubleClick should clearPath and clearPathSaved', () => {
+        service.click = 2;
+        mouseEvent = { offsetX: 40, offsetY: 50, button: 0, shiftKey: false } as MouseEvent;
+        service.onMouseClick(mouseEvent);
         expect(clearPathSpy).toHaveBeenCalled();
         expect(clearPathSavedSpy).toHaveBeenCalled();
     });
-    */
 
-    /* MARCHE PAS   it('on isAroud20Pixels should return true if the distance between first and last click <=20 should return true', () => {
+    /*it('on isAroud20Pixels should return true if the distance between first and last click <=20 should return true', () => {
         mouseEvent = { offsetX: 40, offsetY: 50, button: 0, shiftKey: false } as MouseEvent;
         service.onMouseClick(mouseEvent);
+        waits(10);
         mouseEvent = { offsetX: 42, offsetY: 55, button: 0, shiftKey: false } as MouseEvent;
-        service.onMouseClick(mouseEvent);
-        mouseEvent = { offsetX: 47, offsetY: 58, button: 0, shiftKey: false } as MouseEvent;
         service.onMouseClick(mouseEvent);
         service.isAround20Pixels();
         expect(service.isAround20Pixels()).toBe(true);
     });
 
     it('on isAroud20Pixels should return true if the distance between first and last click >20 should return false', () => {
-        
         mouseEvent = { offsetX: 40, offsetY: 50, button: 0, shiftKey: false } as MouseEvent;
         service.onMouseClick(mouseEvent);
-        mouseEvent = { offsetX: 99, offsetY: 101, button: 0, shiftKey: false } as MouseEvent;
-        service.onMouseClick(mouseEvent);
+        waits(30);
         mouseEvent = { offsetX: 150, offsetY: 150, button: 0, shiftKey: false } as MouseEvent;
         service.onMouseClick(mouseEvent);
         service.isAround20Pixels();
         expect(service.isAround20Pixels()).toBe(false);
-    });*/
+    });
+    */
 
-    it('onMouse doubleClick should clearPath and clearPathSaved', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+    it('on Backspace should set mouseDown to right coordonate', () => {
+        service.mouseClick = true;
         mouseEvent = { offsetX: 40, offsetY: 50, button: 0, shiftKey: false } as MouseEvent;
         service.onMouseClick(mouseEvent);
-        service.onMouseClick(mouseEvent);
-        service.onMouseDoubleClickEvent(mouseEvent);
-        expect(clearPathSpy).toHaveBeenCalled();
-        expect(clearPathSavedSpy).toHaveBeenCalled();
+        service.click = 0;
+        mouseEvent = { offsetX: 150, offsetY: 150, button: 0, shiftKey: false } as MouseEvent;
+        service.onBackspaceDown();
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect(service.mouseDownCoord.x).toEqual(40);
+        expect(service.mouseDownCoord.y).toEqual(50);
     });
 });
