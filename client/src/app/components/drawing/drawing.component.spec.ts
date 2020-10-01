@@ -10,6 +10,7 @@ import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { LineService } from '@app/services/tools/line/line-service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
+import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzone-size.service';
 import { DrawingComponent } from './drawing.component';
 class ToolStub extends Tool {}
 
@@ -33,6 +34,7 @@ describe('DrawingComponent', () => {
     let onShiftUpSpy: jasmine.Spy<any>;
     let onEscapeDownSpy: jasmine.Spy<any>;
     let onBackspaceDownSpy: jasmine.Spy<any>;
+    let onResizeSpy: jasmine.Spy<any>;
 
     beforeEach(async(() => {
         toolStub = new ToolStub({} as DrawingService, {} as Description);
@@ -50,6 +52,7 @@ describe('DrawingComponent', () => {
                 EraserService,
                 LineService,
                 ToolboxService,
+                WorkzoneSizeService,
             ],
         }).compileComponents();
     }));
@@ -69,6 +72,7 @@ describe('DrawingComponent', () => {
         // tslint:disable:no-string-literal
         clearCanvasSpy = spyOn<any>(drawingStub, 'clearCanvas').and.callThrough();
         resetDrawingSpy = spyOn<any>(drawingStub, 'resetDrawing').and.callThrough();
+        onResizeSpy = spyOn<any>(component['workzoneSizeService'], 'onResize');
         fixture.detectChanges();
     });
 
@@ -229,18 +233,15 @@ describe('DrawingComponent', () => {
         expect(resetDrawingSpy).toHaveBeenCalled();
     });
 
-    it('should call resetDrawing and ask before delete with answer false', () => {
-        component.hasBeenDrawnOnto = true;
-        const event = new KeyboardEvent('keyup', { key: 'o' });
-        spyOn(window, 'confirm').and.returnValue(false);
-        component.createNewDrawingKeyboardEvent(event);
-        expect(resetDrawingSpy).not.toHaveBeenCalled();
-    });
-
     it('should call resetDrawing and not ask before delete', () => {
         component.hasBeenDrawnOnto = false;
         const event = new KeyboardEvent('keyup', { key: 'o' });
         component.createNewDrawingKeyboardEvent(event);
         expect(resetDrawingSpy).toHaveBeenCalled();
+    });
+
+    it('should call onResize', () => {
+        component.onResize(new Event('resize'));
+        expect(onResizeSpy).toHaveBeenCalled();
     });
 });

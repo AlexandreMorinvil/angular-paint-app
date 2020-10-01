@@ -4,7 +4,8 @@ import { DrawingService } from './drawing.service';
 
 describe('DrawingService', () => {
     let service: DrawingService;
-
+    // tslint:disable:no-any
+    let resetDrawingSpy: jasmine.Spy<any>;
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(DrawingService);
@@ -22,5 +23,21 @@ describe('DrawingService', () => {
         const pixelBuffer = new Uint32Array(service.baseCtx.getImageData(0, 0, service.canvas.width, service.canvas.height).data.buffer);
         const hasColoredPixels = pixelBuffer.some((color) => color !== 0);
         expect(hasColoredPixels).toEqual(false);
+    });
+
+    it('should call resetDrawingWithWarning and ask before delete with answer true', () => {
+        service.hasBeenDrawnOnto = true;
+        resetDrawingSpy = jasmine.createSpy('resetDrawingWithWarning');
+        spyOn(window, 'confirm').and.returnValue(true);
+        service.resetDrawingWithWarning();
+        expect(resetDrawingSpy).not.toHaveBeenCalled();
+    });
+
+    it('should call resetDrawingWithWarning and ask before delete with answer false', () => {
+        service.hasBeenDrawnOnto = true;
+        resetDrawingSpy = jasmine.createSpy('resetDrawingWithWarning');
+        spyOn(window, 'confirm').and.returnValue(false);
+        service.resetDrawingWithWarning();
+        expect(resetDrawingSpy).not.toHaveBeenCalled();
     });
 });
