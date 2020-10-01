@@ -33,24 +33,22 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.canvas = this.baseCanvas.nativeElement;
         this.editCtx.canvas.width = window.innerWidth;
         this.editCtx.canvas.height = window.innerHeight;
-        this.hasBeenDrawnOnto = false;
+        this.drawingService.hasBeenDrawnOnto = false;
     }
 
     resetDrawing(): void {
-        this.drawingService.clearCanvas(this.baseCtx);
-        this.drawingService.clearCanvas(this.previewCtx);
-        this.hasBeenDrawnOnto = false;
+        this.drawingService.resetDrawingWithWarning();
+    }
+
+    @HostListener('window:resize', ['$event'])
+    onResize(event: Event): void {
+        this.workzoneSizeService.onResize();
     }
 
     @HostListener('document:keydown.control.o', ['$event'])
     createNewDrawingKeyboardEvent(event: KeyboardEvent): void {
         event.preventDefault();
-
-        if (!this.hasBeenDrawnOnto) {
-            this.resetDrawing();
-        } else if (confirm('Voulez-vous abandonner le dessin en cours?')) {
-            this.resetDrawing();
-        }
+        this.resetDrawing();
     }
 
     @HostListener('mousemove', ['$event'])
@@ -61,7 +59,7 @@ export class DrawingComponent implements AfterViewInit {
     @HostListener('mousedown', ['$event'])
     onMouseDown(event: MouseEvent): void {
         this.toolbox.getCurrentTool().onMouseDown(event);
-        this.hasBeenDrawnOnto = true;
+        this.drawingService.hasBeenDrawnOnto = true;
     }
 
     @HostListener('mouseup', ['$event'])

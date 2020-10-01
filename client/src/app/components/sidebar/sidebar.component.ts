@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Tool } from '@app/classes/tool';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
+import { UserGuideModalService } from '@app/services/user-guide-modal/user-guide-modal.service';
 
 @Component({
     selector: 'app-sidebar',
@@ -9,7 +11,12 @@ import { ToolboxService } from '@app/services/toolbox/toolbox.service';
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-    constructor(private toolboxSevice: ToolboxService, private router: Router) {}
+    constructor(
+        private toolboxSevice: ToolboxService,
+        private drawingService: DrawingService,
+        private router: Router,
+        private userGuideModalService: UserGuideModalService,
+    ) {}
 
     getListOfTools(): Tool[] {
         return this.toolboxSevice.getAvailableTools();
@@ -29,5 +36,13 @@ export class SidebarComponent {
 
     navigateToMain(): void {
         this.router.navigate(['home']);
+    }
+
+    resetDrawing(): void {
+        this.drawingService.resetDrawingWithWarning();
+    }
+
+    openGuide(): void {
+        this.userGuideModalService.openUserGuide();
     }
 }

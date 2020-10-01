@@ -3,6 +3,7 @@ import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzone-size.service';
 
 export enum MouseButton {
     Left = 0,
@@ -26,7 +27,7 @@ export class CursorService extends Tool {
     // tslint:disable-next-line:no-any
     imageData: any;
 
-    constructor(drawingService: DrawingService) {
+    constructor(drawingService: DrawingService, private workzoneService: WorkzoneSizeService) {
         super(drawingService, new Description('cursor', 'y', 'crop-icon.png'));
     }
 
@@ -51,6 +52,11 @@ export class CursorService extends Tool {
         this.drawingService.baseCtx.canvas.height = this.drawingService.previewCtx.canvas.height;
         this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
         this.drawingService.baseCtx.putImageData(this.imageData, 0, 0);
+
+        this.workzoneService.updateDrawingZoneDimension({
+            width: this.drawingService.previewCtx.canvas.width,
+            height: this.drawingService.previewCtx.canvas.height,
+        });
     }
 
     onMouseMove(event: MouseEvent): void {

@@ -3,5 +3,8 @@
         <img [src]="tool.iconDirectory" [alt]="tool.name" />
         <app-tooltip [text]="formatTooltipMessage(tool)" class="tooltip"></app-tooltip>
     </button>
+
+    <button (click)="resetDrawing()"><img src="assets/images/document_icon.png" /></button>
+    <button (click)="openGuide()"><img src="assets/images/question_mark.png" /></button>
     <button class="home-button" (click)="navigateToMain()"><img home-image src="assets/images/home_icon.png" /></button>
 </div>

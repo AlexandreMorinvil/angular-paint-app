@@ -10,8 +10,8 @@ export class UserGuideModalService {
 
     openUserGuide(): void {
         const dialogRef = this.dialog.open(UserGuideModalComponent, {
-            width: '800px',
-            height: '600px',
+            width: '1000px',
+            height: '800px',
             data: {},
         });
 

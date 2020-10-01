@@ -68,7 +68,7 @@ describe('DrawingComponent', () => {
         // tslint:disable:no-any
         // tslint:disable:no-string-literal
         clearCanvasSpy = spyOn<any>(drawingStub, 'clearCanvas').and.callThrough();
-        resetDrawingSpy = spyOn<any>(component, 'resetDrawing').and.callThrough();
+        resetDrawingSpy = spyOn<any>(drawingStub, 'resetDrawing').and.callThrough();
         fixture.detectChanges();
     });
 
@@ -217,7 +217,7 @@ describe('DrawingComponent', () => {
     });
 
     it('should reset the drawing', () => {
-        component.resetDrawing();
+        drawingStub.resetDrawing();
         expect(clearCanvasSpy).toHaveBeenCalled();
     });
 
