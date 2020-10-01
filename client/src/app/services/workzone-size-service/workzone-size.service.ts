@@ -39,10 +39,12 @@ export class WorkzoneSizeService {
 
         if (drawingZoneHeight > this.workZoneHeight) {
             newWorkZoneHeight = drawingZoneHeight + this.SMALL_SPACE;
+            this.workZoneHeight = newWorkZoneHeight;
         }
 
         if (drawingZoneWidth > this.workZoneWidth) {
             newWorkZoneWidth = drawingZoneWidth + this.SMALL_SPACE;
+            this.workZoneWidth = newWorkZoneWidth;
         }
 
         this.drawingZoneHeight = drawingZoneHeight;
