@@ -28,7 +28,7 @@ export class CursorService extends Tool {
     imageData: any;
 
     constructor(drawingService: DrawingService, private workzoneService: WorkzoneSizeService) {
-        super(drawingService, new Description('cursor', 'y', 'crop-icon.png'));
+        super(drawingService, new Description('redimensionneur', 'y', 'crop-icon.png'));
     }
 
     onMouseDown(event: MouseEvent): void {
