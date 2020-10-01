@@ -138,13 +138,13 @@ export class BrushService extends Tool {
 
         // first pixel
         for (let i = 0; i < numberOfLines; i++) {
-            ctx.globalAlpha = normalAlpha - alphaDecreaseRate * i;
+            ctx.globalAlpha = this.colorService.getPrimaryColorOpacity() * (normalAlpha - alphaDecreaseRate * i);
             ctx.fillRect(path[0].x, path[0].y + this.widthService.getWidth() * i, 1, this.widthService.getWidth() / aestheticAdjustment);
         }
 
         // drawing of the line
         for (let i = 0; i < numberOfLines; i++) {
-            ctx.globalAlpha = normalAlpha - alphaDecreaseRate * i;
+            ctx.globalAlpha = this.colorService.getPrimaryColorOpacity() * (normalAlpha - alphaDecreaseRate * i);
             ctx.beginPath();
             for (const point of path) ctx.lineTo(point.x, point.y + this.widthService.getWidth() * i);
             ctx.stroke();
