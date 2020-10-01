@@ -15,7 +15,6 @@ import { LineService } from '@app/services/tools/line/line-service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
 import { SidebarComponent } from './sidebar.component';
-// tslint:disable:prettier
 class ToolStub extends Tool {}
 
 describe('SidebarComponent', () => {
