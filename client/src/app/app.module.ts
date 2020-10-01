@@ -56,7 +56,7 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
         ReactiveFormsModule,
         MatTabsModule,
     ],
-    entryComponents: [],
+    entryComponents: [UserGuideModalComponent],
     providers: [
         { provide: MAT_DIALOG_DATA, useValue: [] },
         { provide: MatDialogRef, useValue: {} },

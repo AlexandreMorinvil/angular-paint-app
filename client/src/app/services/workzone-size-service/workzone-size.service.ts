@@ -1,4 +1,4 @@
-import { HostListener, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 interface Dimension {
@@ -53,10 +53,10 @@ export class WorkzoneSizeService {
         this.workzoneDimensionSource.next({ width: newWorkZoneWidth, height: newWorkZoneHeight });
     }
 
-    @HostListener('window:resize', ['$event'])
+    /* @HostListener('window:resize', ['$event'])
     onResize(event: Event): void {
         this.resizeWorkZone();
-    }
+    } */
 
     setDimensions(): void {
         this.resizeWorkZone();
