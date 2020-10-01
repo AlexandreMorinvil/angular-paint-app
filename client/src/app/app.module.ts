@@ -1,7 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -57,11 +57,7 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
         MatTabsModule,
     ],
     entryComponents: [],
-    providers: [
-        { provide: MAT_DIALOG_DATA, useValue: [] },
-        { provide: MatDialogRef, useValue: {} },
-        { provide: MatDialog, useValue: {} },
-    ],
+    providers: [{ provide: MAT_DIALOG_DATA, useValue: [] }],
     bootstrap: [AppComponent],
 })
 export class AppModule {}

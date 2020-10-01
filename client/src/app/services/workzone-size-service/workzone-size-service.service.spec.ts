@@ -19,14 +19,14 @@ describe('Service: WorkzoneSizeService', () => {
         service.workZoneHeight = 300;
         // tslint:disable-next-line: no-magic-numbers
         service.workZoneWidth = 300;
-        service.changeWorkZoneDimension({ width: 800, height: 600 });
+        service.updateDrawingZoneDimension({ width: 800, height: 600 });
         expect(service.drawingZoneHeight).toBeLessThan(service.workZoneHeight);
     }));
 
     it('should have workzone bigger than drawingzone when resize not needed', inject([WorkzoneSizeService], (service: WorkzoneSizeService) => {
         // tslint:disable-next-line: no-magic-numbers
         service.workZoneHeight = 700;
-        service.changeWorkZoneDimension({ width: 800, height: 600 });
+        service.updateDrawingZoneDimension({ width: 800, height: 600 });
         expect(service.drawingZoneHeight).toBeLessThan(service.workZoneHeight);
     }));
 

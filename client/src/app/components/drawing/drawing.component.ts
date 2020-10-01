@@ -36,10 +36,19 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.hasBeenDrawnOnto = false;
     }
 
+    resetDrawing(): void {
+        this.drawingService.resetDrawingWithWarning();
+    }
+
+    @HostListener('window:resize', ['$event'])
+    onResize(event: Event): void {
+        this.workzoneSizeService.onResize();
+    }
+
     @HostListener('document:keydown.control.o', ['$event'])
     createNewDrawingKeyboardEvent(event: KeyboardEvent): void {
         event.preventDefault();
-        this.drawingService.resetDrawingWithWarning();
+        this.resetDrawing();
     }
 
     @HostListener('mousemove', ['$event'])

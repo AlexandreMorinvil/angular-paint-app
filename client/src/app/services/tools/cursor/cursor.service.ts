@@ -53,7 +53,7 @@ export class CursorService extends Tool {
         this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
         this.drawingService.baseCtx.putImageData(this.imageData, 0, 0);
 
-        this.workzoneService.changeWorkZoneDimension({
+        this.workzoneService.updateDrawingZoneDimension({
             width: this.drawingService.previewCtx.canvas.width,
             height: this.drawingService.previewCtx.canvas.height,
         });

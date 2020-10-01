@@ -30,33 +30,24 @@ export class WorkzoneSizeService {
         this.currentWorkzoneDimension = this.workzoneDimensionSource.asObservable();
     }
 
-    changeWorkZoneDimension(drawingZoneDimension: Dimension): void {
+    updateDrawingZoneDimension(drawingZoneDimension: Dimension): void {
         const drawingZoneHeight = drawingZoneDimension.height;
         const drawingZoneWidth = drawingZoneDimension.width;
 
-        let newWorkZoneHeight = this.workZoneHeight;
-        let newWorkZoneWidth = this.workZoneWidth;
-
-        if (drawingZoneHeight > this.workZoneHeight) {
-            newWorkZoneHeight = drawingZoneHeight + this.SMALL_SPACE;
-            this.workZoneHeight = newWorkZoneHeight;
-        }
-
-        if (drawingZoneWidth > this.workZoneWidth) {
-            newWorkZoneWidth = drawingZoneWidth + this.SMALL_SPACE;
-            this.workZoneWidth = newWorkZoneWidth;
-        }
-
         this.drawingZoneHeight = drawingZoneHeight;
         this.drawingZoneWidth = drawingZoneWidth;
-
-        this.workzoneDimensionSource.next({ width: newWorkZoneWidth, height: newWorkZoneHeight });
     }
 
-    /* @HostListener('window:resize', ['$event'])
-    onResize(event: Event): void {
-        this.resizeWorkZone();
-    } */
+    onResize(): void {
+        const newWidth: number = window.innerWidth - this.TOOLBOX_WIDTH;
+        const newHeight: number = window.innerHeight;
+
+        if (this.drawingZoneHeight > newHeight || this.drawingZoneWidth > newHeight) {
+            return;
+        }
+
+        this.workzoneDimensionSource.next({ width: newWidth, height: newHeight });
+    }
 
     setDimensions(): void {
         this.resizeWorkZone();
