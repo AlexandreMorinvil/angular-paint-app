@@ -41,7 +41,6 @@ export class DrawingComponent implements AfterViewInit {
     @HostListener('document:keydown.control.o', ['$event'])
     createNewDrawingKeyboardEvent(event: KeyboardEvent): void {
         event.preventDefault();
-
         this.drawingService.resetDrawingWithWarning();
     }
 

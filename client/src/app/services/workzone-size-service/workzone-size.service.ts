@@ -1,4 +1,10 @@
 import { HostListener, Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+
+interface Dimension {
+    width: number;
+    height: number;
+}
 
 @Injectable({
     providedIn: 'root',
@@ -6,6 +12,8 @@ import { HostListener, Injectable } from '@angular/core';
 export class WorkzoneSizeService {
     WORKZONE_MINIMAL_SIZE: number = 500;
     DRAWINGZONE_MINIMAL_SIZE: number = 250;
+
+    SMALL_SPACE: number = 120;
     TOOLBOX_WIDTH: number = 278;
     workZoneHeight: number;
     workZoneWidth: number;
@@ -13,8 +21,34 @@ export class WorkzoneSizeService {
     drawingZoneHeight: number;
     drawingZoneWidth: number;
 
+    private workzoneDimensionSource: BehaviorSubject<Dimension>;
+    currentWorkzoneDimension: Observable<Dimension>;
+
     constructor() {
         this.setDimensions();
+        this.workzoneDimensionSource = new BehaviorSubject<Dimension>({ width: this.WORKZONE_MINIMAL_SIZE, height: this.WORKZONE_MINIMAL_SIZE });
+        this.currentWorkzoneDimension = this.workzoneDimensionSource.asObservable();
+    }
+
+    changeWorkZoneDimension(drawingZoneDimension: Dimension): void {
+        const drawingZoneHeight = drawingZoneDimension.height;
+        const drawingZoneWidth = drawingZoneDimension.width;
+
+        let newWorkZoneHeight = this.workZoneHeight;
+        let newWorkZoneWidth = this.workZoneWidth;
+
+        if (drawingZoneHeight > this.workZoneHeight) {
+            newWorkZoneHeight = drawingZoneHeight + this.SMALL_SPACE;
+        }
+
+        if (drawingZoneWidth > this.workZoneWidth) {
+            newWorkZoneWidth = drawingZoneWidth + this.SMALL_SPACE;
+        }
+
+        this.drawingZoneHeight = drawingZoneHeight;
+        this.drawingZoneWidth = drawingZoneWidth;
+
+        this.workzoneDimensionSource.next({ width: newWorkZoneWidth, height: newWorkZoneHeight });
     }
 
     @HostListener('window:resize', ['$event'])

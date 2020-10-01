@@ -8,4 +8,14 @@ import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzon
 })
 export class WorkspaceComponent {
     constructor(public workZoneSizeService: WorkzoneSizeService) {}
+
+    ngOnInit(): void {
+        this.workZoneSizeService.currentWorkzoneDimension.subscribe((dimension) => {
+            const elem = document.getElementById('workzone-container');
+            if (elem) {
+                elem.style.width = dimension.width.toString() + 'px';
+                elem.style.height = dimension.height.toString() + 'px';
+            }
+        });
+    }
 }
