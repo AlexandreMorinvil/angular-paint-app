@@ -611,3 +611,6 @@
 [0930/111051.571:ERROR:process_reader_win.cc(151)] SuspendThread: Accès refusé. (0x5)
 [0930/120142.372:ERROR:process_reader_win.cc(151)] SuspendThread: Accès refusé. (0x5)
 [0930/120142.377:ERROR:process_reader_win.cc(151)] SuspendThread: Accès refusé. (0x5)
+[0930/181038.969:ERROR:process_reader_win.cc(151)] SuspendThread: Accès refusé. (0x5)
+[0930/181038.971:ERROR:process_reader_win.cc(151)] SuspendThread: Accès refusé. (0x5)
+[0930/181038.971:ERROR:process_reader_win.cc(151)] SuspendThread: Accès refusé. (0x5)

@@ -59,7 +59,7 @@ export class BrushService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
 
-            // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
+            // We draw on the preview canvas and erase it each time the mouse is moved
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawLine(this.drawingService.previewCtx, this.pathData);
         }

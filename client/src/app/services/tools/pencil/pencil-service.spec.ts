@@ -4,6 +4,8 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PencilService } from './pencil-service';
 
+// The disablement of the "any" tslint rule is justified in this situation as the prototype
+// of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
 // tslint:disable:no-any
 describe('PencilService', () => {
     let service: PencilService;
@@ -26,7 +28,7 @@ describe('PencilService', () => {
         service = TestBed.inject(PencilService);
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
 
-        // Configuration du spy du service
+        // Configuration od spy service
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         // tslint:disable:no-string-literal
@@ -64,7 +66,7 @@ describe('PencilService', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
-            button: 1, // TODO: Avoir ceci dans un enum accessible
+            button: 1,
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);
@@ -110,7 +112,7 @@ describe('PencilService', () => {
         mouseEvent = { offsetX: 1, offsetY: 0, button: 0 } as MouseEvent;
         service.onMouseUp(mouseEvent);
 
-        // Premier pixel seulement
+        // First pixel only
         const imageData: ImageData = baseCtxStub.getImageData(0, 0, 1, 1);
         expect(imageData.data[0]).toEqual(0); // R
         expect(imageData.data[1]).toEqual(0); // G

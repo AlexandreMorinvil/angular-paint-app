@@ -51,7 +51,7 @@ export class PencilService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             if (this.isInCanvas(mousePosition)) {
                 this.pathData.push(mousePosition);
-                // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
+                // We draw on the preview canvas and erase it each time the mouse is moved
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.drawLine(this.drawingService.previewCtx, this.pathData);
             }
@@ -64,8 +64,7 @@ export class PencilService extends Tool {
     }
 
     private isInCanvas(mousePosition: Vec2): boolean {
-        return mousePosition.x <= this.drawingService.previewCtx.canvas.width &&
-            mousePosition.y <= this.drawingService.previewCtx.canvas.height;
+        return mousePosition.x <= this.drawingService.previewCtx.canvas.width && mousePosition.y <= this.drawingService.previewCtx.canvas.height;
     }
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {

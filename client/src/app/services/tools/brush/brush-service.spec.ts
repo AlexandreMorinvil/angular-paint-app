@@ -4,7 +4,8 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { TextureEnum, TextureService } from '@app/services/tool-modifier/texture/texture.service';
 import { BrushService } from './brush-service';
-
+// The disablement of the "any" tslint rule is justified in this situation as the prototype
+// of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
 // tslint:disable:no-any
 describe('BrushService', () => {
     let service: BrushService;
@@ -67,7 +68,7 @@ describe('BrushService', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
-            button: 1, // TODO: Avoir ceci dans un enum accessible
+            button: 1,
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);
