@@ -44,6 +44,8 @@ export class DrawingComponent implements AfterViewInit {
     @HostListener('window:resize', ['$event'])
     onResize(event: Event): void {
         this.workzoneSizeService.onResize();
+        this.editCtx.canvas.width = window.innerWidth - this.TOOL_BOX_WIDTH;
+        this.editCtx.canvas.height = window.innerHeight;
     }
 
     @HostListener('document:keydown.control.o', ['$event'])
