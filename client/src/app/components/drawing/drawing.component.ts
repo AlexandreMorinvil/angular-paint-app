@@ -19,6 +19,7 @@ export class DrawingComponent implements AfterViewInit {
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private editCtx: CanvasRenderingContext2D;
+    private TOOL_BOX_WIDTH: number = 313;
 
     hasBeenDrawnOnto: boolean;
 
@@ -31,7 +32,7 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
-        this.editCtx.canvas.width = window.innerWidth;
+        this.editCtx.canvas.width = window.innerWidth - this.TOOL_BOX_WIDTH;
         this.editCtx.canvas.height = window.innerHeight;
         this.drawingService.hasBeenDrawnOnto = false;
     }
