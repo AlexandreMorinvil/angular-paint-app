@@ -128,10 +128,10 @@ export class RectangleService extends Tool {
     drawPreviewRect(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         const mouseMoveCoord = path[path.length - 1];
-        const width = mouseMoveCoord.x - this.mouseDownCoord.x;
-        const height = mouseMoveCoord.y - this.mouseDownCoord.y;
-        const startX = this.mouseDownCoord.x;
-        const startY = this.mouseDownCoord.y;
+        const width = mouseMoveCoord.x - this.mouseDownCoord.x + this.widthService.getWidth();
+        const height = mouseMoveCoord.y - this.mouseDownCoord.y + this.widthService.getWidth();
+        const startX = this.mouseDownCoord.x - this.widthService.getWidth() / 2;
+        const startY = this.mouseDownCoord.y - this.widthService.getWidth() / 2;
 
         ctx.rect(startX, startY, width, height);
         // tslint:disable:no-magic-numbers
