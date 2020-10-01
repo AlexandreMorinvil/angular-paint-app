@@ -70,6 +70,7 @@ export class RectangleService extends Tool {
                 this.resetBorder();
             }
             this.drawRectangle(this.drawingService.previewCtx, this.pathData);
+            this.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
         }
     }
 
@@ -122,6 +123,22 @@ export class RectangleService extends Tool {
         if (this.tracingService.getHasContour()) {
             ctx.stroke();
         }
+    }
+
+    drawPreviewRect(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+        ctx.beginPath();
+        const mouseMoveCoord = path[path.length - 1];
+        const width = mouseMoveCoord.x - this.mouseDownCoord.x;
+        const height = mouseMoveCoord.y - this.mouseDownCoord.y;
+        const startX = this.mouseDownCoord.x;
+        const startY = this.mouseDownCoord.y;
+
+        ctx.rect(startX, startY, width, height);
+        // tslint:disable:no-magic-numbers
+        ctx.strokeStyle = 'black';
+        ctx.setLineDash([6]);
+        ctx.lineWidth = 1;
+        ctx.stroke();
     }
 
     private clearPath(): void {

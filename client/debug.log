@@ -619,3 +619,4 @@
 [1001/104313.835:ERROR:process_reader_win.cc(151)] SuspendThread: Accès refusé. (0x5)
 [1001/104314.204:ERROR:process_reader_win.cc(151)] SuspendThread: Accès refusé. (0x5)
 [1001/104700.544:ERROR:process_reader_win.cc(151)] SuspendThread: Accès refusé. (0x5)
+[1001/133345.512:ERROR:process_reader_win.cc(151)] SuspendThread: Accès refusé. (0x5)
