@@ -76,14 +76,12 @@ export class EllipseService extends Tool {
         }
         if (event.shiftKey && this.mouseDown) {
             this.pathData.push(mousePosition);
-
+            // We draw on the preview canvas and erase it each time the mouse is moved
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawCircle(this.drawingService.previewCtx, this.pathData);
             this.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
         } else if (this.mouseDown) {
             this.pathData.push(mousePosition);
-
-            // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawEllipse(this.drawingService.previewCtx, this.pathData);
             // Rectangle preview for ellipse
@@ -109,7 +107,6 @@ export class EllipseService extends Tool {
             ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI * 2, false);
             ctx.lineWidth = this.widthService.getWidth();
         }
-
         this.drawingService.previewCtx.setLineDash([0]); // set line dash to default when drawing Ellipse
         this.applyTrace(ctx);
     }

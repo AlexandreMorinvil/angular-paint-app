@@ -5,17 +5,18 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { RectangleService } from './rectangle-service';
-
+// The disablement of the "any" tslint rule is justified in this situation as the prototype
+// of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
 describe('RectangleService', () => {
     let service: RectangleService;
     let tracingService: TracingService;
     let mouseEvent: MouseEvent;
     let colorService: ColorService;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
-
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let canvasStub: HTMLCanvasElement;
+    // tslint:disable:no-any
     let drawRectangleSpy: jasmine.Spy<any>;
     let setAttributeSpy: jasmine.Spy<any>;
     let ctxFillSpy: jasmine.Spy<any>;
@@ -33,6 +34,7 @@ describe('RectangleService', () => {
         service = TestBed.inject(RectangleService);
         tracingService = TestBed.inject(TracingService);
         colorService = TestBed.inject(ColorService);
+        // tslint:disable:no-any
         drawRectangleSpy = spyOn<any>(service, 'drawRectangle').and.callThrough();
         setAttributeSpy = spyOn<any>(service, 'setAttribute').and.callThrough();
         const canvasWidth = 1000;
@@ -72,11 +74,7 @@ describe('RectangleService', () => {
     });
 
     it(' mouseDown should set mouseDown property to false on right click', () => {
-        const mouseEventRClick = {
-            offsetX: 25,
-            offsetY: 25,
-            button: 1,
-        } as MouseEvent;
+        const mouseEventRClick = { offsetX: 25, offsetY: 25, button: 1 } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);
     });
@@ -183,7 +181,7 @@ describe('RectangleService', () => {
         expect(drawRectangleSpy).toHaveBeenCalled();
     });
 
-    it('should draw a rectangleif height is negatif and width positif should stay negative and positif', () => {
+    it('should draw a rectangle if height is negatif and width positif', () => {
         mouseEvent = { offsetX: 50, offsetY: 60, button: 0 } as MouseEvent;
         service.onMouseDown(mouseEvent);
         service.shiftDown = true;
@@ -201,7 +199,7 @@ describe('RectangleService', () => {
         expect(drawRectangleSpy).toHaveBeenCalled();
     });
 
-    it('on drawing a rectangle and shift pressed if height is positif and width positif should stay positif and positif', () => {
+    it('should drawing a rectangle if height is positif and width positif', () => {
         mouseEvent = { offsetX: 50, offsetY: 60, button: 0 } as MouseEvent;
         service.onMouseDown(mouseEvent);
         service.shiftDown = true;
@@ -210,7 +208,7 @@ describe('RectangleService', () => {
         expect(drawRectangleSpy).toHaveBeenCalled();
     });
 
-    it('on drawing a rectangle and shift pressed if height is positif and width negatif should stay positif and negatif', () => {
+    it('should drawing a rectangle if height is positif and width negatif', () => {
         mouseEvent = { offsetX: 50, offsetY: 60, button: 0 } as MouseEvent;
         service.onMouseDown(mouseEvent);
         service.shiftDown = true;

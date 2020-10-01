@@ -58,7 +58,6 @@ export class RectangleService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-            // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             if (!this.isInCanvas(mousePosition)) {
                 if (mousePosition.x >= this.drawingService.baseCtx.canvas.width) {
@@ -90,6 +89,7 @@ export class RectangleService extends Tool {
         let width = lastMouseMoveCoord.x - this.mouseDownCoord.x;
         let height = lastMouseMoveCoord.y - this.mouseDownCoord.y;
         if (this.shiftDown) {
+            // If Shift is pressed should be a square
             const squareSide = Math.abs(Math.min(height, width));
             if (height < 0 && width >= 0) {
                 height = -squareSide;

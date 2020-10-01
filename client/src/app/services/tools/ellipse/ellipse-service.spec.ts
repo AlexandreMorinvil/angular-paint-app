@@ -17,6 +17,8 @@ describe('EllipseService', () => {
     let canvasStub: HTMLCanvasElement;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
+    // The disablement of the "any" tslint rule is justified in this situation as the prototype
+    // of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
     // tslint:disable:no-any
     let drawEllipseSpy: jasmine.Spy<any>;
     let drawCircleSpy: jasmine.Spy<any>;
