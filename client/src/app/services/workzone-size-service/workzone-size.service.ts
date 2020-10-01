@@ -26,7 +26,7 @@ export class WorkzoneSizeService {
 
     constructor() {
         this.setDimensions();
-        this.workzoneDimensionSource = new BehaviorSubject<Dimension>({ width: this.WORKZONE_MINIMAL_SIZE, height: this.WORKZONE_MINIMAL_SIZE });
+        this.workzoneDimensionSource = new BehaviorSubject<Dimension>({ width: this.workZoneWidth, height: this.workZoneHeight });
         this.currentWorkzoneDimension = this.workzoneDimensionSource.asObservable();
     }
 
@@ -34,8 +34,15 @@ export class WorkzoneSizeService {
         const drawingZoneHeight = drawingZoneDimension.height;
         const drawingZoneWidth = drawingZoneDimension.width;
 
-        this.drawingZoneHeight = drawingZoneHeight;
-        this.drawingZoneWidth = drawingZoneWidth;
+        if (drawingZoneHeight > this.workZoneHeight) {
+            this.workZoneHeight = drawingZoneHeight + this.SMALL_SPACE;
+        }
+
+        if (drawingZoneWidth > this.workZoneWidth) {
+            this.workZoneWidth = drawingZoneWidth + this.SMALL_SPACE;
+        }
+
+        this.workzoneDimensionSource.next({ width: this.workZoneWidth, height: this.workZoneHeight });
     }
 
     onResize(): void {

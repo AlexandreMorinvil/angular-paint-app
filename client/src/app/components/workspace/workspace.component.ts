@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzone-size.service';
 
 @Component({
@@ -6,7 +6,7 @@ import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzon
     templateUrl: './workspace.component.html',
     styleUrls: ['./workspace.component.scss'],
 })
-export class WorkspaceComponent {
+export class WorkspaceComponent implements OnInit {
     constructor(public workZoneSizeService: WorkzoneSizeService) {}
 
     ngOnInit(): void {
