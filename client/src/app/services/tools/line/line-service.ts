@@ -58,7 +58,6 @@ export class LineService extends Tool {
 
         if (this.mouseClick && !event.shiftKey) {
             if (this.isInCanvas(mousePosition)) {
-                // We draw on the preview canvas and erase it each time the mouse is moved
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.pathData[0] = this.mouseDownCoord;
                 this.pathData.push(mousePosition);
@@ -99,7 +98,7 @@ export class LineService extends Tool {
         this.clearPath();
         this.clearPathSaved();
     }
-    // Mouse Click is a mouse down followed by mouse up
+    // Mouse Click is a mouse down folled by mouse up
     onMouseClick(event: MouseEvent): void {
         const waitTime = 200;
         let timer;
@@ -109,7 +108,7 @@ export class LineService extends Tool {
             if (this.click === 1) {
                 timer = setTimeout(() => {
                     this.click = 0;
-                }, waitTime); // Set timet to differentiate click and double click event
+                }, waitTime); // Timer to differentiate a click and a double click
             } else {
                 clearTimeout(timer);
                 this.click = 0;
@@ -171,9 +170,8 @@ export class LineService extends Tool {
         ctx.arc(startCenterX, startCenterY, radius, 0, Math.PI * 2);
         ctx.fill();
     }
-
     isAround20Pixels(): boolean {
-        // calculate de distance between fisrt and last point on the line
+        // Calculate the distance between first and last point
         const limit20Pixels = 20;
         const firstCurrentPoint = this.pathDataSaved[0];
         const lastCurrentPoint = this.pathDataSaved[this.pathDataSaved.length - 1];
@@ -204,7 +202,6 @@ export class LineService extends Tool {
         this.savedImage = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
         this.undo.push(this.savedImage);
     }
-
     drawAlignLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         const alignmentAngle = this.findAlignmentAngle(path);

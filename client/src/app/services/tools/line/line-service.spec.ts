@@ -30,11 +30,14 @@ describe('LineService', () => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         canvasStub = canvasTestHelper.canvas;
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
 
         TestBed.configureTestingModule({
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         });
         service = TestBed.inject(LineService);
+        // The disablement of the "any" tslint rule is justified in this situation as the prototype
+        // of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
         // Configuration of service spy
         // tslint:disable:no-any
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
@@ -43,7 +46,7 @@ describe('LineService', () => {
         savedPointSpy = spyOn<any>(service, 'savedPoints').and.callThrough();
         onMouseDoubleClickEventSpy = spyOn<any>(service, 'onMouseDoubleClickEvent').and.callThrough();
         closeShapeSpy = spyOn<any>(service, 'closeShape').and.callThrough();
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
+
         drawAlignLineSpy = spyOn<any>(service, 'drawAlignLine').and.callThrough();
         clearPathSpy = spyOn<any>(service, 'clearPath').and.callThrough();
         clearPathSavedSpy = spyOn<any>(service, 'clearPathSaved').and.callThrough();
