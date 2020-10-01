@@ -49,13 +49,8 @@ button.active {
     visibility: hidden;
 }
 
-.home-button {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-}
-#ome-image {
-    background-color: red;
+.to-bottom {
+    margin-top: auto;
 }
 
 .has-tooltip:hover .tooltip {

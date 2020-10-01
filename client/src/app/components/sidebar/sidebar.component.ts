@@ -11,6 +11,10 @@ import { UserGuideModalService } from '@app/services/user-guide-modal/user-guide
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
+    messageNewDrawing = 'Nouveau dessin\n(Raccourci: Ctr + O)';
+    messageUserGUide = "Guide d'utilisation";
+    messageBack = "Retour";
+
     constructor(
         private toolboxSevice: ToolboxService,
         private drawingService: DrawingService,
