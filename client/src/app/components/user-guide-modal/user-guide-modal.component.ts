@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
 
@@ -12,15 +12,13 @@ export interface DialogData {
     templateUrl: './user-guide-modal.component.html',
     styleUrls: ['./user-guide-modal.component.scss'],
 })
-export class UserGuideModalComponent implements OnInit {
+export class UserGuideModalComponent {
     constructor(
         public dialogRef: MatDialogRef<UserGuideModalComponent>,
         @Inject(MAT_DIALOG_DATA) public data: DialogData,
         d: MatTabsModule,
         dialog: MatDialog,
     ) {}
-
-    ngOnInit(): void {}
 
     onNoClick(): void {
         this.dialogRef.close();

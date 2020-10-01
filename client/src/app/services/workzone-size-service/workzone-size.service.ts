@@ -34,11 +34,11 @@ export class WorkzoneSizeService {
         const drawingZoneHeight = drawingZoneDimension.height;
         const drawingZoneWidth = drawingZoneDimension.width;
 
-        if (drawingZoneHeight > this.workZoneHeight) {
+        if (drawingZoneHeight > this.workZoneHeight - this.SMALL_SPACE) {
             this.workZoneHeight = drawingZoneHeight + this.SMALL_SPACE;
         }
 
-        if (drawingZoneWidth > this.workZoneWidth) {
+        if (drawingZoneWidth > this.workZoneWidth - this.SMALL_SPACE) {
             this.workZoneWidth = drawingZoneWidth + this.SMALL_SPACE;
         }
 
