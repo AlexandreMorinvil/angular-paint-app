@@ -220,7 +220,6 @@ describe('RectangleService', () => {
     it(' should call setAttribute with trace of type contour', () => {
         tracingService.setHasContour(true);
         tracingService.getHasContour();
-
         service.setAttribute(previewCtxStub);
         expect(setAttributeSpy).toHaveBeenCalled();
         expect(ctxContourSpy).toHaveBeenCalled();
@@ -229,7 +228,6 @@ describe('RectangleService', () => {
     it(' should call setAttribute with trace of type full', () => {
         tracingService.setHasFill(true);
         tracingService.getHasFill();
-
         service.setAttribute(previewCtxStub);
         expect(setAttributeSpy).toHaveBeenCalled();
         expect(ctxFillSpy).toHaveBeenCalled();

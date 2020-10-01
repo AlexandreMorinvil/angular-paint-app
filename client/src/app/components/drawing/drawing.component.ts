@@ -94,9 +94,9 @@ export class DrawingComponent implements AfterViewInit {
 
     @HostListener('window:keydown', ['$event'])
     onShiftDown(event: KeyboardEvent): void {
-        if (event.key == 'Shift') {
+        if (event.key === 'Shift') {
             this.toolbox.getCurrentTool().onShiftDown(event);
-        } else if (event.key == 'Escape') {
+        } else if (event.key === 'Escape') {
             this.toolbox.getCurrentTool().onEscapeDown(event);
             this.hasBeenDrawnOnto = true;
         }

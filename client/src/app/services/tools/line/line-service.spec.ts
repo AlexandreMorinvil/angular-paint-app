@@ -46,7 +46,6 @@ describe('LineService', () => {
         savedPointSpy = spyOn<any>(service, 'savedPoints').and.callThrough();
         onMouseDoubleClickEventSpy = spyOn<any>(service, 'onMouseDoubleClickEvent').and.callThrough();
         closeShapeSpy = spyOn<any>(service, 'closeShape').and.callThrough();
-
         drawAlignLineSpy = spyOn<any>(service, 'drawAlignLine').and.callThrough();
         clearPathSpy = spyOn<any>(service, 'clearPath').and.callThrough();
         clearPathSavedSpy = spyOn<any>(service, 'clearPathSaved').and.callThrough();
