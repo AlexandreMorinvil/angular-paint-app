@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { JunctionService } from '@app/services/tool-modifier/junction/junction.service';
 import { TextureService } from '@app/services/tool-modifier/texture/texture.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
@@ -11,11 +12,10 @@ import { ToolboxService } from '@app/services/toolbox/toolbox.service';
     styleUrls: ['./attributes-panel.component.scss'],
 })
 export class AttributesPanelComponent {
-    colorUse: string = '#000000';
-
     constructor(
         private toolboxService: ToolboxService,
         private widthService: WidthService,
+        private junctionService: JunctionService,
         private textureService: TextureService,
         private tracingService: TracingService,
     ) {}
@@ -30,6 +30,10 @@ export class AttributesPanelComponent {
 
     needsWidthAttribute(): boolean {
         return this.currentTool.needsModifierManager(this.widthService);
+    }
+
+    needsJunctionAttribute(): boolean {
+        return this.currentTool.needsModifierManager(this.junctionService);
     }
 
     needsTextureAttribute(): boolean {

@@ -20,8 +20,6 @@ export enum MouseButton {
 })
 export class EllipseService extends Tool {
     pathData: Vec2[];
-    primaryColor: string;
-    secondaryColor: string;
 
     constructor(
         drawingService: DrawingService,

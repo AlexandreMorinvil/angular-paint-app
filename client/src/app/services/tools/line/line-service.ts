@@ -4,7 +4,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
-import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
+import { JunctionService } from '@app/services/tool-modifier/junction/junction.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
 
 export enum MouseButton {
@@ -30,18 +30,16 @@ export enum AlignmentAngle {
     providedIn: 'root',
 })
 export class LineService extends Tool {
-    private pathData: Vec2[];
-    private pathDataSaved: Vec2[];
-    private savedImage: ImageData;
-    private undo: ImageData[];
-    private click: number;
+    pathData: Vec2[];
+    pathDataSaved: Vec2[];
+    savedImage: ImageData;
+    undo: ImageData[];
+    click: number;
     alignmentCoord: Vec2;
-    private isPointsWithJunction: boolean;
-    private junctionPointsDiameter: number;
     constructor(
         drawingService: DrawingService,
         private colorService: ColorService,
-        private tracingService: TracingService,
+        private junctionService: JunctionService,
         private widthService: WidthService,
     ) {
         super(drawingService, new Description('line', 'l', 'line_icon.png'));
@@ -52,9 +50,7 @@ export class LineService extends Tool {
 
         this.modifiers.push(this.colorService);
         this.modifiers.push(this.widthService);
-        this.modifiers.push(this.tracingService);
-        this.isPointsWithJunction = true;
-        this.junctionPointsDiameter = 6;
+        this.modifiers.push(this.junctionService);
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -66,7 +62,6 @@ export class LineService extends Tool {
                 this.pathData[0] = this.mouseDownCoord;
                 this.pathData.push(mousePosition);
                 this.drawLine(this.drawingService.previewCtx, this.pathData);
-                // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             } else {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.clearPath();
@@ -79,7 +74,7 @@ export class LineService extends Tool {
         }
     }
 
-    onShiftUp() {
+    onShiftUp(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawLine(this.drawingService.previewCtx, this.pathData);
     }
@@ -105,45 +100,44 @@ export class LineService extends Tool {
     }
 
     onMouseClick(event: MouseEvent): void {
+        const waitTime = 200;
         let timer;
-        console.log('pressed!');
-
         this.mouseClick = event.button === MouseButton.Left;
         if (this.mouseClick) {
             this.click++;
             if (this.click === 1) {
                 timer = setTimeout(() => {
                     this.click = 0;
-                }, 200);
-            } else if (this.click === 2) {
+                }, waitTime);
+            } else {
                 clearTimeout(timer);
                 this.click = 0;
                 this.onMouseDoubleClickEvent(event);
                 this.mouseClick = false;
             }
-            if (this.click == 1 && !event.shiftKey) {
+            if (this.click === 1 && !event.shiftKey) {
                 this.mouseDownCoord = this.getPositionFromMouse(event);
                 this.pathData.push(this.mouseDownCoord);
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.drawLine(this.drawingService.baseCtx, this.pathData);
                 this.drawJunction(this.drawingService.baseCtx, this.pathData);
                 this.savedPoints();
-                //console.log(this.undo.length);
                 this.clearPath();
             }
-            if (this.click == 1 && event.shiftKey) {
+            if (this.click === 1 && event.shiftKey) {
+                this.mouseDownCoord = this.getPositionFromMouse(event);
+                this.pathData.push(this.mouseDownCoord);
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.drawAlignLine(this.drawingService.baseCtx, this.pathData);
                 this.pathData[0] = this.alignmentCoord;
                 this.mouseDownCoord = this.alignmentCoord;
                 this.drawJunction(this.drawingService.baseCtx, this.pathData);
                 this.savedPoints();
-                console.log(this.undo.length);
             }
         }
     }
 
-    private onMouseDoubleClickEvent(event: MouseEvent): void {
+    onMouseDoubleClickEvent(event: MouseEvent): void {
         this.clearPath();
         if (this.isAround20Pixels()) {
             this.closeShape();
@@ -151,14 +145,14 @@ export class LineService extends Tool {
         this.clearPathSaved();
     }
 
-    private isInCanvas(mousePosition: Vec2): boolean {
+    isInCanvas(mousePosition: Vec2): boolean {
         return mousePosition.x <= this.drawingService.previewCtx.canvas.width && mousePosition.y <= this.drawingService.previewCtx.canvas.height;
     }
 
-    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
-        let firstPath = path[0];
-        let lastPath = path[path.length - 1];
+        const firstPath = path[0];
+        const lastPath = path[path.length - 1];
         ctx.moveTo(firstPath.x, firstPath.y);
         ctx.lineTo(lastPath.x, lastPath.y);
         ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
@@ -168,35 +162,33 @@ export class LineService extends Tool {
         ctx.stroke();
     }
 
-    private drawJunction(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        if (this.isPointsWithJunction) {
-            ctx.beginPath();
-            const radius = this.junctionPointsDiameter / 2;
-            const startCenterX = this.mouseDownCoord.x;
-            const startCenterY = this.mouseDownCoord.y;
-            ctx.arc(startCenterX, startCenterY, radius, 0, Math.PI * 2);
-            ctx.fill();
-        }
+    drawJunction(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+        ctx.beginPath();
+        const radius = this.junctionService.getDiameter() / 2;
+        const startCenterX = this.mouseDownCoord.x;
+        const startCenterY = this.mouseDownCoord.y;
+        ctx.arc(startCenterX, startCenterY, radius, 0, Math.PI * 2);
+        ctx.fill();
     }
-    private isAround20Pixels(): boolean {
-        let firstCurrentPoint = this.pathDataSaved[0];
-        let lastCurrentPoint = this.pathDataSaved[this.pathDataSaved.length - 1];
-        let diffXPosition = lastCurrentPoint.x - firstCurrentPoint.x;
-        let diffYPosition = lastCurrentPoint.y - firstCurrentPoint.y;
-        let xSideTriangleSquared = Math.pow(diffXPosition, 2);
-        let ySideTriangleSquared = Math.pow(diffYPosition, 2);
-        let hypothenus = Math.sqrt(xSideTriangleSquared + ySideTriangleSquared);
-        if (hypothenus <= 200) {
-            console.log(hypothenus);
+    isAround20Pixels(): boolean {
+        const limit20Pixels = 20;
+        const firstCurrentPoint = this.pathDataSaved[0];
+        const lastCurrentPoint = this.pathDataSaved[this.pathDataSaved.length - 1];
+        const diffXPosition = lastCurrentPoint.x - firstCurrentPoint.x;
+        const diffYPosition = lastCurrentPoint.y - firstCurrentPoint.y;
+        const xSideTriangleSquared = Math.pow(diffXPosition, 2);
+        const ySideTriangleSquared = Math.pow(diffYPosition, 2);
+        const hypothenus = Math.sqrt(xSideTriangleSquared + ySideTriangleSquared);
+        if (hypothenus <= limit20Pixels) {
             return true;
         }
         return false;
     }
 
-    private closeShape(): void {
+    closeShape(): void {
         this.drawingService.baseCtx.beginPath();
-        let firstPath = this.pathDataSaved[0];
-        let lastPath = this.pathDataSaved[this.pathDataSaved.length - 1];
+        const firstPath = this.pathDataSaved[0];
+        const lastPath = this.pathDataSaved[this.pathDataSaved.length - 1];
         this.drawingService.baseCtx.moveTo(firstPath.x, firstPath.y);
         this.drawingService.baseCtx.lineTo(lastPath.x, lastPath.y);
         this.drawingService.baseCtx.stroke();
@@ -204,11 +196,10 @@ export class LineService extends Tool {
         this.drawJunction(this.drawingService.baseCtx, this.pathData);
     }
 
-    private savedPoints(): void {
+    savedPoints(): void {
         this.pathDataSaved.push(this.mouseDownCoord);
         this.savedImage = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
         this.undo.push(this.savedImage);
-        console.log('newPointAdded');
     }
     drawAlignLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
@@ -223,63 +214,50 @@ export class LineService extends Tool {
         ctx.strokeStyle = this.colorService.getPrimaryColor(); // color of the line
         ctx.fillStyle = this.colorService.getPrimaryColor(); // color of the starting point
         switch (alignmentAngle) {
-            case 0:
+            case AlignmentAngle.right:
                 ctx.lineTo(lastPath.x, firstPath.y);
                 ctx.stroke();
                 this.alignmentCoord = { x: lastPath.x, y: firstPath.y };
-                //console.log('0');
                 break;
-            case 45:
+            case AlignmentAngle.topRight:
                 ctx.lineTo(firstPath.x + lengthX, firstPath.y + lengthX);
                 ctx.stroke();
                 this.alignmentCoord = { x: firstPath.x + lengthX, y: firstPath.y + lengthX };
-                //console.log('45');
-
                 break;
-            case 90:
+            case AlignmentAngle.top:
                 ctx.lineTo(firstPath.x, lastPath.y);
                 ctx.stroke();
                 this.alignmentCoord = { x: firstPath.x, y: lastPath.y };
-                //console.log('90');
-
                 break;
-            case 135:
+            case AlignmentAngle.topLeft:
                 ctx.lineTo(firstPath.x - lengthX, firstPath.y + lengthX);
                 ctx.stroke();
                 this.alignmentCoord = { x: firstPath.x - lengthX, y: firstPath.y + lengthX };
-                //console.log('135');
-
                 break;
-            case 180:
+            case AlignmentAngle.left:
                 ctx.lineTo(lastPath.x, firstPath.y);
                 ctx.stroke();
                 this.alignmentCoord = { x: lastPath.x, y: firstPath.y };
-                //console.log('180');
-
                 break;
-            case 225:
+            case AlignmentAngle.bottomLeft:
                 ctx.lineTo(firstPath.x - lengthX, firstPath.y - lengthX);
                 ctx.stroke();
                 this.alignmentCoord = { x: firstPath.x - lengthX, y: firstPath.y - lengthX };
-                //console.log('225');
-
                 break;
-            case 270:
+            case AlignmentAngle.bottom:
                 ctx.lineTo(firstPath.x, lastPath.y);
                 ctx.stroke();
                 this.alignmentCoord = { x: firstPath.x, y: lastPath.y };
-                //console.log('270');
-
                 break;
-            case 315:
+            case AlignmentAngle.bottomRight:
                 ctx.lineTo(firstPath.x + lengthX, firstPath.y - lengthX);
                 ctx.stroke();
                 this.alignmentCoord = { x: firstPath.x + lengthX, y: firstPath.y - lengthX };
-                //console.log('315');
                 break;
         }
     }
-
+    // the number value of angle ranges is clear, and there's no need to add a self-referencing constant name if there's no other meaning
+    // tslint:disable:no-magic-numbers
     roundToNearestAngle(angle: number): number {
         if (angle >= 337.5 || angle < 22.5) {
             return AlignmentAngle.right;
@@ -295,10 +273,9 @@ export class LineService extends Tool {
             return AlignmentAngle.bottomLeft;
         } else if (angle >= 247.5 && angle < 292.5) {
             return AlignmentAngle.bottom;
-        } else if (angle >= 292.5 && angle < 337.5) {
+        } else {
             return AlignmentAngle.bottomRight;
         }
-        return 1;
     }
 
     findAlignmentAngle(path: Vec2[]): number {
@@ -306,24 +283,25 @@ export class LineService extends Tool {
         const mouseDownCoord = path[0];
         const pointX = mouseMoveCoord.x - mouseDownCoord.x;
         const pointY = mouseMoveCoord.y - mouseDownCoord.y;
-
+        const circleAngle = 360;
+        const halfCircleAngle = 180;
         let alignmentAngle: number;
 
         if (mouseMoveCoord.y <= mouseDownCoord.y) {
-            alignmentAngle = Math.abs(360 - Math.abs(Math.atan2(pointY, pointX) * 180) / Math.PI);
+            alignmentAngle = Math.abs(circleAngle - Math.abs(Math.atan2(pointY, pointX) * halfCircleAngle) / Math.PI);
             const roundedAngle = this.roundToNearestAngle(alignmentAngle);
             return roundedAngle;
         } else {
-            alignmentAngle = Math.abs(Math.atan2(pointY, pointX) * 180) / Math.PI;
+            alignmentAngle = Math.abs(Math.atan2(pointY, pointX) * halfCircleAngle) / Math.PI;
             const roundedAngle = this.roundToNearestAngle(alignmentAngle);
             return roundedAngle;
         }
     }
 
-    private clearPath(): void {
+    clearPath(): void {
         this.pathData = [];
     }
-    private clearPathSaved(): void {
+    clearPathSaved(): void {
         this.pathDataSaved = [];
     }
 }
