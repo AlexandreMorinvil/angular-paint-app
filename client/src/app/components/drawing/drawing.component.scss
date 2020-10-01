@@ -6,14 +6,14 @@ canvas {
 }
 
 input {
-    text-align: center ;
+    text-align: center;
     width: 2cm;
     align-self: center;
 }
 
 #canvas {
     position: absolute;
-    background-color: #FFFFFF;
+    background-color: #ffffff;
     box-shadow: 0px 0px 10px grey;
     z-index: 0;
 }
@@ -25,10 +25,10 @@ input {
 
 #editCanvas {
     position: absolute;
-    width: 100%;
+    width: calc(100% - var(--sidebar-width)- var(--attributes-panel-width));
     height: 100%;
 }
 
-#canvas-container{
+#canvas-container {
     position: relative;
 }
