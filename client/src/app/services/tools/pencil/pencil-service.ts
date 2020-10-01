@@ -55,9 +55,7 @@ export class PencilService extends Tool {
                 // We draw on the preview canvas and erase it each time the mouse is moved
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.drawLine(this.drawingService.previewCtx, this.pathData);
-            }
-            // tslint:disable:prettier
-            else {
+            } else {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.clearPath();
             }
@@ -70,14 +68,22 @@ export class PencilService extends Tool {
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
-        ctx.fillRect(path[0].x, path[0].y, this.widthService.getWidth(), this.widthService.getWidth());
-        for (const point of path) {
-            ctx.lineTo(point.x, point.y);
-        }
         ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
         ctx.lineWidth = this.widthService.getWidth(); // width ajustment
         ctx.strokeStyle = this.colorService.getPrimaryColor(); // color of the line
         ctx.fillStyle = this.colorService.getPrimaryColor(); // color of the starting point
+
+        if (2 >= path.length) {
+            ctx.fillRect(
+                path[0].x - this.widthService.getWidth() / 2,
+                path[0].y - this.widthService.getWidth() / 2,
+                this.widthService.getWidth(),
+                this.widthService.getWidth(),
+            );
+        }
+        for (const point of path) {
+            ctx.lineTo(point.x, point.y);
+        }
         ctx.stroke();
     }
 
