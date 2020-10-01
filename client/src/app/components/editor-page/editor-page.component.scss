@@ -1,11 +1,11 @@
 .container {
-    height: 100%;
+    height: auto;
     display: grid;
 }
 
 .container-grid {
     display: grid;
-    grid-template-columns: var(--sidebar-width) var(--attributes-panel-width) auto;
+    grid-template-columns: var(--sidebar-width) var(--attributes-panel-width) 1fr;
     grid-template-areas: "sidebar panel workspace";
     grid-gap: 0px;
 }
