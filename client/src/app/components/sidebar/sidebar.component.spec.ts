@@ -15,6 +15,7 @@ import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { LineService } from '@app/services/tools/line/line-service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
+import { UserGuideModalService } from '@app/services/user-guide-modal/user-guide-modal.service';
 import { SidebarComponent } from './sidebar.component';
 class ToolStub extends Tool {}
 
@@ -27,6 +28,8 @@ describe('SidebarComponent', () => {
     // tslint:disable:no-any
     let toolboxSpy: any;
     let routerSpy: jasmine.Spy<any>;
+    let drawServiceSpy: jasmine.Spy<any>;
+    let openGuideSpy: jasmine.Spy<any>;
 
     beforeEach(async(() => {
         toolStub = new ToolStub({} as DrawingService, {} as Description);
@@ -58,6 +61,7 @@ describe('SidebarComponent', () => {
                 { provide: MAT_DIALOG_DATA, useValue: {} },
                 { provide: MatDialogRef, useValue: {} },
                 { provide: MatDialog, useValue: {} },
+                UserGuideModalService,
             ],
         }).compileComponents();
     }));
@@ -68,6 +72,8 @@ describe('SidebarComponent', () => {
         component = fixture.componentInstance;
         component['toolboxSevice'] = toolserviceMock;
         routerSpy = spyOn<any>(component['router'], 'navigate').and.callThrough();
+        drawServiceSpy = spyOn<any>(component['drawingService'], 'resetDrawingWithWarning');
+        openGuideSpy = spyOn<any>(component['userGuideModalService'], 'openUserGuide');
         fixture.detectChanges();
     });
 
@@ -93,5 +99,15 @@ describe('SidebarComponent', () => {
     it('should navigate to main', () => {
         component.navigateToMain();
         expect(routerSpy).toHaveBeenCalled();
+    });
+
+    it('should call resetDrawingWithWarning', () => {
+        component.resetDrawing();
+        expect(drawServiceSpy).toHaveBeenCalled();
+    });
+
+    it('should call openUserGuide', () => {
+        component.openGuide();
+        expect(openGuideSpy).toHaveBeenCalled();
     });
 });

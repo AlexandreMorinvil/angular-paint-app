@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { MatDialogModule } from '@angular/material/dialog';
+import { RouterTestingModule } from '@angular/router/testing';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { EditorPageComponent } from './editor-page.component';
@@ -10,8 +11,8 @@ describe('EditorPageComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            imports: [RouterTestingModule, MatDialogModule],
             declarations: [EditorPageComponent, DrawingComponent, SidebarComponent],
-            providers: [{ provide: Router }],
         }).compileComponents();
     }));
 

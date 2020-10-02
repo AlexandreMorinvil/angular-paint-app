@@ -5,6 +5,7 @@
     background-color: rgb(66, 63, 89);
     border-right: 1px solid rgb(33, 33, 59);
     overflow: visible;
+    user-select:none;
 }
 
 .container-flex {
@@ -49,13 +50,8 @@ button.active {
     visibility: hidden;
 }
 
-.home-button {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-}
-#ome-image {
-    background-color: red;
+.to-bottom {
+    margin-top: auto;
 }
 
 .has-tooltip:hover .tooltip {
