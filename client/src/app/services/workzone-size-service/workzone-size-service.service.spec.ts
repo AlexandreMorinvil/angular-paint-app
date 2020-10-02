@@ -29,10 +29,4 @@ describe('Service: WorkzoneSizeService', () => {
         service.updateDrawingZoneDimension({ width: 800, height: 600 });
         expect(service.drawingZoneHeight).toBeLessThan(service.workZoneHeight);
     }));
-
-    it('should trigger onResize method when window is resized', inject([WorkzoneSizeService], (service: WorkzoneSizeService) => {
-        const spyOnResize = spyOn(service, 'onResize').and.callThrough();
-        window.dispatchEvent(new Event('resize'));
-        expect(spyOnResize).toHaveBeenCalled();
-    }));
 });

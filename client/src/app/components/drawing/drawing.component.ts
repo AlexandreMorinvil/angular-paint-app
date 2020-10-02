@@ -16,6 +16,7 @@ export class DrawingComponent implements AfterViewInit {
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('editCanvas', { static: false }) editCanvas: ElementRef<HTMLCanvasElement>;
 
+    readonly BACKSPACE_KEYCODE: number = 32;
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private editCtx: CanvasRenderingContext2D;
@@ -84,7 +85,10 @@ export class DrawingComponent implements AfterViewInit {
     keyEventUp(event: KeyboardEvent): void {
         if (event.key === 'Shift') {
             this.toolbox.getCurrentTool().onShiftUp(event);
-        } else if (event.key === 'Backspace') {
+            // The deprecation warning is justified in this case because some operating systems
+            // do recognize the keycodes while others will prefere the 'Backspace' reference
+            // tslint:disable-next-line:deprecation
+        } else if (event.key === 'Backspace' || event.keyCode === this.BACKSPACE_KEYCODE) {
             this.toolbox.getCurrentTool().onBackspaceDown(event);
         } else {
             for (const i in this.toolbox.getAvailableTools()) {
