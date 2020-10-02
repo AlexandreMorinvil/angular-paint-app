@@ -53,6 +53,11 @@ export class WorkzoneSizeService {
             return;
         }
 
+        if (this.workZoneWidth < newWidth && this.workZoneHeight < newHeight) {
+            this.workZoneWidth = newWidth;
+            this.workZoneHeight = newHeight;
+        }
+
         this.workzoneDimensionSource.next({ width: newWidth, height: newHeight });
     }
 
