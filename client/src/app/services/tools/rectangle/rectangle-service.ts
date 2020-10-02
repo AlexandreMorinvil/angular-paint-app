@@ -112,29 +112,6 @@ export class RectangleService extends Tool {
                 height = squareSide;
             }
         }
-        if (!this.shiftDown) {
-            if (height < 0 && width >= 0) {
-                mouseDownCoordX = this.mouseDownCoord.x + this.widthService.getWidth() / 2;
-                mouseDownCoordY = this.mouseDownCoord.y - this.widthService.getWidth() / 2;
-                width = width - this.widthService.getWidth();
-                height = height + this.widthService.getWidth();
-            } else if (height >= 0 && width < 0) {
-                mouseDownCoordX = this.mouseDownCoord.x - this.widthService.getWidth() / 2;
-                mouseDownCoordY = this.mouseDownCoord.y + this.widthService.getWidth() / 2;
-                width = width + this.widthService.getWidth();
-                height = height - this.widthService.getWidth();
-            } else if (height < 0 && width < 0) {
-                mouseDownCoordX = this.mouseDownCoord.x - this.widthService.getWidth() / 2;
-                mouseDownCoordY = this.mouseDownCoord.y - this.widthService.getWidth() / 2;
-                width = width + this.widthService.getWidth();
-                height = height + this.widthService.getWidth();
-            } else {
-                mouseDownCoordX = this.mouseDownCoord.x + this.widthService.getWidth() / 2;
-                mouseDownCoordY = this.mouseDownCoord.y + this.widthService.getWidth() / 2;
-                width = width - this.widthService.getWidth();
-                height = height - this.widthService.getWidth();
-            }
-        }
         ctx.rect(mouseDownCoordX, mouseDownCoordY, width, height);
         ctx.setLineDash([0]);
         this.setAttribute(ctx);
