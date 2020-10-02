@@ -9,12 +9,15 @@ describe('UserGuideModalComponent', () => {
     let component: UserGuideModalComponent;
     let fixture: ComponentFixture<UserGuideModalComponent>;
 
+    // tslint:disable-next-line: no-any
+    const dialogRefSpy: jasmine.SpyObj<MatDialogRef<UserGuideModalComponent, any>> = jasmine.createSpyObj('MatDialogRef', ['close']);
+
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [UserGuideModalComponent],
             providers: [
                 { provide: MAT_DIALOG_DATA, useValue: {} },
-                { provide: MatDialogRef, useValue: {} },
+                { provide: MatDialogRef, useValue: dialogRefSpy },
                 { provide: MatDialog, useValue: {} },
                 { provide: Router, useValue: {} },
                 { provide: MatTabsModule, useValue: {} },
@@ -30,5 +33,10 @@ describe('UserGuideModalComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('should close the modal', () => {
+        component.onNoClick();
+        expect(dialogRefSpy.close).toHaveBeenCalled();
     });
 });
