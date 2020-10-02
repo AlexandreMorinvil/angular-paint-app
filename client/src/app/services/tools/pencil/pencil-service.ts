@@ -62,11 +62,7 @@ export class PencilService extends Tool {
         }
     }
 
-    private isInCanvas(mousePosition: Vec2): boolean {
-        return mousePosition.x <= this.drawingService.previewCtx.canvas.width && mousePosition.y <= this.drawingService.previewCtx.canvas.height;
-    }
-
-    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
         ctx.lineWidth = this.widthService.getWidth(); // width ajustment
@@ -85,6 +81,10 @@ export class PencilService extends Tool {
             ctx.lineTo(point.x, point.y);
         }
         ctx.stroke();
+    }
+
+    private isInCanvas(mousePosition: Vec2): boolean {
+        return mousePosition.x <= this.drawingService.previewCtx.canvas.width && mousePosition.y <= this.drawingService.previewCtx.canvas.height;
     }
 
     private clearPath(): void {
