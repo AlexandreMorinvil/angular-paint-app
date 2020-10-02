@@ -106,6 +106,16 @@ describe('PencilService', () => {
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
 
+    it(' drawLine should not draw first pixel ', () => {
+        const expectedResult: Vec2 = { x: 25, y: 25 };
+        const pathData: Vec2[] = [];
+        pathData.push(expectedResult);
+        pathData.push(expectedResult);
+        pathData.push(expectedResult);
+        service.drawLine(previewCtxStub, pathData);
+        expect(pathData.length).not.toEqual(1);
+    });
+
     it(' should change the pixel of the canvas ', () => {
         mouseEvent = { offsetX: 0, offsetY: 0, button: 0 } as MouseEvent;
         service.onMouseDown(mouseEvent);
