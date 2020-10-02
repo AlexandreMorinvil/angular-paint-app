@@ -87,6 +87,8 @@ export class RectangleService extends Tool {
     private drawRectangle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         const lastMouseMoveCoord = path[path.length - 1];
+        let mouseDownCoordX = this.mouseDownCoord.x;
+        let mouseDownCoordY = this.mouseDownCoord.y;
         let width = lastMouseMoveCoord.x - this.mouseDownCoord.x;
         let height = lastMouseMoveCoord.y - this.mouseDownCoord.y;
         if (this.shiftDown) {
@@ -106,7 +108,30 @@ export class RectangleService extends Tool {
                 height = squareSide;
             }
         }
-        ctx.rect(this.mouseDownCoord.x, this.mouseDownCoord.y, width, height);
+        if (!this.shiftDown) {
+            if (height < 0 && width >= 0) {
+                mouseDownCoordX = this.mouseDownCoord.x + this.widthService.getWidth() / 2;
+                mouseDownCoordY = this.mouseDownCoord.y - this.widthService.getWidth() / 2;
+                width = width - this.widthService.getWidth();
+                height = height + this.widthService.getWidth();
+            } else if (height >= 0 && width < 0) {
+                mouseDownCoordX = this.mouseDownCoord.x - this.widthService.getWidth() / 2;
+                mouseDownCoordY = this.mouseDownCoord.y + this.widthService.getWidth() / 2;
+                width = width + this.widthService.getWidth();
+                height = height - this.widthService.getWidth();
+            } else if (height < 0 && width < 0) {
+                mouseDownCoordX = this.mouseDownCoord.x - this.widthService.getWidth() / 2;
+                mouseDownCoordY = this.mouseDownCoord.y - this.widthService.getWidth() / 2;
+                width = width + this.widthService.getWidth();
+                height = height + this.widthService.getWidth();
+            } else {
+                mouseDownCoordX = this.mouseDownCoord.x + this.widthService.getWidth() / 2;
+                mouseDownCoordY = this.mouseDownCoord.y + this.widthService.getWidth() / 2;
+                width = width - this.widthService.getWidth();
+                height = height - this.widthService.getWidth();
+            }
+        }
+        ctx.rect(mouseDownCoordX, mouseDownCoordY, width, height);
         this.setAttribute(ctx);
         ctx.setLineDash([0]);
     }
@@ -128,10 +153,10 @@ export class RectangleService extends Tool {
     drawPreviewRect(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         const mouseMoveCoord = path[path.length - 1];
-        const width = mouseMoveCoord.x - this.mouseDownCoord.x + this.widthService.getWidth();
-        const height = mouseMoveCoord.y - this.mouseDownCoord.y + this.widthService.getWidth();
-        const startX = this.mouseDownCoord.x - this.widthService.getWidth() / 2;
-        const startY = this.mouseDownCoord.y - this.widthService.getWidth() / 2;
+        const width = mouseMoveCoord.x - this.mouseDownCoord.x;
+        const height = mouseMoveCoord.y - this.mouseDownCoord.y;
+        const startX = this.mouseDownCoord.x;
+        const startY = this.mouseDownCoord.y;
 
         ctx.rect(startX, startY, width, height);
         // tslint:disable:no-magic-numbers
