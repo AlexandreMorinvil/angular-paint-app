@@ -29,8 +29,6 @@ describe('Service: WorkzoneSizeService', () => {
         service.updateDrawingZoneDimension({ width: 800, height: 600 });
         expect(service.drawingZoneHeight).toBeLessThan(service.workZoneHeight);
     }));
-<<<<<<< HEAD
-=======
 
     it('should keep dimensions the same when drawingZone is bigger than window', inject([WorkzoneSizeService], (service: WorkzoneSizeService) => {
         const reallyBigDimension = 100000;
@@ -81,5 +79,4 @@ describe('Service: WorkzoneSizeService', () => {
         expect(service.workZoneHeight).toEqual(min);
         expect(service.workZoneWidth).toEqual(min);
     }));
->>>>>>> integration/development
 });
