@@ -190,6 +190,15 @@ describe('RectangleService', () => {
         expect(drawRectangleSpy).toHaveBeenCalled();
     });
 
+    it('should draw a rectangle if height is negatif and width positif', () => {
+        mouseEvent = { offsetX: 50, offsetY: 60, button: 0 } as MouseEvent;
+        service.onMouseDown(mouseEvent);
+        service.shiftDown = false;
+        mouseEvent = { offsetX: 60, offsetY: 50, button: 0 } as MouseEvent;
+        service.onMouseMove(mouseEvent);
+        expect(drawRectangleSpy).toHaveBeenCalled();
+    });
+
     it('should drawing a rectangle if height is negatif and width negatif', () => {
         mouseEvent = { offsetX: 50, offsetY: 60, button: 0 } as MouseEvent;
         service.onMouseDown(mouseEvent);
