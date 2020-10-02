@@ -91,8 +91,8 @@ export class RectangleService extends Tool {
     drawRectangle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         const lastMouseMoveCoord = path[path.length - 1];
-        let mouseDownCoordX = this.mouseDownCoord.x;
-        let mouseDownCoordY = this.mouseDownCoord.y;
+        const mouseDownCoordX = this.mouseDownCoord.x;
+        const mouseDownCoordY = this.mouseDownCoord.y;
         let width = lastMouseMoveCoord.x - this.mouseDownCoord.x;
         let height = lastMouseMoveCoord.y - this.mouseDownCoord.y;
         if (this.shiftDown) {
@@ -180,7 +180,8 @@ export class RectangleService extends Tool {
             }
         }
         ctx.rect(startX, startY, width, height);
-        ctx.setLineDash([6]);
+        const lineDash = 6;
+        ctx.setLineDash([lineDash]);
         // tslint:disable:no-magic-numbers
         ctx.strokeStyle = 'black';
         ctx.lineWidth = 1;
