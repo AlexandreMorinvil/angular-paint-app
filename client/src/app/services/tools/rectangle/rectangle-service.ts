@@ -58,7 +58,6 @@ export class RectangleService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
             if (!this.isInCanvas(mousePosition)) {
                 if (mousePosition.x >= this.drawingService.baseCtx.canvas.width) {
                     this.drawingService.previewCtx.canvas.width = mousePosition.x;
@@ -75,16 +74,20 @@ export class RectangleService extends Tool {
     }
 
     onShiftDown(event: KeyboardEvent): void {
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.shiftDown = true;
+        this.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
         this.drawRectangle(this.drawingService.previewCtx, this.pathData);
     }
 
     onShiftUp(event: KeyboardEvent): void {
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.shiftDown = false;
+        this.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
         this.drawRectangle(this.drawingService.previewCtx, this.pathData);
     }
 
-    private drawRectangle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    drawRectangle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         const lastMouseMoveCoord = path[path.length - 1];
         let mouseDownCoordX = this.mouseDownCoord.x;
@@ -132,8 +135,8 @@ export class RectangleService extends Tool {
             }
         }
         ctx.rect(mouseDownCoordX, mouseDownCoordY, width, height);
-        this.setAttribute(ctx);
         ctx.setLineDash([0]);
+        this.setAttribute(ctx);
     }
 
     setAttribute(ctx: CanvasRenderingContext2D): void {

@@ -122,7 +122,7 @@ export class EllipseService extends Tool {
         ctx.rect(startX, startY, width, height);
         // tslint:disable:no-magic-numbers
         ctx.strokeStyle = 'black';
-        ctx.setLineDash([6]);
+        //ctx.setLineDash([6]);
         ctx.lineWidth = 1;
         ctx.stroke();
     }
