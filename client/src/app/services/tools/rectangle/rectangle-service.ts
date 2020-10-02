@@ -25,7 +25,7 @@ export class RectangleService extends Tool {
         drawingService: DrawingService,
         private colorService: ColorService,
         private tracingService: TracingService,
-        private widthService: WidthService,
+        public widthService: WidthService,
     ) {
         super(drawingService, new Description('rectangle', '1', 'rectangle_icon.png'));
         this.modifiers.push(this.colorService);
@@ -58,7 +58,8 @@ export class RectangleService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-            if (!this.isInCanvas(mousePosition)) {
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            if (!this.isInCanvas(mousePosition) && this.mouseDown) {
                 if (mousePosition.x >= this.drawingService.baseCtx.canvas.width) {
                     this.drawingService.previewCtx.canvas.width = mousePosition.x;
                 }
@@ -156,15 +157,55 @@ export class RectangleService extends Tool {
     drawPreviewRect(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         const mouseMoveCoord = path[path.length - 1];
-        const width = mouseMoveCoord.x - this.mouseDownCoord.x;
-        const height = mouseMoveCoord.y - this.mouseDownCoord.y;
-        const startX = this.mouseDownCoord.x;
-        const startY = this.mouseDownCoord.y;
-
+        let width = mouseMoveCoord.x - this.mouseDownCoord.x;
+        let height = mouseMoveCoord.y - this.mouseDownCoord.y;
+        let startX = this.mouseDownCoord.x;
+        let startY = this.mouseDownCoord.y;
+        if (this.shiftDown) {
+            const squareSide = Math.abs(Math.min(height, width));
+            if (height < 0 && width >= 0) {
+                height = -squareSide;
+                width = squareSide;
+            } else if (height >= 0 && width < 0) {
+                width = -squareSide;
+                height = squareSide;
+            } else if (height < 0 && width < 0) {
+                width = -squareSide;
+                height = -squareSide;
+            } else {
+                width = squareSide;
+                height = squareSide;
+            }
+        }
+        if (this.widthService.getWidth() > 1) {
+            if (width >= 0 && height >= 0) {
+                width += this.widthService.getWidth();
+                height += this.widthService.getWidth();
+                startX -= this.widthService.getWidth() / 2;
+                startY -= this.widthService.getWidth() / 2;
+            } else if (width >= 0 && height < 0) {
+                width += this.widthService.getWidth();
+                height -= this.widthService.getWidth();
+                startX -= this.widthService.getWidth() / 2;
+                startY += this.widthService.getWidth() / 2;
+            } else if (width < 0 && height >= 0) {
+                width -= this.widthService.getWidth();
+                height += this.widthService.getWidth();
+                console.log(width);
+                console.log(height);
+                startX += this.widthService.getWidth() / 2;
+                startY -= this.widthService.getWidth() / 2;
+            } else {
+                width -= this.widthService.getWidth();
+                height -= this.widthService.getWidth();
+                startX += this.widthService.getWidth() / 2;
+                startY += this.widthService.getWidth() / 2;
+            }
+        }
         ctx.rect(startX, startY, width, height);
+        ctx.setLineDash([6]);
         // tslint:disable:no-magic-numbers
         ctx.strokeStyle = 'black';
-        ctx.setLineDash([6]);
         ctx.lineWidth = 1;
         ctx.stroke();
     }

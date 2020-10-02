@@ -118,7 +118,6 @@ export class EllipseService extends Tool {
         const height = mouseMoveCoord.y - this.mouseDownCoord.y;
         const startX = this.mouseDownCoord.x;
         const startY = this.mouseDownCoord.y;
-
         ctx.rect(startX, startY, width, height);
         // tslint:disable:no-magic-numbers
         ctx.strokeStyle = 'black';

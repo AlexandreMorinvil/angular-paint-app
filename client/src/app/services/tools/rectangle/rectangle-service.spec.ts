@@ -8,6 +8,8 @@ import { RectangleService } from './rectangle-service';
 // The disablement of the "any" tslint rule is justified in this situation as the prototype
 // of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
 describe('RectangleService', () => {
+    // It would be illogical to split a test file for a unique service
+    // tslint:disable:max-file-line-count
     let service: RectangleService;
     let tracingService: TracingService;
     let mouseEvent: MouseEvent;
@@ -18,6 +20,7 @@ describe('RectangleService', () => {
     let canvasStub: HTMLCanvasElement;
     // tslint:disable:no-any
     let drawRectangleSpy: jasmine.Spy<any>;
+    let drawPreviewRectSpy: jasmine.Spy<any>;
     let setAttributeSpy: jasmine.Spy<any>;
     let ctxFillSpy: jasmine.Spy<any>;
     let ctxContourSpy: jasmine.Spy<any>;
@@ -36,6 +39,7 @@ describe('RectangleService', () => {
         colorService = TestBed.inject(ColorService);
         // tslint:disable:no-any
         drawRectangleSpy = spyOn<any>(service, 'drawRectangle').and.callThrough();
+        drawPreviewRectSpy = spyOn<any>(service, 'drawPreviewRect').and.callThrough();
         setAttributeSpy = spyOn<any>(service, 'setAttribute').and.callThrough();
         const canvasWidth = 1000;
         const canvasHeight = 800;
@@ -351,5 +355,49 @@ describe('RectangleService', () => {
         tracingService.setHasContour(false);
         service.setAttribute(previewCtxStub);
         expect(ctxContourSpy).not.toHaveBeenCalled();
+    });
+
+    it('should draw a Preview rectangle if height is negatif and width positif', () => {
+        const width = 22;
+        service.widthService.setWidth(width);
+        mouseEvent = { offsetX: 50, offsetY: 60, button: 0 } as MouseEvent;
+        service.onMouseDown(mouseEvent);
+        service.shiftDown = true;
+        mouseEvent = { offsetX: 60, offsetY: 50, button: 0 } as MouseEvent;
+        service.onMouseMove(mouseEvent);
+        expect(drawPreviewRectSpy).toHaveBeenCalled();
+    });
+
+    it('should drawing a preview rectangle if height is negatif and width negatif', () => {
+        const width = 22;
+        service.widthService.setWidth(width);
+        mouseEvent = { offsetX: 50, offsetY: 60, button: 0 } as MouseEvent;
+        service.onMouseDown(mouseEvent);
+        service.shiftDown = true;
+        mouseEvent = { offsetX: 40, offsetY: 50, button: 0 } as MouseEvent;
+        service.onMouseMove(mouseEvent);
+        expect(drawPreviewRectSpy).toHaveBeenCalled();
+    });
+
+    it('should drawing a preview rectangle if height is positif and width positif', () => {
+        const width = 22;
+        service.widthService.setWidth(width);
+        mouseEvent = { offsetX: 50, offsetY: 60, button: 0 } as MouseEvent;
+        service.onMouseDown(mouseEvent);
+        service.shiftDown = true;
+        mouseEvent = { offsetX: 60, offsetY: 70, button: 0 } as MouseEvent;
+        service.onMouseMove(mouseEvent);
+        expect(drawPreviewRectSpy).toHaveBeenCalled();
+    });
+
+    it('should drawing a preview rectangle if height is positif and width negatif', () => {
+        const width = 22;
+        service.widthService.setWidth(width);
+        mouseEvent = { offsetX: 50, offsetY: 60, button: 0 } as MouseEvent;
+        service.onMouseDown(mouseEvent);
+        service.shiftDown = true;
+        mouseEvent = { offsetX: 40, offsetY: 70, button: 0 } as MouseEvent;
+        service.onMouseMove(mouseEvent);
+        expect(drawPreviewRectSpy).toHaveBeenCalled();
     });
 });
