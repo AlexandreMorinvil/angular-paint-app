@@ -20,7 +20,6 @@ export class DrawingComponent implements AfterViewInit {
     private previewCtx: CanvasRenderingContext2D;
     private editCtx: CanvasRenderingContext2D;
     private TOOL_BOX_WIDTH: number = 313;
-
     hasBeenDrawnOnto: boolean;
 
     constructor(private drawingService: DrawingService, public toolbox: ToolboxService, private workzoneSizeService: WorkzoneSizeService) {}
@@ -82,9 +81,10 @@ export class DrawingComponent implements AfterViewInit {
 
     @HostListener('window:keyup', ['$event'])
     keyEventUp(event: KeyboardEvent): void {
+        const backspaceKey = 32;
         if (event.key === 'Shift') {
             this.toolbox.getCurrentTool().onShiftUp(event);
-        } else if (event.key === 'Backspace') {
+        } else if (event.key === 'Backspace' || event.keyCode == backspaceKey) {
             this.toolbox.getCurrentTool().onBackspaceDown(event);
         } else {
             for (const i in this.toolbox.getAvailableTools()) {
