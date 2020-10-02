@@ -19,4 +19,8 @@ describe('Service: UserGuideModal', () => {
     it('should ...', inject([UserGuideModalService], (service: UserGuideModalService) => {
         expect(service).toBeTruthy();
     }));
+
+    it('should close the modal', inject([UserGuideModalService], (service: UserGuideModalService) => {
+        expect(service).toBeTruthy();
+    }));
 });
