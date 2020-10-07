@@ -1,0 +1,140 @@
+import { Injectable } from '@angular/core';
+import { Description } from '@app/classes/description';
+import { Tool } from '@app/classes/tool';
+import { Vec2 } from '@app/classes/vec2';
+import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ColorService } from '@app/services/tool-modifier/color/color.service';
+import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
+import { WidthService } from '@app/services/tool-modifier/width/width.service';
+
+export enum MouseButton {
+    Left = 0,
+    Middle = 1,
+    Right = 2,
+    Back = 3,
+    Forward = 4,
+}
+export enum PolygoneSide {
+    Triangle = 3,
+    Rectanfle = 4,
+    Pentagone = 5,
+    Hexagone = 6,
+    Heptagone = 7,
+    Octagone = 8,
+    Enneagone = 9,
+    Decagone = 10,
+    Hendecagone = 11,
+    Dodecagone = 12,
+}
+
+@Injectable({
+    providedIn: 'root',
+})
+export class PolygonService extends Tool {
+    private pathData: Vec2[];
+    private savedData: Vec2[];
+    private sides: number;
+    private angle: number;
+
+    constructor(
+        drawingService: DrawingService,
+        private colorService: ColorService,
+        private tracingService: TracingService,
+        public widthService: WidthService,
+    ) {
+        super(drawingService, new Description('polygon', '3', 'polygon_icon.png'));
+        this.modifiers.push(this.colorService);
+        this.modifiers.push(this.widthService);
+        this.modifiers.push(this.tracingService);
+        this.sides = PolygoneSide.Octagone;
+        this.angle = Math.PI / (this.sides - 2);
+        this.clearPath();
+    }
+    onMouseDown(event: MouseEvent): void {
+        this.mouseDown = event.button === MouseButton.Left;
+        if (this.mouseDown) {
+            this.clearPath();
+            this.mouseDownCoord = this.getPositionFromMouse(event);
+            this.pathData.push(this.mouseDownCoord);
+        }
+    }
+
+    onMouseUp(event: MouseEvent): void {
+        this.resetBorder();
+        if (this.mouseDown) {
+            const mousePosition = this.getPositionFromMouse(event);
+            this.pathData.push(mousePosition);
+            this.drawPolygon(this.drawingService.baseCtx, this.pathData);
+        }
+        this.mouseDown = false;
+        this.clearPath();
+    }
+
+    onMouseMove(event: MouseEvent): void {
+        if (this.mouseDown) {
+            const mousePosition = this.getPositionFromMouse(event);
+            this.pathData.push(mousePosition);
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            if (!this.isInCanvas(mousePosition) && this.mouseDown) {
+                if (mousePosition.x >= this.drawingService.baseCtx.canvas.width) {
+                    this.drawingService.previewCtx.canvas.width = mousePosition.x;
+                }
+                if (mousePosition.y >= this.drawingService.baseCtx.canvas.height) {
+                    this.drawingService.previewCtx.canvas.height = mousePosition.y;
+                }
+            } else {
+                this.resetBorder();
+            }
+            this.drawPolygon(this.drawingService.previewCtx, this.pathData);
+            //this.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
+        }
+    }
+
+    private setAttribute(ctx: CanvasRenderingContext2D): void {
+        ctx.lineWidth = this.widthService.getWidth();
+        ctx.fillStyle = this.colorService.getPrimaryColor();
+        ctx.strokeStyle = this.colorService.getSecondaryColor();
+        ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
+        if (this.tracingService.getHasFill()) {
+            ctx.fill();
+        }
+        ctx.globalAlpha = this.colorService.getSecondaryColorOpacity();
+        if (this.tracingService.getHasContour()) {
+            ctx.stroke();
+        }
+    }
+
+    private drawPolygon(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+        this.savedData = [];
+        const lastMouseMoveCoord = path[path.length - 1];
+        let radius = Math.sqrt(Math.pow(this.mouseDownCoord.x - lastMouseMoveCoord.x, 2) + Math.pow(this.mouseDownCoord.y - lastMouseMoveCoord.y, 2));
+        for (let i = 0; i < this.sides; i++) {
+            this.savedData.push({
+                x: this.mouseDownCoord.x + radius * Math.cos(this.angle),
+                y: this.mouseDownCoord.y - radius * Math.sin(this.angle),
+            });
+            this.angle += (2 * Math.PI) / this.sides;
+        }
+        ctx.beginPath();
+        ctx.moveTo(this.savedData[0].x, this.savedData[0].y);
+        for (let k = 1; k < this.sides; k++) {
+            ctx.lineTo(this.savedData[k].x, this.savedData[k].y);
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.setLineDash([0]);
+        this.setAttribute(ctx);
+    }
+    private clearPath(): void {
+        this.pathData = [];
+    }
+
+    private isInCanvas(mousePosition: Vec2): boolean {
+        return mousePosition.x <= this.drawingService.baseCtx.canvas.width && mousePosition.y <= this.drawingService.baseCtx.canvas.height;
+    }
+
+    private resetBorder(): void {
+        this.drawingService.previewCtx.canvas.width = this.drawingService.baseCtx.canvas.width;
+        this.drawingService.previewCtx.canvas.height = this.drawingService.baseCtx.canvas.height;
+    }
+}
