@@ -46,7 +46,7 @@ export class PolygonService extends Tool {
         this.modifiers.push(this.colorService);
         this.modifiers.push(this.widthService);
         this.modifiers.push(this.tracingService);
-        this.sides = PolygoneSide.Octagone;
+        this.sides = PolygoneSide.Heptagone;
         this.angle = Math.PI / (this.sides - 2);
         this.clearPath();
     }
@@ -64,6 +64,7 @@ export class PolygonService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
+            this.drawPreviewCircle(this.drawingService.previewCtx, this.pathData);
             this.drawPolygon(this.drawingService.baseCtx, this.pathData);
         }
         this.mouseDown = false;
@@ -85,8 +86,8 @@ export class PolygonService extends Tool {
             } else {
                 this.resetBorder();
             }
+            this.drawPreviewCircle(this.drawingService.previewCtx, this.pathData);
             this.drawPolygon(this.drawingService.previewCtx, this.pathData);
-            //this.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
         }
     }
 
@@ -115,6 +116,7 @@ export class PolygonService extends Tool {
             });
             this.angle += (2 * Math.PI) / this.sides;
         }
+        this.drawingService.previewCtx.setLineDash([0]);
         ctx.beginPath();
         ctx.moveTo(this.savedData[0].x, this.savedData[0].y);
         for (let k = 1; k < this.sides; k++) {
@@ -124,6 +126,20 @@ export class PolygonService extends Tool {
         ctx.fill();
         ctx.setLineDash([0]);
         this.setAttribute(ctx);
+    }
+
+    drawPreviewCircle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+        ctx.beginPath();
+        const mouseMoveCoord = path[path.length - 1];
+        const radius = Math.sqrt(Math.pow(this.mouseDownCoord.x - mouseMoveCoord.x, 2) + Math.pow(this.mouseDownCoord.y - mouseMoveCoord.y, 2));
+        const centerX = this.mouseDownCoord.x;
+        const centerY = this.mouseDownCoord.y;
+        ctx.arc(centerX, centerY, radius, 0, this.angle);
+        const lineDashValue = 6;
+        ctx.strokeStyle = 'black';
+        ctx.setLineDash([lineDashValue]);
+        ctx.lineWidth = 1;
+        ctx.stroke();
     }
     private clearPath(): void {
         this.pathData = [];
