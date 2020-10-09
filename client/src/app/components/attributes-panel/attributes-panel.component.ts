@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { JunctionService } from '@app/services/tool-modifier/junction/junction.service';
+import { SidesService } from '@app/services/tool-modifier/sides/sides.service';
 import { TextureService } from '@app/services/tool-modifier/texture/texture.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
@@ -16,6 +17,7 @@ export class AttributesPanelComponent {
         private toolboxService: ToolboxService,
         private widthService: WidthService,
         private junctionService: JunctionService,
+        private sideService: SidesService,
         private textureService: TextureService,
         private tracingService: TracingService,
     ) {}
@@ -42,5 +44,8 @@ export class AttributesPanelComponent {
 
     needsTracingAttribute(): boolean {
         return this.currentTool.needsModifierManager(this.tracingService);
+    }
+    needsSidesAttribute(): boolean {
+        return this.currentTool.needsModifierManager(this.sideService);
     }
 }

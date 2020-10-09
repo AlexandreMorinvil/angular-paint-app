@@ -4,6 +4,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
+import { SidesService } from '@app/services/tool-modifier/sides/sides.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
 
@@ -14,18 +15,6 @@ export enum MouseButton {
     Back = 3,
     Forward = 4,
 }
-export enum PolygoneSide {
-    Triangle = 3,
-    Rectanfle = 4,
-    Pentagone = 5,
-    Hexagone = 6,
-    Heptagone = 7,
-    Octagone = 8,
-    Enneagone = 9,
-    Decagone = 10,
-    Hendecagone = 11,
-    Dodecagone = 12,
-}
 
 @Injectable({
     providedIn: 'root',
@@ -33,7 +22,6 @@ export enum PolygoneSide {
 export class PolygonService extends Tool {
     private pathData: Vec2[];
     private savedData: Vec2[];
-    private sides: number;
     private angle: number;
 
     constructor(
@@ -41,13 +29,14 @@ export class PolygonService extends Tool {
         private colorService: ColorService,
         private tracingService: TracingService,
         public widthService: WidthService,
+        public sidesService: SidesService,
     ) {
-        super(drawingService, new Description('polygon', '3', 'polygon_icon.png'));
+        super(drawingService, new Description('Polygone', '3', 'polygon_icon.png'));
         this.modifiers.push(this.colorService);
         this.modifiers.push(this.widthService);
         this.modifiers.push(this.tracingService);
-        this.sides = PolygoneSide.Heptagone;
-        this.angle = Math.PI / (this.sides - 2);
+        this.modifiers.push(this.sidesService);
+        this.angle = Math.PI / (this.sidesService.getSide() - 2);
         this.clearPath();
     }
     onMouseDown(event: MouseEvent): void {
@@ -109,17 +98,17 @@ export class PolygonService extends Tool {
         this.savedData = [];
         const lastMouseMoveCoord = path[path.length - 1];
         let radius = Math.sqrt(Math.pow(this.mouseDownCoord.x - lastMouseMoveCoord.x, 2) + Math.pow(this.mouseDownCoord.y - lastMouseMoveCoord.y, 2));
-        for (let i = 0; i < this.sides; i++) {
+        for (let i = 0; i < this.sidesService.getSide(); i++) {
             this.savedData.push({
                 x: this.mouseDownCoord.x + radius * Math.cos(this.angle),
                 y: this.mouseDownCoord.y - radius * Math.sin(this.angle),
             });
-            this.angle += (2 * Math.PI) / this.sides;
+            this.angle += (2 * Math.PI) / this.sidesService.getSide();
         }
         this.drawingService.previewCtx.setLineDash([0]);
         ctx.beginPath();
         ctx.moveTo(this.savedData[0].x, this.savedData[0].y);
-        for (let k = 1; k < this.sides; k++) {
+        for (let k = 1; k < this.sidesService.getSide(); k++) {
             ctx.lineTo(this.savedData[k].x, this.savedData[k].y);
         }
         ctx.closePath();
