@@ -20,8 +20,6 @@ export class PaintService extends Tool {
     ) {
         super(drawingService, new Description('Paint', 'b', 'paint_icon.png'));
         this.modifiers.push(this.colorService);
-        this.modifiers.push(this.widthService);
-        this.modifiers.push(this.tracingService);
         this.modifiers.push(this.toleranceService);
     }
 }
