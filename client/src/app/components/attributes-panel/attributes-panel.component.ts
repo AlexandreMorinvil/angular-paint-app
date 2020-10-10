@@ -2,10 +2,10 @@ import { Component } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { JunctionService } from '@app/services/tool-modifier/junction/junction.service';
 import { TextureService } from '@app/services/tool-modifier/texture/texture.service';
+import { ToleranceService } from '@app/services/tool-modifier/tolerance/tolerance.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
-
 @Component({
     selector: 'app-attributes-panel',
     templateUrl: './attributes-panel.component.html',
@@ -18,6 +18,7 @@ export class AttributesPanelComponent {
         private junctionService: JunctionService,
         private textureService: TextureService,
         private tracingService: TracingService,
+        private toleranceService: ToleranceService,
     ) {}
 
     get currentTool(): Tool {
@@ -42,5 +43,8 @@ export class AttributesPanelComponent {
 
     needsTracingAttribute(): boolean {
         return this.currentTool.needsModifierManager(this.tracingService);
+    }
+    needsToleranceAttribute(): boolean {
+        return this.currentTool.needsModifierManager(this.toleranceService);
     }
 }

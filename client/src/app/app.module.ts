@@ -23,6 +23,7 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { TooltipComponent } from './components/tooltip/tooltip.component';
 import { UserGuideModalComponent } from './components/user-guide-modal/user-guide-modal.component';
 import { WorkspaceComponent } from './components/workspace/workspace.component';
+import { AttributesToleranceComponent } from './components/attributes-panel/attribute-tolerance/attributes-tolerance/attributes-tolerance.component';
 
 @NgModule({
     declarations: [
@@ -40,6 +41,7 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
         TooltipComponent,
         WorkspaceComponent,
         UserGuideModalComponent,
+        AttributesToleranceComponent,
     ],
 
     exports: [],

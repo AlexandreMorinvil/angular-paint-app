@@ -1,0 +1,14 @@
+<div class="container">
+    <h2>Tolérance</h2>
+    <div class="grid-input-value">
+        <div class="centered">
+            <label for="width" style="display: none">Tolérance</label>
+            <input type="range" [min]="getMinValue()" [max]="getMaxValue()" [value]="tolerance" [(ngModel)]="tolerance" />
+        </div>
+        <p class="centered">{{ tolerance }} Tolérance</p>
+    </div>
+    <div class="grid-confirmation" *ngIf="needConfirmation()">
+        <button class="confirmation-button cancel" (click)="revert()">Annuler</button>
+        <button class="confirmation-button confirm" (click)="assign()">Confirmer</button>
+    </div>
+</div>
