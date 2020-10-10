@@ -53,7 +53,6 @@ export class PolygonService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-            this.drawPreviewCircle(this.drawingService.previewCtx, this.pathData);
             this.drawPolygon(this.drawingService.baseCtx, this.pathData);
         }
         this.mouseDown = false;
@@ -120,9 +119,12 @@ export class PolygonService extends Tool {
     drawPreviewCircle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         const mouseMoveCoord = path[path.length - 1];
-        const radius = Math.sqrt(Math.pow(this.mouseDownCoord.x - mouseMoveCoord.x, 2) + Math.pow(this.mouseDownCoord.y - mouseMoveCoord.y, 2));
+        let radius = Math.sqrt(Math.pow(this.mouseDownCoord.x - mouseMoveCoord.x, 2) + Math.pow(this.mouseDownCoord.y - mouseMoveCoord.y, 2));
         const centerX = this.mouseDownCoord.x;
         const centerY = this.mouseDownCoord.y;
+        if (this.widthService.getWidth() > 1) {
+            radius = radius + this.widthService.getWidth() - 1; /* -1 car le minimum est 1 pixel pk on px pas zero*/
+        }
         ctx.arc(centerX, centerY, radius, 0, this.angle);
         const lineDashValue = 6;
         ctx.strokeStyle = 'black';
