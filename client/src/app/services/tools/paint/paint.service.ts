@@ -93,24 +93,19 @@ export class PaintService extends Tool {
                 pixelPos.y += 1;
 
                 if (pixelPos.x > 0) {
-                    if (this.matchStartColor(pixelPos)) {
-                        if (!reachLeft) {
-                            // Add pixel to stack
-                            pathPixel.push({ x: pixelPos.x - 1, y: pixelPos.y });
-                            reachLeft = true;
-                        }
+                    if (this.matchStartColor(pixelPos) && !reachLeft) {
+                        // Add pixel to stack
+                        pathPixel.push({ x: pixelPos.x - 1, y: pixelPos.y });
+                        reachLeft = true;
                     } else if (reachLeft) {
                         reachLeft = false;
                     }
                 }
-
-                if (pixelPos.x < this.drawingService.baseCtx.canvas.width - 1) {
-                    if (this.matchStartColor(pixelPos)) {
-                        if (!reachRight) {
-                            // Add pixel to stack
-                            pathPixel.push({ x: pixelPos.x + 1, y: pixelPos.y });
-                            reachRight = true;
-                        }
+                if (pixelPos.x < this.drawingService.baseCtx.canvas.width) {
+                    if (this.matchStartColor(pixelPos) && !reachRight) {
+                        // Add pixel to stack
+                        pathPixel.push({ x: pixelPos.x + 1, y: pixelPos.y });
+                        reachRight = true;
                     } else if (reachRight) {
                         reachRight = false;
                     }
@@ -139,7 +134,10 @@ export class PaintService extends Tool {
     }
 
     colorPixel(pixelPos: Vec2): void {
+        //Using fillRect method
         this.drawingService.baseCtx.fillRect(pixelPos.x, pixelPos.y, 1, 1);
+
+        //Using putImageData metho
     }
 
     setAttribute(ctx: CanvasRenderingContext2D): void {
