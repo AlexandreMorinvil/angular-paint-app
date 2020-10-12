@@ -44,7 +44,7 @@ export class PaintService extends Tool {
                 this.floodFill(this.drawingService.baseCtx, this.pathData);
             }
             else {
-                this.colorFill(this.drawingService.baseCtx, this.pathData);
+                this.sameColorFill(this.drawingService.baseCtx, this.pathData);
             }
         }
     }
@@ -74,7 +74,7 @@ export class PaintService extends Tool {
         }
     }
 
-    colorFill(ctx: CanvasRenderingContext2D, pathPixel: Vec2[]) {
+    sameColorFill(ctx: CanvasRenderingContext2D, pathPixel: Vec2[]) {
         this.setAttribute(ctx);
         let pixelPos: Vec2 = {x:0, y:0};
         while( pixelPos.y < ctx.canvas.height ){
