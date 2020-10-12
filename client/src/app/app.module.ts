@@ -24,6 +24,7 @@ import { TooltipComponent } from './components/tooltip/tooltip.component';
 import { UserGuideModalComponent } from './components/user-guide-modal/user-guide-modal.component';
 import { WorkspaceComponent } from './components/workspace/workspace.component';
 import { AttributesToleranceComponent } from './components/attributes-panel/attribute-tolerance/attributes-tolerance/attributes-tolerance.component';
+import { AttributeFillingComponent } from './components/attributes-panel/attribute-filling/attributes-filling.component'
 
 @NgModule({
     declarations: [
@@ -34,6 +35,7 @@ import { AttributesToleranceComponent } from './components/attributes-panel/attr
         AttributeTracingComponent,
         AttributeWidthComponent,
         AttributeColorComponent,
+        AttributeFillingComponent,
         EditorPageComponent,
         SidebarComponent,
         DrawingComponent,

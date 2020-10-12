@@ -5,6 +5,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { ToleranceService } from '@app/services/tool-modifier/tolerance/tolerance.service';
+import { FillingService } from '@app/services/tool-modifier/filling/filling.service'
 
 export enum MouseButton {
     Left = 0,
@@ -22,10 +23,11 @@ export class PaintService extends Tool {
     private startG: number;
     private startB: number;
 
-    constructor(drawingService: DrawingService, private colorService: ColorService, public toleranceService: ToleranceService) {
+    constructor(drawingService: DrawingService, private colorService: ColorService, public toleranceService: ToleranceService, public fillingService: FillingService ) {
         super(drawingService, new Description('Paint', 'b', 'paint_icon.png'));
         this.modifiers.push(this.colorService);
         this.modifiers.push(this.toleranceService);
+        this.modifiers.push(this.fillingService);
     }
 
     onMouseDown(event: MouseEvent): void {
