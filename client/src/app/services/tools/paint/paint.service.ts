@@ -40,8 +40,12 @@ export class PaintService extends Tool {
 
             //console.log(this.startR + '' + this.startG + '' + this.startB);
             //this.colorPixel({ x: this.pathData[0].x, y: this.pathData[0].y });
-
-            this.floodFill(this.drawingService.baseCtx, this.pathData);
+            if(this.fillingService.getNeighbourPixelsOnly()){
+                this.floodFill(this.drawingService.baseCtx, this.pathData);
+            }
+            else {
+                this.colorFill(this.drawingService.baseCtx, this.pathData);
+            }
         }
     }
 
@@ -67,6 +71,21 @@ export class PaintService extends Tool {
                     this.drawingService.previewCtx.canvas.height = mousePosition.y;
                 }
             }
+        }
+    }
+
+    colorFill(ctx: CanvasRenderingContext2D, pathPixel: Vec2[]) {
+        this.setAttribute(ctx);
+        let pixelPos: Vec2 = {x:0, y:0};
+        while( pixelPos.y < ctx.canvas.height ){
+            while( pixelPos.x < ctx.canvas.width ){
+              if (this.matchStartColor(pixelPos)){
+                  this.colorPixel(pixelPos);
+              }
+              pixelPos.x++;
+            }
+            pixelPos.y++;
+            pixelPos.x = 0;
         }
     }
 
