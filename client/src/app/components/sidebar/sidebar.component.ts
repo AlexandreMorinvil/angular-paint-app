@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
+import { SaveService } from '@app/services/tools/save/save.service';
 import { UserGuideModalService } from '@app/services/user-guide-modal/user-guide-modal.service';
 
 @Component({
@@ -14,12 +15,14 @@ export class SidebarComponent {
     messageNewDrawing: string = 'Nouveau dessin\n(Raccourci: Ctr + O)';
     messageUserGuide: string = "Guide d'utilisation";
     messageBack: string = 'Retour';
+    messageSaveDialog: string = 'Sauvegarde\n(Raccourci: Ctr + S)';
 
     constructor(
         private toolboxSevice: ToolboxService,
         private drawingService: DrawingService,
         private router: Router,
         private userGuideModalService: UserGuideModalService,
+        private saveService: SaveService,
     ) {}
 
     getListOfTools(): Tool[] {
@@ -48,5 +51,9 @@ export class SidebarComponent {
 
     openGuide(): void {
         this.userGuideModalService.openUserGuide();
+    }
+
+    openSaveDialog(): void {
+        this.saveService.openSaveDialog();
     }
 }

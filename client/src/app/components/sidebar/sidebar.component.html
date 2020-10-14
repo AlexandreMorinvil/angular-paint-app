@@ -4,6 +4,10 @@
         <app-tooltip [text]="formatTooltipMessage(tool)" class="tooltip"></app-tooltip>
     </button>
 
+    <button (click)="openSaveDialog()" class="to-bottom has-tooltip">
+        <img src="assets/images/save_icon.png" />
+        <app-tooltip [text]="messageSaveDialog" class="tooltip"></app-tooltip>
+    </button>
     <button (click)="resetDrawing()" class="to-bottom has-tooltip">
         <img src="assets/images/document_icon.png" />
         <app-tooltip [text]="messageNewDrawing" class="tooltip"></app-tooltip>

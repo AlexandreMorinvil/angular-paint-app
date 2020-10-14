@@ -1,0 +1,33 @@
+<h1>Sauvegarder un Dessin</h1>
+<div class="container">
+    <p>
+        <mat-form-field class="name">
+            <mat-label>Nom du Dessin</mat-label>
+            <input matInput [formControl]="name" placeholder="Ex. dessin" />
+            <mat-error *ngIf="name.invalid"> Entrer un nom de dessin </mat-error>
+        </mat-form-field>
+    </p>
+    <p>
+        <mat-form-field class="tags">
+            <mat-chip-list #chipList aria-label="Tag selection">
+                <mat-label>Nom des Étiquettes</mat-label>
+                <mat-chip *ngFor="let tag of tags" (removed)="remove(tag)">
+                    {{ tag.name }}
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip>
+                <input
+                    placeholder="Nouvelle Étiquette..."
+                    [matChipInputFor]="chipList"
+                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                    (matChipInputTokenEnd)="add($event)"
+                />
+            </mat-chip-list>
+        </mat-form-field>
+    </p>
+
+    <div mat-dialog-actions>
+        <button mat-button mat-dialog-close>Annuler</button>
+        <button mat-button (click)="save()">Sauvegarder</button>
+    </div>
+    <h6>(Spécification pour le choix du tag et le nom du dessin)</h6>
+</div>
