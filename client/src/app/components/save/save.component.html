@@ -1,5 +1,5 @@
-<h1>Sauvegarder un Dessin</h1>
 <div class="container">
+    <h1 class="title">Sauvegarder un Dessin</h1>
     <p>
         <mat-form-field class="name">
             <mat-label>Nom du Dessin</mat-label>
@@ -13,10 +13,10 @@
                 <mat-label>Nom des Étiquettes</mat-label>
                 <mat-chip *ngFor="let tag of tags" (removed)="remove(tag)">
                     {{ tag.name }}
-                    <mat-icon matChipRemove>cancel</mat-icon>
+                    <mat-icon matChipRemove>x</mat-icon>
                 </mat-chip>
                 <input
-                    placeholder="Nouvelle Étiquette..."
+                    placeholder="Ex:étiquette"
                     [matChipInputFor]="chipList"
                     [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                     (matChipInputTokenEnd)="add($event)"
@@ -26,8 +26,8 @@
     </p>
 
     <div mat-dialog-actions>
-        <button mat-button mat-dialog-close>Annuler</button>
-        <button mat-button (click)="save()">Sauvegarder</button>
+        <button class="button1" mat-button mat-dialog-close>Annuler</button>
+        <button class="button2" mat-button mat-dialog-close (click)="save()">Sauvegarder</button>
     </div>
-    <h6>(Spécification pour le choix du tag et le nom du dessin)</h6>
+    <h6>Choisir un nom de dessin entre 1 et 20 charactères, sans espaces et un maximum de 10 tags par dessin</h6>
 </div>

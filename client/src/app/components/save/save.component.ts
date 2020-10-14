@@ -19,8 +19,8 @@ export interface Tag {
 export class SaveComponent {
     visible = true;
     readonly separatorKeysCodes: number[] = [ENTER, COMMA];
-    tags: Tag[] = [{ name: 'Dessin' }, { name: 'Sauvegarder' }, { name: 'Étiquettes' }];
-    protected name: FormControl = new FormControl('', Validators.required);
+    tags: Tag[] = [];
+    public name: FormControl = new FormControl('', Validators.required);
     constructor(
         public saveService: SaveService,
         public dialogRef: MatDialogRef<SaveComponent>,

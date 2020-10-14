@@ -16,7 +16,7 @@ export class SaveService extends Tool {
     openSaveDialog(): void {
         const dialogRef = this.dialog.open(SaveComponent, {
             width: '600px',
-            height: '600px',
+            height: '500px',
             data: {},
         });
 
