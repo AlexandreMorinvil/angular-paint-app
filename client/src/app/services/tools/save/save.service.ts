@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Description } from '@app/classes/description';
-import { Tool } from '@app/classes/tool';
 import { SaveComponent } from '@app/components/save/save.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Injectable({
     providedIn: 'root',
 })
-export class SaveService extends Tool {
-    constructor(drawingService: DrawingService, public dialog: MatDialog) {
-        super(drawingService, new Description('Sauvegarde', 'Ctrl+S', 'save_icon.png'));
+export class SaveService {
+    constructor(private drawingService: DrawingService, public dialog: MatDialog) {
+        new Description('Sauvegarde', 'Ctrl+S', 'save_icon.png');
     }
 
     openSaveDialog(): void {
