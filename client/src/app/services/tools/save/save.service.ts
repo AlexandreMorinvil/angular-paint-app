@@ -24,11 +24,20 @@ export class SaveService extends Tool {
     }
 
     onCtrlS(name: string): void {
+        const contex = this.drawingService.baseCtx;
+        contex.save();
+        contex.globalCompositeOperation = 'destination-over';
+        contex.fillStyle = 'white';
+        contex.fillRect(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
+        contex.restore();
+        let img = new Image();
         const canvas = this.drawingService.canvas;
-        const a = document.createElement('a');
-        a.href = canvas.toDataURL();
-        console.log(name);
-        a.download = name + '.png';
-        a.click();
+        const ctx = this.drawingService.baseCtx;
+        const link = document.createElement('a');
+        ctx.drawImage(img, 0, 0);
+        img.style.display = 'none';
+        link.href = canvas.toDataURL();
+        link.download = name + '.png';
+        link.click();
     }
 }
