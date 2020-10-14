@@ -35,6 +35,9 @@ export class DrawingComponent implements AfterViewInit {
         this.editCtx.canvas.width = window.innerWidth - this.TOOL_BOX_WIDTH;
         this.editCtx.canvas.height = window.innerHeight;
         this.drawingService.hasBeenDrawnOnto = false;
+        // Fills the canvas with white
+        this.baseCtx.fillStyle = '#FFFFFF';
+        this.baseCtx.fillRect(0, 0, this.baseCtx.canvas.width, this.baseCtx.canvas.height);
     }
 
     resetDrawing(): void {
