@@ -7,7 +7,7 @@ import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { LineService } from '@app/services/tools/line/line-service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
-import { SelectionToolService} from '@app/services/tools/selection/selection-tool.service';
+import { SelectionToolService } from '@app/services/tools/selection/selection-tool.service';
 
 @Injectable({
     providedIn: 'root',
@@ -24,7 +24,7 @@ export class ToolboxService {
         rectangleService: RectangleService,
         ellipseService: EllipseService,
         lineService: LineService,
-        selectioToolService: SelectionToolService, 
+        selectioToolService: SelectionToolService,
     ) {
         this.currentTool = cursorService;
         this.availableTools.push(cursorService);

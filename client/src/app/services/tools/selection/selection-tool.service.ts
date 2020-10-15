@@ -5,7 +5,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
-import { RectangleService } from '../rectangle/rectangle-service';
+import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
 
 export enum MouseButton {
     Left = 0,
@@ -73,6 +73,7 @@ export class SelectionToolService extends Tool {
     onMouseUp(event: MouseEvent): void {
         const mousePosition = this.getPositionFromMouse(event);
         if (this.draggingImage) {
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawingService.baseCtx.putImageData(this.imageData, mousePosition.x, mousePosition.y);
             this.drawingService.previewCtx.beginPath();
             this.drawingService.previewCtx.rect(mousePosition.x, mousePosition.y, this.rectWidth, this.rectHeight);
@@ -82,8 +83,8 @@ export class SelectionToolService extends Tool {
             this.pathData.push(mousePosition);
             this.drawingService.previewCtx.putImageData(this.imageData, this.startDownCoord.x, this.startDownCoord.y);
             this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.pathData);
-            this.rectWidth = Math.abs(this.startDownCoord.x - this.pathData[this.pathData.length-1].x);
-            this.rectHeight = Math.abs(this.startDownCoord.y - this.pathData[this.pathData.length-1].y);
+            this.rectWidth = Math.abs(this.startDownCoord.x - this.pathData[this.pathData.length - 1].x);
+            this.rectHeight = Math.abs(this.startDownCoord.y - this.pathData[this.pathData.length - 1].y);
             this.clearZone();
         }
         this.mouseDown = false;
@@ -110,13 +111,13 @@ export class SelectionToolService extends Tool {
         ctx.closePath();
 
         // four mid anchor
-        ctx.arc((this.rectWidth + (this.startDownCoord.x*2)) / 2, this.startDownCoord.y + this.rectHeight, dotsize, 0, Math.PI * 2, false);
+        ctx.arc((this.rectWidth + this.startDownCoord.x * 2) / 2, this.startDownCoord.y + this.rectHeight, dotsize, 0, Math.PI * 2, false);
         ctx.closePath();
-        ctx.arc((this.rectWidth + (this.startDownCoord.x*2)) / 2, this.startDownCoord.y, dotsize, 0, Math.PI * 2, false);
+        ctx.arc((this.rectWidth + this.startDownCoord.x * 2) / 2, this.startDownCoord.y, dotsize, 0, Math.PI * 2, false);
         ctx.closePath();
-        ctx.arc(this.startDownCoord.x, (this.rectHeight + (this.startDownCoord.y*2)) / 2, dotsize, 0, Math.PI * 2, false);
+        ctx.arc(this.startDownCoord.x, (this.rectHeight + this.startDownCoord.y * 2) / 2, dotsize, 0, Math.PI * 2, false);
         ctx.closePath();
-        ctx.arc(this.startDownCoord.x + this.rectWidth, (this.rectHeight + (this.startDownCoord.y*2)) / 2, dotsize, 0, Math.PI * 2, false);
+        ctx.arc(this.startDownCoord.x + this.rectWidth, (this.rectHeight + this.startDownCoord.y * 2) / 2, dotsize, 0, Math.PI * 2, false);
         ctx.closePath();
 
         ctx.fill();
@@ -131,12 +132,12 @@ export class SelectionToolService extends Tool {
     }
 
     private hitSelection(x: number, y: number): boolean {
-        let xIn = x > this.startDownCoord.x && x < this.imageData.width + this.startDownCoord.x;
-        let yIn = y > this.startDownCoord.y && y < this.imageData.height + this.startDownCoord.y;
+        const xIn = x > this.startDownCoord.x && x < this.imageData.width + this.startDownCoord.x;
+        const yIn = y > this.startDownCoord.y && y < this.imageData.height + this.startDownCoord.y;
         return xIn && yIn;
     }
 
-    private clearZone() {
+    private clearZone(): void {
         this.tracing.setHasFill(true);
         this.colorService.setPrimaryColor('#FFFFFF');
         this.tracing.setHasContour(false);
