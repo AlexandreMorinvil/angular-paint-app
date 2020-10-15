@@ -58,7 +58,7 @@ describe('EraserService', () => {
     });
 
     it(' Preview canvas should be empty if the mouse moves out of the canvas', () => {
-        service.mouseDownCoord = { x: 0 , y: 0 };
+        service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = false;
         const mouseEvent2 = { offsetX: -5, offsetY: 0, button: 0 } as MouseEvent;
 
