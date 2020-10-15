@@ -100,7 +100,7 @@ export class PaintService extends Tool {
             //let pixelPos = (y * this.drawingService.baseCtx.canvas.width + x) * 4;
 
             // Go up as long as the color matches and are inside the canvas
-            while (pixelPos.y > 0 && this.matchStartColor(pixelPos)) {
+            while (pixelPos.y > -1 && this.matchStartColor(pixelPos)) {
                 pixelPos.y -= 1;
                 //pixelPos -= this.drawingService.baseCtx.canvas.width * 4;
             }
@@ -109,7 +109,7 @@ export class PaintService extends Tool {
             let reachLeft = false;
             let reachRight = false;
             // Go down as long as the color matches and in inside the canvas
-            while (pixelPos.y < this.drawingService.baseCtx.canvas.height - 1 && this.matchStartColor(pixelPos)) {
+            while (pixelPos.y < this.drawingService.baseCtx.canvas.height && this.matchStartColor(pixelPos)) {
                 this.colorPixel(pixelPos);
                 pixelPos.y += 1;
 
