@@ -62,7 +62,7 @@ export class PaintService extends Tool {
             this.getStartColor();
             //this.setFillColor();
 
-            console.log(this.colorDifference(this.startRGBHex, this.colorService.getPrimaryColor()));
+            //console.log(this.colorDifference(this.startRGBHex, this.colorService.getPrimaryColor()));
             //console.log(this.startR + '' + this.startG + '' + this.startB);
             if (this.fillingService.getNeighbourPixelsOnly() && this.colorService.getPrimaryColor() != this.startRGBHex) {
                 this.floodFill(this.drawingService.baseCtx, this.pathData);
