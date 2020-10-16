@@ -5,9 +5,9 @@ import { ToolModifier } from '@app/classes/tool-modifier';
     providedIn: 'root',
 })
 export class ToleranceService extends ToolModifier {
-    readonly DEFAULT_TOLERANCE: number = 5;
+    readonly DEFAULT_TOLERANCE: number = 0;
     readonly MAX_TOLERANCE: number = 100;
-    readonly MIN_TOLERANCE: number = 1;
+    readonly MIN_TOLERANCE: number = 0;
     private numberTolerance: number = this.DEFAULT_TOLERANCE;
 
     constructor() {

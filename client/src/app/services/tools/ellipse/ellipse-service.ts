@@ -35,9 +35,6 @@ export class EllipseService extends Tool {
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
         }
-        //for testing only with paint
-        this.drawingService.baseCtx.fillStyle = 'white';
-        this.drawingService.baseCtx.fillRect(0, 0, 1000, 1000);
     }
 
     onMouseUp(event: MouseEvent): void {
