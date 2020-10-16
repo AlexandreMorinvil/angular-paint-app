@@ -23,7 +23,7 @@ export class PaintService extends Tool {
     private startG: number;
     private startB: number;
 
-    private startRGBHex: string;
+    public startRGBHex: string;
 
     constructor(
         drawingService: DrawingService,
@@ -44,11 +44,10 @@ export class PaintService extends Tool {
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
             this.getStartColor();
-            this.RGBToHex(this.startR, this.startG, this.startB);
-            this.colorDifference(this.startRGBHex, this.colorService.getPrimaryColor());
-            //console.log(this.startR + '' + this.startG + '' + this.startB);
+            //this.colorDifference(this.startRGBHex, this.colorService.getPrimaryColor());
+            console.log(this.startR + '' + this.startG + '' + this.startB);
             //this.colorPixel({ x: this.pathData[0].x, y: this.pathData[0].y });
-            if (this.fillingService.getNeighbourPixelsOnly()) {
+            if (this.fillingService.getNeighbourPixelsOnly() && this.colorService.getPrimaryColor() != this.startRGBHex) {
                 this.floodFill(this.drawingService.baseCtx, this.pathData);
             } else {
                 this.sameColorFill(this.drawingService.baseCtx, this.pathData);
@@ -98,6 +97,7 @@ export class PaintService extends Tool {
 
     floodFill(ctx: CanvasRenderingContext2D, pathPixel: Vec2[]): void {
         this.setAttribute(ctx);
+
         while (pathPixel.length) {
             let pixelPos = pathPixel.pop()!;
             //let x = newPos.x;
@@ -109,34 +109,33 @@ export class PaintService extends Tool {
             // Go up as long as the color matches and are inside the canvas
             while (pixelPos.y > -1 && this.matchStartColor(pixelPos)) {
                 pixelPos.y -= 1;
+
                 //pixelPos -= this.drawingService.baseCtx.canvas.width * 4;
             }
-            ++pixelPos.y;
+            pixelPos.y += 1;
+
             //pixelPos += this.drawingService.baseCtx.canvas.width * 4;
             let reachLeft = false;
             let reachRight = false;
+            //console.log(this.startR + '' + this.startG + '' + this.startB);
             // Go down as long as the color matches and in inside the canvas
-            while (pixelPos.y < this.drawingService.baseCtx.canvas.height && this.matchStartColor(pixelPos)) {
+            while (pixelPos.y <= this.drawingService.baseCtx.canvas.height && this.matchStartColor(pixelPos)) {
                 this.colorPixel(pixelPos);
-                ++pixelPos.y;
-
-                if (pixelPos.x > 0) {
-                    if (true && !reachLeft) {
-                        // Add pixel to stack
-                        pathPixel.push({ x: pixelPos.x - 1, y: pixelPos.y });
-                        reachLeft = true;
-                    } else if (reachLeft) {
-                        reachLeft = false;
-                    }
+                pixelPos.y += 1;
+                if (this.matchStartColor(pixelPos) && !reachLeft && pixelPos.x > 0) {
+                    // Add pixel to stack
+                    pathPixel.push({ x: pixelPos.x - 1, y: pixelPos.y });
+                    reachLeft = true;
+                } else if (reachLeft) {
+                    reachLeft = false;
                 }
-                if (pixelPos.x < this.drawingService.baseCtx.canvas.width) {
-                    if (true && !reachRight) {
-                        // Add pixel to stack
-                        pathPixel.push({ x: pixelPos.x + 1, y: pixelPos.y });
-                        reachRight = true;
-                    } else if (reachRight) {
-                        reachRight = false;
-                    }
+
+                if (this.matchStartColor(pixelPos) && !reachRight && pixelPos.x < this.drawingService.baseCtx.canvas.width) {
+                    // Add pixel to stack
+                    pathPixel.push({ x: pixelPos.x + 1, y: pixelPos.y });
+                    reachRight = true;
+                } else if (reachRight) {
+                    reachRight = false;
                 }
 
                 //pixelPos += this.drawingService.baseCtx.canvas.width * 4;
@@ -178,18 +177,6 @@ export class PaintService extends Tool {
         //Using putImageData metho
     }
 
-    RGBToHex(r: number, g: number, b: number): string {
-        let rHex = r.toString(16);
-        let gHex = g.toString(16);
-        let bHex = b.toString(16);
-
-        if (rHex.length == 1) rHex = '0' + rHex;
-        if (gHex.length == 1) gHex = '0' + gHex;
-        if (bHex.length == 1) bHex = '0' + bHex;
-
-        return '#' + rHex + gHex + bHex;
-    }
-
     colorDifference(firstColor: string, secondColor: string) {
         if (!firstColor && !secondColor) return;
 
@@ -224,11 +211,11 @@ export class PaintService extends Tool {
         ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
     }
 
-    private clearPath(): void {
+    clearPath(): void {
         this.pathData = [];
     }
 
-    private isInCanvas(mousePosition: Vec2): boolean {
+    isInCanvas(mousePosition: Vec2): boolean {
         return mousePosition.x <= this.drawingService.baseCtx.canvas.width && mousePosition.y <= this.drawingService.baseCtx.canvas.height;
     }
 }
