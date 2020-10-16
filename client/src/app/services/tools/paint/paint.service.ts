@@ -24,6 +24,7 @@ export class PaintService extends Tool {
     private startB: number;
 
     public startRGBHex: string;
+    public pixelRGBHex: string;
 
     constructor(
         drawingService: DrawingService,
@@ -44,9 +45,8 @@ export class PaintService extends Tool {
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
             this.getStartColor();
-            //this.colorDifference(this.startRGBHex, this.colorService.getPrimaryColor());
-            console.log(this.startR + '' + this.startG + '' + this.startB);
-            //this.colorPixel({ x: this.pathData[0].x, y: this.pathData[0].y });
+            console.log(this.colorDifference(this.startRGBHex, this.colorService.getPrimaryColor()));
+            //console.log(this.startR + '' + this.startG + '' + this.startB);
             if (this.fillingService.getNeighbourPixelsOnly() && this.colorService.getPrimaryColor() != this.startRGBHex) {
                 this.floodFill(this.drawingService.baseCtx, this.pathData);
             } else {
@@ -161,14 +161,34 @@ export class PaintService extends Tool {
         this.startRGBHex = '#' + rHex + gHex + bHex;
     }
 
-    matchStartColor(pixelPos: Vec2): boolean {
+    getPixelColorHex(pixelPos: Vec2): void {
+        //get the pixel on the first Path of mouse
         const imageData: ImageData = this.drawingService.baseCtx.getImageData(pixelPos.x, pixelPos.y, 1, 1);
-
         let r = imageData.data[0];
         let g = imageData.data[1];
         let b = imageData.data[2];
 
-        return r == this.startR && g == this.startG && b == this.startB;
+        let rHex = r.toString(16);
+        let gHex = g.toString(16);
+        let bHex = b.toString(16);
+
+        if (rHex.length == 1) rHex = '0' + rHex;
+        if (gHex.length == 1) gHex = '0' + gHex;
+        if (bHex.length == 1) bHex = '0' + bHex;
+
+        this.pixelRGBHex = '#' + rHex + gHex + bHex;
+    }
+
+    matchStartColor(pixelPos: Vec2): boolean {
+        this.getPixelColorHex(pixelPos);
+        return this.similarColor();
+        //return r == this.startR && g == this.startG && b == this.startB;
+    }
+    similarColor(): boolean {
+        let difference = this.colorDifference(this.pixelRGBHex, this.startRGBHex)!;
+        if (difference <= this.toleranceService.getTolerance()) {
+            return true;
+        } else return false;
     }
 
     colorPixel(pixelPos: Vec2): void {
@@ -202,7 +222,6 @@ export class PaintService extends Tool {
         let b2 = (__b / 255) * 100;
 
         let perc2 = Math.round((r2 + g2 + b2) / 3);
-        console.log(Math.abs(perc1 - perc2));
         return Math.abs(perc1 - perc2);
     }
 
