@@ -9,6 +9,7 @@ export class ToleranceService extends ToolModifier {
     readonly MAX_TOLERANCE: number = 100;
     readonly MIN_TOLERANCE: number = 0;
     private numberTolerance: number = this.DEFAULT_TOLERANCE;
+    private percentageTolerance : number =  0;
 
     constructor() {
         super();
@@ -18,6 +19,15 @@ export class ToleranceService extends ToolModifier {
         if (input >= this.MAX_TOLERANCE) this.numberTolerance = this.MAX_TOLERANCE;
         else if (input <= this.MIN_TOLERANCE) this.numberTolerance = this.MIN_TOLERANCE;
         else this.numberTolerance = input;
+        this.setPercentageTolerance();
+    }
+
+    setPercentageTolerance(){
+        this.percentageTolerance = Math.round(this.numberTolerance * 255 / 100);
+    }
+
+    getPercentageTolerance(): number {
+        return this.percentageTolerance
     }
 
     getTolerance(): number {

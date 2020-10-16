@@ -21,7 +21,7 @@ export enum MouseButton {
 })
 export class PaintService extends Tool {
     private pathData: Vec2[];
-    /* 
+    /*
     private fillColorR: number;
     private fillColorG: number;
     private fillColorB: number;
@@ -202,16 +202,11 @@ export class PaintService extends Tool {
         //return this.similarColor();
         //console.log(this.index);
         const imageData: ImageData = this.drawingService.baseCtx.getImageData(pixelPos.x, pixelPos.y, 1, 1);
-        if (
-            Math.abs(this.startR - imageData.data[0]) <= this.toleranceService.getTolerance() &&
-            Math.abs(this.startG - imageData.data[1]) <= this.toleranceService.getTolerance() &&
-            Math.abs(this.startB - imageData.data[2]) <= this.toleranceService.getTolerance()
-        )
+        const average = (Math.abs(this.startR - imageData.data[0]) + Math.abs(this.startG - imageData.data[1]) + Math.abs(this.startB - imageData.data[2])) / 3
+        if ( average <= this.toleranceService.getPercentageTolerance())
             return true; //target to surface within tolerance
-
-        if (this.startR === imageData.data[0] && this.startG === imageData.data[1] && this.startB === imageData.data[2]) return true; //target matches surface
-
-        return false;
+        else
+            return false;
     }
 
     /* similarColor(): boolean {
@@ -269,7 +264,7 @@ export class PaintService extends Tool {
     }
 }
 
-/* 
+/*
     hexToRgb(hex: string): void {
         const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
         if (result != null) {
