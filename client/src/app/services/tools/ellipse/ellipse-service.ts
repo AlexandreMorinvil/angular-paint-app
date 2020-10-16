@@ -43,7 +43,7 @@ export class EllipseService extends Tool {
             this.pathData.push(this.mouseDownCoord);
         }
         //for testing only with paint
-        this.drawingService.baseCtx.fillStyle = 'white';
+        this.drawingService.baseCtx.fillStyle = '#FFFFFF';
         this.drawingService.baseCtx.fillRect(0, 0, 1000, 1000);
     }
 

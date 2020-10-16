@@ -4,8 +4,8 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
+import { FillingService } from '@app/services/tool-modifier/filling/filling.service';
 import { ToleranceService } from '@app/services/tool-modifier/tolerance/tolerance.service';
-import { FillingService } from '@app/services/tool-modifier/filling/filling.service'
 
 export enum MouseButton {
     Left = 0,
@@ -23,7 +23,14 @@ export class PaintService extends Tool {
     private startG: number;
     private startB: number;
 
-    constructor(drawingService: DrawingService, private colorService: ColorService, public toleranceService: ToleranceService, public fillingService: FillingService ) {
+    private startRGBHex: string;
+
+    constructor(
+        drawingService: DrawingService,
+        private colorService: ColorService,
+        public toleranceService: ToleranceService,
+        public fillingService: FillingService,
+    ) {
         super(drawingService, new Description('Paint', 'b', 'paint_icon.png'));
         this.modifiers.push(this.colorService);
         this.modifiers.push(this.toleranceService);
@@ -37,13 +44,13 @@ export class PaintService extends Tool {
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
             this.getStartColor();
-
+            this.RGBToHex(this.startR, this.startG, this.startB);
+            this.colorDifference(this.startRGBHex, this.colorService.getPrimaryColor());
             //console.log(this.startR + '' + this.startG + '' + this.startB);
             //this.colorPixel({ x: this.pathData[0].x, y: this.pathData[0].y });
-            if(this.fillingService.getNeighbourPixelsOnly()){
+            if (this.fillingService.getNeighbourPixelsOnly()) {
                 this.floodFill(this.drawingService.baseCtx, this.pathData);
-            }
-            else {
+            } else {
                 this.sameColorFill(this.drawingService.baseCtx, this.pathData);
             }
         }
@@ -76,20 +83,20 @@ export class PaintService extends Tool {
 
     sameColorFill(ctx: CanvasRenderingContext2D, pathPixel: Vec2[]) {
         this.setAttribute(ctx);
-        let pixelPos: Vec2 = {x:0, y:0};
-        while( pixelPos.y < ctx.canvas.height ){
-            while( pixelPos.x < ctx.canvas.width ){
-              if (this.matchStartColor(pixelPos)){
-                  this.colorPixel(pixelPos);
-              }
-              pixelPos.x++;
+        let pixelPos: Vec2 = { x: 0, y: 0 };
+        while (pixelPos.y < ctx.canvas.height) {
+            while (pixelPos.x < ctx.canvas.width) {
+                if (this.matchStartColor(pixelPos)) {
+                    this.colorPixel(pixelPos);
+                }
+                pixelPos.x++;
             }
             pixelPos.y++;
             pixelPos.x = 0;
         }
     }
 
-    floodFill(ctx: CanvasRenderingContext2D, pathPixel: Vec2[]) {
+    floodFill(ctx: CanvasRenderingContext2D, pathPixel: Vec2[]): void {
         this.setAttribute(ctx);
         while (pathPixel.length) {
             let pixelPos = pathPixel.pop()!;
@@ -100,7 +107,7 @@ export class PaintService extends Tool {
             //let pixelPos = (y * this.drawingService.baseCtx.canvas.width + x) * 4;
 
             // Go up as long as the color matches and are inside the canvas
-            while (pixelPos.y > 0 && this.matchStartColor(pixelPos)) {
+            while (pixelPos.y >= 0 && this.matchStartColor(pixelPos)) {
                 pixelPos.y -= 1;
                 //pixelPos -= this.drawingService.baseCtx.canvas.width * 4;
             }
@@ -109,12 +116,12 @@ export class PaintService extends Tool {
             let reachLeft = false;
             let reachRight = false;
             // Go down as long as the color matches and in inside the canvas
-            while (pixelPos.y < this.drawingService.baseCtx.canvas.height - 1 && this.matchStartColor(pixelPos)) {
+            while (pixelPos.y < this.drawingService.baseCtx.canvas.height && this.matchStartColor(pixelPos)) {
                 this.colorPixel(pixelPos);
-                pixelPos.y += 1;
+                ++pixelPos.y;
 
                 if (pixelPos.x > 0) {
-                    if (this.matchStartColor(pixelPos) && !reachLeft) {
+                    if (true && !reachLeft) {
                         // Add pixel to stack
                         pathPixel.push({ x: pixelPos.x - 1, y: pixelPos.y });
                         reachLeft = true;
@@ -123,7 +130,7 @@ export class PaintService extends Tool {
                     }
                 }
                 if (pixelPos.x < this.drawingService.baseCtx.canvas.width) {
-                    if (this.matchStartColor(pixelPos) && !reachRight) {
+                    if (true && !reachRight) {
                         // Add pixel to stack
                         pathPixel.push({ x: pixelPos.x + 1, y: pixelPos.y });
                         reachRight = true;
@@ -143,6 +150,16 @@ export class PaintService extends Tool {
         this.startR = imageData.data[0];
         this.startG = imageData.data[1];
         this.startB = imageData.data[2];
+
+        let rHex = this.startR.toString(16);
+        let gHex = this.startG.toString(16);
+        let bHex = this.startB.toString(16);
+
+        if (rHex.length == 1) rHex = '0' + rHex;
+        if (gHex.length == 1) gHex = '0' + gHex;
+        if (bHex.length == 1) bHex = '0' + bHex;
+
+        this.startRGBHex = '#' + rHex + gHex + bHex;
     }
 
     matchStartColor(pixelPos: Vec2): boolean {
@@ -151,14 +168,55 @@ export class PaintService extends Tool {
         let r = imageData.data[0];
         let g = imageData.data[1];
         let b = imageData.data[2];
+
         return r == this.startR && g == this.startG && b == this.startB;
     }
 
     colorPixel(pixelPos: Vec2): void {
         //Using fillRect method
         this.drawingService.baseCtx.fillRect(pixelPos.x, pixelPos.y, 1, 1);
-
         //Using putImageData metho
+    }
+
+    RGBToHex(r: number, g: number, b: number): string {
+        let rHex = r.toString(16);
+        let gHex = g.toString(16);
+        let bHex = b.toString(16);
+
+        if (rHex.length == 1) rHex = '0' + rHex;
+        if (gHex.length == 1) gHex = '0' + gHex;
+        if (bHex.length == 1) bHex = '0' + bHex;
+
+        return '#' + rHex + gHex + bHex;
+    }
+
+    colorDifference(firstColor: string, secondColor: string) {
+        if (!firstColor && !secondColor) return;
+
+        const _firstColor = firstColor.charAt(0) == '#' ? firstColor.substring(1, 7) : firstColor;
+        const _secondColor = secondColor.charAt(0) == '#' ? secondColor.substring(1, 7) : secondColor;
+
+        const _r = parseInt(_firstColor.substring(0, 2), 16);
+        const _g = parseInt(_firstColor.substring(2, 4), 16);
+        const _b = parseInt(_firstColor.substring(4, 6), 16);
+
+        const __r = parseInt(_secondColor.substring(0, 2), 16);
+        const __g = parseInt(_secondColor.substring(2, 4), 16);
+        const __b = parseInt(_secondColor.substring(4, 6), 16);
+
+        let r1 = (_r / 255) * 100;
+        let g1 = (_g / 255) * 100;
+        let b1 = (_b / 255) * 100;
+
+        let perc1 = Math.round((r1 + g1 + b1) / 3);
+
+        let r2 = (__r / 255) * 100;
+        let g2 = (__g / 255) * 100;
+        let b2 = (__b / 255) * 100;
+
+        let perc2 = Math.round((r2 + g2 + b2) / 3);
+        console.log(Math.abs(perc1 - perc2));
+        return Math.abs(perc1 - perc2);
     }
 
     setAttribute(ctx: CanvasRenderingContext2D): void {
