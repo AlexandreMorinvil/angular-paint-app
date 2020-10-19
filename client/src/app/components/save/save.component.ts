@@ -51,7 +51,8 @@ export class SaveComponent {
             this.tags.splice(index, 1);
         }
     }
-    save(): void {
-        this.saveService.onCtrlS(this.name.value);
+    saveToPNG(): void {
+        const drawName = this.name.value;
+        this.saveService.saveDrawToPNG(drawName);
     }
 }

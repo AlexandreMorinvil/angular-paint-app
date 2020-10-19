@@ -53,7 +53,7 @@ export class SidebarComponent {
         this.userGuideModalService.openUserGuide();
     }
 
-    openSaveDialog(): void {
+    saveDialog(): void {
         this.saveService.openSaveDialog();
     }
 }

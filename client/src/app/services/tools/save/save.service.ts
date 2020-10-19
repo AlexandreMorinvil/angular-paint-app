@@ -13,16 +13,19 @@ export class SaveService {
     }
 
     openSaveDialog(): void {
+        console.log('A');
+        this.drawingService.shortcutEnable = false; //to disable other command on save dialog open
         const dialogRef = this.dialog.open(SaveComponent, {
             width: '600px',
             height: '500px',
             data: {},
         });
-
-        dialogRef.afterClosed();
+        dialogRef.afterClosed().subscribe((value) => {
+            this.drawingService.shortcutEnable = true; //to enable other command on save dialog close
+        });
     }
 
-    onCtrlS(name: string): void {
+    saveDrawToPNG(drawName: string): void {
         const contex = this.drawingService.baseCtx;
         contex.save();
         contex.globalCompositeOperation = 'destination-over';
@@ -36,7 +39,7 @@ export class SaveService {
         ctx.drawImage(img, 0, 0);
         img.style.display = 'none';
         link.href = canvas.toDataURL();
-        link.download = name + '.png';
+        link.download = drawName + '.png';
         link.click();
     }
 }
