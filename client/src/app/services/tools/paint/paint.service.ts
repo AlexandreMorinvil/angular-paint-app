@@ -1,19 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Description } from '@app/classes/description';
+import { MouseButton } from '@app/classes/mouse'
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { FillingService } from '@app/services/tool-modifier/filling/filling.service';
 import { ToleranceService } from '@app/services/tool-modifier/tolerance/tolerance.service';
-
-export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
-}
 
 //const INCREMENTAL_VALUE_WIDTH = 4;
 @Injectable({
@@ -67,37 +60,17 @@ export class PaintService extends Tool {
             if (this.fillingService.getNeighbourPixelsOnly() && this.colorService.getPrimaryColor() != this.startRGBHex) {
                 this.floodFill(this.drawingService.baseCtx, this.pathData);
             } else {
-                this.sameColorFill(this.drawingService.baseCtx, this.pathData);
+                this.sameColorFill(this.drawingService.baseCtx);
             }
         }
     }
 
     onMouseUp(event: MouseEvent): void {
-        if (this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
-            this.pathData.push(mousePosition);
-        }
         this.mouseDown = false;
         this.clearPath();
     }
 
-    onMouseMove(event: MouseEvent): void {
-        if (this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
-            this.pathData.push(mousePosition);
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            if (!this.isInCanvas(mousePosition) && this.mouseDown) {
-                if (mousePosition.x >= this.drawingService.baseCtx.canvas.width) {
-                    this.drawingService.previewCtx.canvas.width = mousePosition.x;
-                }
-                if (mousePosition.y >= this.drawingService.baseCtx.canvas.height) {
-                    this.drawingService.previewCtx.canvas.height = mousePosition.y;
-                }
-            }
-        }
-    }
-
-    sameColorFill(ctx: CanvasRenderingContext2D, pathPixel: Vec2[]) {
+    sameColorFill(ctx: CanvasRenderingContext2D) {
         this.setAttribute(ctx);
         let pixelPos: Vec2 = { x: 0, y: 0 };
         while (pixelPos.y < ctx.canvas.height) {
@@ -110,6 +83,7 @@ export class PaintService extends Tool {
             pixelPos.y++;
             pixelPos.x = 0;
         }
+
     }
 
     floodFill(ctx: CanvasRenderingContext2D, pathPixel: Vec2[]): void {
