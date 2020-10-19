@@ -118,6 +118,9 @@ export class DrawingComponent implements AfterViewInit {
         } else if (event.key === 'Escape') {
             this.toolbox.getCurrentTool().onEscapeDown(event);
             this.hasBeenDrawnOnto = true;
+        } else if (event.ctrlKey && event.key.toLowerCase() === 's') {
+            event.preventDefault(); //to prevent key of windows
+            this.savedService.openSaveDialog();
         }
     }
 
