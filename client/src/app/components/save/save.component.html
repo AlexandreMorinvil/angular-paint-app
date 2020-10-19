@@ -3,8 +3,8 @@
     <p>
         <mat-form-field class="name">
             <mat-label>Nom du Dessin</mat-label>
-            <input matInput [formControl]="name" placeholder="Ex. dessin" />
-            <mat-error *ngIf="name.invalid"> Entrer un nom de dessin </mat-error>
+            <input matInput [formControl]="drawName" placeholder="Ex. dessin" />
+            <mat-error *ngIf="drawName.invalid"> Entrer un nom de dessin </mat-error>
         </mat-form-field>
     </p>
     <p>
@@ -26,8 +26,9 @@
     </p>
 
     <div mat-dialog-actions>
-        <button class="button1" mat-button mat-dialog-close>Annuler</button>
-        <button class="button2" mat-button mat-dialog-close (click)="saveToPNG()">Sauvegarder en PNG</button>
+        <button id="buttonSavePNG" (click)="saveToPNG()">Sauvegarder en PNG</button>
+        <button id="buttonSaveServer" (click)="saveToServer()">Sauvegarder sur le Serveur</button>
+        <button id="buttonCancel" mat-button mat-dialog-close>Annuler</button>
     </div>
     <h6>Choisir un nom de dessin entre 1 et 20 charactères, sans espaces et un maximum de 10 tags par dessin</h6>
 </div>

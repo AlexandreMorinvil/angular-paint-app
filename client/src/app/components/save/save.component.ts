@@ -8,7 +8,7 @@ import { SaveService } from '@app/services/tools/save/save.service';
 import { DialogData } from '../user-guide-modal/user-guide-modal.component';
 
 export interface Tag {
-    name: string;
+    tagName: string;
 }
 
 @Component({
@@ -17,10 +17,12 @@ export interface Tag {
     styleUrls: ['./save.component.scss'],
 })
 export class SaveComponent {
+    //private alreadySavePNG = false;
+    //private alreadySaveServer = false;
     visible = true;
     readonly separatorKeysCodes: number[] = [ENTER, COMMA];
     tags: Tag[] = [];
-    public name: FormControl = new FormControl('', Validators.required);
+    public drawName: FormControl = new FormControl('', Validators.required);
     constructor(
         public saveService: SaveService,
         public dialogRef: MatDialogRef<SaveComponent>,
@@ -35,7 +37,7 @@ export class SaveComponent {
 
         // Add the tag
         if ((value || '').trim()) {
-            this.tags.push({ name: value.trim() });
+            this.tags.push({ tagName: value.trim() });
         }
 
         // Reset the input value
@@ -51,8 +53,27 @@ export class SaveComponent {
             this.tags.splice(index, 1);
         }
     }
+
     saveToPNG(): void {
-        const drawName = this.name.value;
-        this.saveService.saveDrawToPNG(drawName);
+        if (this.validateValue()) {
+            (document.getElementById('buttonSavePNG') as HTMLInputElement).disabled = true;
+            const drawName = this.drawName.value;
+            this.saveService.saveDrawToPNG(drawName);
+        }
+    }
+
+    saveToServer(): void {
+        if (this.validateValue()) {
+            //code for saving into server image
+            (document.getElementById('buttonSaveServer') as HTMLInputElement).disabled = true;
+        }
+    }
+
+    validateValue(): boolean {
+        const noName = '';
+        if (this.drawName.value == noName) {
+            return false;
+        }
+        return true;
     }
 }
