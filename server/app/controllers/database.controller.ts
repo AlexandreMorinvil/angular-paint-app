@@ -19,14 +19,41 @@ export class DatabaseController {
         this.router = Router();
 
         this.router.get('/', async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const drawings: Drawing[] = await this.databaseService.getAllDrawings();
+                res.json(drawings);
+            } catch (error) {
+                res.status(Httpstatus.NOT_FOUND).send(error.message);
+            }
+        });
+
+        this.router.get('/:drawingId', async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const drawing: Drawing = await this.databaseService.getDrawing(req.params.drawingId);
+                res.json(drawing);
+            } catch(error) {
+                res.status(Httpstatus.NOT_FOUND).send(error.message);
+            }
+        });
+
+        this.router.post('/', async (req: Request, res: Response, next: NextFunction) => {
             this.databaseService
-                .getAllDrawings()
-                .then((drawings: Drawing[]) => {
-                    res.json(drawings);
+                .addDrawing(req.body)
+                .then(() => {
+                    res.status(Httpstatus.CREATED).send();
                 })
                 .catch((error: Error) => {
                     res.status(Httpstatus.NOT_FOUND).send(error.message);
                 });
+        });
+
+        this.router.delete('/:drawingId', async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                await this.databaseService.deleteDrawing(req.params.drawingId);
+                res.status(Httpstatus.NO_CONTENT).send();
+            } catch (error) {
+                res.status(Httpstatus.NOT_FOUND).send(error.message);
+            }
         });
     }
 }
