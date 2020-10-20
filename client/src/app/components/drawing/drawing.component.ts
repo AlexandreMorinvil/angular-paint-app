@@ -33,8 +33,8 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
-        this.editCtx.canvas.width = window.innerWidth - this.TOOL_BOX_WIDTH;
-        this.editCtx.canvas.height = window.innerHeight;
+        this.editCtx.canvas.width = 32 //window.innerWidth - this.TOOL_BOX_WIDTH;
+        this.editCtx.canvas.height = 32 //window.innerHeight;
         this.drawingService.hasBeenDrawnOnto = false;
         // Fills the canvas with white
         this.baseCtx.fillStyle = '#FFFFFF';
