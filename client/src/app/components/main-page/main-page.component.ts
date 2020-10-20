@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { DrawingCarouselService } from '@app/services/drawing-carousel/drawing-carousel.service';
-import { UserGuideModalService } from '@app/services/user-guide-modal/user-guide-modal.service';
+import { ModalHandlerService } from '@app/services/modal-handler/modal-handler';
 
 @Component({
     selector: 'app-main-page',
@@ -8,13 +7,13 @@ import { UserGuideModalService } from '@app/services/user-guide-modal/user-guide
     styleUrls: ['./main-page.component.scss'],
 })
 export class MainPageComponent {
-    constructor(private userGuideModalService: UserGuideModalService, private drawingCarouselService: DrawingCarouselService) {}
+    constructor(private modalHandler: ModalHandlerService) {}
 
     openDrawingCarousel(): void {
-        this.drawingCarouselService.openDrawingCarouselDialog();
+        this.modalHandler.openDrawingCarouselDialog();
     }
 
     openUserGuide(): void {
-        this.userGuideModalService.openUserGuide();
+        this.modalHandler.openUserGuide();
     }
 }

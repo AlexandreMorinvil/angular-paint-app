@@ -1,6 +1,7 @@
 // import { variable } from '@angular/compiler/src/output/output_ast';
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ModalHandlerService } from '@app/services/modal-handler/modal-handler';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
 import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzone-size.service';
 
@@ -24,7 +25,12 @@ export class DrawingComponent implements AfterViewInit {
 
     hasBeenDrawnOnto: boolean;
 
-    constructor(private drawingService: DrawingService, public toolbox: ToolboxService, private workzoneSizeService: WorkzoneSizeService) {}
+    constructor(
+        public modalHandlerService: ModalHandlerService,
+        private drawingService: DrawingService,
+        public toolbox: ToolboxService,
+        private workzoneSizeService: WorkzoneSizeService,
+    ) {}
 
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -87,16 +93,22 @@ export class DrawingComponent implements AfterViewInit {
     @HostListener('window:keyup', ['$event'])
     keyEventUp(event: KeyboardEvent): void {
         if (event.key === 'Shift') {
-            this.toolbox.getCurrentTool().onShiftUp(event);
+            if (this.drawingService.shortcutEnable) {
+                this.toolbox.getCurrentTool().onShiftUp(event);
+            }
             // The deprecation warning is justified in this case because some operating systems
             // do recognize the keycodes while others will prefere the 'Backspace' reference
             // tslint:disable-next-line:deprecation
         } else if (event.key === 'Backspace' || event.keyCode === this.BACKSPACE_KEYCODE) {
-            this.toolbox.getCurrentTool().onBackspaceDown(event);
+            if (this.drawingService.shortcutEnable) {
+                this.toolbox.getCurrentTool().onBackspaceDown(event);
+            }
         } else {
-            for (const i in this.toolbox.getAvailableTools()) {
-                if (this.toolbox.getAvailableTools()[i].shortcut === event.key.toLowerCase()) {
-                    this.toolbox.setSelectedTool(this.toolbox.getAvailableTools()[i]);
+            if (this.drawingService.shortcutEnable) {
+                for (const i in this.toolbox.getAvailableTools()) {
+                    if (this.toolbox.getAvailableTools()[i].shortcut === event.key.toLowerCase()) {
+                        this.toolbox.setSelectedTool(this.toolbox.getAvailableTools()[i]);
+                    }
                 }
             }
         }
@@ -109,6 +121,9 @@ export class DrawingComponent implements AfterViewInit {
         } else if (event.key === 'Escape') {
             this.toolbox.getCurrentTool().onEscapeDown(event);
             this.hasBeenDrawnOnto = true;
+        } else if (event.ctrlKey && event.key.toLowerCase() === 's') {
+            event.preventDefault(); // to prevent key of windows
+            this.modalHandlerService.openSaveDialog();
         }
     }
 

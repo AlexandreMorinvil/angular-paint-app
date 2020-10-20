@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { DialogData } from '@app/components/user-guide-modal/user-guide-modal.component';
+import { DialogData } from '@app/classes/dialog-data';
 
 export interface Tag {
     tagName: string;
