@@ -1,16 +1,12 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
-
-export interface DialogData {
-    height: number;
-    width: number;
-}
+import { DialogData } from '@app/classes/dialog-data';
 
 @Component({
-    selector: 'app-user-guide-modal',
-    templateUrl: './user-guide-modal.component.html',
-    styleUrls: ['./user-guide-modal.component.scss'],
+    selector: 'app-modal-user-guide',
+    templateUrl: './modal-user-guide.component.html',
+    styleUrls: ['./modal-user-guide.component.scss'],
 })
 export class UserGuideModalComponent {
     constructor(

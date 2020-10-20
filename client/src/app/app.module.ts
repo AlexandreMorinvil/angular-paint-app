@@ -20,10 +20,10 @@ import { AttributesPanelComponent } from './components/attributes-panel/attribut
 import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorPageComponent } from './components/editor-page/editor-page.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
-import { SaveComponent } from './components/save/save.component';
+import { SaveComponent } from './components/modal/modal-save/modal-save.component';
+import { UserGuideModalComponent } from './components/modal/modal-user-guide/modal-user-guide.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { TooltipComponent } from './components/tooltip/tooltip.component';
-import { UserGuideModalComponent } from './components/user-guide-modal/user-guide-modal.component';
 import { WorkspaceComponent } from './components/workspace/workspace.component';
 
 @NgModule({

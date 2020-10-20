@@ -15,8 +15,6 @@ import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { LineService } from '@app/services/tools/line/line-service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
-import { SaveService } from '@app/services/tools/save/save.service';
-import { UserGuideModalService } from '@app/services/user-guide-modal/user-guide-modal.service';
 import { SidebarComponent } from './sidebar.component';
 class ToolStub extends Tool {}
 
@@ -44,7 +42,6 @@ describe('SidebarComponent', () => {
             {} as RectangleService,
             {} as EllipseService,
             {} as LineService,
-            {} as SaveService,
         );
 
         TestBed.configureTestingModule({
@@ -57,14 +54,12 @@ describe('SidebarComponent', () => {
                 { provide: DrawingService, useValue: drawingStub },
                 { provide: RectangleService, useValue: toolStub },
                 { provide: EllipseService, useValue: toolStub },
-                { provide: SaveService, useValue: toolStub },
                 { provide: CursorService, useValue: toolStub },
                 { provide: ToolboxService, useValue: toolboxSpy },
                 { provide: RouterModule, useValue: routerSpy },
                 { provide: MAT_DIALOG_DATA, useValue: {} },
                 { provide: MatDialogRef, useValue: {} },
                 { provide: MatDialog, useValue: {} },
-                UserGuideModalService,
             ],
         }).compileComponents();
     }));
@@ -76,7 +71,7 @@ describe('SidebarComponent', () => {
         component['toolboxSevice'] = toolserviceMock;
         routerSpy = spyOn<any>(component['router'], 'navigate').and.callThrough();
         drawServiceSpy = spyOn<any>(component['drawingService'], 'resetDrawingWithWarning');
-        openGuideSpy = spyOn<any>(component['userGuideModalService'], 'openUserGuide');
+        openGuideSpy = spyOn<any>(component['modalHandler'], 'openUserGuide');
         fixture.detectChanges();
     });
 

@@ -4,25 +4,25 @@ import { FormControl, Validators } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
-import { SaveService } from '@app/services/tools/save/save.service';
-import { DialogData } from '../user-guide-modal/user-guide-modal.component';
+import { DialogData } from '@app/classes/dialog-data';
+import { SaveService } from '@app/services/save/save.service';
 
 export interface Tag {
     tagName: string;
 }
 
 @Component({
-    selector: 'app-save',
-    templateUrl: './save.component.html',
-    styleUrls: ['./save.component.scss'],
+    selector: 'app-modal-save',
+    templateUrl: './modal-save.component.html',
+    styleUrls: ['./modal-save.component.scss'],
 })
 export class SaveComponent {
-    //private alreadySavePNG = false;
-    //private alreadySaveServer = false;
-    visible = true;
+    // private alreadySavePNG = false;
+    // private alreadySaveServer = false;
+    visible: boolean = true;
     readonly separatorKeysCodes: number[] = [ENTER, COMMA];
     tags: Tag[] = [];
-    public drawName: FormControl = new FormControl('', Validators.required);
+    drawName: FormControl = new FormControl('', Validators.required);
     constructor(
         public saveService: SaveService,
         public dialogRef: MatDialogRef<SaveComponent>,
@@ -64,14 +64,14 @@ export class SaveComponent {
 
     saveToServer(): void {
         if (this.validateValue()) {
-            //code for saving into server image
+            // code for saving into server image
             (document.getElementById('buttonSaveServer') as HTMLInputElement).disabled = true;
         }
     }
 
     validateValue(): boolean {
         const noName = '';
-        if (this.drawName.value == noName) {
+        if (this.drawName.value === noName) {
             return false;
         }
         return true;
