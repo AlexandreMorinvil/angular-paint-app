@@ -9,8 +9,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app/app.component';
-// Providers
-import { ApiDrawingService } from './services/api/api-drawing.service';
 
 // Attribute components
 import { AttributeColorComponent } from './components/attributes-panel/attribute-color/attributes-color.component';
@@ -19,6 +17,7 @@ import { AttributeTextureComponent } from './components/attributes-panel/attribu
 import { AttributeTracingComponent } from './components/attributes-panel/attribute-tracing/attributes-tracing.component';
 import { AttributeWidthComponent } from './components/attributes-panel/attribute-width/attributes-width.component';
 import { AttributesPanelComponent } from './components/attributes-panel/attributes-panel.component';
+import { DrawingCarouselComponent } from './components/drawing-carousel/drawing-carousel.component';
 import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorPageComponent } from './components/editor-page/editor-page.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
@@ -39,6 +38,7 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
         EditorPageComponent,
         SidebarComponent,
         DrawingComponent,
+        DrawingCarouselComponent,
         MainPageComponent,
         TooltipComponent,
         WorkspaceComponent,
@@ -60,7 +60,7 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
         MatTabsModule,
     ],
     entryComponents: [],
-    providers: [{ provide: MAT_DIALOG_DATA, useValue: [] }, ApiDrawingService],
+    providers: [{ provide: MAT_DIALOG_DATA, useValue: [] }],
     bootstrap: [AppComponent],
 })
 export class AppModule {}

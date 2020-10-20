@@ -16,15 +16,15 @@ export class ApiDrawingService {
         return this.http.get<Drawing[]>(this.BASE_URL).pipe(catchError(this.handleError<Drawing[]>('getAll')));
     }
 
-    getById(id:string): Observable<Drawing> {
+    getById(id: string): Observable<Drawing> {
         return this.http.get<Drawing>(this.BASE_URL + id).pipe(catchError(this.handleError<Drawing>('getByID')));
     }
 
-    getByName(name:string): Observable<Drawing[]> {
+    getByName(name: string): Observable<Drawing[]> {
         return this.http.get<Drawing[]>(this.BASE_URL + name).pipe(catchError(this.handleError<Drawing[]>('getByName')));
     }
 
-    getByTag(tag:string): Observable<Drawing[]> {
+    getByTag(tag: string): Observable<Drawing[]> {
         return this.http.get<Drawing[]>(this.BASE_URL + tag).pipe(catchError(this.handleError<Drawing[]>('getByTag')));
     }
 
