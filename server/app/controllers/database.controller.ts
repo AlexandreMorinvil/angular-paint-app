@@ -4,7 +4,7 @@ import { DatabaseService } from '@app/services/database/database.service';
 import { inject, injectable } from 'inversify';
 
 import { TYPES } from '@app/types';
-import { Drawing } from '@app/schema/drawing';
+import { Drawing } from '@common/schema/drawing';
 
 @injectable()
 export class DatabaseController {

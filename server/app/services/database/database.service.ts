@@ -1,7 +1,7 @@
 import { injectable } from 'inversify';
 import { Collection, MongoClient, MongoClientOptions, ObjectID, FilterQuery, UpdateQuery } from 'mongodb';
 import 'reflect-metadata';
-import { Drawing, MAX_NAME_LENGTH } from '@app/schema/drawing';
+import { Drawing, MAX_NAME_LENGTH } from '@common/schema/drawing';
 
 // CHANGE the URL for your database information
 const DATABASE_URL = 'mongodb+srv://team106:secret106@cluster0.fspbf.azure.mongodb.net/integrator-project?retryWrites=true&w=majority';

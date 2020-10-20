@@ -9,6 +9,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app/app.component';
+// Providers
+import { ApiDrawingService } from './services/api/api-drawing.service';
+
 // Attribute components
 import { AttributeColorComponent } from './components/attributes-panel/attribute-color/attributes-color.component';
 import { AttributeJunctionComponent } from './components/attributes-panel/attribute-junction/attributes-junction.component';
@@ -57,7 +60,7 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
         MatTabsModule,
     ],
     entryComponents: [],
-    providers: [{ provide: MAT_DIALOG_DATA, useValue: [] }],
+    providers: [{ provide: MAT_DIALOG_DATA, useValue: [] }, ApiDrawingService],
     bootstrap: [AppComponent],
 })
 export class AppModule {}
