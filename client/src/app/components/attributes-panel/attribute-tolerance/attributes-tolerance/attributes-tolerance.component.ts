@@ -10,7 +10,7 @@ export class AttributesToleranceComponent {
     tolerance: number;
 
     constructor(private toleranceService: ToleranceService) {
-        this.tolerance = this.toleranceService.getTolerance();
+        this.tolerance = this.toleranceService.getPercentTolerance();
     }
 
     getMaxValue(): number {
@@ -26,10 +26,10 @@ export class AttributesToleranceComponent {
     }
 
     revert(): void {
-        this.tolerance = this.toleranceService.getTolerance();
+        this.tolerance = this.toleranceService.getPercentTolerance();
     }
 
     needConfirmation(): boolean {
-        return this.tolerance !== this.toleranceService.getTolerance();
+        return this.tolerance !== this.toleranceService.getPercentTolerance();
     }
 }

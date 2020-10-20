@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Description } from '@app/classes/description';
-import { MouseButton } from '@app/classes/mouse'
+import { MouseButton } from '@app/classes/mouse';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -8,7 +8,6 @@ import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { FillingService } from '@app/services/tool-modifier/filling/filling.service';
 import { ToleranceService } from '@app/services/tool-modifier/tolerance/tolerance.service';
 
-//const INCREMENTAL_VALUE_WIDTH = 4;
 @Injectable({
     providedIn: 'root',
 })
@@ -22,15 +21,6 @@ export class PaintService extends Tool {
     private startR: number;
     private startG: number;
     private startB: number;
-
-    private tolerance: number;
-    //private index: number;
-    //private startA: number;
-
-    //private imageData: ImageData;
-
-    public startRGBHex: string;
-    public pixelRGBHex: string;
 
     constructor(
         drawingService: DrawingService,
@@ -50,32 +40,22 @@ export class PaintService extends Tool {
             this.clearPath();
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
-            /* this.getStartColor();
-            this.floodfillAlgorithm(); */
-            //this.floodfill(this.toleranceService.getTolerance());
-            this.getStartColor();
-            //this.setFillColor();
+            this.setStartColor();
+            this.setFillColor();
 
-            //console.log(this.colorDifference(this.startRGBHex, this.colorService.getPrimaryColor()));
-            //console.log(this.startR + '' + this.startG + '' + this.startB);
-            this.updateTolerance();
-            if (this.fillingService.getNeighbourPixelsOnly() && this.colorService.getPrimaryColor() != this.startRGBHex) {
+            if (this.fillingService.getNeighbourPixelsOnly()) {
                 this.floodFill(this.drawingService.baseCtx, this.pathData);
             } else {
                 this.sameColorFill(this.drawingService.baseCtx);
             }
         }
     }
-    onMouseMove(event: MouseEvent){
-
-    }
 
     onMouseUp(event: MouseEvent): void {
         this.mouseDown = false;
-        this.clearPath();
     }
 
-    sameColorFill(ctx: CanvasRenderingContext2D) {
+    sameColorFill(ctx: CanvasRenderingContext2D): void {
         this.setAttribute(ctx);
         let pixelPos: Vec2 = { x: 0, y: 0 };
         while (pixelPos.y < ctx.canvas.height) {
@@ -88,39 +68,33 @@ export class PaintService extends Tool {
             pixelPos.y++;
             pixelPos.x = 0;
         }
-
     }
 
     floodFill(ctx: CanvasRenderingContext2D, pathPixel: Vec2[]): void {
         this.setAttribute(ctx);
         while (pathPixel.length) {
             let pixelPos = pathPixel.pop()!;
-
             let x = pixelPos.x;
             let y = pixelPos.y;
 
             // Get current pixel position
-            //this.index = (y * this.drawingService.baseCtx.canvas.width + x) * 4;
-            console.log(this.matchStartColor(pixelPos))
+            console.log(this.matchStartColor(pixelPos));
 
             // Go up as long as the color matches and are inside the canvas
             while (y-- > -1 && this.matchStartColor(pixelPos)) {
                 pixelPos.y -= 1;
-                //this.index -= this.drawingService.baseCtx.canvas.width * 4;
             }
             pixelPos.y += 1;
             ++y;
 
-            //this.index += this.drawingService.baseCtx.canvas.width * 4;
             let reachLeft = false;
             let reachRight = false;
-            //console.log(this.startR + '' + this.startG + '' + this.startB);
+
             // Go down as long as the color matches and in inside the canvas
             while (y++ <= this.drawingService.baseCtx.canvas.height - 2 && this.matchStartColor(pixelPos) ){
                 this.colorPixel(pixelPos);
-
                 if (x > 0){
-                    if (this.matchStartColor({x: pixelPos.x - 1, y: pixelPos.y}) ) {
+                    if (this.matchStartColor({x: pixelPos.x - 1, y: pixelPos.y})) {
                         if(!reachLeft){
                           // Add pixel to stack
                           pathPixel.push({ x: x - 1, y: y });
@@ -142,64 +116,28 @@ export class PaintService extends Tool {
                     }
                     pixelPos.y += 1;
                 }
-
-                //this.index += this.drawingService.baseCtx.canvas.width * 4;
             }
         }
     }
 
-    getStartColor() {
+    setStartColor() {
         //get the pixel on the first Path of mouse
         const imageData: ImageData = this.drawingService.baseCtx.getImageData(this.pathData[0].x, this.pathData[0].y, 1, 1);
         this.startR = imageData.data[0];
         this.startG = imageData.data[1];
         this.startB = imageData.data[2];
+    }
 
+    setFillColor(){
         let rgb = this.convertHexToRGB(this.colorService.getPrimaryColor())
         this.fillColorR = rgb[0];
         this.fillColorG = rgb[1];
         this.fillColorB = rgb[2];
-        console.log(this.fillColorR)
-
-/*
-        let rHex = this.startR.toString(16);
-        let gHex = this.startG.toString(16);
-        let bHex = this.startB.toString(16);
-
-        if (rHex.length == 1) rHex = '0' + rHex;
-        if (gHex.length == 1) gHex = '0' + gHex;
-        if (bHex.length == 1) bHex = '0' + bHex;
-
-        this.startRGBHex = '#' + rHex + gHex + bHex;
-*/
     }
 
-    getPixelColorHex(pixelPos: Vec2): void {
-        //get the pixel on the first Path of mouse
-        const imageData: ImageData = this.drawingService.baseCtx.getImageData(pixelPos.x, pixelPos.y, 1, 1);
-        let r = imageData.data[0];
-        let g = imageData.data[1];
-        let b = imageData.data[2];
 
-        let rHex = r.toString(16);
-        let gHex = g.toString(16);
-        let bHex = b.toString(16);
-
-        if (rHex.length == 1) rHex = '0' + rHex;
-        if (gHex.length == 1) gHex = '0' + gHex;
-        if (bHex.length == 1) bHex = '0' + bHex;
-
-        this.pixelRGBHex = '#' + rHex + gHex + bHex;
-    }
-
-    updateTolerance(){
-      this.tolerance = this.toleranceService.getPercentageTolerance();
-    }
 
     matchStartColor(pixelPos: Vec2): boolean {
-        //this.getPixelColorHex(pixelPos);
-        //return this.similarColor();
-        //console.log(this.index);
 
         const imageData: ImageData = this.drawingService.baseCtx.getImageData(pixelPos.x, pixelPos.y, 1, 1);
 
@@ -208,55 +146,18 @@ export class PaintService extends Tool {
         Math.abs(this.startG - imageData.data[1]) +
         Math.abs(this.startB - imageData.data[2])) / 3);
 
-        if ((imageData.data[0] === this.fillColorR && imageData.data[1] === this.fillColorG && imageData.data[2] === this.fillColorB))
-          return false;
-
-        if ( average <= this.tolerance /*&& (imageData.data[0] != this.fillColorR && imageData.data[1] != this.fillColorG && imageData.data[2] != this.fillColorB)*/){
+        if (
+            average <= this.toleranceService.getPixelTolerance() &&
+            !(imageData.data[0] === this.fillColorR && imageData.data[1] === this.fillColorG && imageData.data[2] === this.fillColorB)
+            ){
             return true; //target to surface within tolerance
         }
         return false;
     }
 
-    /* similarColor(): boolean {
-        let difference = this.colorDifference(this.pixelRGBHex, this.startRGBHex)!;
-        if (difference <= this.toleranceService.getTolerance()) {
-            return true;
-        } else return false;
-    } */
-
     colorPixel(pixelPos: Vec2): void {
-        //Using fillRect method
         this.drawingService.baseCtx.fillRect(pixelPos.x, pixelPos.y, 1, 1);
-        //Using putImageData metho
     }
-
-    /*   colorDifference(firstColor: string, secondColor: string) {
-        if (!firstColor && !secondColor) return;
-
-        const _firstColor = firstColor.charAt(0) == '#' ? firstColor.substring(1, 7) : firstColor;
-        const _secondColor = secondColor.charAt(0) == '#' ? secondColor.substring(1, 7) : secondColor;
-
-        const _r = parseInt(_firstColor.substring(0, 2), 16);
-        const _g = parseInt(_firstColor.substring(2, 4), 16);
-        const _b = parseInt(_firstColor.substring(4, 6), 16);
-
-        const __r = parseInt(_secondColor.substring(0, 2), 16);
-        const __g = parseInt(_secondColor.substring(2, 4), 16);
-        const __b = parseInt(_secondColor.substring(4, 6), 16);
-
-        let r1 = (_r / 255) * 100;
-        let g1 = (_g / 255) * 100;
-        let b1 = (_b / 255) * 100;
-
-        let perc1 = Math.round((r1 + g1 + b1) / 3);
-
-        let r2 = (__r / 255) * 100;
-        let g2 = (__g / 255) * 100;
-        let b2 = (__b / 255) * 100;
-
-        let perc2 = Math.round((r2 + g2 + b2) / 3);
-        return Math.abs(perc1 - perc2);
-    } */
 
     setAttribute(ctx: CanvasRenderingContext2D): void {
         ctx.fillStyle = this.colorService.getPrimaryColor();
@@ -267,23 +168,17 @@ export class PaintService extends Tool {
         this.pathData = [];
     }
 
-    isInCanvas(mousePosition: Vec2): boolean {
-        return mousePosition.x <= this.drawingService.baseCtx.canvas.width && mousePosition.y <= this.drawingService.baseCtx.canvas.height;
-    }
     convertHexToRGB (hex: string) {
-      hex = hex.substr(1);
-      var values = hex.split(''),
-          r,
-          g,
-          b;
-      r = parseInt(values[0].toString() + values[1].toString(), 16);
-      g = parseInt(values[2].toString() + values[3].toString(), 16);
-      b = parseInt(values[4].toString() + values[5].toString(), 16);
-      return [r, g, b];
+        hex = hex.substr(1);
+        let values = hex.split(''),
+            r,
+            g,
+            b;
+        r = parseInt(values[0].toString() + values[1].toString(), 16);
+        g = parseInt(values[2].toString() + values[3].toString(), 16);
+        b = parseInt(values[4].toString() + values[5].toString(), 16);
+        return [r, g, b];
     }
-
-
-
 }
 
 /*
@@ -479,6 +374,50 @@ export class PaintService extends Tool {
         }
         return false;
     }
+  colorDifference(firstColor: string, secondColor: string) {
+        if (!firstColor && !secondColor) return;
+
+        const _firstColor = firstColor.charAt(0) == '#' ? firstColor.substring(1, 7) : firstColor;
+        const _secondColor = secondColor.charAt(0) == '#' ? secondColor.substring(1, 7) : secondColor;
+
+        const _r = parseInt(_firstColor.substring(0, 2), 16);
+        const _g = parseInt(_firstColor.substring(2, 4), 16);
+        const _b = parseInt(_firstColor.substring(4, 6), 16);
+
+        const __r = parseInt(_secondColor.substring(0, 2), 16);
+        const __g = parseInt(_secondColor.substring(2, 4), 16);
+        const __b = parseInt(_secondColor.substring(4, 6), 16);
+
+        let r1 = (_r / 255) * 100;
+        let g1 = (_g / 255) * 100;
+        let b1 = (_b / 255) * 100;
+
+        let perc1 = Math.round((r1 + g1 + b1) / 3);
+
+        let r2 = (__r / 255) * 100;
+        let g2 = (__g / 255) * 100;
+        let b2 = (__b / 255) * 100;
+
+        let perc2 = Math.round((r2 + g2 + b2) / 3);
+        return Math.abs(perc1 - perc2);
+    }
+    getPixelColorHex(pixelPos: Vec2): void {
+        //get the pixel on the first Path of mouse
+        const imageData: ImageData = this.drawingService.baseCtx.getImageData(pixelPos.x, pixelPos.y, 1, 1);
+        let r = imageData.data[0];
+        let g = imageData.data[1];
+        let b = imageData.data[2];
+
+        let rHex = r.toString(16);
+        let gHex = g.toString(16);
+        let bHex = b.toString(16);
+
+        if (rHex.length == 1) rHex = '0' + rHex;
+        if (gHex.length == 1) gHex = '0' + gHex;
+        if (bHex.length == 1) bHex = '0' + bHex;
+
+        this.pixelRGBHex = '#' + rHex + gHex + bHex;
+    }
 
     setFillColor() {
         let hexColor = this.colorService.getPrimaryColor();
@@ -500,4 +439,7 @@ export class PaintService extends Tool {
 
             //console.log(this.fillColorR + ' ' + this.fillColorG + ' ' + this.fillColorB + ' ' + (this.fillColorA * 255).toFixed(0));
         }
+        isInCanvas(mousePosition: Vec2): boolean {
+        return mousePosition.x <= this.drawingService.baseCtx.canvas.width && mousePosition.y <= this.drawingService.baseCtx.canvas.height;
+    }
     } */
