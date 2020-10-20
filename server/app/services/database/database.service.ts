@@ -1,5 +1,5 @@
 import { injectable } from 'inversify';
-import { Collection, MongoClient, MongoClientOptions, ObjectID } from 'mongodb';
+import { Collection, MongoClient, MongoClientOptions, ObjectID, FilterQuery, UpdateQuery } from 'mongodb';
 import 'reflect-metadata';
 import { Drawing, MAX_NAME_LENGTH } from '@app/schema/drawing';
 
@@ -55,6 +55,24 @@ export class DatabaseService {
         }
     }
 
+    async getDrawingByName(drawingName: string): Promise<Drawing[]> {
+        try {
+            const drawings: Drawing[] = await this.collection.find({ name: drawingName }).toArray();
+            return drawings;
+        } catch (error) {
+            throw new Error(`Échec lors de la tentative de récupération de tous les dessins nommés ${drawingName}`);
+        }
+    }
+
+    async getDrawingByTags(drawingTag: string): Promise<Drawing[]> {
+        try {
+            const drawings: Drawing[] = await this.collection.find({ tags: drawingTag }).toArray();
+            return drawings;
+        } catch (error) {
+            throw new Error(`Échec lors de la tentative de récupération de tous les dessins ayant l'étiquettes ${drawingTag}`);
+        }
+    }
+
     async addDrawing(drawing: Drawing): Promise<void> {
         try {
             this.validateDrawing(drawing);
@@ -62,6 +80,24 @@ export class DatabaseService {
             return;
         } catch (error) {
             throw error;
+        }
+    }
+
+    async updateDrawing(drawingID: string, drawing: Drawing): Promise<Drawing> {
+        try {
+            // Update
+            let filterQuery: FilterQuery<Drawing> = { _id: new ObjectID(drawingID) };
+            let updateQuery: UpdateQuery<Drawing> = {
+                $set: { name: drawing.name, tags: drawing.tags },
+            };
+            await this.collection.updateOne(filterQuery, updateQuery);
+
+            // Return updated value
+            const updatedDrawing: Drawing | null = await this.collection.findOne({ _id: new ObjectID(drawingID) });
+            if (!updatedDrawing) throw new Error();
+            return updatedDrawing;
+        } catch (error) {
+            throw new Error('Échec lors de la tentative de mise à jour du dessin');
         }
     }
 
