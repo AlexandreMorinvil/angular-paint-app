@@ -18,7 +18,7 @@ import { AttributeTextureComponent } from './components/attributes-panel/attribu
 import { AttributeTracingComponent } from './components/attributes-panel/attribute-tracing/attributes-tracing.component';
 import { AttributeWidthComponent } from './components/attributes-panel/attribute-width/attributes-width.component';
 import { AttributesPanelComponent } from './components/attributes-panel/attributes-panel.component';
-import { DrawingCarouselComponent } from './components/drawing-carousel/drawing-carousel.component';
+import { DrawingCarouselComponent } from './components/modal/modal-drawing-carousel/modal-drawing-carousel.component';
 import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorPageComponent } from './components/editor-page/editor-page.component';
 import { MainPageComponent } from './components/main-page/main-page.component';

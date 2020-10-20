@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { DrawingCarouselComponent } from '@app/components/drawing-carousel/drawing-carousel.component';
+import { DrawingCarouselComponent } from '@app/components/modal/modal-drawing-carousel/modal-drawing-carousel.component';
 import { SaveComponent } from '@app/components/modal/modal-save/modal-save.component';
 import { UserGuideModalComponent } from '@app/components/modal/modal-user-guide/modal-user-guide.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';

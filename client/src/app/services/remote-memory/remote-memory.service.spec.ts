@@ -1,13 +1,13 @@
 // import { TestBed } from '@angular/core/testing';
 
-// import { MemoryService } from './memory.service';
+// import { RemoteMemoryService } from './memory.service';
 
-// describe('MemoryService', () => {
-//   let service: MemoryService;
+// describe('RemoteMemoryService', () => {
+//   let service: RemoteMemoryService;
 
 //   beforeEach(() => {
 //     TestBed.configureTestingModule({});
-//     service = TestBed.inject(MemoryService);
+//     service = TestBed.inject(RemoteMemoryService);
 //   });
 
 //   it('should be created', () => {

@@ -7,9 +7,9 @@ export interface Tag {
 }
 
 @Component({
-    selector: 'app-drawing-carousel',
-    templateUrl: './drawing-carousel.html',
-    styleUrls: ['./drawing-carousel.scss'],
+    selector: 'app-modal-drawing-carousel',
+    templateUrl: './modal-drawing-carousel.html',
+    styleUrls: ['./modal-drawing-carousel.scss'],
 })
 export class DrawingCarouselComponent {
     constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) {}
