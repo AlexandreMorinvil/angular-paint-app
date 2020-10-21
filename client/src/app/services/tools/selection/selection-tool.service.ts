@@ -14,7 +14,6 @@ export enum MouseButton {
     Back = 3,
     Forward = 4,
 }
-
 export enum Anchors {
     Default = 0,
     TopLeft = 1,
@@ -26,7 +25,6 @@ export enum Anchors {
     BottomMiddle = 7,
     BottomRight = 8,
 }
-
 const DOTSIZE = 10;
 
 @Injectable({
@@ -159,17 +157,14 @@ export class SelectionToolService extends Tool {
         // start coner
         ctx.arc(this.startDownCoord.x, this.startDownCoord.y, DOTSIZE, 0, Math.PI * 2, false);
         ctx.closePath();
-
         // end corner
         ctx.arc(this.startDownCoord.x + this.imageData.width, this.startDownCoord.y + this.imageData.height, DOTSIZE, 0, Math.PI * 2, false);
         ctx.closePath();
-
         // two other corner
         ctx.arc(this.startDownCoord.x, this.startDownCoord.y + this.imageData.height, DOTSIZE, 0, Math.PI * 2, false);
         ctx.closePath();
         ctx.arc(this.startDownCoord.x + this.imageData.width, this.startDownCoord.y, DOTSIZE, 0, Math.PI * 2, false);
         ctx.closePath();
-
         // four mid anchor
         ctx.arc(
             (this.imageData.width + this.startDownCoord.x * 2) / 2,
@@ -200,7 +195,6 @@ export class SelectionToolService extends Tool {
         let x: number;
         let y: number;
         const dotSizeSquare: number = Math.pow(DOTSIZE, 2);
-
         // top left corner
         x = Math.pow(mouse.x - this.startDownCoord.x, 2);
         y = Math.pow(mouse.y - this.startDownCoord.y, 2);
@@ -208,7 +202,6 @@ export class SelectionToolService extends Tool {
             this.clickOnAnchor = true;
             this.anchorHit = Anchors.TopLeft;
         }
-
         // top middle
         x = Math.pow(mouse.x - (this.startDownCoord.x + this.imageData.width / 2), 2);
         y = Math.pow(mouse.y - this.startDownCoord.y, 2);
@@ -216,7 +209,6 @@ export class SelectionToolService extends Tool {
             this.clickOnAnchor = true;
             this.anchorHit = Anchors.TopMiddle;
         }
-
         // top right corner
         x = Math.pow(mouse.x - (this.imageData.width + this.startDownCoord.x), 2);
         y = Math.pow(mouse.y - this.startDownCoord.y, 2);
@@ -224,7 +216,6 @@ export class SelectionToolService extends Tool {
             this.clickOnAnchor = true;
             this.anchorHit = Anchors.TopRight;
         }
-
         // middle left
         x = Math.pow(mouse.x - this.startDownCoord.x, 2);
         y = Math.pow(mouse.y - (this.startDownCoord.y + this.imageData.height / 2), 2);
@@ -232,7 +223,6 @@ export class SelectionToolService extends Tool {
             this.clickOnAnchor = true;
             this.anchorHit = Anchors.MiddleLeft;
         }
-
         // middle right
         x = Math.pow(mouse.x - (this.imageData.width + this.startDownCoord.x), 2);
         y = Math.pow(mouse.y - (this.startDownCoord.y + this.imageData.height / 2), 2);
@@ -240,7 +230,6 @@ export class SelectionToolService extends Tool {
             this.clickOnAnchor = true;
             this.anchorHit = Anchors.MiddleRight;
         }
-
         // bottom left corner
         x = Math.pow(mouse.x - this.startDownCoord.x, 2);
         y = Math.pow(mouse.y - (this.imageData.height + this.startDownCoord.y), 2);
@@ -248,7 +237,6 @@ export class SelectionToolService extends Tool {
             this.clickOnAnchor = true;
             this.anchorHit = Anchors.BottomLeft;
         }
-
         // bottom middle
         x = Math.pow(mouse.x - (this.startDownCoord.x + this.imageData.width / 2), 2);
         y = Math.pow(mouse.y - (this.imageData.height + this.startDownCoord.y), 2);
@@ -256,7 +244,6 @@ export class SelectionToolService extends Tool {
             this.clickOnAnchor = true;
             this.anchorHit = Anchors.BottomMiddle;
         }
-
         // bottom right corner
         x = Math.pow(mouse.x - (this.imageData.width + this.startDownCoord.x), 2);
         y = Math.pow(mouse.y - (this.imageData.height + this.startDownCoord.y), 2);
@@ -264,7 +251,6 @@ export class SelectionToolService extends Tool {
             this.clickOnAnchor = true;
             this.anchorHit = Anchors.BottomRight;
         }
-
         if (!this.clickOnAnchor) {
             this.clickOnAnchor = false;
             this.anchorHit = Anchors.Default;
@@ -287,14 +273,13 @@ export class SelectionToolService extends Tool {
     }
 
     private offsetAnchors(): void {
-        if (this.startDownCoord.x > this.pathData[this.pathData.length - 1].x) {
+        if (this.startDownCoord.x > this.pathData[this.pathData.length - 1].x || this.startDownCoord.y > this.pathData[this.pathData.length - 1].y) {
             if (this.startDownCoord.y > this.pathData[this.pathData.length - 1].y) {
-                this.startDownCoord = this.pathData[this.pathData.length - 1];
-            } else {
+                this.startDownCoord.y = this.pathData[this.pathData.length - 1].y;
+            }
+            if (this.startDownCoord.x > this.pathData[this.pathData.length - 1].x) {
                 this.startDownCoord.x = this.pathData[this.pathData.length - 1].x;
             }
-        } else if (this.startDownCoord.y > this.pathData[this.pathData.length - 1].y) {
-            this.startDownCoord.y = this.pathData[this.pathData.length - 1].y;
         }
     }
 
@@ -313,32 +298,31 @@ export class SelectionToolService extends Tool {
     }
 
     private getAnchorHit(canvas: CanvasRenderingContext2D, mousePosition: Vec2): void {
-        let adjustStartCoords: Vec2;
+        let adjustStartCoords: Vec2 = this.startDownCoord;
         let adjustOffsetCoords: Vec2;
         switch (this.anchorHit) {
             case Anchors.TopLeft:
                 adjustStartCoords = { x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y + this.imageData.height };
-                adjustOffsetCoords = { x: mousePosition.x - adjustStartCoords.x, y: mousePosition.y - adjustStartCoords.y };
+                adjustOffsetCoords = { x: mousePosition.x - adjustStartCoords.x, y: mousePosition.y - adjustStartCoords.y }; //
                 this.drawImage(canvas, adjustStartCoords, this.startDownCoord, mousePosition, adjustOffsetCoords);
                 break;
             case Anchors.TopMiddle:
                 adjustStartCoords = { x: this.startDownCoord.x, y: this.startDownCoord.y + this.imageData.height };
-                adjustOffsetCoords = { x: this.imageData.width, y: mousePosition.y - adjustStartCoords.y};
+                adjustOffsetCoords = { x: this.imageData.width, y: mousePosition.y - adjustStartCoords.y };
                 this.drawImage(canvas, adjustStartCoords, this.startDownCoord, mousePosition, adjustOffsetCoords);
                 break;
             case Anchors.TopRight:
                 adjustStartCoords = { x: this.startDownCoord.x, y: this.startDownCoord.y + this.imageData.height };
-                adjustOffsetCoords = { x: mousePosition.x - adjustStartCoords.x, y: mousePosition.y - adjustStartCoords.y };
+                adjustOffsetCoords = { x: mousePosition.x - adjustStartCoords.x, y: mousePosition.y - adjustStartCoords.y }; //
                 this.drawImage(canvas, adjustStartCoords, this.startDownCoord, mousePosition, adjustOffsetCoords);
                 break;
             case Anchors.MiddleLeft:
                 adjustStartCoords = { x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y };
-                adjustOffsetCoords = { x: mousePosition.x - adjustStartCoords.x, y: this.imageData.height};
+                adjustOffsetCoords = { x: mousePosition.x - adjustStartCoords.x, y: this.imageData.height };
                 this.drawImage(canvas, adjustStartCoords, this.startDownCoord, mousePosition, adjustOffsetCoords);
                 break;
             case Anchors.MiddleRight:
-                adjustStartCoords = this.startDownCoord;
-                adjustOffsetCoords = { x: mousePosition.x - adjustStartCoords.x, y: this.imageData.height};
+                adjustOffsetCoords = { x: mousePosition.x - adjustStartCoords.x, y: this.imageData.height };
                 this.drawImage(canvas, adjustStartCoords, this.startDownCoord, mousePosition, adjustOffsetCoords);
                 break;
             case Anchors.BottomLeft:
@@ -347,12 +331,10 @@ export class SelectionToolService extends Tool {
                 this.drawImage(canvas, adjustStartCoords, this.startDownCoord, mousePosition, adjustOffsetCoords);
                 break;
             case Anchors.BottomMiddle:
-                adjustStartCoords = this.startDownCoord;
-                adjustOffsetCoords = { x: this.imageData.width, y: mousePosition.y - adjustStartCoords.y};
+                adjustOffsetCoords = { x: this.imageData.width, y: mousePosition.y - adjustStartCoords.y };
                 this.drawImage(canvas, adjustStartCoords, this.startDownCoord, mousePosition, adjustOffsetCoords);
                 break;
             case Anchors.BottomRight:
-                adjustStartCoords = this.startDownCoord;
                 adjustOffsetCoords = { x: mousePosition.x - this.startDownCoord.x, y: mousePosition.y - this.startDownCoord.y };
                 this.drawImage(canvas, adjustStartCoords, this.startDownCoord, mousePosition, adjustOffsetCoords);
                 break;
@@ -361,11 +343,7 @@ export class SelectionToolService extends Tool {
         }
     }
 
-    private putImageData(mousePosition:Vec2, canvas: CanvasRenderingContext2D){
-        canvas.putImageData(
-            this.imageData,
-            mousePosition.x - this.imageData.width / 2,
-            mousePosition.y - this.imageData.height / 2,
-        );
+    private putImageData(mousePosition: Vec2, canvas: CanvasRenderingContext2D): void {
+        canvas.putImageData(this.imageData, mousePosition.x - this.imageData.width / 2, mousePosition.y - this.imageData.height / 2);
     }
 }
