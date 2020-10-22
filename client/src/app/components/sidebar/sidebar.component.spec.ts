@@ -15,6 +15,7 @@ import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { LineService } from '@app/services/tools/line/line-service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
+import { SelectionToolService } from '@app/services/tools/selection/selection-tool.service';
 import { UserGuideModalService } from '@app/services/user-guide-modal/user-guide-modal.service';
 import { SidebarComponent } from './sidebar.component';
 class ToolStub extends Tool {}
@@ -43,6 +44,7 @@ describe('SidebarComponent', () => {
             {} as RectangleService,
             {} as EllipseService,
             {} as LineService,
+            {} as SelectionToolService,
         );
 
         TestBed.configureTestingModule({
