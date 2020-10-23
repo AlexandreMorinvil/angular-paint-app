@@ -9,10 +9,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app/app.component';
+import { AttributeColorPickerViewerComponent } from './components/attributes-panel/attribute-color-picker-viewer/attribute-color-picker-viewer.component';
 // Attribute components
 import { AttributeColorComponent } from './components/attributes-panel/attribute-color/attributes-color.component';
+import { AttributeFillingComponent } from './components/attributes-panel/attribute-filling/attributes-filling.component';
 import { AttributeJunctionComponent } from './components/attributes-panel/attribute-junction/attributes-junction.component';
 import { AttributeTextureComponent } from './components/attributes-panel/attribute-texture/attributes-texture.component';
+import { AttributesToleranceComponent } from './components/attributes-panel/attribute-tolerance/attributes-tolerance/attributes-tolerance.component';
 import { AttributeTracingComponent } from './components/attributes-panel/attribute-tracing/attributes-tracing.component';
 import { AttributeWidthComponent } from './components/attributes-panel/attribute-width/attributes-width.component';
 import { AttributesPanelComponent } from './components/attributes-panel/attributes-panel.component';
@@ -33,6 +36,7 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
         AttributeTracingComponent,
         AttributeWidthComponent,
         AttributeColorComponent,
+        AttributeFillingComponent,
         EditorPageComponent,
         SidebarComponent,
         DrawingComponent,
@@ -40,6 +44,8 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
         TooltipComponent,
         WorkspaceComponent,
         UserGuideModalComponent,
+        AttributeColorPickerViewerComponent,
+        AttributesToleranceComponent,
     ],
 
     exports: [],

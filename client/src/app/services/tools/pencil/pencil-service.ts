@@ -1,18 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Description } from '@app/classes/description';
+import { MouseButton } from '@app/classes/mouse';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
-
-export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
-}
 
 @Injectable({
     providedIn: 'root',
@@ -62,11 +55,7 @@ export class PencilService extends Tool {
         }
     }
 
-    private isInCanvas(mousePosition: Vec2): boolean {
-        return mousePosition.x <= this.drawingService.previewCtx.canvas.width && mousePosition.y <= this.drawingService.previewCtx.canvas.height;
-    }
-
-    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
         ctx.lineWidth = this.widthService.getWidth(); // width ajustment
@@ -85,6 +74,10 @@ export class PencilService extends Tool {
             ctx.lineTo(point.x, point.y);
         }
         ctx.stroke();
+    }
+
+    private isInCanvas(mousePosition: Vec2): boolean {
+        return mousePosition.x <= this.drawingService.previewCtx.canvas.width && mousePosition.y <= this.drawingService.previewCtx.canvas.height;
     }
 
     private clearPath(): void {
