@@ -5,6 +5,7 @@ import { CursorService } from '@app/services/tools/cursor/cursor.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse-service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { LineService } from '@app/services/tools/line/line-service';
+import { PaintService } from '@app/services/tools/paint/paint.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
 import { SelectionToolService } from '@app/services/tools/selection/selection-tool.service';
@@ -24,6 +25,7 @@ export class ToolboxService {
         rectangleService: RectangleService,
         ellipseService: EllipseService,
         lineService: LineService,
+        paintService: PaintService,
         selectioToolService: SelectionToolService,
     ) {
         this.currentTool = cursorService;
@@ -34,6 +36,7 @@ export class ToolboxService {
         this.availableTools.push(lineService);
         this.availableTools.push(rectangleService);
         this.availableTools.push(ellipseService);
+        this.availableTools.push(paintService);
         this.availableTools.push(selectioToolService);
     }
 
