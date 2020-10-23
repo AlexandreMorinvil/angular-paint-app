@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { ColorPickerViewerService } from '@app/services/tool-modifier/color-picker-viewer/color-picker-viewer.service';
 import { FillingService } from '@app/services/tool-modifier/filling/filling.service';
 import { JunctionService } from '@app/services/tool-modifier/junction/junction.service';
 import { TextureService } from '@app/services/tool-modifier/texture/texture.service';
@@ -21,6 +22,7 @@ export class AttributesPanelComponent {
         private fillingServive: FillingService,
         private textureService: TextureService,
         private tracingService: TracingService,
+        private colorPickerViewerService: ColorPickerViewerService,
         private toleranceService: ToleranceService,
     ) {}
 
@@ -50,6 +52,10 @@ export class AttributesPanelComponent {
 
     needsTracingAttribute(): boolean {
         return this.currentTool.needsModifierManager(this.tracingService);
+    }
+
+    needsColorPickerViewerAttribute(): boolean {
+        return this.currentTool.needsModifierManager(this.colorPickerViewerService);
     }
 
     needsToleranceAttribute(): boolean {

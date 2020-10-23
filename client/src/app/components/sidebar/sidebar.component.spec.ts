@@ -9,6 +9,7 @@ import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
 import { BrushService } from '@app/services/tools/brush/brush-service';
+import { ColorPickerService } from '@app/services/tools/color-picker/color-picker.service';
 import { CursorService } from '@app/services/tools/cursor/cursor.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse-service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
@@ -44,6 +45,7 @@ describe('SidebarComponent', () => {
             {} as RectangleService,
             {} as EllipseService,
             {} as LineService,
+            {} as ColorPickerService,
             {} as PaintService,
             {} as SelectionToolService,
         );

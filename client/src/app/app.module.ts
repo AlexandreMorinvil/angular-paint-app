@@ -10,7 +10,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app/app.component';
-
+import { AttributeColorPickerViewerComponent } from './components/attributes-panel/attribute-color-picker-viewer/attribute-color-picker-viewer.component';
 // Attribute components
 import { AttributeColorComponent } from './components/attributes-panel/attribute-color/attributes-color.component';
 import { AttributeFillingComponent } from './components/attributes-panel/attribute-filling/attributes-filling.component';
@@ -47,6 +47,7 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
         WorkspaceComponent,
         UserGuideModalComponent,
         SaveComponent,
+        AttributeColorPickerViewerComponent,
         AttributesToleranceComponent,
     ],
 

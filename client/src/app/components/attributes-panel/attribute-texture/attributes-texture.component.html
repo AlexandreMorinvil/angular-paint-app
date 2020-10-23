@@ -1,7 +1,7 @@
 <div class="container">
     <h2>Texture</h2>
     <div class="centered">
-        <label for="texture" style="display: none;">Texture</label>
+        <label for="texture" style="display: none">Texture</label>
         <select name="texture" [(ngModel)]="texture">
             <option *ngFor="let textureName of getListTextures()" [ngValue]="textureName">{{ textureName }}</option>
         </select>
