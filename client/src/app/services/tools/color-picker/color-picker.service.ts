@@ -61,8 +61,6 @@ export class ColorPickerService extends Tool {
         }
     }
 
-    onMouseUp(event: MouseEvent): void {}
-
     onMouseMove(event: MouseEvent): void {
         // get mouse position
         const mousePosition: Vec2 = this.getPositionFromMouse(event);
@@ -75,18 +73,6 @@ export class ColorPickerService extends Tool {
 
         this.colorPickerVisual(event, colorHEXString);
     }
-
-    onEscapeDown(event: KeyboardEvent): void {}
-
-    onBackspaceDown(event: KeyboardEvent): void {}
-
-    onMouseClick(event: MouseEvent): void {}
-
-    onMouseDblClick(event: MouseEvent): void {}
-
-    onShiftDown(event: KeyboardEvent): void {}
-
-    onShiftUp(event: KeyboardEvent): void {}
 
     colorPickerVisual(event: MouseEvent, colorHEXString: string): void {
         const borderColor = colorHEXString;

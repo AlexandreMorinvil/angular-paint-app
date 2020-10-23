@@ -6,7 +6,9 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['./attribute-color-picker-viewer.component.scss'],
 })
 export class AttributeColorPickerViewerComponent implements OnInit {
+    // tslint:disable-next-line: no-empty
     constructor() {}
 
-    ngOnInit() {}
+    // tslint:disable-next-line: no-empty
+    ngOnInit(): void {}
 }
