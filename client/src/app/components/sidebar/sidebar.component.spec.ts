@@ -13,8 +13,10 @@ import { CursorService } from '@app/services/tools/cursor/cursor.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse-service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { LineService } from '@app/services/tools/line/line-service';
+import { PaintService } from '@app/services/tools/paint/paint.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
+import { SelectionToolService } from '@app/services/tools/selection/selection-tool.service';
 import { SidebarComponent } from './sidebar.component';
 class ToolStub extends Tool {}
 
@@ -42,6 +44,8 @@ describe('SidebarComponent', () => {
             {} as RectangleService,
             {} as EllipseService,
             {} as LineService,
+            {} as PaintService,
+            {} as SelectionToolService,
         );
 
         TestBed.configureTestingModule({
