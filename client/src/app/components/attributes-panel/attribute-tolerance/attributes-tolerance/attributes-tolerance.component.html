@@ -1,11 +1,11 @@
 <div class="container">
-    <h2>Côté</h2>
+    <h2>Tolérance</h2>
     <div class="grid-input-value">
         <div class="centered">
-            <label for="width" style="display: none">Taille</label>
-            <input type="range" [min]="getMinValue()" [max]="getMaxValue()" [value]="numberSides" [(ngModel)]="numberSides" />
+            <label for="width" style="display: none">Tolérance</label>
+            <input type="range" [min]="getMinValue()" [max]="getMaxValue()" [value]="tolerance" [(ngModel)]="tolerance" />
         </div>
-        <p class="centered">{{ numberSides }} côté</p>
+        <p class="centered">{{ tolerance }} %</p>
     </div>
     <div class="grid-confirmation" *ngIf="needConfirmation()">
         <button class="confirmation-button cancel" (click)="revert()">Annuler</button>

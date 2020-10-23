@@ -8,6 +8,7 @@ export class DrawingService {
     previewCtx: CanvasRenderingContext2D;
     canvas: HTMLCanvasElement;
     hasBeenDrawnOnto: boolean;
+    shortcutEnable: boolean = true;
 
     resetDrawing(): void {
         this.clearCanvas(this.baseCtx);

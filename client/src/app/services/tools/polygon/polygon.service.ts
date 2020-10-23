@@ -96,7 +96,9 @@ export class PolygonService extends Tool {
     private drawPolygon(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         this.savedData = [];
         const lastMouseMoveCoord = path[path.length - 1];
-        let radius = Math.sqrt(Math.pow(this.mouseDownCoord.x - lastMouseMoveCoord.x, 2) + Math.pow(this.mouseDownCoord.y - lastMouseMoveCoord.y, 2));
+        const radius = Math.sqrt(
+            Math.pow(this.mouseDownCoord.x - lastMouseMoveCoord.x, 2) + Math.pow(this.mouseDownCoord.y - lastMouseMoveCoord.y, 2),
+        );
         for (let i = 0; i < this.sidesService.getSide(); i++) {
             this.savedData.push({
                 x: this.mouseDownCoord.x + radius * Math.cos(this.angle),

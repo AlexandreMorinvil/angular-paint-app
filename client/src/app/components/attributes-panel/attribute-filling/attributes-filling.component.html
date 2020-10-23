@@ -1,0 +1,12 @@
+
+<div class="container">
+    <h2>Type de remplissage</h2>
+    <div class="grid-input-value">
+        <label for="filling">Pixels voisins seulement</label>
+        <input class="centered" name="filling" type="checkbox" [value]="neighboursPixelsOnly" [(ngModel)]="neighboursPixelsOnly" />
+    </div>
+    <div class="grid-confirmation" *ngIf="needConfirmation()">
+        <button class="confirmation-button cancel" (click)="revert()">Annuler</button>
+        <button class="confirmation-button confirm" (click)="assign()">Confirmer</button>
+    </div>
+</div>
