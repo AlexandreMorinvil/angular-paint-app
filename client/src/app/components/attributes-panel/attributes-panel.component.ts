@@ -3,6 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { ColorPickerViewerService } from '@app/services/tool-modifier/color-picker-viewer/color-picker-viewer.service';
 import { FillingService } from '@app/services/tool-modifier/filling/filling.service';
 import { JunctionService } from '@app/services/tool-modifier/junction/junction.service';
+import { SidesService } from '@app/services/tool-modifier/sides/sides.service';
 import { TextureService } from '@app/services/tool-modifier/texture/texture.service';
 import { ToleranceService } from '@app/services/tool-modifier/tolerance/tolerance.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
@@ -19,6 +20,7 @@ export class AttributesPanelComponent {
         private toolboxService: ToolboxService,
         private widthService: WidthService,
         private junctionService: JunctionService,
+        private sideService: SidesService,
         private fillingServive: FillingService,
         private textureService: TextureService,
         private tracingService: TracingService,
@@ -52,6 +54,9 @@ export class AttributesPanelComponent {
 
     needsTracingAttribute(): boolean {
         return this.currentTool.needsModifierManager(this.tracingService);
+    }
+    needsSidesAttribute(): boolean {
+        return this.currentTool.needsModifierManager(this.sideService);
     }
 
     needsColorPickerViewerAttribute(): boolean {

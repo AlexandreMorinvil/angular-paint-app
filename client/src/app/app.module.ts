@@ -15,6 +15,7 @@ import { AttributeColorPickerViewerComponent } from './components/attributes-pan
 import { AttributeColorComponent } from './components/attributes-panel/attribute-color/attributes-color.component';
 import { AttributeFillingComponent } from './components/attributes-panel/attribute-filling/attributes-filling.component';
 import { AttributeJunctionComponent } from './components/attributes-panel/attribute-junction/attributes-junction.component';
+import { AttributesSidesComponent } from './components/attributes-panel/attribute-sides/attributes-sides.component';
 import { AttributeTextureComponent } from './components/attributes-panel/attribute-texture/attributes-texture.component';
 import { AttributesToleranceComponent } from './components/attributes-panel/attribute-tolerance/attributes-tolerance/attributes-tolerance.component';
 import { AttributeTracingComponent } from './components/attributes-panel/attribute-tracing/attributes-tracing.component';
@@ -46,6 +47,7 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
         TooltipComponent,
         WorkspaceComponent,
         UserGuideModalComponent,
+        AttributesSidesComponent,
         SaveComponent,
         AttributeColorPickerViewerComponent,
         AttributesToleranceComponent,

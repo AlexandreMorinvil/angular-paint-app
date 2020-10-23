@@ -8,6 +8,7 @@ import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { LineService } from '@app/services/tools/line/line-service';
 import { PaintService } from '@app/services/tools/paint/paint.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
+import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
 import { SelectionToolService } from '@app/services/tools/selection/selection-tool.service';
 
@@ -26,6 +27,7 @@ export class ToolboxService {
         rectangleService: RectangleService,
         ellipseService: EllipseService,
         lineService: LineService,
+        polygonService: PolygonService,
         colorPickerService: ColorPickerService,
         paintService: PaintService,
         selectioToolService: SelectionToolService,
@@ -38,6 +40,7 @@ export class ToolboxService {
         this.availableTools.push(lineService);
         this.availableTools.push(rectangleService);
         this.availableTools.push(ellipseService);
+        this.availableTools.push(polygonService);
         this.availableTools.push(colorPickerService);
         this.availableTools.push(paintService);
         this.availableTools.push(selectioToolService);
