@@ -1,7 +1,11 @@
 {
     "extends": "./tsconfig.json",
     "compilerOptions": {
-        "types": ["reflect-metadata", "@types/mocha"]
+        "types": ["reflect-metadata", "@types/mocha"],
+        "paths": {
+            "@app/*": ["./app/*"],
+            "@common/*": ["../common/*"]
+        }
     },
     "exclude": ["node_modules", "dist"]
 }

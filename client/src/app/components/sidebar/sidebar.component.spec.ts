@@ -18,7 +18,6 @@ import { PaintService } from '@app/services/tools/paint/paint.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
 import { SelectionToolService } from '@app/services/tools/selection/selection-tool.service';
-import { UserGuideModalService } from '@app/services/user-guide-modal/user-guide-modal.service';
 import { SidebarComponent } from './sidebar.component';
 class ToolStub extends Tool {}
 
@@ -67,7 +66,6 @@ describe('SidebarComponent', () => {
                 { provide: MAT_DIALOG_DATA, useValue: {} },
                 { provide: MatDialogRef, useValue: {} },
                 { provide: MatDialog, useValue: {} },
-                UserGuideModalService,
             ],
         }).compileComponents();
     }));
@@ -79,7 +77,7 @@ describe('SidebarComponent', () => {
         component['toolboxSevice'] = toolserviceMock;
         routerSpy = spyOn<any>(component['router'], 'navigate').and.callThrough();
         drawServiceSpy = spyOn<any>(component['drawingService'], 'resetDrawingWithWarning');
-        openGuideSpy = spyOn<any>(component['userGuideModalService'], 'openUserGuide');
+        openGuideSpy = spyOn<any>(component['modalHandler'], 'openUserGuide');
         fixture.detectChanges();
     });
 
