@@ -3,7 +3,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
 import { UserGuideModalComponent } from '@app/components/modal/modal-user-guide/modal-user-guide.component';
-import { IndexService } from '@app/services/index/index.service';
 import { MainPageComponent } from './main-page.component';
 
 describe('MainPageComponent', () => {
@@ -19,7 +18,6 @@ describe('MainPageComponent', () => {
             imports: [RouterTestingModule, HttpClientModule],
             declarations: [MainPageComponent, UserGuideModalComponent],
             providers: [
-                { provide: IndexService },
                 { provide: MAT_DIALOG_DATA, useValue: {} },
                 { provide: MatDialogRef, useValue: {} },
                 { provide: MatDialog, useValue: dialogSpy },
