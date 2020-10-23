@@ -11,8 +11,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app/app.component';
 // Attribute components
 import { AttributeColorComponent } from './components/attributes-panel/attribute-color/attributes-color.component';
+import { AttributeFillingComponent } from './components/attributes-panel/attribute-filling/attributes-filling.component';
 import { AttributeJunctionComponent } from './components/attributes-panel/attribute-junction/attributes-junction.component';
 import { AttributeTextureComponent } from './components/attributes-panel/attribute-texture/attributes-texture.component';
+import { AttributesToleranceComponent } from './components/attributes-panel/attribute-tolerance/attributes-tolerance/attributes-tolerance.component';
 import { AttributeTracingComponent } from './components/attributes-panel/attribute-tracing/attributes-tracing.component';
 import { AttributeWidthComponent } from './components/attributes-panel/attribute-width/attributes-width.component';
 import { AttributesPanelComponent } from './components/attributes-panel/attributes-panel.component';
@@ -23,8 +25,6 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { TooltipComponent } from './components/tooltip/tooltip.component';
 import { UserGuideModalComponent } from './components/user-guide-modal/user-guide-modal.component';
 import { WorkspaceComponent } from './components/workspace/workspace.component';
-import { AttributesToleranceComponent } from './components/attributes-panel/attribute-tolerance/attributes-tolerance/attributes-tolerance.component';
-import { AttributeFillingComponent } from './components/attributes-panel/attribute-filling/attributes-filling.component'
 
 @NgModule({
     declarations: [

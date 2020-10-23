@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Tool } from '@app/classes/tool';
-import { FillingService } from '@app/services/tool-modifier/filling/filling.service'
+import { FillingService } from '@app/services/tool-modifier/filling/filling.service';
 import { JunctionService } from '@app/services/tool-modifier/junction/junction.service';
 import { TextureService } from '@app/services/tool-modifier/texture/texture.service';
 import { ToleranceService } from '@app/services/tool-modifier/tolerance/tolerance.service';
