@@ -76,10 +76,6 @@ export class PencilService extends Tool {
         ctx.stroke();
     }
 
-    private isInCanvas(mousePosition: Vec2): boolean {
-        return mousePosition.x <= this.drawingService.previewCtx.canvas.width && mousePosition.y <= this.drawingService.previewCtx.canvas.height;
-    }
-
     private clearPath(): void {
         this.pathData = [];
     }

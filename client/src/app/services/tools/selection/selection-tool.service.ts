@@ -6,14 +6,8 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
+import { MouseButton } from '@app/classes/mouse';
 
-export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
-}
 export enum Anchors {
     Default = 0,
     TopLeft = 1,
@@ -256,10 +250,6 @@ export class SelectionToolService extends Tool {
             this.anchorHit = Anchors.Default;
         }
         return this.clickOnAnchor;
-    }
-
-    private isInCanvas(mousePosition: Vec2): boolean {
-        return mousePosition.x <= this.drawingService.baseCtx.canvas.width && mousePosition.y <= this.drawingService.baseCtx.canvas.height;
     }
 
     private clearPath(): void {

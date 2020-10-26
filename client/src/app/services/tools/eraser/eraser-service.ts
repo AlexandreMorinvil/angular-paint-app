@@ -98,12 +98,12 @@ export class EraserService extends Tool {
         this.pathData = [];
     }
 
-    private isInCanvas(mousePosition: Vec2): boolean {
+    /*private isInCanvas(mousePosition: Vec2): boolean {
         return (
             mousePosition.x <= this.drawingService.previewCtx.canvas.width &&
             mousePosition.x >= 0 &&
             mousePosition.y <= this.drawingService.previewCtx.canvas.height &&
             mousePosition.y >= 0
         );
-    }
+    }*/
 }

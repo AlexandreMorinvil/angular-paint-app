@@ -185,10 +185,6 @@ export class RectangleService extends Tool {
         this.pathData = [];
     }
 
-    private isInCanvas(mousePosition: Vec2): boolean {
-        return mousePosition.x <= this.drawingService.baseCtx.canvas.width && mousePosition.y <= this.drawingService.baseCtx.canvas.height;
-    }
-
     private resetBorder(): void {
         this.drawingService.previewCtx.canvas.width = this.drawingService.baseCtx.canvas.width;
         this.drawingService.previewCtx.canvas.height = this.drawingService.baseCtx.canvas.height;

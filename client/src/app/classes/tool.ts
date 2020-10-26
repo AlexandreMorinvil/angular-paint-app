@@ -45,6 +45,10 @@ export abstract class Tool {
         return this.modifiers.includes(modifier);
     }
 
+    isInCanvas(mousePosition: Vec2): boolean {
+        return mousePosition.x <= this.drawingService.baseCtx.canvas.width && mousePosition.y <= this.drawingService.baseCtx.canvas.height;
+    }
+
     get name(): string {
         return this.description.name;
     }
