@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { UserGuideModalService } from '@app/services/user-guide-modal/user-guide-modal.service';
+import { ModalHandlerService } from '@app/services/modal-handler/modal-handler';
 
 @Component({
     selector: 'app-main-page',
@@ -7,9 +7,9 @@ import { UserGuideModalService } from '@app/services/user-guide-modal/user-guide
     styleUrls: ['./main-page.component.scss'],
 })
 export class MainPageComponent {
-    constructor(public userGuideModalService: UserGuideModalService) {}
+    constructor(private modalHandler: ModalHandlerService) {}
 
     openUserGuide(): void {
-        this.userGuideModalService.openUserGuide();
+        this.modalHandler.openUserGuide();
     }
 }

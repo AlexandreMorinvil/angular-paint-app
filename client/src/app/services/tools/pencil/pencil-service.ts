@@ -1,24 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Description } from '@app/classes/description';
+import { MouseButton } from '@app/classes/mouse';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
 
-export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
-}
-
 @Injectable({
     providedIn: 'root',
 })
 export class PencilService extends Tool {
-    private pathData: Vec2[];
+    pathData: Vec2[];
 
     constructor(drawingService: DrawingService, private colorService: ColorService, private widthService: WidthService) {
         super(drawingService, new Description('crayon', 'c', 'pencil_icon.png'));
