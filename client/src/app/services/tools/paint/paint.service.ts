@@ -37,6 +37,8 @@ export class PaintService extends Tool {
         this.pathData.push(this.mouseDownCoord);
         this.setStartColor();
         this.setFillColor();
+        this.drawingService.baseCtx.fillStyle = "#FFFFFF"
+        this.drawingService.baseCtx.fillRect(100, 0, 300, 300);
 
         if (event.button === MouseButton.Left) {
             this.floodFill(this.drawingService.baseCtx, this.pathData);
