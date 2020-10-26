@@ -5,7 +5,6 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
-import { FillingService } from '@app/services/tool-modifier/filling/filling.service';
 import { ToleranceService } from '@app/services/tool-modifier/tolerance/tolerance.service';
 
 @Injectable({
@@ -26,33 +25,24 @@ export class PaintService extends Tool {
         drawingService: DrawingService,
         private colorService: ColorService,
         public toleranceService: ToleranceService,
-        public fillingService: FillingService,
     ) {
         super(drawingService, new Description('Paint', 'b', 'paint_icon.png'));
         this.modifiers.push(this.colorService);
         this.modifiers.push(this.toleranceService);
-        this.modifiers.push(this.fillingService);
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.mouseDown = event.button === MouseButton.Left;
-        if (this.mouseDown) {
-            this.clearPath();
-            this.mouseDownCoord = this.getPositionFromMouse(event);
-            this.pathData.push(this.mouseDownCoord);
-            this.setStartColor();
-            this.setFillColor();
+        this.clearPath();
+        this.mouseDownCoord = this.getPositionFromMouse(event);
+        this.pathData.push(this.mouseDownCoord);
+        this.setStartColor();
+        this.setFillColor();
 
-            if (this.fillingService.getNeighbourPixelsOnly()) {
-                this.floodFill(this.drawingService.baseCtx, this.pathData);
-            } else {
-                this.sameColorFill(this.drawingService.baseCtx);
-            }
+        if (event.button === MouseButton.Left) {
+            this.floodFill(this.drawingService.baseCtx, this.pathData);
+        } else if ( event.button === MouseButton.Right ) {
+            this.sameColorFill(this.drawingService.baseCtx);
         }
-    }
-
-    onMouseUp(event: MouseEvent): void {
-        this.mouseDown = false;
     }
 
     sameColorFill(ctx: CanvasRenderingContext2D): void {
