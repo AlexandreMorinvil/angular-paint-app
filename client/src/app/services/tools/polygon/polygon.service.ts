@@ -137,7 +137,6 @@ export class PolygonService extends Tool {
     private clearPath(): void {
         this.pathData = [];
     }
-    
     private resetBorder(): void {
         this.drawingService.previewCtx.canvas.width = this.drawingService.baseCtx.canvas.width;
         this.drawingService.previewCtx.canvas.height = this.drawingService.baseCtx.canvas.height;
