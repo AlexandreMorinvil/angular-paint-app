@@ -31,7 +31,7 @@ export class PolygonService extends Tool {
         public widthService: WidthService,
         public sidesService: SidesService,
     ) {
-        super(drawingService, new Description('Polygone', '3', 'polygon_icon.png'));
+        super(drawingService, new Description('polygone', '3', 'polygon_icon.png'));
         this.modifiers.push(this.colorService);
         this.modifiers.push(this.widthService);
         this.modifiers.push(this.tracingService);
@@ -79,7 +79,7 @@ export class PolygonService extends Tool {
         }
     }
 
-    private setAttribute(ctx: CanvasRenderingContext2D): void {
+    setAttribute(ctx: CanvasRenderingContext2D): void {
         ctx.lineWidth = this.widthService.getWidth();
         ctx.fillStyle = this.colorService.getPrimaryColor();
         ctx.strokeStyle = this.colorService.getSecondaryColor();
@@ -111,11 +111,10 @@ export class PolygonService extends Tool {
             ctx.lineTo(this.savedData[k].x, this.savedData[k].y);
         }
         ctx.closePath();
-        ctx.fill();
         ctx.setLineDash([0]);
         this.setAttribute(ctx);
     }
-
+    //problem a little space need to be fix
     drawPreviewCircle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         const mouseMoveCoord = path[path.length - 1];
@@ -123,7 +122,7 @@ export class PolygonService extends Tool {
         const centerX = this.mouseDownCoord.x;
         const centerY = this.mouseDownCoord.y;
         if (this.widthService.getWidth() > 1) {
-            radius = radius + this.widthService.getWidth() - 1; /* -1 car le minimum est 1 pixel pk on px pas zero*/
+            radius = radius + 2 * this.widthService.getWidth() - 1;
         }
         ctx.arc(centerX, centerY, radius, 0, this.angle);
         const lineDashValue = 6;

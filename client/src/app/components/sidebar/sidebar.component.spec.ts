@@ -14,6 +14,7 @@ import { EllipseService } from '@app/services/tools/ellipse/ellipse-service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { LineService } from '@app/services/tools/line/line-service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
+import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
 import { UserGuideModalService } from '@app/services/user-guide-modal/user-guide-modal.service';
 import { SidebarComponent } from './sidebar.component';
@@ -43,6 +44,7 @@ describe('SidebarComponent', () => {
             {} as RectangleService,
             {} as EllipseService,
             {} as LineService,
+            {} as PolygonService,
         );
 
         TestBed.configureTestingModule({
@@ -55,6 +57,7 @@ describe('SidebarComponent', () => {
                 { provide: DrawingService, useValue: drawingStub },
                 { provide: RectangleService, useValue: toolStub },
                 { provide: EllipseService, useValue: toolStub },
+                { provide: PolygonService, useValue: toolStub },
                 { provide: CursorService, useValue: toolStub },
                 { provide: ToolboxService, useValue: toolboxSpy },
                 { provide: RouterModule, useValue: routerSpy },
