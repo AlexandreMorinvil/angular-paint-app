@@ -42,7 +42,7 @@ describe('PaintService', () => {
         service['drawingService'].baseCtx.fillStyle = '#000000';
         service['drawingService'].baseCtx.fillRect(0, 0, 1000, 800);
         service['drawingService'].baseCtx.fillStyle = '#010101';
-        service['drawingService'].baseCtx.fillRect(100, 0, 100, 100);
+        service['drawingService'].baseCtx.fillRect(200, 200, 100, 100);
 
         mouseEvent = {
             offsetX: 25,
