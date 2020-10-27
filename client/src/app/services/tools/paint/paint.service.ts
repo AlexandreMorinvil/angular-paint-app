@@ -21,11 +21,7 @@ export class PaintService extends Tool {
     private startG: number;
     private startB: number;
 
-    constructor(
-        drawingService: DrawingService,
-        private colorService: ColorService,
-        public toleranceService: ToleranceService,
-    ) {
+    constructor(drawingService: DrawingService, private colorService: ColorService, public toleranceService: ToleranceService) {
         super(drawingService, new Description('Paint', 'b', 'paint_icon.png'));
         this.modifiers.push(this.colorService);
         this.modifiers.push(this.toleranceService);
@@ -37,13 +33,12 @@ export class PaintService extends Tool {
         this.pathData.push(this.mouseDownCoord);
         this.setStartColor();
         this.setFillColor();
-        this.drawingService.baseCtx.fillStyle = "#FFFFFF"
-        this.drawingService.baseCtx.fillRect(100, 0, 300, 300);
-
-        if (event.button === MouseButton.Left) {
-            this.floodFill(this.drawingService.baseCtx, this.pathData);
-        } else if ( event.button === MouseButton.Right ) {
-            this.sameColorFill(this.drawingService.baseCtx);
+        if (this.isInCanvas(this.mouseDownCoord)) {
+            if (event.button === MouseButton.Left) {
+                this.floodFill(this.drawingService.baseCtx, this.pathData);
+            } else if (event.button === MouseButton.Right) {
+                this.sameColorFill(this.drawingService.baseCtx);
+            }
         }
     }
 
@@ -65,14 +60,12 @@ export class PaintService extends Tool {
     floodFill(ctx: CanvasRenderingContext2D, pathPixel: Vec2[]): void {
         this.setAttribute(ctx);
         while (pathPixel.length) {
-            const pixelPos = pathPixel.pop();
-            if (!pixelPos) continue;
+            const pixelPos = pathPixel.pop()!;
 
             const xPosition = pixelPos.x;
             let yPosition = pixelPos.y;
 
             // Get current pixel position
-            console.log(this.matchStartColor(pixelPos));
 
             // Go up as long as the color matches and are inside the canvas
             // tslint:disable-next-line:no-magic-numbers
@@ -165,5 +158,9 @@ export class PaintService extends Tool {
         const g = parseInt(values[2].toString() + values[3].toString(), 16);
         const b = parseInt(values[4].toString() + values[5].toString(), 16);
         return [r, g, b];
+    }
+
+    isInCanvas(mousePosition: Vec2): boolean {
+        return mousePosition.x <= this.drawingService.previewCtx.canvas.width && mousePosition.y <= this.drawingService.previewCtx.canvas.height;
     }
 }
