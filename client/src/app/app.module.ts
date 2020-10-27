@@ -18,12 +18,12 @@ import { AttributeWidthComponent } from './components/attributes-panel/attribute
 import { AttributesPanelComponent } from './components/attributes-panel/attributes-panel.component';
 import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorPageComponent } from './components/editor-page/editor-page.component';
+import { ExportDrawingComponent } from './components/export-drawing/export-drawing.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { TooltipComponent } from './components/tooltip/tooltip.component';
 import { UserGuideModalComponent } from './components/user-guide-modal/user-guide-modal.component';
 import { WorkspaceComponent } from './components/workspace/workspace.component';
-import { ExportDrawingComponent } from './components/export-drawing/export-drawing.component';
 
 @NgModule({
     declarations: [
@@ -35,6 +35,7 @@ import { ExportDrawingComponent } from './components/export-drawing/export-drawi
         AttributeWidthComponent,
         AttributeColorComponent,
         EditorPageComponent,
+        ExportDrawingComponent,
         SidebarComponent,
         DrawingComponent,
         MainPageComponent,
@@ -58,7 +59,7 @@ import { ExportDrawingComponent } from './components/export-drawing/export-drawi
         ReactiveFormsModule,
         MatTabsModule,
     ],
-    entryComponents: [],
+    entryComponents: [ExportDrawingComponent],
     providers: [{ provide: MAT_DIALOG_DATA, useValue: [] }],
     bootstrap: [AppComponent],
 })

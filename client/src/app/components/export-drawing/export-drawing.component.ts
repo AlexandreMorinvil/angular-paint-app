@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
+import { ExportDrawingService } from '@app/services/export/export-drawing.service.ts';
 import { DialogData } from '../user-guide-modal/user-guide-modal.component';
 @Component({
     selector: 'app-export-drawing',
@@ -21,7 +22,7 @@ export class ExportDrawingComponent {
 
     saveToPNG(): void {
         if (this.validateValue()) {
-            (document.getElementById('buttonSavePNG') as HTMLInputElement).disabled = true;
+            (document.getElementById('buttonExport') as HTMLInputElement).disabled = true;
             const drawName = this.drawName.value;
             this.exportDrawingService.saveDrawToPNG(drawName);
         }
