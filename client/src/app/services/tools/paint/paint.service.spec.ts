@@ -42,7 +42,9 @@ describe('PaintService', () => {
         service['drawingService'].baseCtx.fillStyle = '#000000';
         service['drawingService'].baseCtx.fillRect(0, 0, 1000, 800);
         service['drawingService'].baseCtx.fillStyle = '#010101';
-        service['drawingService'].baseCtx.fillRect(200, 200, 100, 100);
+        service['drawingService'].baseCtx.fillRect(200, 200, 50, 50);
+        service['drawingService'].baseCtx.fillStyle = '#000100';
+        service['drawingService'].baseCtx.fillRect(50, 50, 50, 50);
 
         mouseEvent = {
             offsetX: 25,
@@ -70,9 +72,39 @@ describe('PaintService', () => {
         expect(sameColorFillSpy).toHaveBeenCalled();
     });
 
-    /* it(' should take if path in if not a pixelPos in floodFill ', () => {
-        (service as any).pathData = null;
-        service.floodFill(baseCtxStub, (service as any).pathData);
+    it(' should make sure that matchStartColor verify correctly with fill rgb and target surface', () => {
+        colorService.setPrimaryColor('#010102');
+
+        let mouseEvent2 = {
+            offsetX: 200,
+            offsetY: 200,
+            button: 0,
+        } as MouseEvent;
+        service.onMouseDown(mouseEvent2);
+
         expect(floodFillSpy).toHaveBeenCalled();
-    }); */
+    });
+
+    it(' should make sure that function are not called if mouseEvent is not in canvas', () => {
+        let mouseEvent2 = {
+            offsetX: 0,
+            offsetY: 1000,
+            button: 0,
+        } as MouseEvent;
+        service.onMouseDown(mouseEvent2);
+
+        expect(floodFillSpy).not.toHaveBeenCalled();
+    });
+
+    it(' should make sure that function are not called if mouseEvent is not in canvas', () => {
+        let mouseEvent2 = {
+            offsetX: 0,
+            offsetY: 0,
+            button: 1,
+        } as MouseEvent;
+        service.onMouseDown(mouseEvent2);
+
+        expect(floodFillSpy).not.toHaveBeenCalled();
+        expect(sameColorFillSpy).not.toHaveBeenCalled();
+    });
 });
