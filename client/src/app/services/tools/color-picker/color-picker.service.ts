@@ -17,6 +17,11 @@ export class ColorPickerService extends Tool {
     private pickedSecondaryColorSource: BehaviorSubject<string>;
     currentPickedSecondaryColor: Observable<string>;
 
+    private previsualizationZoneSource: BehaviorSubject<Uint8ClampedArray>;
+    currentPrevisualizationZoneSource: Observable<Uint8ClampedArray>;
+
+    private SQUARE_DIM: number = 70;
+
     constructor(drawingService: DrawingService, private colorService: ColorService, private colorPickerViewerService: ColorPickerViewerService) {
         super(drawingService, new Description('pipette', 'i', 'pipette_icon.png'));
         this.pickedPrimaryColorSource = new BehaviorSubject<string>(colorService.getPrimaryColor());
@@ -24,6 +29,9 @@ export class ColorPickerService extends Tool {
 
         this.pickedSecondaryColorSource = new BehaviorSubject<string>(colorService.getSecondaryColor());
         this.currentPickedSecondaryColor = this.pickedSecondaryColorSource.asObservable();
+
+        this.previsualizationZoneSource = new BehaviorSubject<Uint8ClampedArray>(new Uint8ClampedArray(4 * this.SQUARE_DIM * this.SQUARE_DIM));
+        this.currentPrevisualizationZoneSource = this.previsualizationZoneSource.asObservable();
 
         this.modifiers.push(this.colorPickerViewerService);
         this.modifiers.push(this.colorService);
@@ -61,17 +69,32 @@ export class ColorPickerService extends Tool {
         }
     }
 
-    onMouseMove(event: MouseEvent): void {
-        // get mouse position
+    visualizeColorPixel(event: MouseEvent): void {
         const mousePosition: Vec2 = this.getPositionFromMouse(event);
 
-        // get pixel data at currentMouse position
         const rgbColor: Uint8ClampedArray = this.drawingService.baseCtx.getImageData(mousePosition.x, mousePosition.y, 1, 1).data;
 
-        // get color HEX string from the pixel data
         const colorHEXString = this.rgbColorToHEXString(rgbColor[0], rgbColor[1], rgbColor[2]);
-
         this.colorPickerVisual(event, colorHEXString);
+    }
+
+    updatePrevisualizationData(event: MouseEvent): void {
+        const mousePosition: Vec2 = this.getPositionFromMouse(event);
+
+        const previsualisationData: Uint8ClampedArray = this.drawingService.baseCtx.getImageData(
+            mousePosition.x - this.SQUARE_DIM / 2,
+            mousePosition.y - this.SQUARE_DIM / 2,
+            this.SQUARE_DIM,
+            this.SQUARE_DIM,
+        ).data;
+
+        this.previsualizationZoneSource.next(previsualisationData);
+    }
+
+    onMouseMove(event: MouseEvent): void {
+        this.visualizeColorPixel(event);
+
+        this.updatePrevisualizationData(event);
     }
 
     colorPickerVisual(event: MouseEvent, colorHEXString: string): void {
