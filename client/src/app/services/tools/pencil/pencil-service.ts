@@ -21,6 +21,8 @@ export class PencilService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
+        this.drawingService.previewCtx.setLineDash([0]);
+        this.drawingService.baseCtx.setLineDash([0]);
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.clearPath();

@@ -31,6 +31,7 @@ export abstract class SelectionToolService extends Tool {
     clickOnAnchor: boolean;
     anchorHit: number = 0;
     image: HTMLImageElement;
+    shiftDown: boolean;
 
     constructor(drawingService: DrawingService, private color: ColorService, description: Description) {
         super(drawingService, description);
@@ -40,6 +41,7 @@ export abstract class SelectionToolService extends Tool {
         this.draggingImage = false;
         this.clickOnAnchor = false;
         this.image = new Image();
+        this.shiftDown = false;
     }
     // tslint:disable:no-empty
     onMouseDown(event: MouseEvent): void {}
@@ -47,6 +49,21 @@ export abstract class SelectionToolService extends Tool {
     onMouseMove(event: MouseEvent): void {}
 
     onMouseUp(event: MouseEvent): void {}
+
+    onArrowDown(event: KeyboardEvent): void {}
+
+    onEscapeDown(event: KeyboardEvent): void {
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.selectionCreated = false;
+    }
+
+    onShiftDown(event: KeyboardEvent): void {
+        this.shiftDown = true;
+    }
+
+    onShiftUp(event: KeyboardEvent): void {
+        this.shiftDown = false;
+    }
 
     drawnAnchor(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement): void {
         this.color.setPrimaryColor('#000000');

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { BrushService } from '@app/services/tools/brush/brush-service';
 import { ColorPickerService } from '@app/services/tools/color-picker/color-picker.service';
 import { CursorService } from '@app/services/tools/cursor/cursor.service';
@@ -33,6 +34,7 @@ export class ToolboxService {
         paintService: PaintService,
         rectangleSelectionService: RectangleSelectionService,
         ellipseSelectionService: EllipseSelectionService,
+        private drawingService: DrawingService,
     ) {
         this.currentTool = cursorService;
         this.availableTools.push(cursorService);
@@ -59,5 +61,6 @@ export class ToolboxService {
 
     setSelectedTool(selectedTool: Tool): void {
         this.currentTool = selectedTool;
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 }

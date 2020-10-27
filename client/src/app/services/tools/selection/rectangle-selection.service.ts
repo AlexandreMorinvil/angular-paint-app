@@ -15,6 +15,7 @@ import { SelectionToolService } from '@app/services/tools/selection/selection-to
 export class RectangleSelectionService extends SelectionToolService {
     mouseDownCoord: Vec2;
     startDownCoord: Vec2;
+    pathLastCoord: Vec2;
 
     constructor(
         drawingService: DrawingService,
@@ -39,6 +40,13 @@ export class RectangleSelectionService extends SelectionToolService {
         if (this.selectionCreated && this.checkHit(this.mouseDownCoord)) {
             this.getAnchorHit(this.drawingService.previewCtx, this.mouseDownCoord);
         } else if (this.selectionCreated && this.hitSelection(this.mouseDownCoord.x, this.mouseDownCoord.y)) {
+            this.pathData.push(this.pathLastCoord);
+            this.drawingService.baseCtx.clearRect(
+                this.startDownCoord.x,
+                this.startDownCoord.y,
+                this.pathData[this.pathData.length - 1].x - this.startDownCoord.x,
+                this.pathData[this.pathData.length - 1].y - this.startDownCoord.y,
+            );
             this.draggingImage = true;
             this.putImageData(this.mouseDownCoord, this.drawingService.previewCtx);
             this.drawingService.baseCtx.clearRect(this.startDownCoord.x, this.startDownCoord.y, this.imageData.width, this.imageData.height);
@@ -94,18 +102,52 @@ export class RectangleSelectionService extends SelectionToolService {
         } else if (this.mouseDown) {
             this.pathData.push(mousePosition);
             this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.pathData);
-            this.drawingService.baseCtx.clearRect(
-                this.startDownCoord.x,
-                this.startDownCoord.y,
-                this.pathData[this.pathData.length - 1].x - this.startDownCoord.x,
-                this.pathData[this.pathData.length - 1].y - this.startDownCoord.y,
-            );
             this.offsetAnchors();
             this.drawingService.previewCtx.putImageData(this.imageData, this.startDownCoord.x, this.startDownCoord.y);
             this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
             this.selectionCreated = true;
+            this.pathLastCoord = this.pathData[this.pathData.length - 1];
         }
         this.mouseDown = false;
         this.clearPath();
+    }
+
+    onShiftDown(event: KeyboardEvent): void {
+        this.rectangleService.shiftDown = true;
+        const mouseEvent = {
+            offsetX: this.pathData[this.pathData.length - 1].x,
+            offsetY: this.pathData[this.pathData.length - 1].x,
+            button: 0,
+        } as MouseEvent;
+        this.onMouseMove(mouseEvent);
+    }
+
+    onShiftUp(event: KeyboardEvent): void {
+        this.rectangleService.shiftDown = false;
+        const mouseEvent = {
+            offsetX: this.pathData[this.pathData.length - 1].x,
+            offsetY: this.pathData[this.pathData.length - 1].x,
+            button: 0,
+        } as MouseEvent;
+        this.onMouseMove(mouseEvent);
+    }
+
+    onCtrlADown(event: KeyboardEvent): void {
+        this.mouseDown = true;
+        this.startDownCoord = { x: 0, y: 0 };
+        this.rectangleService.mouseDownCoord = { x: 0, y: 0 };
+        this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
+        const mouseEvent = {
+            offsetX: this.drawingService.baseCtx.canvas.width,
+            offsetY: this.drawingService.baseCtx.canvas.height,
+            button: 0,
+        } as MouseEvent;
+        this.imageData = this.drawingService.baseCtx.getImageData(
+            this.startDownCoord.x,
+            this.startDownCoord.y,
+            this.drawingService.baseCtx.canvas.width,
+            this.drawingService.baseCtx.canvas.height,
+        );
+        this.onMouseUp(mouseEvent);
     }
 }

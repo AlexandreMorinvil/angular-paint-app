@@ -36,6 +36,7 @@ export class PaintService extends Tool {
 
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
+        this.drawingService.previewCtx.setLineDash([0]);
         if (this.mouseDown) {
             this.clearPath();
             this.mouseDownCoord = this.getPositionFromMouse(event);

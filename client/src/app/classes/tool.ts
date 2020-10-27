@@ -37,6 +37,12 @@ export abstract class Tool {
 
     onShiftUp(event: KeyboardEvent): void {}
 
+    onArrowDown(event: KeyboardEvent): void {}
+
+    onArrowUp(event: KeyboardEvent): void {}
+
+    onCtrlADown(event: KeyboardEvent): void {}
+
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };
     }

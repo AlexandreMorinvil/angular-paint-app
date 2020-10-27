@@ -32,19 +32,14 @@ export class EllipseSelectionService extends SelectionToolService {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.mouseDownCoord = this.getPositionFromMouse(event);
         this.mouseDown = event.button === MouseButton.Left;
-        this.widthService.setWidth(1);
-        this.colorService.setPrimaryColor('#000000');
-        this.colorService.setSecondaryColor('#000000');
-        this.tracingService.setHasFill(false);
-        this.tracingService.setHasContour(true);
-
+        this.resetTransform();
         if (this.selectionCreated && this.checkHit(this.mouseDownCoord)) {
             this.getAnchorHit(this.drawingService.previewCtx, this.mouseDownCoord);
         } else if (this.selectionCreated && this.hitSelection(this.mouseDownCoord.x, this.mouseDownCoord.y)) {
-            this.draggingImage = true;
-            this.showSelection(this.drawingService.previewCtx);
             this.pathData.push(this.pathLastCoord);
             this.clearCanvasEllipse();
+            this.draggingImage = true;
+            this.showSelection(this.drawingService.previewCtx);
         } else {
             this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
             this.imageData = new ImageData(1, 1);
@@ -100,8 +95,8 @@ export class EllipseSelectionService extends SelectionToolService {
             this.selectionCreated = false;
         } else if (this.mouseDown) {
             this.pathData.push(mousePosition);
+            this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.pathData);
             this.offsetAnchors();
-            this.clearCanvasEllipse();
             this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
             this.selectionCreated = true;
             this.pathLastCoord = this.pathData[this.pathData.length - 1];
@@ -109,6 +104,67 @@ export class EllipseSelectionService extends SelectionToolService {
         }
         this.mouseDown = false;
         this.clearPath();
+    }
+
+    onArrowDown(event: KeyboardEvent): void {
+        const move = 3;
+        if (this.selectionCreated) {
+            if (event.key === 'ArrowLeft') {
+                this.startDownCoord = { x: this.startDownCoord.x - move, y: this.startDownCoord.y };
+                this.pathLastCoord = { x: this.pathLastCoord.x - move, y: this.pathLastCoord.y };
+            }
+            if (event.key === 'ArrowRight') {
+                this.startDownCoord = { x: this.startDownCoord.x + move, y: this.startDownCoord.y };
+                this.pathLastCoord = { x: this.pathLastCoord.x + move, y: this.pathLastCoord.y };
+            }
+            if (event.key === 'ArrowUp') {
+                this.startDownCoord = { x: this.startDownCoord.x, y: this.startDownCoord.y - move };
+                this.pathLastCoord = { x: this.pathLastCoord.x, y: this.pathLastCoord.y - move };
+            }
+            if (event.key === 'ArrowDown') {
+                this.startDownCoord = { x: this.startDownCoord.x, y: this.startDownCoord.y + move };
+                this.pathLastCoord = { x: this.pathLastCoord.x, y: this.pathLastCoord.y + move };
+            }
+            /*switch (event.key) {
+                case 'ArrowLeft':
+                    this.startDownCoord = { x: this.startDownCoord.x - 3, y: this.startDownCoord.y };
+                    this.pathLastCoord = { x: this.pathLastCoord.x - 3, y: this.pathLastCoord.y };
+                    break;
+
+                case 'ArrowRight':
+                    this.startDownCoord = { x: this.startDownCoord.x + 3, y: this.startDownCoord.y };
+                    this.pathLastCoord = { x: this.pathLastCoord.x + 3, y: this.pathLastCoord.y };
+                    break;
+
+                case 'ArrowUp':
+                    this.startDownCoord = { x: this.startDownCoord.x, y: this.startDownCoord.y - 3 };
+                    this.pathLastCoord = { x: this.pathLastCoord.x, y: this.pathLastCoord.y - 3 };
+                    break;
+
+                case 'ArrowDown':
+                    this.startDownCoord = { x: this.startDownCoord.x, y: this.startDownCoord.y + 3 };
+                    this.pathLastCoord = { x: this.pathLastCoord.x, y: this.pathLastCoord.y + 3 };
+                    break;
+                default:
+                    break;
+            }*/
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.showSelection(this.drawingService.previewCtx);
+            this.draggingImage = false;
+        }
+    }
+
+    onArrowUp(event: KeyboardEvent): void {
+        if (this.selectionCreated) {
+            this.draggingImage = true;
+            this.clearPath();
+            this.pathData.push(this.pathLastCoord);
+            this.clearCanvasEllipse();
+            this.clearPath();
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.onMouseUp({ offsetX: 25, offsetY: 25, button: 0 } as MouseEvent);
+            this.draggingImage = false;
+        }
     }
 
     showSelection(canvas: CanvasRenderingContext2D): void {
@@ -143,7 +199,35 @@ export class EllipseSelectionService extends SelectionToolService {
         this.tracingService.setHasFill(true);
         this.tracingService.setHasContour(false);
         this.ellipseService.drawEllipse(this.drawingService.baseCtx, this.pathData);
+        this.resetTransform();
+    }
+
+    onCtrlADown(event: KeyboardEvent): void {
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.resetTransform();
+        this.mouseDown = true;
+        this.startDownCoord = { x: 0, y: 0 };
+        this.firstEllipseCoord = { x: 0, y: 0 };
+        this.ellipseService.mouseDownCoord = { x: 0, y: 0 };
+        this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
+        const mouseEvent = {
+            offsetX: this.drawingService.baseCtx.canvas.width,
+            offsetY: this.drawingService.baseCtx.canvas.height,
+            button: 0,
+        } as MouseEvent;
+        this.imageData = this.drawingService.baseCtx.getImageData(
+            0,
+            0,
+            this.drawingService.baseCtx.canvas.width,
+            this.drawingService.baseCtx.canvas.height,
+        );
+        this.onMouseUp(mouseEvent);
+    }
+
+    resetTransform(): void {
+        this.widthService.setWidth(1);
         this.colorService.setPrimaryColor('#000000');
+        this.colorService.setSecondaryColor('#000000');
         this.tracingService.setHasFill(false);
         this.tracingService.setHasContour(true);
     }
