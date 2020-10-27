@@ -1,0 +1,15 @@
+<div class="container">
+    <h1 class="title">Exporter un dessin</h1>
+    <p>
+        <mat-form-field class="name">
+            <mat-label>Nom du Dessin</mat-label>
+            <input matInput [formControl]="drawName" placeholder="Ex. dessin" />
+            <mat-error *ngIf="drawName.invalid"> Entrer un nom de dessin </mat-error>
+        </mat-form-field>
+    </p>
+
+    <div mat-dialog-actions>
+        <button id="buttonCancel" mat-button mat-dialog-close>Annuler</button>
+        <button id="buttonExport" (click)="saveToPNG()">Exporter</button>
+    </div>
+</div>
