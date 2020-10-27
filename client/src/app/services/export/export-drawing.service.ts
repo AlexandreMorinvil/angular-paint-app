@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { ExportDrawingComponent } from '@app/components/export-drawing/export-drawing.component';
 import { DrawingService } from '../drawing/drawing.service';
 
 @Injectable({
@@ -7,6 +8,15 @@ import { DrawingService } from '../drawing/drawing.service';
 })
 export class ExportDrawingService {
     constructor(private drawingService: DrawingService, public dialog: MatDialog) {}
+
+    openExportDialog(): void {
+        const dialogRef = this.dialog.open(ExportDrawingComponent, {
+            width: '400px',
+            height: '300px',
+            data: {},
+        });
+        dialogRef.afterClosed().subscribe((value) => {});
+    }
 
     saveDrawToPNG(drawName: string): void {
         const contex = this.drawingService.baseCtx;

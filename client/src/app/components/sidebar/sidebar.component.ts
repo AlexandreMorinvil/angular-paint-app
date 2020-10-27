@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ExportDrawingService } from '@app/services/export/export-drawing.service';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
 import { UserGuideModalService } from '@app/services/user-guide-modal/user-guide-modal.service';
 
@@ -14,12 +15,14 @@ export class SidebarComponent {
     messageNewDrawing: string = 'Nouveau dessin\n(Raccourci: Ctr + O)';
     messageUserGuide: string = "Guide d'utilisation";
     messageBack: string = 'Retour';
+    messageExportDialog: string = 'Exporter\n(Raccourci: Ctr + E)';
 
     constructor(
         private toolboxSevice: ToolboxService,
         private drawingService: DrawingService,
         private router: Router,
         private userGuideModalService: UserGuideModalService,
+        private exportService: ExportDrawingService,
     ) {}
 
     getListOfTools(): Tool[] {
@@ -48,5 +51,8 @@ export class SidebarComponent {
 
     openGuide(): void {
         this.userGuideModalService.openUserGuide();
+    }
+    openExportDialog(): void {
+        this.exportService.openExportDialog();
     }
 }
