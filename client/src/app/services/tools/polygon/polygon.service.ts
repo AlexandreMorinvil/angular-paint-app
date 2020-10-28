@@ -116,26 +116,29 @@ export class PolygonService extends Tool {
         ctx.setLineDash([0]);
         this.setAttribute(ctx);
     }
-    //problem a little space need to be fix
+
     drawPreviewCircle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
-        const mouseMoveCoord = path[path.length - 1];
-        let radius = Math.sqrt(Math.pow(this.mouseDownCoord.x - mouseMoveCoord.x, 2) + Math.pow(this.mouseDownCoord.y - mouseMoveCoord.y, 2));
         const centerX = this.mouseDownCoord.x;
         const centerY = this.mouseDownCoord.y;
         if (this.tracingService.getHasContour() == true && this.sidesService.getSide() >= 5) {
-            radius = this.radius - this.widthService.getWidth() / 2;
-            // const hyp = Math.sqrt(Math.pow(this.widthService.getWidth() / 2, 2) + Math.pow(this.widthService.getWidth() / 2, 2));
-            //radius = radius + hyp;
+            this.radius = this.radius - this.widthService.getWidth() / 2;
+            const spaceBetweenTwoPolygon =
+                (2 * this.radius * Math.cos((((180 - 360 / this.sidesService.getSide()) / 2) * Math.PI) / 180) +
+                    (2 * this.widthService.getWidth()) / Math.tan((((180 - 360 / this.sidesService.getSide()) / 2) * Math.PI) / 180)) /
+                (2 * Math.cos((((180 - 360 / this.sidesService.getSide()) / 2) * Math.PI) / 180));
+            this.radius = spaceBetweenTwoPolygon;
         } else if (this.tracingService.getHasContour() == true && this.sidesService.getSide() == 4) {
-            //carre
-            radius = this.radius - this.widthService.getWidth() / 2;
+            const spaceBetweenTwoSquare = Math.sqrt(Math.pow(this.widthService.getWidth(), 2) + Math.pow(this.widthService.getWidth(), 2));
+            this.radius = this.radius - spaceBetweenTwoSquare / 2;
+            this.radius = this.radius + spaceBetweenTwoSquare;
         } else if (this.tracingService.getHasContour() == true && this.sidesService.getSide() == 3) {
-            radius = this.radius;
+            this.radius = this.radius - this.widthService.getWidth();
+            const spaceBetweenTwoTriangle = this.widthService.getWidth() / Math.sin(((180 / 3 / 2) * Math.PI) / 180);
+            this.radius = this.radius + spaceBetweenTwoTriangle;
         }
-        console.log(radius);
-        console.log(this.widthService.getWidth());
-        ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+        const angleCircle = 2 * Math.PI;
+        ctx.arc(centerX, centerY, this.radius, 0, angleCircle);
         const lineDashValue = 6;
         ctx.strokeStyle = 'black';
         ctx.setLineDash([lineDashValue]);
