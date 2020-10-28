@@ -6,8 +6,9 @@ import { DrawingService } from '../drawing/drawing.service';
     providedIn: 'root',
 })
 export class ExportDrawingService {
+    drawLink: string;
     constructor(private drawingService: DrawingService, public dialog: MatDialog) {}
-    saveDrawToPNG(drawName: string): void {
+    exportDraw(drawName: string, format: string): void {
         const contex = this.drawingService.baseCtx;
         contex.save();
         contex.globalCompositeOperation = 'destination-over';
@@ -21,7 +22,8 @@ export class ExportDrawingService {
         ctx.drawImage(img, 0, 0);
         img.style.display = 'none';
         link.href = canvas.toDataURL();
-        link.download = drawName + '.png';
+        this.drawLink = link.href;
+        link.download = drawName + format;
         link.click();
     }
 }

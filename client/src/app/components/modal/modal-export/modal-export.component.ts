@@ -21,14 +21,22 @@ export class ExportComponent {
         dialog: MatDialog,
     ) {}
 
-    saveToPNG(): void {
+    exportToPNG(): void {
         if (this.validateValue()) {
-            (document.getElementById('buttonExport') as HTMLInputElement).disabled = true;
+            (document.getElementById('buttonExportPNG') as HTMLInputElement).disabled = true;
             const drawName = this.drawName.value;
-            this.exportDrawingService.saveDrawToPNG(drawName);
+            const format: string = '.png';
+            this.exportDrawingService.exportDraw(drawName, format);
         }
     }
-
+    exportToJPG(): void {
+        if (this.validateValue()) {
+            (document.getElementById('buttonExportJPG') as HTMLInputElement).disabled = true;
+            const drawName = this.drawName.value;
+            const format: string = '.jpg';
+            this.exportDrawingService.exportDraw(drawName, format);
+        }
+    }
     private validateValue(): boolean {
         return this.validateDrawName(this.drawName.value);
     }

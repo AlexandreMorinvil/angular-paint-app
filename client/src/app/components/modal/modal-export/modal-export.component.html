@@ -7,9 +7,9 @@
             <mat-error *ngIf="drawName.invalid"> Entrer un nom de dessin </mat-error>
         </mat-form-field>
     </p>
-
     <div mat-dialog-actions>
         <button id="buttonCancel" mat-button mat-dialog-close>Annuler</button>
-        <button id="buttonExport" (click)="saveToPNG()">Exporter</button>
+        <button id="buttonExportPNG" (click)="exportToPNG()">Exporter en PNG</button>
+        <button id="buttonExportJPG" (click)="exportToJPG()">Exporter en JPG</button>
     </div>
 </div>
