@@ -25,7 +25,7 @@ export class ApiDrawingService {
     }
 
     getByTag(tag: string): Observable<Drawing[]> {
-        return this.http.get<Drawing[]>(this.BASE_URL + tag).pipe(catchError(this.handleError<Drawing[]>('getByTag')));
+        return this.http.get<Drawing[]>(this.BASE_URL + "tag/" + tag).pipe(catchError(this.handleError<Drawing[]>('getByTag')));
     }
 
     save(drawing: Drawing): Observable<void> {

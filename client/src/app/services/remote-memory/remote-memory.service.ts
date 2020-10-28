@@ -2,9 +2,6 @@ import { Injectable } from '@angular/core';
 import { ApiDrawingService } from '@app/services/api/api-drawing.service';
 import { Drawing } from '@common/schema/drawing';
 
-// import { SaveComponent } from '@app/components/save/save.component';
-// import { DrawingService } from '@app/services/drawing/drawing.service';
-
 @Injectable({
     providedIn: 'root',
 })
