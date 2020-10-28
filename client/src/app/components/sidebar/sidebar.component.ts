@@ -2,9 +2,8 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { ExportDrawingService } from '@app/services/export/export-drawing.service';
+import { ModalHandlerService } from '@app/services/modal-handler/modal-handler';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
-import { UserGuideModalService } from '@app/services/user-guide-modal/user-guide-modal.service';
 
 @Component({
     selector: 'app-sidebar',
@@ -16,13 +15,13 @@ export class SidebarComponent {
     messageUserGuide: string = "Guide d'utilisation";
     messageBack: string = 'Retour';
     messageExportDialog: string = 'Exporter\n(Raccourci: Ctr + E)';
+    messageSaveDialog: string = 'Sauvegarder\n(Raccourci: Ctr + S)';
 
     constructor(
         private toolboxSevice: ToolboxService,
         private drawingService: DrawingService,
         private router: Router,
-        private userGuideModalService: UserGuideModalService,
-        private exportService: ExportDrawingService,
+        private modalHandler: ModalHandlerService,
     ) {}
 
     getListOfTools(): Tool[] {
@@ -50,9 +49,13 @@ export class SidebarComponent {
     }
 
     openGuide(): void {
-        this.userGuideModalService.openUserGuide();
+        this.modalHandler.openUserGuide();
+    }
+
+    saveDialog(): void {
+        this.modalHandler.openSaveDialog();
     }
     openExportDialog(): void {
-        this.exportService.openExportDialog();
+        this.modalHandler.openExportDialog();
     }
 }

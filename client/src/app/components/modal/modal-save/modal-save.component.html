@@ -1,0 +1,33 @@
+<div class="container">
+    <h1 class="title">Sauvegarder un Dessin</h1>
+    <p>
+        <mat-form-field class="name">
+            <mat-label>Nom du Dessin</mat-label>
+            <input matInput [formControl]="drawName" placeholder="Ex. dessin" />
+            <mat-error *ngIf="drawName.invalid"> Entrer un nom de dessin </mat-error>
+        </mat-form-field>
+    </p>
+    <p>
+        <mat-form-field class="tags">
+            <mat-chip-list #chipList aria-label="tag selection">
+                <mat-label>Nom des Étiquettes</mat-label>
+                <mat-chip *ngFor="let tag of tags" (removed)="remove(tag)">
+                    {{ tag.name }}
+                    <mat-icon matChipRemove>x</mat-icon>
+                </mat-chip>
+                <input
+                    placeholder="Ex:étiquette"
+                    [matChipInputFor]="chipList"
+                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                    (matChipInputTokenEnd)="add($event)"
+                />
+            </mat-chip-list>
+        </mat-form-field>
+    </p>
+
+    <div mat-dialog-actions>
+        <button id="buttonCancel" mat-button mat-dialog-close>Annuler</button>
+        <button id="buttonSaveServer" (click)="saveToServer()">Sauvegarder</button>
+    </div>
+    <h6>Choisir un nom de dessin entre 1 et 20 charactères, sans espaces et un maximum de 10 tags par dessin</h6>
+</div>

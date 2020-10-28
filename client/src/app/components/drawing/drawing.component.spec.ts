@@ -1,4 +1,6 @@
+import { Overlay } from '@angular/cdk/overlay';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -42,6 +44,7 @@ describe('DrawingComponent', () => {
 
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],
+            imports: [MatDialogModule],
             providers: [
                 { provide: DrawingService, useValue: drawingStub },
                 PencilService,
@@ -53,6 +56,8 @@ describe('DrawingComponent', () => {
                 LineService,
                 ToolboxService,
                 WorkzoneSizeService,
+                MatDialog,
+                Overlay,
             ],
         }).compileComponents();
     }));

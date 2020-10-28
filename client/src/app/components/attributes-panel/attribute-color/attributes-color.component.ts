@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
+import { ColorPickerService } from '@app/services/tools/color-picker/color-picker.service';
 
 @Component({
     selector: 'app-attributes-color',
@@ -12,11 +13,19 @@ export class AttributeColorComponent {
     primaryOpacity: number;
     secondaryOpacity: number;
 
-    constructor(private colorService: ColorService) {
+    constructor(private colorService: ColorService, private colorPickerService: ColorPickerService) {
         this.primaryColor = this.colorService.getPrimaryColor();
         this.secondaryColor = this.colorService.getSecondaryColor();
         this.primaryOpacity = this.colorService.getPrimaryColorOpacity();
         this.secondaryOpacity = this.colorService.getSecondaryColorOpacity();
+
+        this.colorPickerService.currentPickedPrimaryColor.subscribe((color) => {
+            this.primaryColor = color;
+        });
+
+        this.colorPickerService.currentPickedSecondaryColor.subscribe((color) => {
+            this.secondaryColor = color;
+        });
     }
 
     getListOfPreviousColors(): string[] {

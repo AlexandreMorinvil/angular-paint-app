@@ -5,8 +5,12 @@
     </button>
 
     <button (click)="openExportDialog()" class="to-bottom has-tooltip">
-        <img src="assets/images/save_icon.png" />
+        <img src="assets/images/export_icon.png" />
         <app-tooltip [text]="messageExportDialog" class="tooltip"></app-tooltip>
+    </button>
+    <button (click)="saveDialog()" class="has-tooltip">
+        <img src="assets/images/save_icon.png" />
+        <app-tooltip [text]="messageSaveDialog" class="tooltip"></app-tooltip>
     </button>
     <button (click)="resetDrawing()" class="has-tooltip">
         <img src="assets/images/document_icon.png" />
