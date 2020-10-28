@@ -633,6 +633,7 @@
 [1001/204440.187:ERROR:process_reader_win.cc(151)] SuspendThread: Accès refusé. (0x5)
 [1001/204440.535:ERROR:process_reader_win.cc(151)] SuspendThread: Accès refusé. (0x5)
 [1001/204440.808:ERROR:process_reader_win.cc(151)] SuspendThread: Accès refusé. (0x5)
+<<<<<<< HEAD
 [1027/104002.371:ERROR:filesystem_win.cc(129)] GetFileAttributes C:\Users\sofia\AppData\Local\Temp\karma-19988155\Crashpad\attachments\3960810c-77a7-4bc4-bcea-c4dc3c4e88ad: Le chemin d’accès spécifié est introuvable. (0x3)
 [1027/104002.429:ERROR:process_reader_win.cc(151)] SuspendThread: Accès refusé. (0x5)
 [1027/104002.429:ERROR:process_reader_win.cc(151)] SuspendThread: Accès refusé. (0x5)
@@ -644,3 +645,15 @@
 [1027/104546.301:ERROR:filesystem_win.cc(129)] GetFileAttributes C:\Users\sofia\AppData\Local\Temp\karma-86118270\Crashpad\attachments\12c881b9-8d5b-4163-b445-bd6996241a0e: Le chemin d’accès spécifié est introuvable. (0x3)
 [1027/110304.408:ERROR:filesystem_win.cc(129)] GetFileAttributes C:\Users\sofia\AppData\Local\Temp\karma-12451482\Crashpad\attachments\9790e8b7-0a5d-42aa-949d-111c3ac8c13b: Le chemin d’accès spécifié est introuvable. (0x3)
 [1027/111103.898:ERROR:filesystem_win.cc(129)] GetFileAttributes C:\Users\sofia\AppData\Local\Temp\karma-14270349\Crashpad\attachments\9b732335-32d2-4b3b-9b83-3348513f3145: Le chemin d’accès spécifié est introuvable. (0x3)
+=======
+[1019/194120.177:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
+[1021/185727.648:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
+[1021/191608.640:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
+[1022/234536.772:ERROR:filesystem_win.cc(129)] GetFileAttributes C:\Users\sofia\AppData\Local\Temp\karma-38395223\Crashpad\attachments\7e628b74-4550-41f3-a433-f0219016e1f1: Le chemin d’accès spécifié est introuvable. (0x3)
+[1022/234536.821:ERROR:process_reader_win.cc(151)] SuspendThread: Accès refusé. (0x5)
+[1022/234536.821:ERROR:process_reader_win.cc(151)] SuspendThread: Accès refusé. (0x5)
+[1022/235420.022:ERROR:filesystem_win.cc(129)] GetFileAttributes C:\Users\sofia\AppData\Local\Temp\karma-42883414\Crashpad\attachments\f57602f8-0a1b-494d-976c-e52a20ee518c: Le chemin d’accès spécifié est introuvable. (0x3)
+[1022/235420.070:ERROR:process_reader_win.cc(151)] SuspendThread: Accès refusé. (0x5)
+[1022/235420.070:ERROR:process_reader_win.cc(151)] SuspendThread: Accès refusé. (0x5)
+[1022/235420.495:ERROR:process_reader_win.cc(151)] SuspendThread: Accès refusé. (0x5)
+>>>>>>> integration/development

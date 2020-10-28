@@ -9,14 +9,16 @@ import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
 import { BrushService } from '@app/services/tools/brush/brush-service';
+import { ColorPickerService } from '@app/services/tools/color-picker/color-picker.service';
 import { CursorService } from '@app/services/tools/cursor/cursor.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse-service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { LineService } from '@app/services/tools/line/line-service';
+import { PaintService } from '@app/services/tools/paint/paint.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
-import { UserGuideModalService } from '@app/services/user-guide-modal/user-guide-modal.service';
+import { SelectionToolService } from '@app/services/tools/selection/selection-tool.service';
 import { SidebarComponent } from './sidebar.component';
 class ToolStub extends Tool {}
 
@@ -45,6 +47,9 @@ describe('SidebarComponent', () => {
             {} as EllipseService,
             {} as LineService,
             {} as PolygonService,
+            {} as ColorPickerService,
+            {} as PaintService,
+            {} as SelectionToolService,
         );
 
         TestBed.configureTestingModule({
@@ -64,7 +69,6 @@ describe('SidebarComponent', () => {
                 { provide: MAT_DIALOG_DATA, useValue: {} },
                 { provide: MatDialogRef, useValue: {} },
                 { provide: MatDialog, useValue: {} },
-                UserGuideModalService,
             ],
         }).compileComponents();
     }));
@@ -76,7 +80,7 @@ describe('SidebarComponent', () => {
         component['toolboxSevice'] = toolserviceMock;
         routerSpy = spyOn<any>(component['router'], 'navigate').and.callThrough();
         drawServiceSpy = spyOn<any>(component['drawingService'], 'resetDrawingWithWarning');
-        openGuideSpy = spyOn<any>(component['userGuideModalService'], 'openUserGuide');
+        openGuideSpy = spyOn<any>(component['modalHandler'], 'openUserGuide');
         fixture.detectChanges();
     });
 

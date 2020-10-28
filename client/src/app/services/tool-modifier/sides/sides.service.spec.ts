@@ -3,6 +3,7 @@ import { SidesService } from './sides.service';
 
 describe('SidesService', () => {
     let service: SidesService;
+<<<<<<< HEAD
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
@@ -37,5 +38,15 @@ describe('SidesService', () => {
         const minSide = service.MIN_POLYGON_SIDE;
         service.setSide(side);
         expect(service.getSide()).toEqual(minSide);
+=======
+
+    beforeEach(() => {
+        TestBed.configureTestingModule({});
+        service = TestBed.inject(SidesService);
+    });
+
+    it('should be created', () => {
+        expect(service).toBeTruthy();
+>>>>>>> integration/development
     });
 });
