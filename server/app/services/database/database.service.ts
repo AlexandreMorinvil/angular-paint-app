@@ -1,7 +1,7 @@
-import { injectable } from 'inversify';
-import { Collection, MongoClient, MongoClientOptions, ObjectID, FilterQuery, UpdateQuery } from 'mongodb';
-import 'reflect-metadata';
 import { Drawing, MAX_NAME_LENGTH } from '@common/schema/drawing';
+import { injectable } from 'inversify';
+import { Collection, FilterQuery, MongoClient, MongoClientOptions, ObjectID, UpdateQuery } from 'mongodb';
+import 'reflect-metadata';
 
 // CHANGE the URL for your database information
 const DATABASE_URL = 'mongodb+srv://team106:secret106@cluster0.fspbf.azure.mongodb.net/integrator-project?retryWrites=true&w=majority';
@@ -18,9 +18,7 @@ export class DatabaseService {
         useUnifiedTopology: true,
     };
 
-    constructor() {}
-
-    start() {
+    start(): void {
         MongoClient.connect(DATABASE_URL, this.options)
             .then((client: MongoClient) => {
                 this.client = client;
@@ -32,7 +30,7 @@ export class DatabaseService {
             });
     }
 
-    closeConnection() {
+    closeConnection(): void {
         this.client.close();
     }
 
@@ -86,8 +84,8 @@ export class DatabaseService {
     async updateDrawing(drawingID: string, drawing: Drawing): Promise<Drawing> {
         try {
             // Update
-            let filterQuery: FilterQuery<Drawing> = { _id: new ObjectID(drawingID) };
-            let updateQuery: UpdateQuery<Drawing> = {
+            const filterQuery: FilterQuery<Drawing> = { _id: new ObjectID(drawingID) };
+            const updateQuery: UpdateQuery<Drawing> = {
                 $set: { name: drawing.name, tags: drawing.tags },
             };
             await this.collection.updateOne(filterQuery, updateQuery);
@@ -103,7 +101,7 @@ export class DatabaseService {
 
     async deleteDrawing(drawingID: string): Promise<void> {
         try {
-            this.collection.findOneAndDelete({ _id: new ObjectID(drawingID) }).then(() => {});
+            this.collection.findOneAndDelete({ _id: new ObjectID(drawingID) });
         } catch (error) {
             throw new Error('Échec lors de la tentative de suppression du dessin');
         }
@@ -113,7 +111,7 @@ export class DatabaseService {
         this.validateName(drawing.name);
         this.validateTag(drawing.tags);
     }
-    private validateName(name: String): void {
+    private validateName(name: string): void {
         if (!(name.length > 0)) throw new Error('Les dessins doivent contenir un nom');
         if (!(name.length <= MAX_NAME_LENGTH)) throw new Error('Les noms des dessions doivent contenir moins un maximum de 50 caractères');
     }

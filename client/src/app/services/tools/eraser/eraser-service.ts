@@ -43,7 +43,6 @@ export class EraserService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawLine(this.drawingService.baseCtx, this.pathData);
         }
@@ -69,20 +68,42 @@ export class EraserService extends Tool {
     }
 
     private eraserVisual(event: MouseEvent): void {
-        const borderColor = '#000000';
-        const borderWidth = 1;
-        const squareWidth: number = Math.max(this.widthService.getWidth(), this.minWidth);
+        const mousePosition: Vec2 = { x: event.offsetX, y: event.offsetY };
+        if (this.isInCanvas(mousePosition)) {
+            const borderColor = '#000000';
+            const borderWidth = 1;
+            const squareWidth: number = Math.max(this.widthService.getWidth(), this.minWidth);
 
-        this.drawingService.previewCtx.strokeStyle = borderColor;
-        this.drawingService.previewCtx.fillStyle = this.eraserColor;
-        this.drawingService.previewCtx.lineWidth = borderWidth;
+            this.drawingService.previewCtx.strokeStyle = borderColor;
+            this.drawingService.previewCtx.fillStyle = this.eraserColor;
+            this.drawingService.previewCtx.lineWidth = borderWidth;
 
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.drawingService.previewCtx.strokeRect(event.offsetX - squareWidth / 2, event.offsetY - squareWidth / 2, squareWidth + 1, squareWidth + 1);
-        this.drawingService.previewCtx.fillRect(event.offsetX - squareWidth / 2, event.offsetY - squareWidth / 2, squareWidth + 1, squareWidth + 1);
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawingService.previewCtx.strokeRect(
+                event.offsetX - squareWidth / 2,
+                event.offsetY - squareWidth / 2,
+                squareWidth + 1,
+                squareWidth + 1,
+            );
+            this.drawingService.previewCtx.fillRect(
+                event.offsetX - squareWidth / 2,
+                event.offsetY - squareWidth / 2,
+                squareWidth + 1,
+                squareWidth + 1,
+            );
+        } else this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 
     private clearPath(): void {
         this.pathData = [];
+    }
+
+    private isInCanvas(mousePosition: Vec2): boolean {
+        return (
+            mousePosition.x <= this.drawingService.previewCtx.canvas.width &&
+            mousePosition.x >= 0 &&
+            mousePosition.y <= this.drawingService.previewCtx.canvas.height &&
+            mousePosition.y >= 0
+        );
     }
 }

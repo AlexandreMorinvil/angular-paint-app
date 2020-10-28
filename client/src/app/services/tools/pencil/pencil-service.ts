@@ -11,7 +11,7 @@ import { WidthService } from '@app/services/tool-modifier/width/width.service';
     providedIn: 'root',
 })
 export class PencilService extends Tool {
-    private pathData: Vec2[];
+    pathData: Vec2[];
 
     constructor(drawingService: DrawingService, private colorService: ColorService, private widthService: WidthService) {
         super(drawingService, new Description('crayon', 'c', 'pencil_icon.png'));

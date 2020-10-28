@@ -5,7 +5,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzone-size.service';
 
-const minSurfaceSize = 250;
+const minSurfaceSize = 10;
 
 @Injectable({
     providedIn: 'root',

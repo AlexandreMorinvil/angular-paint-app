@@ -22,7 +22,6 @@ export class DrawingComponent implements AfterViewInit {
     private previewCtx: CanvasRenderingContext2D;
     private editCtx: CanvasRenderingContext2D;
     private TOOL_BOX_WIDTH: number = 313;
-
     hasBeenDrawnOnto: boolean;
 
     constructor(
