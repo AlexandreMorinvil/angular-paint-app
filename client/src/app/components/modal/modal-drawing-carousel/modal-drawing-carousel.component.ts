@@ -3,6 +3,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DialogData } from '@app/classes/dialog-data';
 import { MatChipInputEvent } from '@angular/material/chips';
+import { RemoteMemoryService } from '@app/services/remote-memory/remote-memory.service.ts'
 
 export interface Tag {
     tagName: string;
@@ -17,7 +18,11 @@ export class DrawingCarouselComponent {
     visible: boolean = true;
     readonly separatorKeysCodes: number[] = [ENTER, COMMA];
     tags: Tag[] = [];
-    constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) {}
+
+
+    constructor(
+        public memoryService : RemoteMemoryService,
+        @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
 
     add(event: MatChipInputEvent): void {
         const input = event.input;
@@ -42,4 +47,33 @@ export class DrawingCarouselComponent {
         }
     }
 
+    getDrawingImage(name: string){
+
+    }
+
+    public slides: string [] = ['./assets/SBI_Slide_1.jpg', './assets/Eagle_Slide_2.jpg', './assets/Knot_Slide_3.jpg' ]
+    i: number;
+
+
+    showSlide(slides: string [], i: number) {
+        let slide = slides[i];
+        return slide;
+    }
+
+    getPrev(slides: string [], i: number) {
+        this.i = this.i - 1;
+        this.showSlide(slides, i)
+    }
+
+    getNext(slides: string [], i: number) {
+        this.i = this.i + 1;
+        this.showSlide(slides, i)
+    }
+
+
+
+    ngOnInit() {
+      this.i = 1;
+      this.memoryService.getAllFromDatabase();
+    }
 }

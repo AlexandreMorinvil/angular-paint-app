@@ -1,5 +1,5 @@
 <div class="container">
-    <h1 class="title">Sauvegarder un Dessin</h1>
+    <h1 class="title">Choisir un Dessin</h1>
     <!-- <p>
         <mat-form-field class="name">
             <mat-label>Nom du Dessin</mat-label>
@@ -7,6 +7,18 @@
             <mat-error *ngIf="drawName.invalid"> Entrer un nom de dessin </mat-error>
         </mat-form-field>
     </p> -->
+    <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+      <button (click)="getPrev(slides, i)">Prev</button>
+      <div *ngFor="let drawing of this.memoryService.drawingsFromDatabase; index as i" >
+          <div class = "form">
+              <img src="{{ getDrawingImage(drawing.name[i]) }}" alt="slide" >
+              {{ drawing.name[i]}}
+              {{ drawing.tags}}
+          </div>
+      </div>
+      <button (click)="getNext(slides, i)">Next</button>
+
+  </div>
     <p>
       <mat-form-field class="tags">
           <mat-chip-list #chipList aria-label="tag selection">
@@ -33,4 +45,5 @@
         <button id="buttonCancel" mat-button mat-dialog-close>Annuler</button> -->
     </div>
     <h6>Choisir un nom de dessin entre 1 et 20 charactères, sans espaces et un maximum de 10 tags par dessin</h6>
+
 </div>
