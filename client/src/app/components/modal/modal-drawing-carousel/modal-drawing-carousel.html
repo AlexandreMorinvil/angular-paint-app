@@ -7,23 +7,25 @@
             <mat-error *ngIf="drawName.invalid"> Entrer un nom de dessin </mat-error>
         </mat-form-field>
     </p> -->
-    <!-- <p>
-        <mat-form-field class="tags">
-            <mat-chip-list #chipList aria-label="Tag selection">
-                <mat-label>Nom des Étiquettes</mat-label>
-                <mat-chip *ngFor="let tag of tags" (removed)="remove(tag)">
-                    {{ tag.name }}
-                    <mat-icon matChipRemove>x</mat-icon>
-                </mat-chip>
-                <input
-                    placeholder="Ex:étiquette"
-                    [matChipInputFor]="chipList"
-                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                    (matChipInputTokenEnd)="add($event)"
-                />
+    <p>
+      <mat-form-field class="tags">
+          <mat-chip-list #chipList aria-label="tag selection">
+              <mat-label>Filtrage par Étiquettes</mat-label>
+              <mat-chip *ngFor="let tag of tags" (removed)="remove(tag)">
+                  {{ tag.tagName }}
+                  <mat-icon matChipRemove>x</mat-icon>
+              </mat-chip>
+              <input
+                  placeholder="Ex:étiquette"
+                  [matChipInputFor]="chipList"
+                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                  (matChipInputTokenEnd)="add($event)"
+              />
             </mat-chip-list>
         </mat-form-field>
-    </p> -->
+    </p>
+
+
 
     <div mat-dialog-actions>
         <!-- <button id="buttonSavePNG" (click)="saveToPNG()">Sauvegarder en PNG</button>
