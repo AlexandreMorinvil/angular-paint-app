@@ -23,6 +23,7 @@ export class PolygonService extends Tool {
     private pathData: Vec2[];
     private savedData: Vec2[];
     private angle: number;
+    private radius: number;
 
     constructor(
         drawingService: DrawingService,
@@ -74,8 +75,8 @@ export class PolygonService extends Tool {
             } else {
                 this.resetBorder();
             }
-            this.drawPreviewCircle(this.drawingService.previewCtx, this.pathData);
             this.drawPolygon(this.drawingService.previewCtx, this.pathData);
+            this.drawPreviewCircle(this.drawingService.previewCtx, this.pathData);
         }
     }
 
@@ -97,6 +98,7 @@ export class PolygonService extends Tool {
         this.savedData = [];
         const lastMouseMoveCoord = path[path.length - 1];
         let radius = Math.sqrt(Math.pow(this.mouseDownCoord.x - lastMouseMoveCoord.x, 2) + Math.pow(this.mouseDownCoord.y - lastMouseMoveCoord.y, 2));
+        this.radius = radius;
         for (let i = 0; i < this.sidesService.getSide(); i++) {
             this.savedData.push({
                 x: this.mouseDownCoord.x + radius * Math.cos(this.angle),
@@ -121,10 +123,19 @@ export class PolygonService extends Tool {
         let radius = Math.sqrt(Math.pow(this.mouseDownCoord.x - mouseMoveCoord.x, 2) + Math.pow(this.mouseDownCoord.y - mouseMoveCoord.y, 2));
         const centerX = this.mouseDownCoord.x;
         const centerY = this.mouseDownCoord.y;
-        if (this.widthService.getWidth() > 1) {
-            radius = radius + 2 * this.widthService.getWidth() - 1;
+        if (this.tracingService.getHasContour() == true && this.sidesService.getSide() >= 5) {
+            radius = this.radius - this.widthService.getWidth() / 2;
+            // const hyp = Math.sqrt(Math.pow(this.widthService.getWidth() / 2, 2) + Math.pow(this.widthService.getWidth() / 2, 2));
+            //radius = radius + hyp;
+        } else if (this.tracingService.getHasContour() == true && this.sidesService.getSide() == 4) {
+            //carre
+            radius = this.radius - this.widthService.getWidth() / 2;
+        } else if (this.tracingService.getHasContour() == true && this.sidesService.getSide() == 3) {
+            radius = this.radius;
         }
-        ctx.arc(centerX, centerY, radius, 0, this.angle);
+        console.log(radius);
+        console.log(this.widthService.getWidth());
+        ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
         const lineDashValue = 6;
         ctx.strokeStyle = 'black';
         ctx.setLineDash([lineDashValue]);
