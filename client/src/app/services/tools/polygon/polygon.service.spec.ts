@@ -7,6 +7,8 @@ import { TracingService } from '@app/services/tool-modifier/tracing/tracing.serv
 import { PolygonService } from './polygon.service';
 
 describe('PolygonService', () => {
+    // It would be illogical to split a test file for a unique service
+    // tslint:disable:max-file-line-count
     let service: PolygonService;
     let tracingService: TracingService;
     let mouseEvent: MouseEvent;
@@ -102,7 +104,7 @@ describe('PolygonService', () => {
     it(' on Mouse mouve should call setAttribute if mouse was already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
-        //mouseEvent = { shiftKey: true } as MouseEvent;
+        // mouseEvent = { shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(setAttributeSpy).toHaveBeenCalled();
@@ -111,13 +113,14 @@ describe('PolygonService', () => {
     it(' on Mouse mouve should not call setAttribute if mouse was not already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = false;
-        //mouseEvent = { shiftKey: true } as MouseEvent;
+        // mouseEvent = { shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(setAttributeSpy).not.toHaveBeenCalled();
     });
     it(' should be a triangle when drawing polygon and number side is 3', () => {
-        service.sidesService.setSide(3);
+        const numberSide = 3;
+        service.sidesService.setSide(numberSide);
         /*mouseEvent = { offsetX: 30, offsetY: 6, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 10, offsetY: 5, button: 0, shiftKey: true } as MouseEvent;
@@ -128,7 +131,8 @@ describe('PolygonService', () => {
     });
 
     it(' should be a square when drawing polygon and number side is 4', () => {
-        service.sidesService.setSide(4);
+        const numberSide = 4;
+        service.sidesService.setSide(numberSide);
         /*mouseEvent = { offsetX: 30, offsetY: 6, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 10, offsetY: 5, button: 0, shiftKey: true } as MouseEvent;
@@ -139,7 +143,8 @@ describe('PolygonService', () => {
     });
 
     it(' should be a pentagon when drawing polygon and number side is 5', () => {
-        service.sidesService.setSide(5);
+        const numberSide = 5;
+        service.sidesService.setSide(numberSide);
         /*mouseEvent = { offsetX: 30, offsetY: 6, button: 0, shiftKey: true } as MouseEvent;
     service.onMouseDown(mouseEvent);
     mouseEvent = { offsetX: 10, offsetY: 5, button: 0, shiftKey: true } as MouseEvent;
@@ -150,7 +155,8 @@ describe('PolygonService', () => {
     });
 
     it(' should be a hexagon when drawing polygon and number side is 6', () => {
-        service.sidesService.setSide(6);
+        const numberSide = 6;
+        service.sidesService.setSide(numberSide);
         /*mouseEvent = { offsetX: 30, offsetY: 6, button: 0, shiftKey: true } as MouseEvent;
       service.onMouseDown(mouseEvent);
       mouseEvent = { offsetX: 10, offsetY: 5, button: 0, shiftKey: true } as MouseEvent;
@@ -160,7 +166,8 @@ describe('PolygonService', () => {
       */
     });
     it(' should be a heptagon when drawing polygon and number side is 7', () => {
-        service.sidesService.setSide(7);
+        const numberSide = 7;
+        service.sidesService.setSide(numberSide);
         /*mouseEvent = { offsetX: 30, offsetY: 6, button: 0, shiftKey: true } as MouseEvent;
       service.onMouseDown(mouseEvent);
       mouseEvent = { offsetX: 10, offsetY: 5, button: 0, shiftKey: true } as MouseEvent;
@@ -170,7 +177,8 @@ describe('PolygonService', () => {
       */
     });
     it(' should be a octogon when drawing polygon and number side is 8', () => {
-        service.sidesService.setSide(8);
+        const numberSide = 8;
+        service.sidesService.setSide(numberSide);
         /*mouseEvent = { offsetX: 30, offsetY: 6, button: 0, shiftKey: true } as MouseEvent;
       service.onMouseDown(mouseEvent);
       mouseEvent = { offsetX: 10, offsetY: 5, button: 0, shiftKey: true } as MouseEvent;
@@ -180,7 +188,8 @@ describe('PolygonService', () => {
       */
     });
     it(' should be a eenagon when drawing polygon and number side is 9', () => {
-        service.sidesService.setSide(9);
+        const numberSide = 9;
+        service.sidesService.setSide(numberSide);
         /*mouseEvent = { offsetX: 30, offsetY: 6, button: 0, shiftKey: true } as MouseEvent;
       service.onMouseDown(mouseEvent);
       mouseEvent = { offsetX: 10, offsetY: 5, button: 0, shiftKey: true } as MouseEvent;
@@ -191,7 +200,8 @@ describe('PolygonService', () => {
     });
 
     it(' should be a decagon when drawing polygon and number side is 10', () => {
-        service.sidesService.setSide(10);
+        const numberSide = 10;
+        service.sidesService.setSide(numberSide);
         /*mouseEvent = { offsetX: 30, offsetY: 6, button: 0, shiftKey: true } as MouseEvent;
       service.onMouseDown(mouseEvent);
       mouseEvent = { offsetX: 10, offsetY: 5, button: 0, shiftKey: true } as MouseEvent;
@@ -202,7 +212,8 @@ describe('PolygonService', () => {
     });
 
     it(' should be a hendecagon when drawing polygon and number side is 11', () => {
-        service.sidesService.setSide(11);
+        const numberSide = 11;
+        service.sidesService.setSide(numberSide);
         /*mouseEvent = { offsetX: 30, offsetY: 6, button: 0, shiftKey: true } as MouseEvent;
       service.onMouseDown(mouseEvent);
       mouseEvent = { offsetX: 10, offsetY: 5, button: 0, shiftKey: true } as MouseEvent;
@@ -213,7 +224,8 @@ describe('PolygonService', () => {
     });
 
     it(' should be a dodecagon when drawing polygon and number side is 12', () => {
-        service.sidesService.setSide(12);
+        const numberSide = 12;
+        service.sidesService.setSide(numberSide);
         /*mouseEvent = { offsetX: 30, offsetY: 6, button: 0, shiftKey: true } as MouseEvent;
       service.onMouseDown(mouseEvent);
       mouseEvent = { offsetX: 10, offsetY: 5, button: 0, shiftKey: true } as MouseEvent;

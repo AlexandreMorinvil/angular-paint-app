@@ -33,6 +33,7 @@ describe('SidebarComponent', () => {
     let routerSpy: jasmine.Spy<any>;
     let drawServiceSpy: jasmine.Spy<any>;
     let openGuideSpy: jasmine.Spy<any>;
+    let openSaveDialogSpy: jasmine.Spy<any>;
 
     beforeEach(async(() => {
         toolStub = new ToolStub({} as DrawingService, {} as Description);
@@ -81,6 +82,7 @@ describe('SidebarComponent', () => {
         routerSpy = spyOn<any>(component['router'], 'navigate').and.callThrough();
         drawServiceSpy = spyOn<any>(component['drawingService'], 'resetDrawingWithWarning');
         openGuideSpy = spyOn<any>(component['modalHandler'], 'openUserGuide');
+        openSaveDialogSpy = spyOn<any>(component['modalHandler'], 'openSaveDialog');
         fixture.detectChanges();
     });
 
@@ -116,5 +118,10 @@ describe('SidebarComponent', () => {
     it('should call openUserGuide', () => {
         component.openGuide();
         expect(openGuideSpy).toHaveBeenCalled();
+    });
+
+    it('should call saveDialog', () => {
+        component.openSaveDialog();
+        expect(openSaveDialogSpy).toHaveBeenCalled();
     });
 });

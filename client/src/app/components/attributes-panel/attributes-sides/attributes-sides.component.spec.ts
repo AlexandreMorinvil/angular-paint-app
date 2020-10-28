@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { AttributesSidesComponent } from '@app/components/attributes-panel/attributes-sides/attributes-sides.component';
 import { SidesService } from '@app/services/tool-modifier/sides/sides.service';
-import { AttributesSidesComponent } from './attributes-sides.component';
 
 describe('AttributesSidesComponent', () => {
     let component: AttributesSidesComponent;
