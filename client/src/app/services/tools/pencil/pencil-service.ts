@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { InteractionPath } from '@app/classes/action/interactionPath';
+import { InteractionPath } from '@app/classes/action/interaction-path';
 import { Description } from '@app/classes/description';
 import { MouseButton } from '@app/classes/mouse';
 import { Tool } from '@app/classes/tool';
