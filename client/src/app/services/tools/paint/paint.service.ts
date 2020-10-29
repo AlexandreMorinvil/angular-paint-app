@@ -85,7 +85,8 @@ export class PaintService extends Tool {
     floodFill(ctx: CanvasRenderingContext2D, pathPixel: Vec2[]): void {
         this.setAttribute(ctx);
         while (pathPixel.length) {
-            const pixelPos = pathPixel.pop()!;
+            const popedPixel = pathPixel.pop()!;
+            const pixelPos: Vec2 = { x: popedPixel.x, y: popedPixel.y };
 
             const xPosition = pixelPos.x;
             let yPosition = pixelPos.y;
