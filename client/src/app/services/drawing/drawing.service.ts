@@ -26,6 +26,9 @@ export class DrawingService {
 
     printCanvas(image: ImageData) {
         this.clearCanvas(this.baseCtx);
+        // this.baseCtx.globalCompositeOperation = 'destination-over';
+        this.baseCtx.fillStyle = 'white';
+        this.baseCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.baseCtx.putImageData(image, 0, 0);
     }
 

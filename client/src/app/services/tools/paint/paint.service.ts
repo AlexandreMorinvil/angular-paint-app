@@ -42,6 +42,7 @@ export class PaintService extends Tool {
         this.setFillColor();
         if (this.isInCanvas(this.mouseDownCoord)) {
             let hasFilled = false;
+            const newPosition: Vec2 = { x: this.pathData[0].x, y: this.pathData[0].y };
             if (event.button === MouseButton.Left) {
                 this.floodFill(this.drawingService.baseCtx, this.pathData);
                 hasFilled = true;
@@ -54,7 +55,7 @@ export class PaintService extends Tool {
                     this,
                     new InteractionPaint(
                         event.button,
-                        this.mouseDownCoord,
+                        newPosition,
                         this.startR,
                         this.startG,
                         this.startB,
