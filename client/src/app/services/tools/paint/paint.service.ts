@@ -5,7 +5,6 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
-import { FillingService } from '@app/services/tool-modifier/filling/filling.service';
 import { ToleranceService } from '@app/services/tool-modifier/tolerance/tolerance.service';
 
 @Injectable({
@@ -22,37 +21,25 @@ export class PaintService extends Tool {
     private startG: number;
     private startB: number;
 
-    constructor(
-        drawingService: DrawingService,
-        private colorService: ColorService,
-        public toleranceService: ToleranceService,
-        public fillingService: FillingService,
-    ) {
+    constructor(drawingService: DrawingService, private colorService: ColorService, public toleranceService: ToleranceService) {
         super(drawingService, new Description('Paint', 'b', 'paint_icon.png'));
         this.modifiers.push(this.colorService);
         this.modifiers.push(this.toleranceService);
-        this.modifiers.push(this.fillingService);
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.mouseDown = event.button === MouseButton.Left;
-        if (this.mouseDown) {
-            this.clearPath();
-            this.mouseDownCoord = this.getPositionFromMouse(event);
-            this.pathData.push(this.mouseDownCoord);
-            this.setStartColor();
-            this.setFillColor();
-
-            if (this.fillingService.getNeighbourPixelsOnly()) {
+        this.clearPath();
+        this.mouseDownCoord = this.getPositionFromMouse(event);
+        this.pathData.push(this.mouseDownCoord);
+        this.setStartColor();
+        this.setFillColor();
+        if (this.isInCanvas(this.mouseDownCoord)) {
+            if (event.button === MouseButton.Left) {
                 this.floodFill(this.drawingService.baseCtx, this.pathData);
-            } else {
+            } else if (event.button === MouseButton.Right) {
                 this.sameColorFill(this.drawingService.baseCtx);
             }
         }
-    }
-
-    onMouseUp(event: MouseEvent): void {
-        this.mouseDown = false;
     }
 
     sameColorFill(ctx: CanvasRenderingContext2D): void {
@@ -73,14 +60,12 @@ export class PaintService extends Tool {
     floodFill(ctx: CanvasRenderingContext2D, pathPixel: Vec2[]): void {
         this.setAttribute(ctx);
         while (pathPixel.length) {
-            const pixelPos = pathPixel.pop();
-            if (!pixelPos) continue;
+            const pixelPos = pathPixel.pop()!;
 
             const xPosition = pixelPos.x;
             let yPosition = pixelPos.y;
 
             // Get current pixel position
-            console.log(this.matchStartColor(pixelPos));
 
             // Go up as long as the color matches and are inside the canvas
             // tslint:disable-next-line:no-magic-numbers
@@ -173,5 +158,9 @@ export class PaintService extends Tool {
         const g = parseInt(values[2].toString() + values[3].toString(), 16);
         const b = parseInt(values[4].toString() + values[5].toString(), 16);
         return [r, g, b];
+    }
+
+    isInCanvas(mousePosition: Vec2): boolean {
+        return mousePosition.x <= this.drawingService.previewCtx.canvas.width && mousePosition.y <= this.drawingService.previewCtx.canvas.height;
     }
 }
