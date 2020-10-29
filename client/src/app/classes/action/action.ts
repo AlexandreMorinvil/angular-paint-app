@@ -21,6 +21,7 @@ export class Action {
         this.setModifiersToActionState();
         this.tool.execute(this.interaction);
         this.setModifiersToMemorizedState();
+        this.clearModifiersMemorizedState();
     }
 
     private memorizeCurrentModifiersState(): void {
@@ -39,5 +40,9 @@ export class Action {
         this.tool.modifiers.forEach((modifier, index) => {
             modifier.setState(this.toolModifierStateCurrent[index]);
         });
+    }
+
+    private clearModifiersMemorizedState(): void {
+        this.toolModifierStateCurrent = [];
     }
 }
