@@ -46,7 +46,7 @@ export class DrawingStateTrackerService {
 
         if (this.actions.length % this.intervalCanvasSave === 0) {
             const cavasToRedo: ImageData | undefined = this.canvasesToRedo.pop();
-            if (cavasToRedo) this.canvasesToRedo.push(cavasToRedo);
+            if (cavasToRedo) this.canvases.push(cavasToRedo);
         }
         this.reconstituteCanvas();
     }
@@ -62,7 +62,6 @@ export class DrawingStateTrackerService {
         const indexCanvas = (this.actions.length / this.intervalCanvasSave) | 0;
         const actionsToCompute = this.actions.length % this.intervalCanvasSave;
 
-        console.log(this.canvases[indexCanvas]);
         this.drawingService.printCanvas(this.canvases[indexCanvas]);
         for (let i = 0; i < actionsToCompute; i++) {
             this.actions[indexCanvas * this.intervalCanvasSave + i].execute();
