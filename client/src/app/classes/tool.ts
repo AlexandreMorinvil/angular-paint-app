@@ -1,6 +1,6 @@
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { Description } from './description';
 import { Interaction } from './action/interactions';
+import { Description } from './description';
 import { ToolModifier } from './tool-modifier';
 import { Vec2 } from './vec2';
 
@@ -38,12 +38,16 @@ export abstract class Tool {
 
     onShiftUp(event: KeyboardEvent): void {}
 
+    onCtrlShiftZDown(event: KeyboardEvent): void {}
+
+    onCtrlZDown(event: KeyboardEvent): void {}
+
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };
     }
 
     execute(interaction: Interaction): void {
-        console.log("It executed");
+        console.log('It executed');
     }
 
     needsModifierManager(modifier: ToolModifier): boolean {

@@ -16,6 +16,14 @@ export class DrawingStateTrackerService {
 
     constructor(private drawingService: DrawingService) {}
 
+    onCtrlZDown(event: KeyboardEvent): void {
+        this.undo();
+    }
+
+    onCtrlShiftZDown(event: KeyboardEvent): void {
+        this.redo();
+    }
+
     addAction(tool: Tool, interaction: Interaction): void {
         if (this.canvases.length === 0) this.canvases.push(new ImageData(this.drawingService.getWidth(), this.drawingService.getHeight()));
         this.actionsToRedo = [];
