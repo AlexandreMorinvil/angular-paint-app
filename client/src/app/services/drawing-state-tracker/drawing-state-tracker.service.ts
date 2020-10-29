@@ -32,7 +32,7 @@ export class DrawingStateTrackerService {
         this.actionsToRedo.push(actionUndone);
 
         if (this.actions.length % this.intervalCanvasSave === this.intervalCanvasSave - 1) {
-            const cavasUndone: ImageData | undefined = this.canvases.pop();
+            const cavasUndone: ImageData | undefined = this.canvases[this.canvases.length - 1];
             if (cavasUndone) this.canvasesToRedo.push(cavasUndone);
         }
         this.reconstituteCanvas();
