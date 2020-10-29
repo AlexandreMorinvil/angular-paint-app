@@ -24,7 +24,20 @@ export class DrawingService {
         }
     }
 
+    printCanvas(image: ImageData) {
+        this.clearCanvas(this.baseCtx);
+        this.baseCtx.putImageData(image, this.canvas.width, this.canvas.height);
+    }
+
     clearCanvas(context: CanvasRenderingContext2D): void {
         context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    getWidth(): number {
+        return this.canvas.width;
+    }
+
+    getHeight(): number {
+        return this.canvas.height;
     }
 }

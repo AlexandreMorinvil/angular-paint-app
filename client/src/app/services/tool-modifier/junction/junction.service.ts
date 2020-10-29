@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ToolModifier } from '@app/classes/tool-modifier';
+import { JunctionModifierState } from './junction-state';
 
 @Injectable({
     providedIn: 'root',
@@ -32,5 +33,14 @@ export class JunctionService extends ToolModifier {
 
     getHasJunctionPoint(): boolean {
         return this.hasJunctionPoint;
+    }
+
+    getState(): JunctionModifierState {
+        return new JunctionModifierState(this.diameter, this.hasJunctionPoint);
+    }
+
+    setState(state: JunctionModifierState): void {
+        this.diameter = state.diameter;
+        this.hasJunctionPoint = state.hasJunctionPoint;
     }
 }

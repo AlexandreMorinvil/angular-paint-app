@@ -1,5 +1,6 @@
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { Description } from './description';
+import { Interaction } from './action/interactions';
 import { ToolModifier } from './tool-modifier';
 import { Vec2 } from './vec2';
 
@@ -7,7 +8,7 @@ import { Vec2 } from './vec2';
 // tslint:disable:no-empty
 export abstract class Tool {
     private description: Description;
-    protected modifiers: ToolModifier[] = [];
+    public modifiers: ToolModifier[] = [];
 
     mouseDownCoord: Vec2;
     mouseDown: boolean = false;
@@ -39,6 +40,10 @@ export abstract class Tool {
 
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };
+    }
+
+    execute(interaction: Interaction): void {
+        console.log("It executed");
     }
 
     needsModifierManager(modifier: ToolModifier): boolean {
