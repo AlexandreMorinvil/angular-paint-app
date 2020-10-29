@@ -8,7 +8,7 @@ import { DrawingService } from '../drawing/drawing.service';
     providedIn: 'root',
 })
 export class DrawingStateTrackerService {
-    private intervalCanvasSave: number = 10;
+    private intervalCanvasSave: number = 3;
     private actions: Action[] = [];
     private canvases: ImageData[] = [];
     private actionsToRedo: Action[] = [];
@@ -30,7 +30,7 @@ export class DrawingStateTrackerService {
         const actionUndone: Action | undefined = this.actions.pop();
         if (!actionUndone) return;
         this.actionsToRedo.push(actionUndone);
-        if (this.actions.length % this.intervalCanvasSave === (this.intervalCanvasSave - 1)) {
+        if (this.actions.length % this.intervalCanvasSave === this.intervalCanvasSave) {
             const cavasUndone: ImageData | undefined = this.canvases.pop();
             if (cavasUndone) this.canvasesToRedo.push(cavasUndone);
         }
@@ -59,6 +59,8 @@ export class DrawingStateTrackerService {
     private reconstituteCanvas(): void {
         const indexCanvas = (this.actions.length / this.intervalCanvasSave) | 0;
         const actionsToCompute = this.actions.length % this.intervalCanvasSave;
+
+        console.log(this.canvases[indexCanvas]);
         this.drawingService.printCanvas(this.canvases[indexCanvas]);
         for (let i = 0; i < actionsToCompute; i++) {
             this.actions[indexCanvas * this.intervalCanvasSave + i].execute();
