@@ -26,7 +26,7 @@ export class DrawingService {
 
     printCanvas(image: ImageData) {
         this.clearCanvas(this.baseCtx);
-        this.baseCtx.putImageData(image, this.canvas.width, this.canvas.height);
+        this.baseCtx.putImageData(image, 0, 0);
     }
 
     clearCanvas(context: CanvasRenderingContext2D): void {

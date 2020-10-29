@@ -17,7 +17,7 @@ export class DrawingStateTrackerService {
     constructor(private drawingService: DrawingService) {}
 
     addAction(tool: Tool, interaction: Interaction): void {
-        if (this.canvases.length === 0) this.saveCanvas();
+        if (this.canvases.length === 0) this.canvases.push(new ImageData(this.drawingService.getWidth(), this.drawingService.getHeight()));
         this.actionsToRedo = [];
         this.canvasesToRedo = [];
 
@@ -30,7 +30,7 @@ export class DrawingStateTrackerService {
         const actionUndone: Action | undefined = this.actions.pop();
         if (!actionUndone) return;
         this.actionsToRedo.push(actionUndone);
-        if (this.actions.length % this.intervalCanvasSave === this.intervalCanvasSave - 1) {
+        if (this.actions.length % this.intervalCanvasSave === (this.intervalCanvasSave - 1)) {
             const cavasUndone: ImageData | undefined = this.canvases.pop();
             if (cavasUndone) this.canvasesToRedo.push(cavasUndone);
         }
@@ -49,12 +49,19 @@ export class DrawingStateTrackerService {
         this.reconstituteCanvas();
     }
 
+    reset(): void {
+        this.actions = [];
+        this.canvases = [];
+        this.actionsToRedo = [];
+        this.canvasesToRedo = [];
+    }
+
     private reconstituteCanvas(): void {
         const indexCanvas = (this.actions.length / this.intervalCanvasSave) | 0;
         const actionsToCompute = this.actions.length % this.intervalCanvasSave;
         this.drawingService.printCanvas(this.canvases[indexCanvas]);
-        for (let i = indexCanvas; i < actionsToCompute; i++) {
-            this.actions[i].execute();
+        for (let i = 0; i < actionsToCompute; i++) {
+            this.actions[indexCanvas * this.intervalCanvasSave + i].execute();
         }
     }
 
