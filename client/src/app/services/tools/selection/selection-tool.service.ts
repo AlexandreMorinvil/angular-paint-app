@@ -256,4 +256,25 @@ export abstract class SelectionToolService extends Tool {
     protected putImageData(startCoord: Vec2, canvas: CanvasRenderingContext2D): void {
         canvas.putImageData(this.imageData, startCoord.x, startCoord.y);
     }
+
+    protected getSquaredSize(mousePosition: Vec2): Vec2 {
+        let width = mousePosition.x - this.startDownCoord.x;
+        let height = mousePosition.y - this.startDownCoord.y;
+        // If Shift is pressed should be a square
+        const squareSide = Math.abs(Math.min(height, width));
+        if (height < 0 && width >= 0) {
+            height = -squareSide;
+            width = squareSide;
+        } else if (height >= 0 && width < 0) {
+            width = -squareSide;
+            height = squareSide;
+        } else if (height < 0 && width < 0) {
+            width = -squareSide;
+            height = -squareSide;
+        } else {
+            width = squareSide;
+            height = squareSide;
+        }
+        return { x: width, y: height };
+    }
 }

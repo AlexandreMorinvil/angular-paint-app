@@ -67,7 +67,7 @@ export class EllipseService extends Tool {
         } else {
             this.resetBorder();
         }
-        if (event.shiftKey && this.mouseDown) {
+        if (this.shiftDown && this.mouseDown) {
             this.pathData.push(mousePosition);
             // We draw on the preview canvas and erase it each time the mouse is moved
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -120,12 +120,14 @@ export class EllipseService extends Tool {
     }
 
     onShiftDown(): void {
+        this.shiftDown = true;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
         this.drawCircle(this.drawingService.previewCtx, this.pathData);
     }
 
     onShiftUp(): void {
+        this.shiftDown = false;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
         this.drawEllipse(this.drawingService.previewCtx, this.pathData);

@@ -63,7 +63,10 @@ export class EllipseSelectionService extends SelectionToolService {
             this.getAnchorHit(this.drawingService.previewCtx, mousePosition);
         } else if (this.isInCanvas(mousePosition) && this.mouseDown) {
             this.ellipseService.onMouseMove(event);
-            if (this.startDownCoord.x !== mousePosition.x && this.startDownCoord.y !== mousePosition.y) {
+            if (this.startDownCoord.x !== mousePosition.x && this.startDownCoord.y !== mousePosition.y && this.ellipseService.shiftDown) {
+                const square = this.getSquaredSize(mousePosition);
+                this.imageData = this.drawingService.baseCtx.getImageData(this.startDownCoord.x, this.startDownCoord.y, square.x, square.y);
+            } else if (this.startDownCoord.x !== mousePosition.x && this.startDownCoord.y !== mousePosition.y && !this.ellipseService.shiftDown) {
                 this.imageData = this.drawingService.baseCtx.getImageData(
                     this.startDownCoord.x,
                     this.startDownCoord.y,
@@ -94,7 +97,12 @@ export class EllipseSelectionService extends SelectionToolService {
             this.clickOnAnchor = false;
             this.selectionCreated = false;
         } else if (this.mouseDown) {
-            this.pathData.push(mousePosition);
+            if (this.ellipseService.shiftDown) {
+                const square = this.getSquaredSize(mousePosition);
+                this.pathData.push({ x: square.x + this.startDownCoord.x, y: square.y + this.startDownCoord.y });
+            } else {
+                this.pathData.push(mousePosition);
+            }
             this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.pathData);
             this.offsetAnchors();
             this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
@@ -200,6 +208,30 @@ export class EllipseSelectionService extends SelectionToolService {
         this.tracingService.setHasContour(false);
         this.ellipseService.drawEllipse(this.drawingService.baseCtx, this.pathData);
         this.resetTransform();
+    }
+
+    onShiftDown(event: KeyboardEvent): void {
+        this.ellipseService.shiftDown = true;
+        if (this.mouseDown) {
+            const mouseEvent = {
+                offsetX: this.pathData[this.pathData.length - 1].x,
+                offsetY: this.pathData[this.pathData.length - 1].y,
+                button: 0,
+            } as MouseEvent;
+            this.onMouseMove(mouseEvent);
+        }
+    }
+
+    onShiftUp(event: KeyboardEvent): void {
+        this.ellipseService.shiftDown = false;
+        if (this.mouseDown) {
+            const mouseEvent = {
+                offsetX: this.pathData[this.pathData.length - 1].x,
+                offsetY: this.pathData[this.pathData.length - 1].y,
+                button: 0,
+            } as MouseEvent;
+            this.onMouseMove(mouseEvent);
+        }
     }
 
     onCtrlADown(event: KeyboardEvent): void {

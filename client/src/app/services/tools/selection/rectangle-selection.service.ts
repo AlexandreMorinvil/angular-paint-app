@@ -98,7 +98,7 @@ export class RectangleSelectionService extends SelectionToolService {
             this.selectionCreated = false;
         } else if (this.mouseDown) {
             if (this.rectangleService.shiftDown) {
-                let square = this.getSquaredSize(mousePosition);
+                const square = this.getSquaredSize(mousePosition);
                 this.pathData.push({ x: square.x + this.startDownCoord.x, y: square.y + this.startDownCoord.y });
             } else {
                 this.pathData.push(mousePosition);
@@ -157,36 +157,14 @@ export class RectangleSelectionService extends SelectionToolService {
         this.onMouseUp(mouseEvent);
     }
 
-    getSquaredSize(mousePosition: Vec2): Vec2 {
-        let width = mousePosition.x - this.startDownCoord.x;
-        let height = mousePosition.y - this.startDownCoord.y;
-        if (this.rectangleService.shiftDown) {
-            // If Shift is pressed should be a square
-            const squareSide = Math.abs(Math.min(height, width));
-            if (height < 0 && width >= 0) {
-                height = -squareSide;
-                width = squareSide;
-            } else if (height >= 0 && width < 0) {
-                width = -squareSide;
-                height = squareSide;
-            } else if (height < 0 && width < 0) {
-                width = -squareSide;
-                height = -squareSide;
-            } else {
-                width = squareSide;
-                height = squareSide;
-            }
-        }
-        return { x: width, y: height };
-    }
-
     evenImageStartCoord(mousePosition: Vec2): Vec2 {
+        // tslint:disable:prefer-const
         let startCoord = { x: mousePosition.x - this.imageData.width / 2, y: mousePosition.y - this.imageData.height / 2 };
-        if (this.imageData.width % 2 != 0 || this.imageData.height % 2 != 0) {
-            if (this.imageData.width % 2 != 0) {
+        if (this.imageData.width % 2 !== 0 || this.imageData.height % 2 !== 0) {
+            if (this.imageData.width % 2 !== 0) {
                 startCoord.x = mousePosition.x - (this.imageData.width + 1) / 2;
             }
-            if (this.imageData.height % 2 != 0) {
+            if (this.imageData.height % 2 !== 0) {
                 startCoord.y = mousePosition.y - (this.imageData.height + 1) / 2;
             }
         }
