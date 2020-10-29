@@ -10,7 +10,7 @@ export class RemoteMemoryService {
 
     constructor(private apiDrawingService: ApiDrawingService) {}
 
-    getAllFromDatabase(drawing: Drawing): void {
+    getAllFromDatabase(): void {
         this.apiDrawingService.getAll().subscribe((drawingsFetched: Drawing[]) => {
             this.drawingsFromDatabase = drawingsFetched;
         });

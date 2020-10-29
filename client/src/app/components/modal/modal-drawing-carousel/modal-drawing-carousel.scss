@@ -29,3 +29,16 @@
     font-weight: bold;
     font-family: Helvetica;
 }
+.demo-content {
+  color: #fff;
+  display: flex;
+  font-family: Helvetica;
+  font-weight: 100;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  border-radius: 3px;
+  font-size: 56px;
+  height: 250px;
+  width: 100%;
+}
