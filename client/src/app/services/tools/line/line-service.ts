@@ -138,7 +138,7 @@ export class LineService extends Tool {
         if (this.isAround20Pixels()) {
             this.closeShape();
         }
-        this.drawingStateTrackingService.addAction(this, this.pathDataSaved);
+        this.drawingStateTrackingService.addAction(this, new InteractionPath(this.pathDataSaved));
         this.clearPathSaved();
     }
 
@@ -305,13 +305,20 @@ export class LineService extends Tool {
     }
 
     execute(interaction: InteractionPath): void {
-        for (let i = 0; i < interaction.path.length; i++) {
-            this.mouseDownCoord = interaction.path[i];
-            this.drawJunction(this.drawingService.baseCtx, interaction.path);
-        }
         for (let i = 0; i < interaction.path.length - 1; i++) {
             const pathData: Vec2[] = [interaction.path[i], interaction.path[i + 1]];
             this.drawLine(this.drawingService.baseCtx, pathData);
         }
+        for (let i = 0; i < interaction.path.length; i++) {
+            this.mouseDownCoord = interaction.path[i];
+            this.drawJunction(this.drawingService.baseCtx, interaction.path);
+        }
+        this.clearPathSaved();
+        this.pathDataSaved.push(interaction.path[0]);
+        this.pathDataSaved.push(interaction.path[interaction.path.length - 1]);
+        if (this.isAround20Pixels()) {
+            this.closeShape();
+        }
+        this.clearPathSaved();
     }
 }
