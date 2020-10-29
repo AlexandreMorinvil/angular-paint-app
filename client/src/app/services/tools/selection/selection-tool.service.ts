@@ -24,6 +24,7 @@ const DOTSIZE = 10;
 export abstract class SelectionToolService extends Tool {
     mouseDownCoord: Vec2;
     startDownCoord: Vec2;
+    pathLastCoord: Vec2;
     imageData: ImageData;
     protected pathData: Vec2[];
     selectionCreated: boolean;
@@ -32,6 +33,9 @@ export abstract class SelectionToolService extends Tool {
     anchorHit: number = 0;
     image: HTMLImageElement;
     shiftDown: boolean;
+    arrowPress: boolean[];
+    arrowDown: boolean;
+    arrowCoord: Vec2;
 
     constructor(drawingService: DrawingService, private color: ColorService, description: Description) {
         super(drawingService, description);
@@ -57,13 +61,9 @@ export abstract class SelectionToolService extends Tool {
         this.selectionCreated = false;
     }
 
-    onShiftDown(event: KeyboardEvent): void {
-        this.shiftDown = true;
-    }
+    onShiftDown(event: KeyboardEvent): void {}
 
-    onShiftUp(event: KeyboardEvent): void {
-        this.shiftDown = false;
-    }
+    onShiftUp(event: KeyboardEvent): void {}
 
     drawnAnchor(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement): void {
         this.color.setPrimaryColor('#000000');
@@ -182,13 +182,13 @@ export abstract class SelectionToolService extends Tool {
         return xIn && yIn;
     }
 
-    protected offsetAnchors(): void {
-        if (this.startDownCoord.x > this.pathData[this.pathData.length - 1].x || this.startDownCoord.y > this.pathData[this.pathData.length - 1].y) {
-            if (this.startDownCoord.y > this.pathData[this.pathData.length - 1].y) {
-                this.startDownCoord.y = this.pathData[this.pathData.length - 1].y;
+    protected offsetAnchors(coords: Vec2): void {
+        if (coords.x > this.pathData[this.pathData.length - 1].x || coords.y > this.pathData[this.pathData.length - 1].y) {
+            if (coords.y > this.pathData[this.pathData.length - 1].y) {
+                coords.y = this.pathData[this.pathData.length - 1].y;
             }
-            if (this.startDownCoord.x > this.pathData[this.pathData.length - 1].x) {
-                this.startDownCoord.x = this.pathData[this.pathData.length - 1].x;
+            if (coords.x > this.pathData[this.pathData.length - 1].x) {
+                coords.x = this.pathData[this.pathData.length - 1].x;
             }
         }
     }

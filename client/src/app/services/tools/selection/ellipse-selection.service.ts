@@ -13,8 +13,6 @@ import { SelectionToolService } from '@app/services/tools/selection/selection-to
     providedIn: 'root',
 })
 export class EllipseSelectionService extends SelectionToolService {
-    mouseDownCoord: Vec2;
-    startDownCoord: Vec2;
     pathLastCoord: Vec2;
     firstEllipseCoord: Vec2;
 
@@ -29,6 +27,8 @@ export class EllipseSelectionService extends SelectionToolService {
     }
 
     onMouseDown(event: MouseEvent): void {
+        this.arrowPress = [false, false, false, false];
+        this.arrowDown = false;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.mouseDownCoord = this.getPositionFromMouse(event);
         this.mouseDown = event.button === MouseButton.Left;
@@ -104,7 +104,7 @@ export class EllipseSelectionService extends SelectionToolService {
                 this.pathData.push(mousePosition);
             }
             this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.pathData);
-            this.offsetAnchors();
+            this.offsetAnchors(this.startDownCoord);
             this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
             this.selectionCreated = true;
             this.pathLastCoord = this.pathData[this.pathData.length - 1];
@@ -116,46 +116,51 @@ export class EllipseSelectionService extends SelectionToolService {
 
     onArrowDown(event: KeyboardEvent): void {
         const move = 3;
+        if (!this.arrowDown) {
+            this.arrowCoord = { x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y + this.imageData.height };
+            this.ellipseService.mouseDownCoord = this.startDownCoord;
+            this.pathData.push(this.arrowCoord);
+            this.clearCanvasEllipse();
+        }
+        // tslint:disable:no-magic-numbers
         if (this.selectionCreated) {
-            if (event.key === 'ArrowLeft') {
-                this.startDownCoord = { x: this.startDownCoord.x - move, y: this.startDownCoord.y };
-                this.pathLastCoord = { x: this.pathLastCoord.x - move, y: this.pathLastCoord.y };
-            }
-            if (event.key === 'ArrowRight') {
-                this.startDownCoord = { x: this.startDownCoord.x + move, y: this.startDownCoord.y };
-                this.pathLastCoord = { x: this.pathLastCoord.x + move, y: this.pathLastCoord.y };
-            }
-            if (event.key === 'ArrowUp') {
-                this.startDownCoord = { x: this.startDownCoord.x, y: this.startDownCoord.y - move };
-                this.pathLastCoord = { x: this.pathLastCoord.x, y: this.pathLastCoord.y - move };
-            }
-            if (event.key === 'ArrowDown') {
-                this.startDownCoord = { x: this.startDownCoord.x, y: this.startDownCoord.y + move };
-                this.pathLastCoord = { x: this.pathLastCoord.x, y: this.pathLastCoord.y + move };
-            }
-            /*switch (event.key) {
+            this.arrowDown = true;
+            switch (event.key) {
                 case 'ArrowLeft':
-                    this.startDownCoord = { x: this.startDownCoord.x - 3, y: this.startDownCoord.y };
-                    this.pathLastCoord = { x: this.pathLastCoord.x - 3, y: this.pathLastCoord.y };
+                    this.arrowPress[0] = true;
                     break;
 
                 case 'ArrowRight':
-                    this.startDownCoord = { x: this.startDownCoord.x + 3, y: this.startDownCoord.y };
-                    this.pathLastCoord = { x: this.pathLastCoord.x + 3, y: this.pathLastCoord.y };
+                    this.arrowPress[1] = true;
                     break;
 
                 case 'ArrowUp':
-                    this.startDownCoord = { x: this.startDownCoord.x, y: this.startDownCoord.y - 3 };
-                    this.pathLastCoord = { x: this.pathLastCoord.x, y: this.pathLastCoord.y - 3 };
+                    this.arrowPress[2] = true;
                     break;
 
                 case 'ArrowDown':
-                    this.startDownCoord = { x: this.startDownCoord.x, y: this.startDownCoord.y + 3 };
-                    this.pathLastCoord = { x: this.pathLastCoord.x, y: this.pathLastCoord.y + 3 };
+                    this.arrowPress[3] = true;
                     break;
                 default:
                     break;
-            }*/
+            }
+
+            if (this.arrowPress[0]) {
+                this.startDownCoord = { x: this.startDownCoord.x - move, y: this.startDownCoord.y };
+                this.pathLastCoord = { x: this.pathLastCoord.x - move, y: this.pathLastCoord.y };
+            }
+            if (this.arrowPress[1]) {
+                this.startDownCoord = { x: this.startDownCoord.x + move, y: this.startDownCoord.y };
+                this.pathLastCoord = { x: this.pathLastCoord.x + move, y: this.pathLastCoord.y };
+            }
+            if (this.arrowPress[2]) {
+                this.startDownCoord = { x: this.startDownCoord.x, y: this.startDownCoord.y - move };
+                this.pathLastCoord = { x: this.pathLastCoord.x, y: this.pathLastCoord.y - move };
+            }
+            if (this.arrowPress[3]) {
+                this.startDownCoord = { x: this.startDownCoord.x, y: this.startDownCoord.y + move };
+                this.pathLastCoord = { x: this.pathLastCoord.x, y: this.pathLastCoord.y + move };
+            }
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.showSelection(this.drawingService.previewCtx);
             this.draggingImage = false;
@@ -164,18 +169,45 @@ export class EllipseSelectionService extends SelectionToolService {
 
     onArrowUp(event: KeyboardEvent): void {
         if (this.selectionCreated) {
-            this.draggingImage = true;
-            this.clearPath();
-            this.pathData.push(this.pathLastCoord);
-            this.clearCanvasEllipse();
-            this.clearPath();
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.onMouseUp({ offsetX: 25, offsetY: 25, button: 0 } as MouseEvent);
-            this.draggingImage = false;
+            switch (event.key) {
+                case 'ArrowLeft':
+                    this.arrowPress[0] = false;
+                    break;
+
+                case 'ArrowRight':
+                    this.arrowPress[1] = false;
+                    break;
+
+                case 'ArrowUp':
+                    this.arrowPress[2] = false;
+                    break;
+
+                case 'ArrowDown':
+                    this.arrowPress[3] = false;
+                    break;
+                default:
+                    break;
+            }
+            if (this.arrowPress.every((v) => v === false)) {
+                this.arrowDown = false;
+                this.draggingImage = true;
+                this.clearPath();
+                this.pathData.push(this.pathLastCoord);
+                this.ellipseService.mouseDownCoord = this.startDownCoord;
+                this.clearCanvasEllipse();
+                this.clearPath();
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                this.onMouseUp({ offsetX: 25, offsetY: 25, button: 0 } as MouseEvent);
+                this.draggingImage = false;
+            }
+            if (this.arrowDown) {
+                this.onArrowDown({} as KeyboardEvent);
+            }
         }
     }
 
     showSelection(canvas: CanvasRenderingContext2D): void {
+        this.offsetAnchors(this.firstEllipseCoord);
         canvas.save();
         const ellipsePath = this.getPath();
         canvas.clip(ellipsePath);
@@ -234,7 +266,7 @@ export class EllipseSelectionService extends SelectionToolService {
         }
     }
 
-    onCtrlADown(event: KeyboardEvent): void {
+    onCtrlADown(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.resetTransform();
         this.mouseDown = true;

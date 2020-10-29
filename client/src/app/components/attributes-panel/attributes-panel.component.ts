@@ -66,4 +66,8 @@ export class AttributesPanelComponent {
     needsToleranceAttribute(): boolean {
         return this.currentTool.needsModifierManager(this.toleranceService);
     }
+
+    needsSelectionAttribute(): boolean {
+        return this.currentTool.name === 'selection rectangle' || this.currentTool.name === 'selection ellipse';
+    }
 }

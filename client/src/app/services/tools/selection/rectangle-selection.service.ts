@@ -13,10 +13,6 @@ import { SelectionToolService } from '@app/services/tools/selection/selection-to
     providedIn: 'root',
 })
 export class RectangleSelectionService extends SelectionToolService {
-    mouseDownCoord: Vec2;
-    startDownCoord: Vec2;
-    pathLastCoord: Vec2;
-
     constructor(
         drawingService: DrawingService,
         private rectangleService: RectangleService,
@@ -28,6 +24,8 @@ export class RectangleSelectionService extends SelectionToolService {
     }
 
     onMouseDown(event: MouseEvent): void {
+        this.arrowPress = [false, false, false, false];
+        this.arrowDown = false;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.mouseDownCoord = this.getPositionFromMouse(event);
         this.mouseDown = event.button === MouseButton.Left;
@@ -36,7 +34,6 @@ export class RectangleSelectionService extends SelectionToolService {
         this.colorService.setSecondaryColor('#000000');
         this.tracingService.setHasFill(false);
         this.tracingService.setHasContour(true);
-
         if (this.selectionCreated && this.checkHit(this.mouseDownCoord)) {
             this.getAnchorHit(this.drawingService.previewCtx, this.mouseDownCoord);
         } else if (this.selectionCreated && this.hitSelection(this.mouseDownCoord.x, this.mouseDownCoord.y)) {
@@ -104,7 +101,7 @@ export class RectangleSelectionService extends SelectionToolService {
                 this.pathData.push(mousePosition);
             }
             this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.pathData);
-            this.offsetAnchors();
+            this.offsetAnchors(this.startDownCoord);
             this.drawingService.previewCtx.putImageData(this.imageData, this.startDownCoord.x, this.startDownCoord.y);
             this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
             this.selectionCreated = true;
@@ -138,7 +135,94 @@ export class RectangleSelectionService extends SelectionToolService {
         }
     }
 
-    onCtrlADown(event: KeyboardEvent): void {
+    onArrowDown(event: KeyboardEvent): void {
+        const move = 3;
+        if (!this.arrowDown) {
+            this.arrowCoord = this.startDownCoord;
+            this.drawingService.baseCtx.clearRect(this.arrowCoord.x, this.arrowCoord.y, this.imageData.width, this.imageData.height);
+        }
+        // tslint:disable:no-magic-numbers
+        if (this.selectionCreated) {
+            this.arrowDown = true;
+            switch (event.key) {
+                case 'ArrowLeft':
+                    this.arrowPress[0] = true;
+                    break;
+
+                case 'ArrowRight':
+                    this.arrowPress[1] = true;
+                    break;
+
+                case 'ArrowUp':
+                    this.arrowPress[2] = true;
+                    break;
+
+                case 'ArrowDown':
+                    this.arrowPress[3] = true;
+                    break;
+                default:
+                    break;
+            }
+
+            if (this.arrowPress[0]) {
+                this.startDownCoord = { x: this.startDownCoord.x - move, y: this.startDownCoord.y };
+                this.pathLastCoord = { x: this.pathLastCoord.x - move, y: this.pathLastCoord.y };
+            }
+            if (this.arrowPress[1]) {
+                this.startDownCoord = { x: this.startDownCoord.x + move, y: this.startDownCoord.y };
+                this.pathLastCoord = { x: this.pathLastCoord.x + move, y: this.pathLastCoord.y };
+            }
+            if (this.arrowPress[2]) {
+                this.startDownCoord = { x: this.startDownCoord.x, y: this.startDownCoord.y - move };
+                this.pathLastCoord = { x: this.pathLastCoord.x, y: this.pathLastCoord.y - move };
+            }
+            if (this.arrowPress[3]) {
+                this.startDownCoord = { x: this.startDownCoord.x, y: this.startDownCoord.y + move };
+                this.pathLastCoord = { x: this.pathLastCoord.x, y: this.pathLastCoord.y + move };
+            }
+
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawingService.previewCtx.putImageData(this.imageData, this.startDownCoord.x, this.startDownCoord.y);
+        }
+    }
+
+    onArrowUp(event: KeyboardEvent): void {
+        if (this.selectionCreated) {
+            switch (event.key) {
+                case 'ArrowLeft':
+                    this.arrowPress[0] = false;
+                    break;
+
+                case 'ArrowRight':
+                    this.arrowPress[1] = false;
+                    break;
+
+                case 'ArrowUp':
+                    this.arrowPress[2] = false;
+                    break;
+
+                case 'ArrowDown':
+                    this.arrowPress[3] = false;
+                    break;
+                default:
+                    break;
+            }
+            this.clearPath();
+            this.pathData.push(this.pathLastCoord);
+
+            this.clearPath();
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            if (this.arrowPress.every((v) => v === false)) {
+                this.arrowDown = false;
+                this.putImageData(this.startDownCoord, this.drawingService.baseCtx);
+            }
+            if (this.arrowDown) {
+                this.onArrowDown({} as KeyboardEvent);
+            }
+        }
+    }
+
+    onCtrlADown(): void {
         this.mouseDown = true;
         this.startDownCoord = { x: 0, y: 0 };
         this.rectangleService.mouseDownCoord = { x: 0, y: 0 };

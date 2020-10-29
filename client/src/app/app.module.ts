@@ -15,6 +15,7 @@ import { AttributeColorPickerViewerComponent } from './components/attributes-pan
 import { AttributeColorComponent } from './components/attributes-panel/attribute-color/attributes-color.component';
 import { AttributeFillingComponent } from './components/attributes-panel/attribute-filling/attributes-filling.component';
 import { AttributeJunctionComponent } from './components/attributes-panel/attribute-junction/attributes-junction.component';
+import { AttributeSelectionComponent } from './components/attributes-panel/attribute-selection/attribute-selection.component';
 import { AttributesSidesComponent } from './components/attributes-panel/attribute-sides/attributes-sides.component';
 import { AttributeTextureComponent } from './components/attributes-panel/attribute-texture/attributes-texture.component';
 import { AttributesToleranceComponent } from './components/attributes-panel/attribute-tolerance/attributes-tolerance/attributes-tolerance.component';
@@ -51,6 +52,7 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
         SaveComponent,
         AttributeColorPickerViewerComponent,
         AttributesToleranceComponent,
+        AttributeSelectionComponent,
     ],
 
     exports: [MatChipsModule],

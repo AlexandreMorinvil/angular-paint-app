@@ -130,7 +130,7 @@ export class DrawingComponent implements AfterViewInit {
             this.toolbox.getCurrentTool().onArrowDown(event);
         } else if (event.ctrlKey && event.key.toLowerCase() === 'a') {
             event.preventDefault(); // to prevent key of windows
-            this.toolbox.getCurrentTool().onCtrlADown(event);
+            this.toolbox.getCurrentTool().onCtrlADown();
         }
     }
 
