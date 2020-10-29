@@ -253,7 +253,7 @@ export abstract class SelectionToolService extends Tool {
         }
     }
 
-    protected putImageData(mousePosition: Vec2, canvas: CanvasRenderingContext2D): void {
-        canvas.putImageData(this.imageData, mousePosition.x - this.imageData.width / 2, mousePosition.y - this.imageData.height / 2);
+    protected putImageData(startCoord: Vec2, canvas: CanvasRenderingContext2D): void {
+        canvas.putImageData(this.imageData, startCoord.x, startCoord.y);
     }
 }
