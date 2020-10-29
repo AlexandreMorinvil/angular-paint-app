@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
+import { InteractionPath } from '@app/classes/action/interaction-path';
 import { Description } from '@app/classes/description';
 import { MouseButton } from '@app/classes/mouse';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { JunctionService } from '@app/services/tool-modifier/junction/junction.service';
@@ -31,6 +33,7 @@ export class LineService extends Tool {
     alignmentCoord: Vec2;
     constructor(
         drawingService: DrawingService,
+        private drawingStateTrackingService: DrawingStateTrackerService,
         private colorService: ColorService,
         private junctionService: JunctionService,
         private widthService: WidthService,
@@ -135,6 +138,7 @@ export class LineService extends Tool {
         if (this.isAround20Pixels()) {
             this.closeShape();
         }
+        this.drawingStateTrackingService.addAction(this, this.pathDataSaved);
         this.clearPathSaved();
     }
 
@@ -295,7 +299,19 @@ export class LineService extends Tool {
     clearPath(): void {
         this.pathData = [];
     }
+
     clearPathSaved(): void {
         this.pathDataSaved = [];
+    }
+
+    execute(interaction: InteractionPath): void {
+        for (let i = 0; i < interaction.path.length; i++) {
+            this.mouseDownCoord = interaction.path[i];
+            this.drawJunction(this.drawingService.baseCtx, interaction.path);
+        }
+        for (let i = 0; i < interaction.path.length - 1; i++) {
+            const pathData: Vec2[] = [interaction.path[i], interaction.path[i + 1]];
+            this.drawLine(this.drawingService.baseCtx, pathData);
+        }
     }
 }
