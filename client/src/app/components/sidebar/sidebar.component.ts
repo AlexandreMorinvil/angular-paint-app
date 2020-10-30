@@ -15,6 +15,7 @@ export class SidebarComponent {
     messageUserGuide: string = "Guide d'utilisation";
     messageBack: string = 'Retour';
     messageSaveDialog: string = 'Sauvegarde\n(Raccourci: Ctr + S)';
+    messageCarouselDialog: string = 'Carousel de dessins\n(Raccourci: Ctr + G)';
 
     constructor(
         private toolboxSevice: ToolboxService,
@@ -53,5 +54,9 @@ export class SidebarComponent {
 
     saveDialog(): void {
         this.modalHandler.openSaveDialog();
+    }
+
+    openCarouselDialog(): void{
+        this.modalHandler.openDrawingCarouselDialog();
     }
 }
