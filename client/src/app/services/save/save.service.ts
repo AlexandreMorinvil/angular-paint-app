@@ -1,14 +1,17 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { DrawingService } from '@app/services/drawing/drawing.service';
+import { DrawingService } from '../drawing/drawing.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class SaveService {
+    savedImage: ImageData;
     constructor(private drawingService: DrawingService, public dialog: MatDialog) {}
 
-    saveDrawToPNG(drawName: string): void {
+    saveDraw(): void {
+        this.savedImage = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
+        /*
         const contex = this.drawingService.baseCtx;
         contex.save();
         contex.globalCompositeOperation = 'destination-over';
@@ -24,5 +27,6 @@ export class SaveService {
         link.href = canvas.toDataURL();
         link.download = drawName + '.png';
         link.click();
+        */
     }
 }

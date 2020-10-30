@@ -1,23 +1,23 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Image } from '@common/communication/image';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { Message } from '../../../../../common/communication/message';
 
 @Injectable({
     providedIn: 'root',
 })
-export class IndexService {
+export class ApiImageTransferService {
     private readonly BASE_URL: string = 'http://localhost:3000/api/index';
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient) {}
 
-    basicGet(): Observable<Message> {
-        return this.http.get<Message>(this.BASE_URL).pipe(catchError(this.handleError<Message>('basicGet')));
+    basicGet(): Observable<Image> {
+        return this.http.get<Image>(this.BASE_URL).pipe(catchError(this.handleError<Image>('basicGet')));
     }
 
-    basicPost(message: Message): Observable<void> {
-        return this.http.post<void>(this.BASE_URL + '/send', message);
+    basicPost(drawing: Image): Observable<void> {
+        return this.http.post<void>(this.BASE_URL + '/send', drawing);
     }
 
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {

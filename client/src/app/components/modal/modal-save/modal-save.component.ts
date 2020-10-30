@@ -5,10 +5,12 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
 import { DialogData } from '@app/classes/dialog-data';
+import { ApiImageTransferService } from '@app/services/api/image-transfer/api-image-transfer.service';
 import { SaveService } from '@app/services/save/save.service';
+import { Image } from '@common/communication/image';
 
 export interface Tag {
-    tagName: string;
+    name: string;
 }
 
 @Component({
@@ -17,13 +19,16 @@ export interface Tag {
     styleUrls: ['./modal-save.component.scss'],
 })
 export class ModalSaveComponent {
-    // private alreadySavePNG = false;
-    // private alreadySaveServer = false;
+    private readonly MAX_LENGHT_TAG = 20;
+    private readonly MAX_NUMBER_OF_TAGS = 15;
+    private readonly MAX_LENGHT_DRAW_NAME = 20;
     visible: boolean = true;
     readonly separatorKeysCodes: number[] = [ENTER, COMMA];
     tags: Tag[] = [];
     drawName: FormControl = new FormControl('', Validators.required);
+
     constructor(
+        private apiImageTransferService: ApiImageTransferService,
         public saveService: SaveService,
         public dialogRef: MatDialogRef<ModalSaveComponent>,
         @Inject(MAT_DIALOG_DATA) public data: DialogData,
@@ -37,7 +42,7 @@ export class ModalSaveComponent {
 
         // Add the tag
         if ((value || '').trim()) {
-            this.tags.push({ tagName: value.trim() });
+            this.tags.push({ name: value.trim() });
         }
 
         // Reset the input value
@@ -54,26 +59,54 @@ export class ModalSaveComponent {
         }
     }
 
-    saveToPNG(): void {
-        if (this.validateValue()) {
-            (document.getElementById('buttonSavePNG') as HTMLInputElement).disabled = true;
-            const drawName = this.drawName.value;
-            this.saveService.saveDrawToPNG(drawName);
-        }
-    }
-
     saveToServer(): void {
         if (this.validateValue()) {
             // code for saving into server image
+            this.saveService.saveDraw();
+            this.sendMessageToServer();
+            //this.getMessageFromServer();
             (document.getElementById('buttonSaveServer') as HTMLInputElement).disabled = true;
         }
     }
 
-    validateValue(): boolean {
-        const noName = '';
-        if (this.drawName.value === noName) {
-            return false;
-        }
-        return true;
+    private validateValue(): boolean {
+        return this.validateDrawName(this.drawName.value) && this.validateAllTags(this.tags);
     }
+
+    private validateDrawName(name: string): boolean {
+        const noName = '';
+        return name !== noName && name != undefined && name.length <= this.MAX_LENGHT_DRAW_NAME && /^[0-9a-zA-Z]*$/g.test(name);
+    }
+
+    private validateTag(tag: Tag) {
+        const noTag = '';
+        return tag.name !== noTag && tag.name.length <= this.MAX_LENGHT_TAG && /^[0-9a-zA-Z]*$/g.test(tag.name);
+    }
+
+    private validateAllTags(tags: Tag[]): boolean {
+        let validTag = true;
+        this.tags.forEach((tag) => {
+            validTag = validTag && this.validateTag(tag) && tags.length <= this.MAX_NUMBER_OF_TAGS;
+        });
+        return validTag;
+    }
+
+    sendMessageToServer(): void {
+        const NewURLDrawing: Image = {
+            name: this.drawName.value,
+            image: this.saveService.savedImage,
+        };
+        this.apiImageTransferService.basicPost(NewURLDrawing).subscribe();
+    }
+
+    /*getMessageFromServer(): void {
+        this.apiImageTransferService
+            .basicGet()
+
+            .pipe(
+                map((drawing: Image) => {
+                    return '${drawing.name}${drawing.image}';
+                }),
+            );
+    }*/
 }
