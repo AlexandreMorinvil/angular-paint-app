@@ -33,11 +33,13 @@ export class RectangleSelectionService extends SelectionToolService {
         // resizing
         if (this.selectionCreated && this.checkHit(this.mouseDownCoord)) {
             this.getAnchorHit(this.drawingService.previewCtx, this.mouseDownCoord);
+            // translate
         } else if (this.selectionCreated && this.hitSelection(this.mouseDownCoord.x, this.mouseDownCoord.y)) {
             this.pathData.push(this.pathLastCoord);
             this.drawingService.baseCtx.clearRect(this.startDownCoord.x, this.startDownCoord.y, this.imageData.width, this.imageData.height);
             this.draggingImage = true;
             this.putImageData(this.evenImageStartCoord(this.mouseDownCoord), this.drawingService.previewCtx);
+            // creation
         } else {
             this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
             this.imageData = new ImageData(1, 1);
@@ -49,6 +51,7 @@ export class RectangleSelectionService extends SelectionToolService {
 
     onMouseMove(event: MouseEvent): void {
         const mousePosition = this.getPositionFromMouse(event);
+        // translate
         if (this.draggingImage && this.mouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.startDownCoord = this.evenImageStartCoord(mousePosition);
@@ -58,6 +61,7 @@ export class RectangleSelectionService extends SelectionToolService {
             this.drawingService.baseCtx.clearRect(this.startDownCoord.x, this.startDownCoord.y, this.imageData.width, this.imageData.height);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.getAnchorHit(this.drawingService.previewCtx, mousePosition);
+            // creation
         } else if (this.isInCanvas(mousePosition) && this.mouseDown) {
             this.rectangleService.onMouseMove(event);
             if (this.startDownCoord.x !== mousePosition.x && this.startDownCoord.y !== mousePosition.y && this.rectangleService.shiftDown) {
@@ -77,6 +81,7 @@ export class RectangleSelectionService extends SelectionToolService {
 
     onMouseUp(event: MouseEvent): void {
         const mousePosition = this.getPositionFromMouse(event);
+        // translate
         if (this.draggingImage) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.putImageData(this.evenImageStartCoord(mousePosition), this.drawingService.baseCtx);
@@ -92,6 +97,7 @@ export class RectangleSelectionService extends SelectionToolService {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clickOnAnchor = false;
             this.selectionCreated = false;
+            // creation
         } else if (this.mouseDown) {
             if (this.rectangleService.shiftDown) {
                 const square = this.getSquaredSize(mousePosition);
@@ -125,40 +131,19 @@ export class RectangleSelectionService extends SelectionToolService {
             this.arrowCoord = this.startDownCoord;
             this.drawingService.baseCtx.clearRect(this.arrowCoord.x, this.arrowCoord.y, this.imageData.width, this.imageData.height);
         }
-        // tslint:disable:no-magic-numbers
         if (this.selectionCreated) {
             this.checkArrowHit(event);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clearPath();
             this.rectangleService.mouseDownCoord = this.startDownCoord;
             this.pathData.push(this.pathLastCoord);
-            this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.pathData);
-            this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
             this.drawingService.previewCtx.putImageData(this.imageData, this.startDownCoord.x, this.startDownCoord.y);
         }
     }
 
     onArrowUp(event: KeyboardEvent): void {
         if (this.selectionCreated) {
-            switch (event.key) {
-                case 'ArrowLeft':
-                    this.arrowPress[0] = false;
-                    break;
-
-                case 'ArrowRight':
-                    this.arrowPress[1] = false;
-                    break;
-
-                case 'ArrowUp':
-                    this.arrowPress[2] = false;
-                    break;
-
-                case 'ArrowDown':
-                    this.arrowPress[3] = false;
-                    break;
-                default:
-                    break;
-            }
+            this.checkArrowUnhit(event);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             if (this.arrowPress.every((v) => v === false)) {
                 this.arrowDown = false;
@@ -192,20 +177,6 @@ export class RectangleSelectionService extends SelectionToolService {
         this.onMouseUp(mouseEvent);
     }
 
-    evenImageStartCoord(mousePosition: Vec2): Vec2 {
-        // tslint:disable:prefer-const
-        let startCoord = { x: mousePosition.x - this.imageData.width / 2, y: mousePosition.y - this.imageData.height / 2 };
-        if (this.imageData.width % 2 !== 0 || this.imageData.height % 2 !== 0) {
-            if (this.imageData.width % 2 !== 0) {
-                startCoord.x = mousePosition.x - (this.imageData.width + 1) / 2;
-            }
-            if (this.imageData.height % 2 !== 0) {
-                startCoord.y = mousePosition.y - (this.imageData.height + 1) / 2;
-            }
-        }
-        return startCoord;
-    }
-
     createOnMouseMoveEvent(): void {
         if (this.mouseDown) {
             const mouseEvent = {
@@ -223,5 +194,19 @@ export class RectangleSelectionService extends SelectionToolService {
         this.colorService.setSecondaryColor('#000000');
         this.tracingService.setHasFill(false);
         this.tracingService.setHasContour(true);
+    }
+
+    evenImageStartCoord(mousePosition: Vec2): Vec2 {
+        // tslint:disable:prefer-const
+        let startCoord = { x: mousePosition.x - this.imageData.width / 2, y: mousePosition.y - this.imageData.height / 2 };
+        if (this.imageData.width % 2 !== 0 || this.imageData.height % 2 !== 0) {
+            if (this.imageData.width % 2 !== 0) {
+                startCoord.x = mousePosition.x - (this.imageData.width + 1) / 2;
+            }
+            if (this.imageData.height % 2 !== 0) {
+                startCoord.y = mousePosition.y - (this.imageData.height + 1) / 2;
+            }
+        }
+        return startCoord;
     }
 }

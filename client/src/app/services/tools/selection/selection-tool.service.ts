@@ -271,41 +271,63 @@ export abstract class SelectionToolService extends Tool {
         // tslint:disable:no-magic-numbers
         this.arrowDown = true;
         const move = 3;
-            switch (event.key) {
-                case 'ArrowLeft':
-                    this.arrowPress[0] = true;
-                    break;
+        switch (event.key) {
+            case 'ArrowLeft':
+                this.arrowPress[0] = true;
+                break;
 
-                case 'ArrowRight':
-                    this.arrowPress[1] = true;
-                    break;
+            case 'ArrowRight':
+                this.arrowPress[1] = true;
+                break;
 
-                case 'ArrowUp':
-                    this.arrowPress[2] = true;
-                    break;
+            case 'ArrowUp':
+                this.arrowPress[2] = true;
+                break;
 
-                case 'ArrowDown':
-                    this.arrowPress[3] = true;
-                    break;
-                default:
-                    break;
-            }
+            case 'ArrowDown':
+                this.arrowPress[3] = true;
+                break;
+            default:
+                break;
+        }
 
-            if (this.arrowPress[0]) {
-                this.startDownCoord = { x: this.startDownCoord.x - move, y: this.startDownCoord.y };
-                this.pathLastCoord = { x: this.pathLastCoord.x - move, y: this.pathLastCoord.y };
-            }
-            if (this.arrowPress[1]) {
-                this.startDownCoord = { x: this.startDownCoord.x + move, y: this.startDownCoord.y };
-                this.pathLastCoord = { x: this.pathLastCoord.x + move, y: this.pathLastCoord.y };
-            }
-            if (this.arrowPress[2]) {
-                this.startDownCoord = { x: this.startDownCoord.x, y: this.startDownCoord.y - move };
-                this.pathLastCoord = { x: this.pathLastCoord.x, y: this.pathLastCoord.y - move };
-            }
-            if (this.arrowPress[3]) {
-                this.startDownCoord = { x: this.startDownCoord.x, y: this.startDownCoord.y + move };
-                this.pathLastCoord = { x: this.pathLastCoord.x, y: this.pathLastCoord.y + move };
-            }
+        if (this.arrowPress[0]) {
+            this.startDownCoord = { x: this.startDownCoord.x - move, y: this.startDownCoord.y };
+            this.pathLastCoord = { x: this.pathLastCoord.x - move, y: this.pathLastCoord.y };
+        }
+        if (this.arrowPress[1]) {
+            this.startDownCoord = { x: this.startDownCoord.x + move, y: this.startDownCoord.y };
+            this.pathLastCoord = { x: this.pathLastCoord.x + move, y: this.pathLastCoord.y };
+        }
+        if (this.arrowPress[2]) {
+            this.startDownCoord = { x: this.startDownCoord.x, y: this.startDownCoord.y - move };
+            this.pathLastCoord = { x: this.pathLastCoord.x, y: this.pathLastCoord.y - move };
+        }
+        if (this.arrowPress[3]) {
+            this.startDownCoord = { x: this.startDownCoord.x, y: this.startDownCoord.y + move };
+            this.pathLastCoord = { x: this.pathLastCoord.x, y: this.pathLastCoord.y + move };
+        }
+    }
+
+    protected checkArrowUnhit(event: KeyboardEvent): void {
+        switch (event.key) {
+            case 'ArrowLeft':
+                this.arrowPress[0] = false;
+                break;
+
+            case 'ArrowRight':
+                this.arrowPress[1] = false;
+                break;
+
+            case 'ArrowUp':
+                this.arrowPress[2] = false;
+                break;
+
+            case 'ArrowDown':
+                this.arrowPress[3] = false;
+                break;
+            default:
+                break;
+        }
     }
 }
