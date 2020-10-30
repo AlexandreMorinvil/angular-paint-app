@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Description } from '@app/classes/description';
 import { MouseButton } from '@app/classes/mouse';
-import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
@@ -30,18 +29,15 @@ export class RectangleSelectionService extends SelectionToolService {
         this.mouseDownCoord = this.getPositionFromMouse(event);
         this.mouseDown = event.button === MouseButton.Left;
         this.resetTransform();
-        // resizing
-        if (this.selectionCreated && this.checkHit(this.mouseDownCoord)) {
-            this.getAnchorHit(this.drawingService.previewCtx, this.mouseDownCoord);
-            // translate
-        } else if (this.selectionCreated && this.hitSelection(this.mouseDownCoord.x, this.mouseDownCoord.y)) {
+        // translate
+        if (this.selectionCreated && this.hitSelection(this.mouseDownCoord.x, this.mouseDownCoord.y)) {
             this.pathData.push(this.pathLastCoord);
-            // remettre ce qui avait en dessus de la selection déplacer
+            // Puts back what was under the selection
             if (this.firstTranslation) {
                 this.putImageData(this.startDownCoord, this.drawingService.baseCtx, this.oldImageData);
             }
-            // met un rectangle blanc lors du premier deplacement
-            else{
+            // Puts a white rectangle on selection original placement
+            else {
                 this.drawingService.baseCtx.clearRect(this.startDownCoord.x, this.startDownCoord.y, this.imageData.width, this.imageData.height);
             }
             this.draggingImage = true;
@@ -62,11 +58,6 @@ export class RectangleSelectionService extends SelectionToolService {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.startDownCoord = this.evenImageStartCoord(mousePosition);
             this.putImageData(this.evenImageStartCoord(mousePosition), this.drawingService.previewCtx, this.imageData);
-            // resizing
-        } else if (this.clickOnAnchor && this.mouseDown) {
-            this.drawingService.baseCtx.clearRect(this.startDownCoord.x, this.startDownCoord.y, this.imageData.width, this.imageData.height);
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.getAnchorHit(this.drawingService.previewCtx, mousePosition);
             // creation
         } else if (this.isInCanvas(mousePosition) && this.mouseDown) {
             this.rectangleService.onMouseMove(event);
@@ -90,7 +81,7 @@ export class RectangleSelectionService extends SelectionToolService {
         // translate
         if (this.draggingImage) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            // enregistre ce qui a sous la selection translater
+            // saves what was under the selection
             this.oldImageData = this.getOldImageData(mousePosition);
             this.putImageData(this.evenImageStartCoord(mousePosition), this.drawingService.baseCtx, this.imageData);
             this.drawingService.previewCtx.beginPath();
@@ -99,12 +90,6 @@ export class RectangleSelectionService extends SelectionToolService {
             this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
             this.draggingImage = false;
             this.firstTranslation = true;
-            // resizing
-        } else if (this.clickOnAnchor) {
-            this.getAnchorHit(this.drawingService.baseCtx, mousePosition);
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.clickOnAnchor = false;
-            this.selectionCreated = false;
             // creation
         } else if (this.mouseDown) {
             if (this.rectangleService.shiftDown) {
@@ -113,7 +98,7 @@ export class RectangleSelectionService extends SelectionToolService {
             } else {
                 this.pathData.push(mousePosition);
             }
-            // enregistre ce qui a sous la selection translater
+            // saves what was under the selection
             this.oldImageData = this.getOldImageData(mousePosition);
             this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.pathData);
             this.offsetAnchors(this.startDownCoord);
@@ -204,19 +189,5 @@ export class RectangleSelectionService extends SelectionToolService {
         this.colorService.setSecondaryColor('#000000');
         this.tracingService.setHasFill(false);
         this.tracingService.setHasContour(true);
-    }
-
-    evenImageStartCoord(mousePosition: Vec2): Vec2 {
-        // tslint:disable:prefer-const
-        let startCoord = { x: mousePosition.x - this.imageData.width / 2, y: mousePosition.y - this.imageData.height / 2 };
-        if (this.imageData.width % 2 !== 0 || this.imageData.height % 2 !== 0) {
-            if (this.imageData.width % 2 !== 0) {
-                startCoord.x = mousePosition.x - (this.imageData.width + 1) / 2;
-            }
-            if (this.imageData.height % 2 !== 0) {
-                startCoord.y = mousePosition.y - (this.imageData.height + 1) / 2;
-            }
-        }
-        return startCoord;
     }
 }
