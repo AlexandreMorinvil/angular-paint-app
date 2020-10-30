@@ -3,16 +3,16 @@
 
     <div id="carouselExampleControls" class="grid-carousel" data-ride="carousel">
         <div class="area-back-button area-button">
-            <button (click)="getPrev(slides, i)">Précédent</button>
+            <button (click)="movePrevious()">Précédent</button>
         </div>
-
         <div class="drawing-form grid-drawing-form" *ngFor="let drawing of getCurrentImages()">
-            <img [src]="getDrawingImage(drawing)" alt="slide" />
-            <p>A {{ drawing.name}}</p>
-            <p>B {{ drawing.tags}}</p>
+            <img [src]="getDrawingUrl(drawing)" alt="slide" />
+
+            <p>{{ drawing.name}}</p>
+            <p>{{ drawing.tags}}</p>
         </div>
         <div class="area-front-button area-button">
-            <button (click)="getNext(slides, i)">Suivant</button>
+            <button (click)="moveNext()">Suivant</button>
         </div>
     </div>
 

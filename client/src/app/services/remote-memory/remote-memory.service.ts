@@ -6,13 +6,16 @@ import { Drawing } from '@common/schema/drawing';
     providedIn: 'root',
 })
 export class RemoteMemoryService {
-    drawingsFromDatabase: Drawing[] = [];
+    drawingsFromDatabase: Drawing[];
 
     constructor(private apiDrawingService: ApiDrawingService) {}
 
-    getAllFromDatabase(): void {
+   getAllFromDatabase(): void {
         this.apiDrawingService.getAll().subscribe((drawingsFetched: Drawing[]) => {
             this.drawingsFromDatabase = drawingsFetched;
+            //TO BE REMOVED TEST ONLY
+            this.drawingsFromDatabase.push(new Drawing());
+            this.drawingsFromDatabase.push(new Drawing());
         });
     }
 
