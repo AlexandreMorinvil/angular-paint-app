@@ -5,7 +5,7 @@
         <div class="area-back-button area-button">
             <button (click)="movePrevious()">Précédent</button>
         </div>
-        <div class="drawing-form grid-drawing-form" *ngFor="let drawing of getCurrentImages()">
+        <div class="drawing-form grid-drawing-form" *ngFor="let drawing of getCurrentDrawings()">
             <img [src]="getDrawingUrl(drawing)" alt="slide" />
             <p>{{ drawing.name}}</p>
             <p>{{ drawing.tags}}</p>

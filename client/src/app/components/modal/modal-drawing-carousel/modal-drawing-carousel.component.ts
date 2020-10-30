@@ -14,7 +14,7 @@ import { TagFilter, Tag } from '@app/services/tag-filter/tag-filter.service'
     styleUrls: ['./modal-drawing-carousel.scss'],
 })
 export class DrawingCarouselComponent {
-    private currentImages: Drawing[] = [];
+    private currentDrawings: Drawing[] = [];
     private currentActivesIndexes: number[];
     visible: boolean = true;
     readonly separatorKeysCodes: number[] = [ENTER, COMMA];
@@ -24,9 +24,9 @@ export class DrawingCarouselComponent {
         this.tagFilterService.filterByTag(this.memoryService.drawingsFromDatabase)
         this.setCurrentImages();
     }
-// il faut que get current image me donne les images qui doivent présentement être affiché
-    getCurrentImages(): Drawing[] {
-        return this.currentImages;
+
+    getCurrentDrawings(): Drawing[] {
+        return this.currentDrawings;
     }
 
     getTags(){
@@ -39,14 +39,14 @@ export class DrawingCarouselComponent {
     }
 
     setCurrentImages(){
-        this.currentImages = [];
+        this.currentDrawings = [];
         this.currentActivesIndexes = [0,1,2];
         for (let i of this.currentActivesIndexes){
             if (typeof this.tagFilterService.filteredDrawings[i] === "undefined"){
             // Insert a placeholder in case there isn't the minimum of 3 data to fill the forms
-                this.currentImages.push(new Drawing)
+                this.currentDrawings.push(new Drawing)
             } else
-            this.currentImages.push(this.tagFilterService.filteredDrawings[i])
+            this.currentDrawings.push(this.tagFilterService.filteredDrawings[i])
         }
     }
 
@@ -83,25 +83,25 @@ export class DrawingCarouselComponent {
      }
 
     movePrevious() {
-      // If there is no more drawing, do nothing
-      const firstIndex: number = 0;
-      if (this.currentActivesIndexes[firstIndex] === 0)
-          return
+        // If there is no more drawings, do nothing
+        const firstIndex: number = 0;
+        if (this.currentActivesIndexes[firstIndex] === 0)
+            return
 
-      for(let i = 0; i < this.currentImages.length; i++){
-          this.currentImages[i] = this.tagFilterService.filteredDrawings[this.currentActivesIndexes[i]-1]
-          this.currentActivesIndexes[i] -= 1;
-      }
+        for(let i = 0; i < this.currentDrawings.length; i++){
+            this.currentDrawings[i] = this.tagFilterService.filteredDrawings[this.currentActivesIndexes[i]-1]
+            this.currentActivesIndexes[i] -= 1;
+        }
     }
 
     moveNext() {
-        // If there is no more drawing, do nothing
+        // If there is no more drawings, do nothing
         const lastIndex: number = 2;
         if (this.currentActivesIndexes[lastIndex] >= this.tagFilterService.filteredDrawings.length - 1)
             return
 
-        for(let i = 0; i < this.currentImages.length; i++){
-            this.currentImages[i] = this.tagFilterService.filteredDrawings[this.currentActivesIndexes[i]+1]
+        for(let i = 0; i < this.currentDrawings.length; i++){
+            this.currentDrawings[i] = this.tagFilterService.filteredDrawings[this.currentActivesIndexes[i]+1]
             this.currentActivesIndexes[i] += 1;
         }
     }
