@@ -29,11 +29,8 @@ export class RectangleSelectionService extends SelectionToolService {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.mouseDownCoord = this.getPositionFromMouse(event);
         this.mouseDown = event.button === MouseButton.Left;
-        this.widthService.setWidth(1);
-        this.colorService.setPrimaryColor('#000000');
-        this.colorService.setSecondaryColor('#000000');
-        this.tracingService.setHasFill(false);
-        this.tracingService.setHasContour(true);
+        this.resetTransform();
+        // resizing
         if (this.selectionCreated && this.checkHit(this.mouseDownCoord)) {
             this.getAnchorHit(this.drawingService.previewCtx, this.mouseDownCoord);
         } else if (this.selectionCreated && this.hitSelection(this.mouseDownCoord.x, this.mouseDownCoord.y)) {
@@ -56,6 +53,7 @@ export class RectangleSelectionService extends SelectionToolService {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.startDownCoord = this.evenImageStartCoord(mousePosition);
             this.putImageData(this.evenImageStartCoord(mousePosition), this.drawingService.previewCtx);
+            // resizing
         } else if (this.clickOnAnchor && this.mouseDown) {
             this.drawingService.baseCtx.clearRect(this.startDownCoord.x, this.startDownCoord.y, this.imageData.width, this.imageData.height);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -88,6 +86,7 @@ export class RectangleSelectionService extends SelectionToolService {
             this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
             this.draggingImage = false;
             this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
+            // resizing
         } else if (this.clickOnAnchor) {
             this.getAnchorHit(this.drawingService.baseCtx, mousePosition);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -113,26 +112,12 @@ export class RectangleSelectionService extends SelectionToolService {
 
     onShiftDown(event: KeyboardEvent): void {
         this.rectangleService.shiftDown = true;
-        if (this.mouseDown) {
-            const mouseEvent = {
-                offsetX: this.pathData[this.pathData.length - 1].x,
-                offsetY: this.pathData[this.pathData.length - 1].y,
-                button: 0,
-            } as MouseEvent;
-            this.onMouseMove(mouseEvent);
-        }
+        this.createOnMouseMoveEvent();
     }
 
     onShiftUp(event: KeyboardEvent): void {
         this.rectangleService.shiftDown = false;
-        if (this.mouseDown) {
-            const mouseEvent = {
-                offsetX: this.pathData[this.pathData.length - 1].x,
-                offsetY: this.pathData[this.pathData.length - 1].y,
-                button: 0,
-            } as MouseEvent;
-            this.onMouseMove(mouseEvent);
-        }
+        this.createOnMouseMoveEvent();
     }
 
     onArrowDown(event: KeyboardEvent): void {
@@ -182,6 +167,11 @@ export class RectangleSelectionService extends SelectionToolService {
             }
 
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.clearPath();
+            this.rectangleService.mouseDownCoord = this.startDownCoord;
+            this.pathData.push(this.pathLastCoord);
+            this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.pathData);
+            this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
             this.drawingService.previewCtx.putImageData(this.imageData, this.startDownCoord.x, this.startDownCoord.y);
         }
     }
@@ -207,13 +197,12 @@ export class RectangleSelectionService extends SelectionToolService {
                 default:
                     break;
             }
-            this.clearPath();
-            this.pathData.push(this.pathLastCoord);
-
-            this.clearPath();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             if (this.arrowPress.every((v) => v === false)) {
                 this.arrowDown = false;
+                this.pathData.push(this.pathLastCoord);
+                this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.pathData);
+                this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
                 this.putImageData(this.startDownCoord, this.drawingService.baseCtx);
             }
             if (this.arrowDown) {
@@ -253,5 +242,24 @@ export class RectangleSelectionService extends SelectionToolService {
             }
         }
         return startCoord;
+    }
+
+    createOnMouseMoveEvent(): void {
+        if (this.mouseDown) {
+            const mouseEvent = {
+                offsetX: this.pathData[this.pathData.length - 1].x,
+                offsetY: this.pathData[this.pathData.length - 1].y,
+                button: 0,
+            } as MouseEvent;
+            this.onMouseMove(mouseEvent);
+        }
+    }
+
+    resetTransform(): void {
+        this.widthService.setWidth(1);
+        this.colorService.setPrimaryColor('#000000');
+        this.colorService.setSecondaryColor('#000000');
+        this.tracingService.setHasFill(false);
+        this.tracingService.setHasContour(true);
     }
 }

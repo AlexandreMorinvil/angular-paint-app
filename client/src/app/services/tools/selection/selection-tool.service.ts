@@ -56,16 +56,17 @@ export abstract class SelectionToolService extends Tool {
 
     onArrowDown(event: KeyboardEvent): void {}
 
-    onEscapeDown(event: KeyboardEvent): void {
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.selectionCreated = false;
-    }
-
     onShiftDown(event: KeyboardEvent): void {}
 
     onShiftUp(event: KeyboardEvent): void {}
 
-    drawnAnchor(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement): void {
+    onEscapeDown(event: KeyboardEvent): void {
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.selectionCreated = false;
+        this.arrowDown = true;
+    }
+
+    protected drawnAnchor(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement): void {
         this.color.setPrimaryColor('#000000');
         ctx.beginPath();
         // start coner
@@ -104,8 +105,8 @@ export abstract class SelectionToolService extends Tool {
         ctx.closePath();
         ctx.fill();
     }
-
-    checkHit(mouse: Vec2): boolean {
+    // resizing
+    protected checkHit(mouse: Vec2): boolean {
         let x: number;
         let y: number;
         const dotSizeSquare: number = Math.pow(DOTSIZE, 2);
@@ -206,7 +207,7 @@ export abstract class SelectionToolService extends Tool {
             offset.y,
         );
     }
-
+    // resizing
     protected getAnchorHit(canvas: CanvasRenderingContext2D, mousePosition: Vec2): void {
         let adjustStartCoords: Vec2 = this.startDownCoord;
         let adjustOffsetCoords: Vec2;
