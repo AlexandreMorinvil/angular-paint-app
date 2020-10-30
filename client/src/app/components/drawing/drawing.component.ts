@@ -104,6 +104,9 @@ export class DrawingComponent implements AfterViewInit {
             if (this.drawingService.shortcutEnable) {
                 this.toolbox.getCurrentTool().onBackspaceDown(event);
             }
+            // tslint:disable:prefer-switch
+        } else if (event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+            this.toolbox.getCurrentTool().onArrowUp(event);
         } else {
             if (this.drawingService.shortcutEnable) {
                 for (const i in this.toolbox.getAvailableTools()) {
@@ -131,6 +134,11 @@ export class DrawingComponent implements AfterViewInit {
         } else if (event.ctrlKey && event.key.toLowerCase() === 'z') {
             event.preventDefault(); // to prevent key of windows
             this.drawingStateTrackerService.onCtrlZDown(event);
+        } else if (event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+            this.toolbox.getCurrentTool().onArrowDown(event);
+        } else if (event.ctrlKey && event.key.toLowerCase() === 'a') {
+            event.preventDefault(); // to prevent key of windows
+            this.toolbox.getCurrentTool().onCtrlADown();
         }
     }
 

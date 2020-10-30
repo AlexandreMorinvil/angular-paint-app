@@ -28,6 +28,8 @@ export class PencilService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
+        this.drawingService.previewCtx.setLineDash([0]);
+        this.drawingService.baseCtx.setLineDash([0]);
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.clearPath();
@@ -82,10 +84,6 @@ export class PencilService extends Tool {
             ctx.lineTo(point.x, point.y);
         }
         ctx.stroke();
-    }
-
-    private isInCanvas(mousePosition: Vec2): boolean {
-        return mousePosition.x <= this.drawingService.previewCtx.canvas.width && mousePosition.y <= this.drawingService.previewCtx.canvas.height;
     }
 
     private clearPath(): void {
