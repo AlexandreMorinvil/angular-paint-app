@@ -40,7 +40,7 @@ export class Application {
         this.app.use('/files', express.static(__dirname + '/../drawings'));
         this.app.use('/api/index', this.indexController.router);
         this.app.use('/api/date', this.dateController.router);
-        this.app.use('/api/database', this.databaseController.router);
+        this.app.use('/api/drawing', this.databaseController.router);
         this.errorHandling();
     }
 
