@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ApiDrawingService } from '@app/services/api/api-drawing.service';
+import { ApiDrawingService } from '@app/services/api/drawing/api-drawing.service';
 import { Drawing } from '@common/schema/drawing';
 
 @Injectable({

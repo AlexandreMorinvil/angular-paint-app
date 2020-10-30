@@ -5,7 +5,7 @@ import { DialogData } from '@app/classes/dialog-data';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { RemoteMemoryService } from '@app/services/remote-memory/remote-memory.service.ts';
 import { Drawing } from '@common/schema/drawing';
-import { FILE_SERVER_BASE_URL } from '@app/services/api/api-drawing.service';
+import { FILE_SERVER_BASE_URL } from '@app/services/api/drawing/api-drawing.service';
 
 export interface Tag {
     tagName: string;
