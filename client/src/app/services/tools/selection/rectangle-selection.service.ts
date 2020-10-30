@@ -121,51 +121,13 @@ export class RectangleSelectionService extends SelectionToolService {
     }
 
     onArrowDown(event: KeyboardEvent): void {
-        const move = 3;
         if (!this.arrowDown) {
             this.arrowCoord = this.startDownCoord;
             this.drawingService.baseCtx.clearRect(this.arrowCoord.x, this.arrowCoord.y, this.imageData.width, this.imageData.height);
         }
         // tslint:disable:no-magic-numbers
         if (this.selectionCreated) {
-            this.arrowDown = true;
-            switch (event.key) {
-                case 'ArrowLeft':
-                    this.arrowPress[0] = true;
-                    break;
-
-                case 'ArrowRight':
-                    this.arrowPress[1] = true;
-                    break;
-
-                case 'ArrowUp':
-                    this.arrowPress[2] = true;
-                    break;
-
-                case 'ArrowDown':
-                    this.arrowPress[3] = true;
-                    break;
-                default:
-                    break;
-            }
-
-            if (this.arrowPress[0]) {
-                this.startDownCoord = { x: this.startDownCoord.x - move, y: this.startDownCoord.y };
-                this.pathLastCoord = { x: this.pathLastCoord.x - move, y: this.pathLastCoord.y };
-            }
-            if (this.arrowPress[1]) {
-                this.startDownCoord = { x: this.startDownCoord.x + move, y: this.startDownCoord.y };
-                this.pathLastCoord = { x: this.pathLastCoord.x + move, y: this.pathLastCoord.y };
-            }
-            if (this.arrowPress[2]) {
-                this.startDownCoord = { x: this.startDownCoord.x, y: this.startDownCoord.y - move };
-                this.pathLastCoord = { x: this.pathLastCoord.x, y: this.pathLastCoord.y - move };
-            }
-            if (this.arrowPress[3]) {
-                this.startDownCoord = { x: this.startDownCoord.x, y: this.startDownCoord.y + move };
-                this.pathLastCoord = { x: this.pathLastCoord.x, y: this.pathLastCoord.y + move };
-            }
-
+            this.checkArrowHit(event);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clearPath();
             this.rectangleService.mouseDownCoord = this.startDownCoord;

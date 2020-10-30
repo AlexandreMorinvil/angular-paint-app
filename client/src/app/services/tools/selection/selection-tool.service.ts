@@ -47,18 +47,6 @@ export abstract class SelectionToolService extends Tool {
         this.image = new Image();
         this.shiftDown = false;
     }
-    // tslint:disable:no-empty
-    onMouseDown(event: MouseEvent): void {}
-
-    onMouseMove(event: MouseEvent): void {}
-
-    onMouseUp(event: MouseEvent): void {}
-
-    onArrowDown(event: KeyboardEvent): void {}
-
-    onShiftDown(event: KeyboardEvent): void {}
-
-    onShiftUp(event: KeyboardEvent): void {}
 
     onEscapeDown(event: KeyboardEvent): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -277,5 +265,47 @@ export abstract class SelectionToolService extends Tool {
             height = squareSide;
         }
         return { x: width, y: height };
+    }
+
+    protected checkArrowHit(event: KeyboardEvent): void {
+        // tslint:disable:no-magic-numbers
+        this.arrowDown = true;
+        const move = 3;
+            switch (event.key) {
+                case 'ArrowLeft':
+                    this.arrowPress[0] = true;
+                    break;
+
+                case 'ArrowRight':
+                    this.arrowPress[1] = true;
+                    break;
+
+                case 'ArrowUp':
+                    this.arrowPress[2] = true;
+                    break;
+
+                case 'ArrowDown':
+                    this.arrowPress[3] = true;
+                    break;
+                default:
+                    break;
+            }
+
+            if (this.arrowPress[0]) {
+                this.startDownCoord = { x: this.startDownCoord.x - move, y: this.startDownCoord.y };
+                this.pathLastCoord = { x: this.pathLastCoord.x - move, y: this.pathLastCoord.y };
+            }
+            if (this.arrowPress[1]) {
+                this.startDownCoord = { x: this.startDownCoord.x + move, y: this.startDownCoord.y };
+                this.pathLastCoord = { x: this.pathLastCoord.x + move, y: this.pathLastCoord.y };
+            }
+            if (this.arrowPress[2]) {
+                this.startDownCoord = { x: this.startDownCoord.x, y: this.startDownCoord.y - move };
+                this.pathLastCoord = { x: this.pathLastCoord.x, y: this.pathLastCoord.y - move };
+            }
+            if (this.arrowPress[3]) {
+                this.startDownCoord = { x: this.startDownCoord.x, y: this.startDownCoord.y + move };
+                this.pathLastCoord = { x: this.pathLastCoord.x, y: this.pathLastCoord.y + move };
+            }
     }
 }
