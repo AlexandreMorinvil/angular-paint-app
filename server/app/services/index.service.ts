@@ -1,24 +1,30 @@
-import { TYPES } from '@app/types';
-import { Message } from '@common/communication/message';
-import { inject, injectable } from 'inversify';
+import { Image } from '@common/communication/image';
+import { injectable } from 'inversify';
+import { createCanvas } from 'node_modules/canvas';
+//import { injectable } from 'inversify';
 import 'reflect-metadata';
-import { DateService } from './date.service';
 
 @injectable()
 export class IndexService {
-    clientMessages: Message[];
-    constructor(@inject(TYPES.DateService) private dateService: DateService) {
+    clientMessages: Image[];
+    /*constructor(@inject(TYPES.DateService) private dateService: DateService) {
+        this.clientMessages = [];
+    }
+    */
+
+    constructor() {
         this.clientMessages = [];
     }
 
-    about(): Message {
+    /*about(): Message {
         return {
             title: 'Basic Server About Page',
             body: 'Try calling helloWorld to get the time',
         };
     }
+    */
 
-    async helloWorld(): Promise<Message> {
+    /*async helloWorld(): Promise<Message> {
         return this.dateService
             .currentTime()
             .then((timeMessage: Message) => {
@@ -36,14 +42,29 @@ export class IndexService {
                 };
             });
     }
+    */
 
-    // TODO : ceci est à titre d'exemple. À enlever pour la remise
-    storeMessage(message: Message): void {
-        console.log(message);
-        this.clientMessages.push(message);
+    storeMessage(drawing: Image): void {
+        console.log(drawing.name);
+        console.log(drawing.image.width);
+        console.log('Bienrecu');
+        this.clientMessages.push(drawing);
+        this.saveImageToDrawings(drawing);
     }
 
-    getAllMessages(): Message[] {
-        return this.clientMessages;
+    saveImageToDrawings(drawing: Image): void {
+        //const name = drawing.name;
+        const imageData: ImageData = drawing.image;
+        const fs = require('fs');
+        const width = 600;
+        const height = 600;
+        const canvas = createCanvas(width, height);
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, width, height);
+        ctx.putImageData(imageData, 0, 0);
+        const buffer = canvas.toBuffer('image/png');
+        fs.writeFileSync(__dirname + '/../../drawings/image', buffer);
+        console.log(__dirname);
     }
 }

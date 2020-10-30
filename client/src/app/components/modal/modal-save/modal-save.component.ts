@@ -62,7 +62,7 @@ export class ModalSaveComponent {
     saveToServer(): void {
         if (this.validateValue()) {
             // code for saving into server image
-            this.saveService.saveDraw();
+            //this.saveService.saveDraw();
             this.sendMessageToServer();
             //this.getMessageFromServer();
             (document.getElementById('buttonSaveServer') as HTMLInputElement).disabled = true;

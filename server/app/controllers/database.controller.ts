@@ -1,10 +1,9 @@
 import { DatabaseService } from '@app/services/database/database.service';
+import { TYPES } from '@app/types';
+import { Drawing } from '@common/schema/drawing';
 import { NextFunction, Request, Response, Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { inject, injectable } from 'inversify';
-
-import { TYPES } from '@app/types';
-import { Drawing } from '@common/schema/drawing';
 
 @injectable()
 export class DatabaseController {
