@@ -6,10 +6,7 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { RemoteMemoryService } from '@app/services/remote-memory/remote-memory.service.ts';
 import { Drawing } from '@common/schema/drawing';
 import { FILE_SERVER_BASE_URL } from '@app/services/api/drawing/api-drawing.service';
-
-export interface Tag {
-    tagName: string;
-}
+import { TagFilter, Tag } from '@app/services/tag-filter/tag-filter.service'
 
 @Component({
     selector: 'app-modal-drawing-carousel',
@@ -18,100 +15,94 @@ export interface Tag {
 })
 export class DrawingCarouselComponent {
     private currentImages: Drawing[] = [];
-    private currentActivesIndexes: number[] = [0,1,2];
+    private currentActivesIndexes: number[];
     visible: boolean = true;
     readonly separatorKeysCodes: number[] = [ENTER, COMMA];
-    tags: Tag[] = [];
 
-    constructor(public memoryService: RemoteMemoryService, @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+    constructor(public memoryService: RemoteMemoryService, public tagFilterService: TagFilter, @Inject(MAT_DIALOG_DATA) public data: DialogData) {
         this.memoryService.getAllFromDatabase();
-        console.log("HEY")
-        /*let test: Drawing = {name: "alexa", tags: []}
-        this.currentImages.push(new Drawing());
-        this.currentImages.push(new Drawing());
-        this.currentImages.push(test)*/
+        this.tagFilterService.filterByTag(this.memoryService.drawingsFromDatabase)
         this.setCurrentImages();
     }
-//il faut que get current image me donne les images qui doivent présentement être affiché
+// il faut que get current image me donne les images qui doivent présentement être affiché
     getCurrentImages(): Drawing[] {
-      return this.currentImages;
-    }
-    setCurrentImages(){
-      for (let i of this.currentActivesIndexes){
-        this.currentImages.push(this.memoryService.drawingsFromDatabase[i])
-      }
+        return this.currentImages;
     }
 
-    add(event: MatChipInputEvent): void {
-         const input = event.input;
-         const value = event.value;
-
-         // Add the tag
-         if ((value || '').trim()) {
-             this.tags.push({ tagName: value.trim() });
-         }
-
-         // Reset the input value
-         if (input) {
-             input.value = '';
-         }
-     }
-
-     remove(tag: Tag): void {
-         const index = this.tags.indexOf(tag);
-
-         if (index >= 0) {
-             this.tags.splice(index, 1);
-         }
-     }
+    getTags(){
+        return this.tagFilterService.activeTags
+    }
 
     getDrawingUrl(drawing: Drawing) {
         if (!drawing.name) return 'assets/images/nothing.png';
         return FILE_SERVER_BASE_URL + 'home_icon.png';
     }
 
-/*
-    getName(drawing: Drawing){
-        for (let i of this.memoryService.drawingsFromDatabase){
-            if (i.name === drawing.name ) return i.name
+    setCurrentImages(){
+        this.currentImages = [];
+        this.currentActivesIndexes = [0,1,2];
+        for (let i of this.currentActivesIndexes){
+            if (typeof this.tagFilterService.filteredDrawings[i] === "undefined"){
+            // Insert a placeholder in case there isn't the minimum of 3 data to fill the forms
+                this.currentImages.push(new Drawing)
+            } else
+            this.currentImages.push(this.tagFilterService.filteredDrawings[i])
         }
-        return "Erreur, nom pas trouvé"
     }
 
-    getTags(drawing: Drawing){
-      for (let i of this.memoryService.drawingsFromDatabase){
-          if (i.name === drawing.name ) return i.name
-      }
-      return "Erreur, nom pas trouvé"
+    addTag(event: MatChipInputEvent): void {
+         const input = event.input;
+         const value = event.value;
+
+         // Add the tag
+         if ((value || '').trim()) {
+             this.tagFilterService.activeTags.push({ tagName: value.trim() });
+         }
+
+         // Reset the input value
+         if (input) {
+             input.value = '';
+         }
+
+         // Update the carousel
+         this.tagFilterService.filterByTag(this.memoryService.drawingsFromDatabase);
+         console.log(this.tagFilterService.filteredDrawings)
+         this.setCurrentImages();
     }
-*/
+
+     removeTag(tag: Tag): void {
+         const index = this.tagFilterService.activeTags.indexOf(tag);
+
+         if (index >= 0) {
+             this.tagFilterService.activeTags.splice(index, 1);
+         }
+
+         // Update the carousel
+         this.tagFilterService.filterByTag(this.memoryService.drawingsFromDatabase);
+         this.setCurrentImages();
+     }
 
     movePrevious() {
       // If there is no more drawing, do nothing
       const firstIndex: number = 0;
       if (this.currentActivesIndexes[firstIndex] === 0)
           return
+
       for(let i = 0; i < this.currentImages.length; i++){
-          this.currentImages[i] = this.memoryService.drawingsFromDatabase[this.currentActivesIndexes[i]-1]
+          this.currentImages[i] = this.tagFilterService.filteredDrawings[this.currentActivesIndexes[i]-1]
           this.currentActivesIndexes[i] -= 1;
       }
     }
 
-
     moveNext() {
-      // If there is no more drawing, do nothing
-      const lastIndex: number = 2;
-      if (this.currentActivesIndexes[lastIndex] === this.memoryService.drawingsFromDatabase.length - 1)
-          return
-      for(let i = 0; i < this.currentImages.length; i++){
-          this.currentImages[i] = this.memoryService.drawingsFromDatabase[this.currentActivesIndexes[i]+1]
-          this.currentActivesIndexes[i] += 1;
-      }
-    }
+        // If there is no more drawing, do nothing
+        const lastIndex: number = 2;
+        if (this.currentActivesIndexes[lastIndex] >= this.tagFilterService.filteredDrawings.length - 1)
+            return
 
-    ngOnInit(){
-      //this.memoryService.getAllFromDatabase();
-      //this.setCurrentImages();
+        for(let i = 0; i < this.currentImages.length; i++){
+            this.currentImages[i] = this.tagFilterService.filteredDrawings[this.currentActivesIndexes[i]+1]
+            this.currentActivesIndexes[i] += 1;
+        }
     }
-
 }

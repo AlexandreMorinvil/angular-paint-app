@@ -1,5 +1,5 @@
 <div class="container">
-    <!-- <h1 class="title">Choisir un Dessin</h1>
+   <h1 class="title">Choisir un Dessin</h1>
 
     <div id="carouselExampleControls" class="grid-carousel" data-ride="carousel">
         <div class="area-back-button area-button">
@@ -7,7 +7,6 @@
         </div>
         <div class="drawing-form grid-drawing-form" *ngFor="let drawing of getCurrentImages()">
             <img [src]="getDrawingUrl(drawing)" alt="slide" />
-
             <p>{{ drawing.name}}</p>
             <p>{{ drawing.tags}}</p>
         </div>
@@ -20,7 +19,7 @@
         <mat-form-field class="tags">
             <mat-chip-list #chipList aria-label="tag selection">
                 <mat-label>Filtrage par Étiquettes</mat-label>
-                <mat-chip *ngFor="let tag of tags" (removed)="remove(tag)">
+                <mat-chip *ngFor="let tag of getTags()" (removed)="removeTag(tag)">
                     {{ tag.tagName }}
                     <mat-icon matChipRemove>x</mat-icon>
                 </mat-chip>
@@ -28,7 +27,7 @@
                     placeholder="Ex:étiquette"
                     [matChipInputFor]="chipList"
                     [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                    (matChipInputTokenEnd)="add($event)"
+                    (matChipInputTokenEnd)="addTag($event)"
                 />
             </mat-chip-list>
         </mat-form-field>
@@ -36,5 +35,5 @@
 
     <div mat-dialog-actions>
         <button>Effacer</button>
-    </div> -->
+    </div>
 </div>
