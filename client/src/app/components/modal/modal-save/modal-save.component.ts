@@ -16,7 +16,7 @@ export interface Tag {
     templateUrl: './modal-save.component.html',
     styleUrls: ['./modal-save.component.scss'],
 })
-export class SaveComponent {
+export class ModalSaveComponent {
     // private alreadySavePNG = false;
     // private alreadySaveServer = false;
     visible: boolean = true;
@@ -25,7 +25,7 @@ export class SaveComponent {
     drawName: FormControl = new FormControl('', Validators.required);
     constructor(
         public saveService: SaveService,
-        public dialogRef: MatDialogRef<SaveComponent>,
+        public dialogRef: MatDialogRef<ModalSaveComponent>,
         @Inject(MAT_DIALOG_DATA) public data: DialogData,
         d: MatTabsModule,
         dialog: MatDialog,

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DrawingCarouselComponent } from '@app/components/modal/modal-drawing-carousel/modal-drawing-carousel.component';
-import { SaveComponent } from '@app/components/modal/modal-save/modal-save.component';
+import { ModalSaveComponent } from '@app/components/modal/modal-save/modal-save.component';
 import { UserGuideModalComponent } from '@app/components/modal/modal-user-guide/modal-user-guide.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
@@ -25,7 +25,7 @@ export class ModalHandlerService {
 
     openSaveDialog(): void {
         this.drawingService.shortcutEnable = false; // to disable other command on save dialog open
-        const dialogRef = this.dialog.open(SaveComponent, {
+        const dialogRef = this.dialog.open(ModalSaveComponent, {
             width: '600px',
             height: '500px',
             data: {},
