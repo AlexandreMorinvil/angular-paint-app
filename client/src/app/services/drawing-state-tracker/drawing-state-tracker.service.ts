@@ -70,6 +70,7 @@ export class DrawingStateTrackerService {
         const indexCanvas = (this.actions.length / this.intervalCanvasSave) | 0;
         const actionsToCompute = this.actions.length % this.intervalCanvasSave;
 
+        this.drawingService.resize(this.canvases[indexCanvas].width, this.canvases[indexCanvas].height);
         this.drawingService.printCanvas(this.canvases[indexCanvas]);
         for (let i = 0; i < actionsToCompute; i++) {
             this.actions[indexCanvas * this.intervalCanvasSave + i].execute();
