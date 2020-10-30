@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { InteractionSelection } from '@app/classes/action/interaction-selection';
 import { Description } from '@app/classes/description';
 import { MouseButton } from '@app/classes/mouse';
-import { Vec2 } from '@app/classes/vec2';
 import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
@@ -33,39 +32,37 @@ export class RectangleSelectionService extends SelectionToolService {
         this.mouseDownCoord = this.getPositionFromMouse(event);
         this.mouseDown = event.button === MouseButton.Left;
         this.resetTransform();
-        // resizing
-        if (this.selectionCreated && this.checkHit(this.mouseDownCoord)) {
-            this.getAnchorHit(this.drawingService.previewCtx, this.mouseDownCoord);
-        //translation
-        } else if (this.selectionCreated && this.hitSelection(this.mouseDownCoord.x, this.mouseDownCoord.y)) {
+        // translate
+        if (this.selectionCreated && this.hitSelection(this.mouseDownCoord.x, this.mouseDownCoord.y)) {
             this.pathData.push(this.pathLastCoord);
-            this.drawingService.baseCtx.clearRect(this.startDownCoord.x, this.startDownCoord.y, this.imageData.width, this.imageData.height);
+            // Puts back what was under the selection
+            if (this.firstTranslation) {
+                this.putImageData(this.startDownCoord, this.drawingService.baseCtx, this.oldImageData);
+            }
+            // Puts a white rectangle on selection original placement
+            else {
+                this.drawingService.baseCtx.clearRect(this.startDownCoord.x, this.startDownCoord.y, this.imageData.width, this.imageData.height);
+            }
             this.draggingImage = true;
-            this.putImageData(this.evenImageStartCoord(this.mouseDownCoord), this.drawingService.previewCtx);
-        //creation
+            this.putImageData(this.evenImageStartCoord(this.mouseDownCoord), this.drawingService.previewCtx, this.imageData);
+            // creation
         } else {
-            this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
             this.imageData = new ImageData(1, 1);
             this.startDownCoord = this.getPositionFromMouse(event);
             this.rectangleService.onMouseDown(event);
             this.pathData.push(this.startDownCoord);
-            this.startPoint = this.getPositionFromMouse(event);
+            this.startSelectionPoint = this.getPositionFromMouse(event);
         }
     }
 
     onMouseMove(event: MouseEvent): void {
         const mousePosition = this.getPositionFromMouse(event);
-        //translation
+        // translate
         if (this.draggingImage && this.mouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.startDownCoord = this.evenImageStartCoord(mousePosition);
-            this.putImageData(this.evenImageStartCoord(mousePosition), this.drawingService.previewCtx);
-        // resizing
-        } else if (this.clickOnAnchor && this.mouseDown) {
-            this.drawingService.baseCtx.clearRect(this.startDownCoord.x, this.startDownCoord.y, this.imageData.width, this.imageData.height);
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.getAnchorHit(this.drawingService.previewCtx, mousePosition);
-        //creation
+            this.putImageData(this.evenImageStartCoord(mousePosition), this.drawingService.previewCtx, this.imageData);
+            // creation
         } else if (this.isInCanvas(mousePosition) && this.mouseDown) {
             this.rectangleService.onMouseMove(event);
             if (this.startDownCoord.x !== mousePosition.x && this.startDownCoord.y !== mousePosition.y && this.rectangleService.shiftDown) {
@@ -85,24 +82,30 @@ export class RectangleSelectionService extends SelectionToolService {
 
     onMouseUp(event: MouseEvent): void {
         const mousePosition = this.getPositionFromMouse(event);
-        // translation
+        // translate
         if (this.draggingImage) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.putImageData(this.evenImageStartCoord(mousePosition), this.drawingService.baseCtx);
-            this.drawingStateTrackingService.addAction(this, new InteractionSelection(this.startPoint, mousePosition));
+            // saves what was under the selection
+            this.oldImageData = this.getOldImageData(mousePosition);
+            this.putImageData(this.evenImageStartCoord(mousePosition), this.drawingService.baseCtx, this.imageData);
+            this.drawingStateTrackingService.addAction(
+                this,
+                new InteractionSelection(
+                    this.firstTranslation,
+                    this.startSelectionPoint,
+                    this.endSelectionPoint,
+                    mousePosition,
+                    this.imageData,
+                    this.oldImageData,
+                ),
+            );
             this.drawingService.previewCtx.beginPath();
             this.drawingService.previewCtx.rect(this.startDownCoord.x, this.startDownCoord.y, this.imageData.width, this.imageData.height);
             this.drawingService.previewCtx.stroke();
             this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
             this.draggingImage = false;
-            this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
-        // resizing
-        } else if (this.clickOnAnchor) {
-            this.getAnchorHit(this.drawingService.baseCtx, mousePosition);
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.clickOnAnchor = false;
-            this.selectionCreated = false;
-        //creation
+            this.firstTranslation = true;
+            // creation
         } else if (this.mouseDown) {
             if (this.rectangleService.shiftDown) {
                 const square = this.getSquaredSize(mousePosition);
@@ -110,13 +113,15 @@ export class RectangleSelectionService extends SelectionToolService {
             } else {
                 this.pathData.push(mousePosition);
             }
-            this.drawingStateTrackingService.addAction(this, new InteractionSelection(this.startPoint, mousePosition));
+            // saves what was under the selection
+            this.oldImageData = this.getOldImageData(mousePosition);
             this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.pathData);
             this.offsetAnchors(this.startDownCoord);
             this.drawingService.previewCtx.putImageData(this.imageData, this.startDownCoord.x, this.startDownCoord.y);
             this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
             this.selectionCreated = true;
             this.pathLastCoord = this.pathData[this.pathData.length - 1];
+            this.firstTranslation = false;
         }
         this.mouseDown = false;
         this.clearPath();
@@ -143,40 +148,20 @@ export class RectangleSelectionService extends SelectionToolService {
             this.clearPath();
             this.rectangleService.mouseDownCoord = this.startDownCoord;
             this.pathData.push(this.pathLastCoord);
-            this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.pathData);
-            this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
             this.drawingService.previewCtx.putImageData(this.imageData, this.startDownCoord.x, this.startDownCoord.y);
         }
     }
 
     onArrowUp(event: KeyboardEvent): void {
         if (this.selectionCreated) {
-            switch (event.key) {
-                case 'ArrowLeft':
-                    this.arrowPress[0] = false;
-                    break;
-
-                case 'ArrowRight':
-                    this.arrowPress[1] = false;
-                    break;
-
-                case 'ArrowUp':
-                    this.arrowPress[2] = false;
-                    break;
-
-                case 'ArrowDown':
-                    this.arrowPress[3] = false;
-                    break;
-                default:
-                    break;
-            }
+            this.checkArrowUnhit(event);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             if (this.arrowPress.every((v) => v === false)) {
                 this.arrowDown = false;
                 this.pathData.push(this.pathLastCoord);
                 this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.pathData);
                 this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
-                this.putImageData(this.startDownCoord, this.drawingService.baseCtx);
+                this.putImageData(this.startDownCoord, this.drawingService.baseCtx, this.imageData);
             }
             if (this.arrowDown) {
                 this.onArrowDown({} as KeyboardEvent);
@@ -188,7 +173,6 @@ export class RectangleSelectionService extends SelectionToolService {
         this.mouseDown = true;
         this.startDownCoord = { x: 0, y: 0 };
         this.rectangleService.mouseDownCoord = { x: 0, y: 0 };
-        this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
         const mouseEvent = {
             offsetX: this.drawingService.baseCtx.canvas.width,
             offsetY: this.drawingService.baseCtx.canvas.height,
@@ -201,20 +185,6 @@ export class RectangleSelectionService extends SelectionToolService {
             this.drawingService.baseCtx.canvas.height,
         );
         this.onMouseUp(mouseEvent);
-    }
-
-    evenImageStartCoord(mousePosition: Vec2): Vec2 {
-        // tslint:disable:prefer-const
-        let startCoord = { x: mousePosition.x - this.imageData.width / 2, y: mousePosition.y - this.imageData.height / 2 };
-        if (this.imageData.width % 2 !== 0 || this.imageData.height % 2 !== 0) {
-            if (this.imageData.width % 2 !== 0) {
-                startCoord.x = mousePosition.x - (this.imageData.width + 1) / 2;
-            }
-            if (this.imageData.height % 2 !== 0) {
-                startCoord.y = mousePosition.y - (this.imageData.height + 1) / 2;
-            }
-        }
-        return startCoord;
     }
 
     createOnMouseMoveEvent(): void {
@@ -236,8 +206,14 @@ export class RectangleSelectionService extends SelectionToolService {
         this.tracingService.setHasContour(true);
     }
 
-
-    // execute(interaction: InteractionPath): void {
-    //     this.drawLine(this.drawingService.baseCtx, interaction.path);
-    // }
+    execute(interaction: InteractionSelection): void {
+        this.resetTransform();
+        const startX = interaction.startSelectionPoint.x;
+        const startY = interaction.startSelectionPoint.y;
+        const width = interaction.endSelectionPoint.x - interaction.startSelectionPoint.x;
+        const height = interaction.endSelectionPoint.y - interaction.startSelectionPoint.y;
+        if (interaction.isFirstSelection) this.drawingService.baseCtx.clearRect(startX, startY, width, height);
+        else this.putImageData(interaction.startSelectionPoint, this.drawingService.baseCtx, interaction.belowSelection);
+        this.putImageData(interaction.movePosition, this.drawingService.baseCtx, interaction.selection);
+    }
 }
