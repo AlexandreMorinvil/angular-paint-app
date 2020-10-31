@@ -16,10 +16,10 @@ import { AttributeColorComponent } from './components/attributes-panel/attribute
 import { AttributeJunctionComponent } from './components/attributes-panel/attribute-junction/attributes-junction.component';
 import { AttributesSidesComponent } from './components/attributes-panel/attribute-sides/attributes-sides.component';
 import { AttributeTextureComponent } from './components/attributes-panel/attribute-texture/attributes-texture.component';
-import { AttributesToleranceComponent } from './components/attributes-panel/attribute-tolerance/attributes-tolerance/attributes-tolerance.component';
 import { AttributeTracingComponent } from './components/attributes-panel/attribute-tracing/attributes-tracing.component';
 import { AttributeWidthComponent } from './components/attributes-panel/attribute-width/attributes-width.component';
 import { AttributesPanelComponent } from './components/attributes-panel/attributes-panel.component';
+import { AttributesToleranceComponent } from './components/attributes-panel/attributes-tolerance/attributes-tolerance.component';
 import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorPageComponent } from './components/editor-page/editor-page.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
