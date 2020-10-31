@@ -38,7 +38,7 @@ export class RectangleSelectionService extends SelectionToolService {
             // Puts back what was under the selection
             if (this.hasDoneFIrstTranslation) {
                 this.putImageData(this.startDownCoord, this.drawingService.baseCtx, this.oldImageData);
-                this.startSelectionPoint = this.mouseDownCoord;
+                this.startSelectionPoint = this.evenImageStartCoord(this.mouseDownCoord);
             }
             // Puts a white rectangle on selection original placement
             else {
@@ -220,13 +220,15 @@ export class RectangleSelectionService extends SelectionToolService {
 
     execute(interaction: InteractionSelection): void {
         this.resetTransform();
-        const startX = interaction.startSelectionPoint.x;
-        const startY = interaction.startSelectionPoint.y;
-        const width = interaction.selection.width;
-        const height = interaction.selection.height;
         if (interaction.hasDoneFirstSelection)
             this.putImageData(interaction.startSelectionPoint, this.drawingService.baseCtx, interaction.belowSelection);
-        else this.drawingService.baseCtx.clearRect(startX, startY, width, height);
+        else
+            this.drawingService.baseCtx.clearRect(
+                interaction.startSelectionPoint.x,
+                interaction.startSelectionPoint.y,
+                interaction.selection.width,
+                interaction.selection.height,
+            );
         this.putImageData(interaction.movePosition, this.drawingService.baseCtx, interaction.selection);
     }
 }
