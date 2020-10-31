@@ -76,8 +76,8 @@ describe('PaintService', () => {
         colorService.setPrimaryColor('#010102');
 
         let mouseEvent2 = {
-            offsetX: 200,
-            offsetY: 200,
+            offsetX: 51,
+            offsetY: 51,
             button: 0,
         } as MouseEvent;
         service.onMouseDown(mouseEvent2);
@@ -88,7 +88,7 @@ describe('PaintService', () => {
     it(' should make sure that function are not called if mouseEvent is not in canvas', () => {
         let mouseEvent2 = {
             offsetX: 0,
-            offsetY: 1000,
+            offsetY: 2000,
             button: 0,
         } as MouseEvent;
         service.onMouseDown(mouseEvent2);
@@ -96,7 +96,7 @@ describe('PaintService', () => {
         expect(floodFillSpy).not.toHaveBeenCalled();
     });
 
-    it(' should make sure that function are not called if mouseEvent is not in canvas', () => {
+    it(' should make sure that function are not called if mouseEvent is not left and right mouse click', () => {
         let mouseEvent2 = {
             offsetX: 0,
             offsetY: 0,
