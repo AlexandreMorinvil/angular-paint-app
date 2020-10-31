@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
+import { InteractionStartEnd } from '@app/classes/action/interaction-start-end';
 import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { SidesService } from '@app/services/tool-modifier/sides/sides.service';
@@ -26,6 +28,7 @@ export class PolygonService extends Tool {
 
     constructor(
         drawingService: DrawingService,
+        private drawingStateTrackingService: DrawingStateTrackerService,
         private colorService: ColorService,
         private tracingService: TracingService,
         public widthService: WidthService,
@@ -54,6 +57,7 @@ export class PolygonService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.drawPolygon(this.drawingService.baseCtx, this.pathData);
+            this.drawingStateTrackingService.addAction(this, new InteractionStartEnd(this.mouseDownCoord, this.pathData, this.shiftDown));
         }
         this.mouseDown = false;
         this.clearPath();
@@ -145,5 +149,10 @@ export class PolygonService extends Tool {
     private resetBorder(): void {
         this.drawingService.previewCtx.canvas.width = this.drawingService.baseCtx.canvas.width;
         this.drawingService.previewCtx.canvas.height = this.drawingService.baseCtx.canvas.height;
+    }
+
+    execute(interaction: InteractionStartEnd): void {
+        this.mouseDownCoord = interaction.startPoint;
+        this.drawPolygon(this.drawingService.baseCtx, interaction.path);
     }
 }

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ToolModifier } from '@app/classes/tool-modifier';
+import { ColorModifierState } from './color-state';
 
 const COLOR_WHITE = '#ffffff';
 const COLOR_BLACK = '#000000';
@@ -83,6 +84,17 @@ export class ColorService extends ToolModifier {
 
     getPreviousColors(): string[] {
         return this.previousColors;
+    }
+
+    getState(): ColorModifierState {
+        return new ColorModifierState(this.primaryColor, this.primaryColorOpacity, this.secondaryColor, this.secondaryColorOpacity);
+    }
+
+    setState(state: ColorModifierState): void {
+        this.primaryColor = state.primaryColor;
+        this.primaryColorOpacity = state.primaryColorOpacity;
+        this.secondaryColor = state.secondaryColor;
+        this.secondaryColorOpacity = state.secondaryColorOpacity;
     }
 
     private updatePreviousColors(newColor: string): void {

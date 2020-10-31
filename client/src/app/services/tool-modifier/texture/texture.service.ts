@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ToolModifier } from '@app/classes/tool-modifier';
+import { TextureModifierState } from './texture-state';
 
 export enum TextureEnum {
     shadowTexture = 'ombrée',
@@ -32,5 +33,13 @@ export class TextureService extends ToolModifier {
 
     setTexture(input: string): void {
         if (this.listTextures.includes(input)) this.texture = input;
+    }
+
+    getState(): TextureModifierState {
+        return new TextureModifierState(this.texture);
+    }
+
+    setState(state: TextureModifierState): void {
+        this.texture = state.texture;
     }
 }
