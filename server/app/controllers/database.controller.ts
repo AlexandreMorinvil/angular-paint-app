@@ -8,6 +8,13 @@ import { inject, injectable } from 'inversify';
 @injectable()
 export class DatabaseController {
     router: Router;
+    private readonly ROUTING_GET_ALL: string = '/';
+    private readonly ROUTING_POST: string = '/';
+    private readonly ROUTING_GET_DRAWING_ID: string = '/:drawingId';
+    private readonly ROUTING_GET_NAME: string = '/name/:name';
+    private readonly ROUTING_GET_TAG: string = '/tag/:tag';
+    private readonly ROUTING_PATCH: string = '/:drawingId';
+    private readonly ROUTING_DELETE: string = '/:drawingId';
 
     constructor(@inject(TYPES.DatabaseService) private databaseService: DatabaseService) {
         this.configureRouter();
@@ -17,7 +24,7 @@ export class DatabaseController {
     private configureRouter(): void {
         this.router = Router();
 
-        this.router.get('/', async (req: Request, res: Response, next: NextFunction) => {
+        this.router.get(this.ROUTING_GET_ALL, async (req: Request, res: Response, next: NextFunction) => {
             this.databaseService
                 .getAllDrawings()
                 .then((drawings: Drawing[]) => {
@@ -28,7 +35,7 @@ export class DatabaseController {
                 });
         });
 
-        this.router.get('/:drawingId', async (req: Request, res: Response, next: NextFunction) => {
+        this.router.get(this.ROUTING_GET_DRAWING_ID, async (req: Request, res: Response, next: NextFunction) => {
             this.databaseService
                 .getDrawing(req.params.drawingId)
                 .then((drawing: Drawing) => {
@@ -39,7 +46,7 @@ export class DatabaseController {
                 });
         });
 
-        this.router.get('/name/:name', async (req: Request, res: Response, next: NextFunction) => {
+        this.router.get(this.ROUTING_GET_NAME, async (req: Request, res: Response, next: NextFunction) => {
             this.databaseService
                 .getDrawingByName(req.params.name)
                 .then((drawing: Drawing[]) => {
@@ -50,7 +57,7 @@ export class DatabaseController {
                 });
         });
 
-        this.router.get('/tag/:tag', async (req: Request, res: Response, next: NextFunction) => {
+        this.router.get(this.ROUTING_GET_TAG, async (req: Request, res: Response, next: NextFunction) => {
             this.databaseService
                 .getDrawingByTags(req.params.tag)
                 .then((drawing: Drawing[]) => {
@@ -61,7 +68,7 @@ export class DatabaseController {
                 });
         });
 
-        this.router.post('/', async (req: Request, res: Response, next: NextFunction) => {
+        this.router.post(this.ROUTING_POST, async (req: Request, res: Response, next: NextFunction) => {
             this.databaseService
                 .addDrawing(req.body)
                 .then(() => {
@@ -72,7 +79,7 @@ export class DatabaseController {
                 });
         });
 
-        this.router.patch('/:drawingId', async (req: Request, res: Response, next: NextFunction) => {
+        this.router.patch(this.ROUTING_PATCH, async (req: Request, res: Response, next: NextFunction) => {
             this.databaseService
                 .updateDrawing(req.params.drawingId, req.body)
                 .then((drawing: Drawing) => {
@@ -83,7 +90,7 @@ export class DatabaseController {
                 });
         });
 
-        this.router.delete('/:drawingId', async (req: Request, res: Response, next: NextFunction) => {
+        this.router.delete(this.ROUTING_DELETE, async (req: Request, res: Response, next: NextFunction) => {
             this.databaseService
                 .deleteDrawing(req.params.drawingId)
                 .then(() => {

@@ -1,28 +1,27 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Image } from '@common/communication/image';
-import { Observable, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Drawing } from '@common/schema/drawing';
+import { Observable } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
 })
 export class ApiImageTransferService {
-    private readonly BASE_URL: string = 'http://localhost:3000/api/index';
+    private readonly BASE_URL: string = 'http://localhost:3000/api/drawing';
 
     constructor(private http: HttpClient) {}
 
-    basicGet(): Observable<Image> {
-        return this.http.get<Image>(this.BASE_URL).pipe(catchError(this.handleError<Image>('basicGet')));
+    // basicGet(): Observable<Drawing> {
+    // return this.http.get<Drawing>(this.BASE_URL).pipe(catchError(this.handleError<Drawing>('basicGet')));
+    // }
+
+    basicPost(drawing: Drawing): Observable<Drawing> {
+        return this.http.post<Drawing>(this.BASE_URL, drawing); //JSON.stringify(drawing));
     }
 
-    basicPost(drawing: Image): Observable<void> {
-        return this.http.post<void>(this.BASE_URL + '/send', drawing);
-    }
-
-    private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
-        return (error: Error): Observable<T> => {
-            return of(result as T);
-        };
-    }
+    // private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
+    // return (error: Error): Observable<T> => {
+    // return of(result as T);
+    //     };
+    // }
 }

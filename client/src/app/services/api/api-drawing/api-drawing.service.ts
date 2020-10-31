@@ -11,7 +11,6 @@ export const FILE_SERVER_BASE_URL: string = 'http://localhost:3000/files/';
     providedIn: 'root',
 })
 export class ApiDrawingService {
-
     constructor(private http: HttpClient) {}
 
     getAll(): Observable<Drawing[]> {
@@ -27,7 +26,7 @@ export class ApiDrawingService {
     }
 
     getByTag(tag: string): Observable<Drawing[]> {
-        return this.http.get<Drawing[]>(BASE_URL + "tag/" + tag).pipe(catchError(this.handleError<Drawing[]>('getByTag')));
+        return this.http.get<Drawing[]>(BASE_URL + 'tag/' + tag).pipe(catchError(this.handleError<Drawing[]>('getByTag')));
     }
 
     save(drawing: Drawing): Observable<void> {

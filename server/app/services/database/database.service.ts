@@ -1,4 +1,4 @@
-import { Drawing, MAX_NAME_LENGTH } from '@common/schema/drawing';
+import { Drawing, MAX_DRAW_NAME_LENGTH, MAX_NUMBER_TAG, MAX_TAG_NAME_LENGHT } from '@common/schema/drawing';
 import { injectable } from 'inversify';
 import { Collection, FilterQuery, MongoClient, MongoClientOptions, ObjectID, UpdateQuery } from 'mongodb';
 import 'reflect-metadata';
@@ -12,6 +12,17 @@ const DATABASE_COLLECTION = 'drawing';
 export class DatabaseService {
     collection: Collection<Drawing>;
     client: MongoClient;
+    private readonly ERROR_NO_DRAWING_NAME: string = 'Les dessins doivent contenir un nom';
+    private readonly ERROR_NUMBER_TAG_GREATER_MAXIMUM: string = 'Le nombre détiquettes est supérieur à la limite de 15';
+    private readonly ERROR_NO_TAG: string = 'Les étiquettes assignées ne peuvent pas être vides';
+    private readonly ERROR_MAX_LENGTH_NAME_TAG: string = 'Les étiquettes des dessions doivent contenir un maximum de 25 caractères';
+    private readonly ERROR_NO_IMAGE_SOURCE: string = 'Le dessin a pas une image source';
+    private readonly ERROR_MAX_LENGTH_NAME_DRAWING: string = 'Les noms des dessions doivent contenir un maximum de 50 caractères';
+    private readonly ERROR_DELETE_DRAWING: string = 'Échec lors de la tentative de suppression du dessin';
+    private readonly ERROR_UPDATE_DRAWING: string = 'Échec lors de la tentative de mise à jour du dessin';
+    private readonly ERROR_NO_DRAWING_FOUND: string = "Le dessin demandé n'a pas été trouvé";
+    private readonly ERROR_GET_ALL_DRAWING: string = 'Échec lors de la tentative de récupération de tous les dessins';
+    private readonly CONNECTION_ERROR: string = 'CONNECTION ERROR. EXITING PROCESS';
 
     private options: MongoClientOptions = {
         useNewUrlParser: true,
@@ -25,7 +36,7 @@ export class DatabaseService {
                 this.collection = client.db(DATABASE_NAME).collection(DATABASE_COLLECTION);
             })
             .catch(() => {
-                console.error('CONNECTION ERROR. EXITING PROCESS');
+                console.error(this.CONNECTION_ERROR);
                 process.exit(1);
             });
     }
@@ -39,14 +50,14 @@ export class DatabaseService {
             const drawings: Drawing[] = await this.collection.find({}).toArray();
             return drawings;
         } catch (error) {
-            throw new Error('Échec lors de la tentative de récupération de tous les dessins');
+            throw new Error(this.ERROR_GET_ALL_DRAWING);
         }
     }
 
     async getDrawing(drawingID: string): Promise<Drawing> {
         try {
             const drawing: Drawing | null = await this.collection.findOne({ _id: new ObjectID(drawingID) });
-            if (!drawing) throw new Error("Le dessin demandé n'a pas été trouvé");
+            if (!drawing) throw new Error(this.ERROR_NO_DRAWING_FOUND);
             return drawing;
         } catch (error) {
             throw error;
@@ -75,6 +86,7 @@ export class DatabaseService {
         try {
             this.validateDrawing(drawing);
             await this.collection.insertOne(drawing);
+            this.saveDrawIntoImageFolder(drawing);
             return;
         } catch (error) {
             throw error;
@@ -95,7 +107,7 @@ export class DatabaseService {
             if (!updatedDrawing) throw new Error();
             return updatedDrawing;
         } catch (error) {
-            throw new Error('Échec lors de la tentative de mise à jour du dessin');
+            throw new Error(this.ERROR_UPDATE_DRAWING);
         }
     }
 
@@ -103,23 +115,39 @@ export class DatabaseService {
         try {
             this.collection.findOneAndDelete({ _id: new ObjectID(drawingID) });
         } catch (error) {
-            throw new Error('Échec lors de la tentative de suppression du dessin');
+            throw new Error(this.ERROR_DELETE_DRAWING);
         }
     }
 
     private validateDrawing(drawing: Drawing): void {
         this.validateName(drawing.name);
         this.validateTag(drawing.tags);
+        this.valideImageSrc(drawing.imageSrc);
     }
+
     private validateName(name: string): void {
-        if (!(name.length > 0)) throw new Error('Les dessins doivent contenir un nom');
-        if (!(name.length <= MAX_NAME_LENGTH)) throw new Error('Les noms des dessions doivent contenir moins un maximum de 50 caractères');
+        if (!(name.length > 0)) throw new Error(this.ERROR_NO_DRAWING_NAME);
+        if (!(name.length <= MAX_DRAW_NAME_LENGTH)) throw new Error(this.ERROR_MAX_LENGTH_NAME_DRAWING);
     }
+
+    private valideImageSrc(name: string): void {
+        if (name === '') throw new Error(this.ERROR_NO_IMAGE_SOURCE);
+    }
+
     private validateTag(tags: string[]): void {
+        if (!(tags.length <= MAX_NUMBER_TAG)) throw new Error(this.ERROR_NUMBER_TAG_GREATER_MAXIMUM);
         if (tags.length === 0) return;
         tags.forEach((tag) => {
-            if (!(tag.length > 0)) throw new Error('Les étiquettes assignées ne peuvent pas être vides');
-            if (!(tag.length <= MAX_NAME_LENGTH)) throw new Error('Les étiquettes des dessions doivent contenir moins un maximum de 50 caractères');
+            if (!(tag.length > 0)) throw new Error(this.ERROR_NO_TAG);
+            if (!(tag.length <= MAX_TAG_NAME_LENGHT)) throw new Error(this.ERROR_MAX_LENGTH_NAME_TAG);
         });
+    }
+
+    private saveDrawIntoImageFolder(drawing: Drawing): void {
+        const fs = require('fs');
+        const nameDirectory = '/' + drawing.name + '.png';
+        let img64 = drawing.imageSrc.replace('data:image/png;base64,', '');
+        img64 = img64.split(/\s/).join('');
+        fs.writeFileSync('./drawings/images' + nameDirectory, img64, { encoding: 'base64' });
     }
 }
