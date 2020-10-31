@@ -13,7 +13,6 @@ import { AppComponent } from './components/app/app.component';
 import { AttributeColorPickerViewerComponent } from './components/attributes-panel/attribute-color-picker-viewer/attribute-color-picker-viewer.component';
 // Attribute components
 import { AttributeColorComponent } from './components/attributes-panel/attribute-color/attributes-color.component';
-import { AttributeFillingComponent } from './components/attributes-panel/attribute-filling/attributes-filling.component';
 import { AttributeJunctionComponent } from './components/attributes-panel/attribute-junction/attributes-junction.component';
 import { AttributeTextureComponent } from './components/attributes-panel/attribute-texture/attributes-texture.component';
 import { AttributesToleranceComponent } from './components/attributes-panel/attribute-tolerance/attributes-tolerance/attributes-tolerance.component';
@@ -39,7 +38,6 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
         AttributeTracingComponent,
         AttributeWidthComponent,
         AttributeColorComponent,
-        AttributeFillingComponent,
         EditorPageComponent,
         SidebarComponent,
         DrawingComponent,

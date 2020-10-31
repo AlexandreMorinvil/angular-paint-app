@@ -4,6 +4,14 @@
         <app-tooltip [text]="formatTooltipMessage(tool)" class="tooltip"></app-tooltip>
     </button>
 
+    <button (click)="undo()" class="to-bottom has-tooltip">
+        <img src="assets/images/question_mark.png" />
+        <app-tooltip [text]="'Undo'" class="tooltip"></app-tooltip>
+    </button>
+    <button (click)="redo()" class="to-bottom has-tooltip">
+        <img src="assets/images/question_mark.png" />
+        <app-tooltip [text]="'Redo'" class="tooltip"></app-tooltip>
+    </button>
     <button (click)="openSaveDialog()" class="to-bottom has-tooltip">
         <img src="assets/images/save_icon.png" />
         <app-tooltip [text]="messageSaveDialog" class="tooltip"></app-tooltip>
