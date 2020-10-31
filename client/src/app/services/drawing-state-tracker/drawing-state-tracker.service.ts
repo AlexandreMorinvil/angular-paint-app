@@ -25,7 +25,7 @@ export class DrawingStateTrackerService {
     }
 
     addAction(tool: Tool, interaction: Interaction): void {
-        if (this.canvases.length === 0) this.canvases.push(new ImageData(this.drawingService.getWidth(), this.drawingService.getHeight()));
+        if (this.canvases.length === 0) this.canvases.push(new ImageData(this.drawingService.canvas.width, this.drawingService.canvas.height));
         this.actionsToRedo = [];
         this.canvasesToRedo = [];
 

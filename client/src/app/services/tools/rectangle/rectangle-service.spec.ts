@@ -41,6 +41,7 @@ describe('RectangleService', () => {
         drawRectangleSpy = spyOn<any>(service, 'drawRectangle').and.callThrough();
         drawPreviewRectSpy = spyOn<any>(service, 'drawPreviewRect').and.callThrough();
         setAttributeSpy = spyOn<any>(service, 'setAttribute').and.callThrough();
+
         const canvasWidth = 1000;
         const canvasHeight = 800;
         // tslint:disable:no-string-literal
@@ -49,6 +50,7 @@ describe('RectangleService', () => {
         service['drawingService'].canvas = canvasStub;
         service['drawingService'].canvas.width = canvasWidth;
         service['drawingService'].canvas.height = canvasHeight;
+
         service['tracingService'] = tracingService;
 
         ctxFillSpy = spyOn<any>(service['drawingService'].previewCtx, 'fill').and.callThrough();
@@ -82,8 +84,8 @@ describe('RectangleService', () => {
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);
     });
-
     it(' onMouseUp should call drawRectangle if mouse was already down', () => {
+        service.shiftDown = false;
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
         service.onMouseUp(mouseEvent);

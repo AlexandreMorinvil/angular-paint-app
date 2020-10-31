@@ -13,6 +13,7 @@ describe('BrushService', () => {
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     let baseCtxStub: CanvasRenderingContext2D;
+    let canvasStub: HTMLCanvasElement;
     let previewCtxStub: CanvasRenderingContext2D;
     let drawLineSpy: jasmine.Spy<any>;
     let shadowTextureSpy: jasmine.Spy<any>;
@@ -24,8 +25,8 @@ describe('BrushService', () => {
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        canvasStub = canvasTestHelper.canvas;
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
-
         TestBed.configureTestingModule({
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         });
@@ -37,10 +38,15 @@ describe('BrushService', () => {
         squareTextureSpy = spyOn<any>(service, 'squareTexture').and.callThrough();
         dashTextureSpy = spyOn<any>(service, 'dashTexture').and.callThrough();
         zigzagTextureSpy = spyOn<any>(service, 'zigzagTexture').and.callThrough();
-        // Configuration du spy du service
+
+        const canvasWidth = 1000;
+        const canvasHeight = 800;
         // tslint:disable:no-string-literal
-        service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
+        service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
+        service['drawingService'].canvas = canvasStub;
+        service['drawingService'].canvas.width = canvasWidth;
+        service['drawingService'].canvas.height = canvasHeight;
 
         mouseEvent = {
             offsetX: 25,

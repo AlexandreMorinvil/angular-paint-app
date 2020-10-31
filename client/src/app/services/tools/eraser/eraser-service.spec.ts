@@ -9,13 +9,17 @@ describe('EraserService', () => {
     let service: EraserService;
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
+
+    let canvasStub: HTMLCanvasElement;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
+
     let drawLineSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        canvasStub = canvasTestHelper.canvas;
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
 
         TestBed.configureTestingModule({
@@ -24,10 +28,14 @@ describe('EraserService', () => {
         service = TestBed.inject(EraserService);
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
 
-        // Configuration du spy du service
+        const canvasWidth = 1000;
+        const canvasHeight = 800;
         // tslint:disable:no-string-literal
-        service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
+        service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
+        service['drawingService'].canvas = canvasStub;
+        service['drawingService'].canvas.width = canvasWidth;
+        service['drawingService'].canvas.height = canvasHeight;
 
         mouseEvent = {
             offsetX: 25,
