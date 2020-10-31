@@ -13,7 +13,7 @@ const minSurfaceSize = 50;
 export class CursorService extends Tool {
     mouseDownCoord: Vec2;
     mouseDown: boolean = false;
-    private dotsize: number = 10;
+    private dotSize: number = 10;
     private clickOnAnchor: boolean = false;
     private anchorHit: number = 0;
     // tslint:disable-next-line:no-any
@@ -91,11 +91,11 @@ export class CursorService extends Tool {
 
     private drawnAnchor(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement): void {
         ctx.beginPath();
-        ctx.arc(canvas.width, canvas.height, this.dotsize, 0, Math.PI * 2, false);
+        ctx.arc(canvas.width, canvas.height, this.dotSize, 0, Math.PI * 2, false);
         ctx.closePath();
-        ctx.arc(canvas.width / 2, canvas.height, this.dotsize, 0, Math.PI * 2, false);
+        ctx.arc(canvas.width / 2, canvas.height, this.dotSize, 0, Math.PI * 2, false);
         ctx.closePath();
-        ctx.arc(canvas.width, canvas.height / 2, this.dotsize, 0, Math.PI * 2, false);
+        ctx.arc(canvas.width, canvas.height / 2, this.dotSize, 0, Math.PI * 2, false);
         ctx.closePath();
         ctx.fill();
     }
@@ -103,7 +103,7 @@ export class CursorService extends Tool {
     private checkHit(mouse: Vec2, canvas: HTMLCanvasElement): void {
         let x: number;
         let y: number;
-        const dotSizeSquare: number = Math.pow(this.dotsize, 2);
+        const dotSizeSquare: number = Math.pow(this.dotSize, 2);
 
         x = Math.pow(mouse.x - canvas.width, 2);
         y = Math.pow(mouse.y - canvas.height, 2);
