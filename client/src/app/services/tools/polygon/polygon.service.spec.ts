@@ -79,12 +79,12 @@ describe('PolygonService', () => {
         expect(service.mouseDown).toEqual(false);
     });
 
-    it(' onMouseUp should call drawPolygon if mouse was already down', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
-        service.mouseDown = true;
-        service.onMouseUp(mouseEvent);
-        expect(drawPolygonSpy).toHaveBeenCalled();
-    });
+    // it(' onMouseUp should call drawPolygon if mouse was already down', () => {
+    //     service.mouseDownCoord = { x: 0, y: 0 };
+    //     service.mouseDown = true;
+    //     service.onMouseUp(mouseEvent);
+    //     expect(drawPolygonSpy).toHaveBeenCalled();
+    // });
 
     it(' onMouseUp should not call drawPolygon if mouse was not already down', () => {
         service.mouseDown = false;
