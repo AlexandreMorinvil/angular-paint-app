@@ -143,10 +143,10 @@ export class RectangleSelectionService extends SelectionToolService {
         if (!this.arrowDown) {
             this.arrowCoord = this.startDownCoord;
             this.drawingService.baseCtx.clearRect(this.arrowCoord.x, this.arrowCoord.y, this.imageData.width, this.imageData.height);
+            this.startSelectionPoint = { x: this.startDownCoord.x, y : this.startDownCoord.y };
         }
         if (this.selectionCreated) {
             this.checkArrowHit(event);
-            this.startSelectionPoint = this.mouseDownCoord;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clearPath();
             this.rectangleService.mouseDownCoord = this.startDownCoord;
@@ -170,7 +170,7 @@ export class RectangleSelectionService extends SelectionToolService {
                     new InteractionSelection(
                         this.hasDoneFirstTranslation,
                         this.startSelectionPoint,
-                        this.evenImageStartCoord(this.pathLastCoord),
+                        this.startDownCoord,
                         this.imageData,
                         this.getOldImageData(this.pathLastCoord),
                     ),

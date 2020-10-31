@@ -164,7 +164,6 @@ export abstract class SelectionToolService extends Tool {
     protected checkArrowHit(event: KeyboardEvent): void {
         // tslint:disable:no-magic-numbers
         this.arrowDown = true;
-        this.startSelectionPoint = this.hasDoneFirstTranslation ? this.arrowCoord : this.mouseDownCoord;
         const move = 3;
         switch (event.key) {
             case 'ArrowLeft':
