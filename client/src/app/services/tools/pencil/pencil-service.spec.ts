@@ -10,7 +10,7 @@ import { PencilService } from './pencil-service';
 describe('PencilService', () => {
     let service: PencilService;
     let mouseEvent: MouseEvent;
-    //let mouseEvent2: MouseEvent;
+    // let mouseEvent2: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
     let baseCtxStub: CanvasRenderingContext2D;

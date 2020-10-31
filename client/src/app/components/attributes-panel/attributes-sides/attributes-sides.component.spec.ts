@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { AttributesSidesComponent } from '@app/components/attributes-panel/attributes-sides/attributes-sides.component';
 import { SidesService } from '@app/services/tool-modifier/sides/sides.service';
 
@@ -7,12 +7,14 @@ describe('AttributesSidesComponent', () => {
     let fixture: ComponentFixture<AttributesSidesComponent>;
     let sidesService: SidesService;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [AttributesSidesComponent],
-            providers: [SidesService],
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                declarations: [AttributesSidesComponent],
+                providers: [SidesService],
+            }).compileComponents();
+        }),
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(AttributesSidesComponent);

@@ -8,17 +8,17 @@ import { BrushService } from './brush-service';
 // tslint:disable:no-any
 describe('BrushService', () => {
     let service: BrushService;
-    //let textureService: TextureService;
+    // let textureService: TextureService;
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let drawLineSpy: jasmine.Spy<any>;
-    //let shadowTextureSpy: jasmine.Spy<any>;
-    //let gradientTextureSpy: jasmine.Spy<any>;
-    //let squareTextureSpy: jasmine.Spy<any>;
-    //let dashTextureSpy: jasmine.Spy<any>;
-    //let zigzagTextureSpy: jasmine.Spy<any>;
+    // let shadowTextureSpy: jasmine.Spy<any>;
+    // let gradientTextureSpy: jasmine.Spy<any>;
+    // let squareTextureSpy: jasmine.Spy<any>;
+    // let dashTextureSpy: jasmine.Spy<any>;
+    // let zigzagTextureSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -29,13 +29,13 @@ describe('BrushService', () => {
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         });
         service = TestBed.inject(BrushService);
-        //textureService = TestBed.inject(TextureService);
+        // textureService = TestBed.inject(TextureService);
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
-        //shadowTextureSpy = spyOn<any>(service, 'shadowTexture').and.callThrough();
-        //gradientTextureSpy = spyOn<any>(service, 'gradientTexture').and.callThrough();
-        //squareTextureSpy = spyOn<any>(service, 'squareTexture').and.callThrough();
-        //dashTextureSpy = spyOn<any>(service, 'dashTexture').and.callThrough();
-        //zigzagTextureSpy = spyOn<any>(service, 'zigzagTexture').and.callThrough();
+        // shadowTextureSpy = spyOn<any>(service, 'shadowTexture').and.callThrough();
+        // gradientTextureSpy = spyOn<any>(service, 'gradientTexture').and.callThrough();
+        // squareTextureSpy = spyOn<any>(service, 'squareTexture').and.callThrough();
+        // dashTextureSpy = spyOn<any>(service, 'dashTexture').and.callThrough();
+        // zigzagTextureSpy = spyOn<any>(service, 'zigzagTexture').and.callThrough();
         // Configuration du spy du service
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data

@@ -1,6 +1,6 @@
 // tslint:disable:ordered-imports
 import { HttpClientModule } from '@angular/common/http';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -35,44 +35,46 @@ describe('SidebarComponent', () => {
     let openGuideSpy: jasmine.Spy<any>;
     let openSaveDialogSpy: jasmine.Spy<any>;
 
-    beforeEach(async(() => {
-        toolStub = new ToolStub({} as DrawingService, {} as Description);
-        drawingStub = new DrawingService();
-        toolboxSpy = jasmine.createSpyObj('toolboxSpy', ['getAvailableTools', 'getCurrentTool', 'setSelectedTool']);
-        toolserviceMock = new ToolboxService(
-            {} as CursorService,
-            {} as PencilService,
-            {} as BrushService,
-            {} as EraserService,
-            {} as RectangleService,
-            {} as EllipseService,
-            {} as LineService,
-            {} as PolygonService,
-            {} as ColorPickerService,
-            {} as PaintService,
-            {} as SelectionToolService,
-        );
+    beforeEach(
+        waitForAsync(() => {
+            toolStub = new ToolStub({} as DrawingService, {} as Description);
+            drawingStub = new DrawingService();
+            toolboxSpy = jasmine.createSpyObj('toolboxSpy', ['getAvailableTools', 'getCurrentTool', 'setSelectedTool']);
+            toolserviceMock = new ToolboxService(
+                {} as CursorService,
+                {} as PencilService,
+                {} as BrushService,
+                {} as EraserService,
+                {} as RectangleService,
+                {} as EllipseService,
+                {} as LineService,
+                {} as PolygonService,
+                {} as ColorPickerService,
+                {} as PaintService,
+                {} as SelectionToolService,
+            );
 
-        TestBed.configureTestingModule({
-            imports: [RouterTestingModule, HttpClientModule],
-            declarations: [SidebarComponent],
-            providers: [
-                { provide: PencilService, useValue: toolStub },
-                { provide: LineService, useValue: toolStub },
-                { provide: BrushService, useValue: toolStub },
-                { provide: DrawingService, useValue: drawingStub },
-                { provide: RectangleService, useValue: toolStub },
-                { provide: EllipseService, useValue: toolStub },
-                { provide: PolygonService, useValue: toolStub },
-                { provide: CursorService, useValue: toolStub },
-                { provide: ToolboxService, useValue: toolboxSpy },
-                { provide: RouterModule, useValue: routerSpy },
-                { provide: MAT_DIALOG_DATA, useValue: {} },
-                { provide: MatDialogRef, useValue: {} },
-                { provide: MatDialog, useValue: {} },
-            ],
-        }).compileComponents();
-    }));
+            TestBed.configureTestingModule({
+                imports: [RouterTestingModule, HttpClientModule],
+                declarations: [SidebarComponent],
+                providers: [
+                    { provide: PencilService, useValue: toolStub },
+                    { provide: LineService, useValue: toolStub },
+                    { provide: BrushService, useValue: toolStub },
+                    { provide: DrawingService, useValue: drawingStub },
+                    { provide: RectangleService, useValue: toolStub },
+                    { provide: EllipseService, useValue: toolStub },
+                    { provide: PolygonService, useValue: toolStub },
+                    { provide: CursorService, useValue: toolStub },
+                    { provide: ToolboxService, useValue: toolboxSpy },
+                    { provide: RouterModule, useValue: routerSpy },
+                    { provide: MAT_DIALOG_DATA, useValue: {} },
+                    { provide: MatDialogRef, useValue: {} },
+                    { provide: MatDialog, useValue: {} },
+                ],
+            }).compileComponents();
+        }),
+    );
 
     beforeEach(() => {
         // tslint:disable:no-string-literal

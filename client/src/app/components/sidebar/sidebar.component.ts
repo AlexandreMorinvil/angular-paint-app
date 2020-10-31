@@ -22,7 +22,7 @@ export class SidebarComponent {
         private drawingService: DrawingService,
         private router: Router,
         private modalHandler: ModalHandlerService,
-        private drawingStateTracker: DrawingStateTrackerService
+        private drawingStateTracker: DrawingStateTrackerService,
     ) {}
 
     undo(): void {

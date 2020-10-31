@@ -1,18 +1,21 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
-//import { Vec2 } from '@app/classes/vec2';
+// import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { PaintService } from './paint.service';
 
 describe('PaintService', () => {
     let service: PaintService;
-    //let mouseEvent: MouseEvent;
+    // let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     let colorService: ColorService;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let canvasStub: HTMLCanvasElement;
+    // The disablement of the "any" tslint rule is justified in this situation as the prototype
+    // of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
+    // tslint:disable:no-any
     let sameColorFillSpy: jasmine.Spy<any>;
     let floodFillSpy: jasmine.Spy<any>;
 
@@ -32,6 +35,7 @@ describe('PaintService', () => {
         const canvasWidth = 1000;
         const canvasHeight = 800;
         colorService.setPrimaryColor('#050505');
+        // tslint:disable:no-magic-numbers
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
@@ -86,18 +90,17 @@ describe('PaintService', () => {
     // });
 
     it(' should make sure that function are not called if mouseEvent is not in canvas', () => {
-        let mouseEvent2 = {
+        const mouseEvent2 = {
             offsetX: 0,
             offsetY: 1000,
             button: 0,
         } as MouseEvent;
         service.onMouseDown(mouseEvent2);
-
         expect(floodFillSpy).not.toHaveBeenCalled();
     });
 
     it(' should make sure that function are not called if mouseEvent is not in canvas', () => {
-        let mouseEvent2 = {
+        const mouseEvent2 = {
             offsetX: 0,
             offsetY: 0,
             button: 1,

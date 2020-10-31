@@ -1,6 +1,6 @@
-import { Interaction } from './interactions';
-import { Vec2 } from '../vec2';
-import { MouseButton } from '../mouse';
+import { Interaction } from '@app/classes/action/interactions';
+import { MouseButton } from '@app/classes/mouse';
+import { Vec2 } from '@app/classes/vec2';
 
 export class InteractionPaint extends Interaction {
     mouseButton: MouseButton;
@@ -12,7 +12,16 @@ export class InteractionPaint extends Interaction {
     fillColorG: number;
     fillColorB: number;
 
-    constructor(mouseButton: MouseButton, mouseDownCoord: Vec2, startR: number, startG: number, startB: number, fillColorR: number, fillColorG: number, fillColorB: number) {
+    constructor(
+        mouseButton: MouseButton,
+        mouseDownCoord: Vec2,
+        startR: number,
+        startG: number,
+        startB: number,
+        fillColorR: number,
+        fillColorG: number,
+        fillColorB: number,
+    ) {
         super();
         this.mouseButton = mouseButton;
         this.mouseDownCoord = mouseDownCoord;
