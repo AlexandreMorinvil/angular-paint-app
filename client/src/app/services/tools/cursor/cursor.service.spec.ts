@@ -8,7 +8,6 @@ describe('CursorService', () => {
     let service: CursorService;
     let mouseEvent25: MouseEvent;
     let mouseEvent500: MouseEvent;
-    let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     // tslint:disable:no-any
     let drawnAnchorSpy: jasmine.Spy<any>;
     let checkHitSpy: jasmine.Spy<any>;
@@ -23,10 +22,9 @@ describe('CursorService', () => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         canvasStub = canvasTestHelper.canvas;
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
 
         TestBed.configureTestingModule({
-            providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
+            providers: [{ provide: DrawingService, useValue: jasmine.createSpyObj('DrawingService', ['resize']) }],
         });
         service = TestBed.inject(CursorService);
         // tslint:disable:no-any
@@ -35,10 +33,14 @@ describe('CursorService', () => {
         moveHeightSpy = spyOn<any>(service, 'moveHeight').and.callThrough();
         moveWidthSpy = spyOn<any>(service, 'moveWidth').and.callThrough();
 
+        const canvasWidth = 1200;
+        const canvasHeight = 1000;
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
         service['drawingService'].canvas = canvasStub;
+        service['drawingService'].canvas.width = canvasWidth;
+        service['drawingService'].canvas.height = canvasHeight;
 
         mouseEvent25 = {
             offsetX: 25,

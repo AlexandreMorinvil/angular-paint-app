@@ -45,14 +45,14 @@ describe('EllipseService', () => {
         drawCircleSpy = spyOn<any>(service, 'drawCircle').and.callThrough();
         applyTraceSpy = spyOn<any>(service, 'applyTrace').and.callThrough();
 
-        // Configuration du spy du service
+        const canvasWidth = 1000;
+        const canvasHeight = 800;
         // tslint:disable:no-string-literal
-        service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
+        service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
         service['drawingService'].canvas = canvasStub;
-        // tslint:disable:no-magic-numbers
-        service['drawingService'].canvas.width = 1000;
-        service['drawingService'].canvas.height = 800;
+        service['drawingService'].canvas.width = canvasWidth;
+        service['drawingService'].canvas.height = canvasHeight;
 
         ctxFillSpy = spyOn<any>(service['drawingService'].previewCtx, 'fill').and.callThrough();
         ctxContourSpy = spyOn<any>(service['drawingService'].previewCtx, 'stroke').and.callThrough();
