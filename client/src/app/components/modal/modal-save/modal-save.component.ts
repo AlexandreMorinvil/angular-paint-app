@@ -8,6 +8,7 @@ import { DialogData } from '@app/classes/dialog-data';
 import { ApiImageTransferService } from '@app/services/api/image-transfer/api-image-transfer.service';
 import { SaveService } from '@app/services/save/save.service';
 import { Drawing } from '@common/schema/drawing';
+import { map } from 'rxjs/operators';
 
 @Component({
     selector: 'app-modal-save',
@@ -135,14 +136,11 @@ export class ModalSaveComponent {
         this.apiImageTransferService.basicPost(NewURLDrawing).subscribe();
     }
     /*Fonction utile pour recevoir linfo du serveur*/
-    /*getMessageFromServer(): void {
-        this.apiImageTransferService
-            .basicGet()
-
-            .pipe(
-                map((drawing: Image) => {
-                    return '${drawing.name}${drawing.image}';
-                }),
-            );
-    }*/
+    getMessageFromServer(): void {
+        this.apiImageTransferService.basicGet().pipe(
+            map((drawing: Drawing) => {
+                return '${drawing.name}${drawing.tags}${drawing.imageSrc}';
+            }),
+        );
+    }
 }
