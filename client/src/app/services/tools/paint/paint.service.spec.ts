@@ -42,7 +42,7 @@ describe('PaintService', () => {
         service['drawingService'].baseCtx.fillStyle = '#000000';
         service['drawingService'].baseCtx.fillRect(0, 0, 1000, 800);
         service['drawingService'].baseCtx.fillStyle = '#010101';
-        service['drawingService'].baseCtx.fillRect(200, 200, 50, 50);
+        service['drawingService'].baseCtx.fillRect(200, 200, 25, 25);
         service['drawingService'].baseCtx.fillStyle = '#000100';
         service['drawingService'].baseCtx.fillRect(50, 50, 50, 50);
 
@@ -76,8 +76,8 @@ describe('PaintService', () => {
         colorService.setPrimaryColor('#010102');
 
         let mouseEvent2 = {
-            offsetX: 51,
-            offsetY: 51,
+            offsetX: 201,
+            offsetY: 201,
             button: 0,
         } as MouseEvent;
         service.onMouseDown(mouseEvent2);
