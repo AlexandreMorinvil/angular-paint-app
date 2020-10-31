@@ -40,7 +40,7 @@ describe('ToleranceService', () => {
         service.setTolerance(tolerance);
         expect(setToleranceSpy).toHaveBeenCalled();
         expect(service.getPercentTolerance()).toEqual(maxTolerance);
-        expect(service.getPixelTolerance()).toEqual(Math.round((tolerance * 255) / 100));
+        expect(service.getPixelTolerance()).toEqual(Math.round((maxTolerance * 255) / 100));
         expect(getPercentToleranceSpy).toHaveBeenCalled();
         expect(getPixelToleranceSpy).toHaveBeenCalled();
     });
@@ -51,7 +51,7 @@ describe('ToleranceService', () => {
         service.setTolerance(tolerance);
         expect(setToleranceSpy).toHaveBeenCalled();
         expect(service.getPercentTolerance()).toEqual(maxTolerance);
-        expect(service.getPixelTolerance()).toEqual(Math.round((tolerance * 255) / 100));
+        expect(service.getPixelTolerance()).toEqual(Math.round((maxTolerance * 255) / 100));
         expect(getPercentToleranceSpy).toHaveBeenCalled();
         expect(getPixelToleranceSpy).toHaveBeenCalled();
     });
