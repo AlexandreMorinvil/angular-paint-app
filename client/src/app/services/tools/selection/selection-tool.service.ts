@@ -38,10 +38,9 @@ export abstract class SelectionToolService extends Tool {
     arrowPress: boolean[];
     arrowDown: boolean;
     arrowCoord: Vec2;
-    firstTranslation: boolean;
+    hasDoneFIrstTranslation: boolean;
 
     protected startSelectionPoint: Vec2;
-    protected endSelectionPoint: Vec2;
 
     constructor(drawingService: DrawingService, private color: ColorService, description: Description) {
         super(drawingService, description);
@@ -53,7 +52,7 @@ export abstract class SelectionToolService extends Tool {
         this.image = new Image();
         this.oldImage = new Image();
         this.shiftDown = false;
-        this.firstTranslation = false;
+        this.hasDoneFIrstTranslation = false;
     }
 
     onEscapeDown(event: KeyboardEvent): void {
@@ -165,6 +164,7 @@ export abstract class SelectionToolService extends Tool {
     protected checkArrowHit(event: KeyboardEvent): void {
         // tslint:disable:no-magic-numbers
         this.arrowDown = true;
+        this.startSelectionPoint = this.evenImageStartCoord(this.mouseDownCoord);
         const move = 3;
         switch (event.key) {
             case 'ArrowLeft':

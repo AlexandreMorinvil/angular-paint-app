@@ -8,7 +8,7 @@ import { DrawingService } from '../drawing/drawing.service';
     providedIn: 'root',
 })
 export class DrawingStateTrackerService {
-    private intervalCanvasSave: number = 2;
+    private intervalCanvasSave: number = 10;
     private actions: Action[] = [];
     private canvases: ImageData[] = [];
     private actionsToRedo: Action[] = [];
