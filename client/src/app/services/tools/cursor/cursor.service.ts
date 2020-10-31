@@ -5,7 +5,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzone-size.service';
 
-const minSurfaceSize = 10;
+const minSurfaceSize = 50;
 
 @Injectable({
     providedIn: 'root',
@@ -13,11 +13,11 @@ const minSurfaceSize = 10;
 export class CursorService extends Tool {
     mouseDownCoord: Vec2;
     mouseDown: boolean = false;
-    dotsize: number = 10;
-    clickOnAnchor: boolean = false;
-    anchorHit: number = 0;
+    private dotsize: number = 10;
+    private clickOnAnchor: boolean = false;
+    private anchorHit: number = 0;
     // tslint:disable-next-line:no-any
-    imageData: any;
+    private imageData: any;
 
     constructor(drawingService: DrawingService, private workzoneService: WorkzoneSizeService) {
         super(drawingService, new Description('redimensionneur', 'y', 'crop-icon.png'));
@@ -73,7 +73,7 @@ export class CursorService extends Tool {
         }
     }
 
-    moveWidth(mouseDownCoordX: number): void {
+    private moveWidth(mouseDownCoordX: number): void {
         if (mouseDownCoordX >= minSurfaceSize) {
             this.drawingService.previewCtx.canvas.width = mouseDownCoordX;
         } else {
@@ -81,7 +81,7 @@ export class CursorService extends Tool {
         }
     }
 
-    moveHeight(mouseDownCoordY: number): void {
+    private moveHeight(mouseDownCoordY: number): void {
         if (mouseDownCoordY >= minSurfaceSize) {
             this.drawingService.previewCtx.canvas.height = mouseDownCoordY;
         } else {
@@ -89,7 +89,7 @@ export class CursorService extends Tool {
         }
     }
 
-    drawnAnchor(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement): void {
+    private drawnAnchor(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement): void {
         ctx.beginPath();
         ctx.arc(canvas.width, canvas.height, this.dotsize, 0, Math.PI * 2, false);
         ctx.closePath();
@@ -100,7 +100,7 @@ export class CursorService extends Tool {
         ctx.fill();
     }
 
-    checkHit(mouse: Vec2, canvas: HTMLCanvasElement): void {
+    private checkHit(mouse: Vec2, canvas: HTMLCanvasElement): void {
         let x: number;
         let y: number;
         const dotSizeSquare: number = Math.pow(this.dotsize, 2);
