@@ -36,7 +36,7 @@ export class RectangleSelectionService extends SelectionToolService {
         if (this.selectionCreated && this.hitSelection(this.mouseDownCoord.x, this.mouseDownCoord.y)) {
             this.pathData.push(this.pathLastCoord);
             // Puts back what was under the selection
-            if (this.hasDoneFIrstTranslation) {
+            if (this.hasDoneFirstTranslation) {
                 this.putImageData(this.startDownCoord, this.drawingService.baseCtx, this.oldImageData);
                 this.startSelectionPoint = this.evenImageStartCoord(this.mouseDownCoord);
             }
@@ -93,7 +93,7 @@ export class RectangleSelectionService extends SelectionToolService {
             this.drawingStateTrackingService.addAction(
                 this,
                 new InteractionSelection(
-                    this.hasDoneFIrstTranslation,
+                    this.hasDoneFirstTranslation,
                     this.startSelectionPoint,
                     this.evenImageStartCoord(mousePosition),
                     this.imageData,
@@ -105,7 +105,7 @@ export class RectangleSelectionService extends SelectionToolService {
             this.drawingService.previewCtx.stroke();
             this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
             this.draggingImage = false;
-            this.hasDoneFIrstTranslation = true;
+            this.hasDoneFirstTranslation = true;
             // creation
         } else if (this.mouseDown) {
             if (this.rectangleService.shiftDown) {
@@ -123,7 +123,7 @@ export class RectangleSelectionService extends SelectionToolService {
             this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
             this.selectionCreated = true;
             this.pathLastCoord = this.pathData[this.pathData.length - 1];
-            this.hasDoneFIrstTranslation = false;
+            this.hasDoneFirstTranslation = false;
         }
         this.mouseDown = false;
         this.clearPath();
@@ -146,6 +146,7 @@ export class RectangleSelectionService extends SelectionToolService {
         }
         if (this.selectionCreated) {
             this.checkArrowHit(event);
+            this.startSelectionPoint = this.mouseDownCoord;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clearPath();
             this.rectangleService.mouseDownCoord = this.startDownCoord;
@@ -167,7 +168,7 @@ export class RectangleSelectionService extends SelectionToolService {
                 this.drawingStateTrackingService.addAction(
                     this,
                     new InteractionSelection(
-                        this.hasDoneFIrstTranslation,
+                        this.hasDoneFirstTranslation,
                         this.startSelectionPoint,
                         this.evenImageStartCoord(this.pathLastCoord),
                         this.imageData,
