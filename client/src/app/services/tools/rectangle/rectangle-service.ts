@@ -15,10 +15,10 @@ export class RectangleService extends Tool {
     private pathData: Vec2[];
 
     constructor(
-        drawingService: DrawingService,
+        public drawingService: DrawingService,
         private colorService: ColorService,
         private tracingService: TracingService,
-        public widthService: WidthService,
+        private widthService: WidthService,
     ) {
         super(drawingService, new Description('rectangle', '1', 'rectangle_icon.png'));
         this.modifiers.push(this.colorService);
@@ -110,7 +110,7 @@ export class RectangleService extends Tool {
         this.setAttribute(ctx);
     }
 
-    setAttribute(ctx: CanvasRenderingContext2D): void {
+    private setAttribute(ctx: CanvasRenderingContext2D): void {
         ctx.lineWidth = this.widthService.getWidth();
         ctx.fillStyle = this.colorService.getPrimaryColor();
         ctx.strokeStyle = this.colorService.getSecondaryColor();
@@ -124,7 +124,7 @@ export class RectangleService extends Tool {
         }
     }
 
-    drawPreviewRect(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    private drawPreviewRect(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         const mouseMoveCoord = path[path.length - 1];
         let width = mouseMoveCoord.x - this.mouseDownCoord.x;
