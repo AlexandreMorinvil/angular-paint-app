@@ -42,18 +42,18 @@ export class EllipseService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         this.resetBorder();
-        if (event.shiftKey) {
+        if (this.shiftDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.drawCircle(this.drawingService.baseCtx, this.pathData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        } else if (this.mouseDown && !event.shiftKey) {
+        } else if (this.mouseDown && !this.shiftDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.drawEllipse(this.drawingService.baseCtx, this.pathData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
-        this.drawingStateTrackingService.addAction(this, new InteractionStartEnd(this.mouseDownCoord, this.pathData, !!event.shiftKey));
+        this.drawingStateTrackingService.addAction(this, new InteractionStartEnd(this.mouseDownCoord, this.pathData, this.shiftDown));
 
         this.mouseDown = false;
         this.clearPath();

@@ -145,44 +145,48 @@ describe('EllipseService', () => {
 
     it(' onMouseMove should call drawCircle if mouse down and shift is pressed down ', () => {
         // bottom right
-        mouseEvent = { offsetX: 10, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
+        service.shiftDown = true;
+        mouseEvent = { offsetX: 10, offsetY: 10, button: 0 } as MouseEvent;
         service.onMouseDown(mouseEvent);
-        mouseEvent = { offsetX: 11, offsetY: 11, button: 0, shiftKey: true } as MouseEvent;
+        mouseEvent = { offsetX: 11, offsetY: 11, button: 0 } as MouseEvent;
         service.onMouseMove(mouseEvent);
 
-        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawCircleSpy).toHaveBeenCalled();
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
     });
 
-    it(' onMouseMove should call drawCircle if mouse down and shift is pressed down ', () => {
+    fit(' onMouseMove should call drawCircle if mouse down and shift is pressed down ', () => {
         // top right
-        mouseEvent = { offsetX: 10, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
+        service.shiftDown = true;
+        mouseEvent = { offsetX: 10, offsetY: 10, button: 0 } as MouseEvent;
         service.onMouseDown(mouseEvent);
-        mouseEvent = { offsetX: 9, offsetY: 9, button: 0, shiftKey: true } as MouseEvent;
+        mouseEvent = { offsetX: 9, offsetY: 9, button: 0 } as MouseEvent;
         service.onMouseMove(mouseEvent);
-
-        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawCircleSpy).toHaveBeenCalled();
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
     });
 
     it(' onMouseMove should call drawCircle if mouse down and shift is pressed down ', () => {
-        mouseEvent = { offsetX: 20, offsetY: 9, button: 0, shiftKey: true } as MouseEvent;
+        service.shiftDown = true;
+        mouseEvent = { offsetX: 20, offsetY: 9, button: 0 } as MouseEvent;
         service.onMouseDown(mouseEvent);
-        mouseEvent = { offsetX: 50, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
+        mouseEvent = { offsetX: 50, offsetY: 10, button: 0 } as MouseEvent;
         service.onMouseMove(mouseEvent);
 
-        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawCircleSpy).toHaveBeenCalled();
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
     });
 
     it(' onMouseMove should call drawCircle if mouse down and shift is pressed down  ', () => {
         // top right
+        service.shiftDown = true;
         mouseEvent = { offsetX: 10, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 9, offsetY: 9, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
 
         expect(drawCircleSpy).toHaveBeenCalled();
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
     });
 
     it(' onMouseMove should change height of canvas with the position of mouse in y ', () => {
