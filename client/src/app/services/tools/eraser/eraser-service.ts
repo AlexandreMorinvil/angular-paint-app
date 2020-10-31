@@ -15,10 +15,8 @@ export class EraserService extends Tool {
     private pathData: Vec2[];
     private eraserColor: string = '#FFFFFF';
     minWidth: number = 5;
-
-    constructor(drawingService: DrawingService, 
-        private drawingStateTrackingService: DrawingStateTrackerService,
-        private widthService: WidthService) {
+    // tslint:disable:prettier
+    constructor(drawingService: DrawingService, private drawingStateTrackingService: DrawingStateTrackerService, private widthService: WidthService) {
         super(drawingService, new Description('efface', 'e', 'erase_icon.png'));
         this.modifiers.push(this.widthService);
         this.clearPath();

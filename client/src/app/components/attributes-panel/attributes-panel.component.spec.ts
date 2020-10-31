@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -22,12 +22,14 @@ describe('AttributesPanelComponent', () => {
     let tracingService: TracingService;
     let widthService: WidthService;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [AttributesPanelComponent],
-            providers: [ToolboxService, JunctionService, TextureService, TracingService, WidthService],
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                declarations: [AttributesPanelComponent],
+                providers: [ToolboxService, JunctionService, TextureService, TracingService, WidthService],
+            }).compileComponents();
+        }),
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(AttributesPanelComponent);

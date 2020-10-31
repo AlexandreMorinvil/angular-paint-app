@@ -84,14 +84,12 @@ export class PaintService extends Tool {
 
     floodFill(ctx: CanvasRenderingContext2D, pathPixel: Vec2[]): void {
         this.setAttribute(ctx);
+        // tslint:disable:no-non-null-assertion
         while (pathPixel.length) {
             const pixelPos = pathPixel.pop()!;
-
             const xPosition = pixelPos.x;
             let yPosition = pixelPos.y;
-
             // Get current pixel position
-
             // Go up as long as the color matches and are inside the canvas
             // tslint:disable-next-line:no-magic-numbers
             while (yPosition-- > -1 && this.matchStartColor(pixelPos)) {
