@@ -26,8 +26,8 @@ export class ModalHandlerService {
     openExportDialog(): void {
         this.drawingService.shortcutEnable = false; // to disable other command on export dialog open
         const dialogRef = this.dialog.open(ExportComponent, {
-            width: '450px',
-            height: '300px',
+            width: '800px',
+            height: '800px',
             data: {},
         });
         dialogRef.afterClosed().subscribe((value) => {

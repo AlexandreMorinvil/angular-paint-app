@@ -1,25 +1,23 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+// import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+// import { ExportComponent } from './modal-export.component';
 
-import { ModalExportComponent } from './modal-export.component';
+// describe('ModalExportComponent', () => {
+//     let component: ExportComponent;
+//     let fixture: ComponentFixture<ExportComponent>;
 
-describe('ModalExportComponent', () => {
-  let component: ModalExportComponent;
-  let fixture: ComponentFixture<ModalExportComponent>;
+//     beforeEach(async(() => {
+//         TestBed.configureTestingModule({
+//             declarations: [ExportComponent],
+//         }).compileComponents();
+//     }));
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ModalExportComponent ]
-    })
-    .compileComponents();
-  }));
+//     beforeEach(() => {
+//         fixture = TestBed.createComponent(ExportComponent);
+//         component = fixture.componentInstance;
+//         fixture.detectChanges();
+//     });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ModalExportComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+//     it('should create', () => {
+//         expect(component).toBeTruthy();
+//     });
+// });
