@@ -18,7 +18,9 @@ import { PaintService } from '@app/services/tools/paint/paint.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
-import { SelectionToolService } from '@app/services/tools/selection/selection-tool.service';
+import { EllipseSelectionService } from '@app/services/tools/selection/ellipse-selection.service';
+import { RectangleSelectionService } from '@app/services/tools/selection/rectangle-selection.service';
+import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzone-size.service';
 import { SidebarComponent } from './sidebar.component';
 class ToolStub extends Tool {}
 
@@ -36,7 +38,7 @@ describe('SidebarComponent', () => {
 
     beforeEach(async(() => {
         toolStub = new ToolStub({} as DrawingService, {} as Description);
-        drawingStub = new DrawingService();
+        drawingStub = new DrawingService({} as WorkzoneSizeService);
         toolboxSpy = jasmine.createSpyObj('toolboxSpy', ['getAvailableTools', 'getCurrentTool', 'setSelectedTool']);
         toolserviceMock = new ToolboxService(
             {} as CursorService,
@@ -49,7 +51,9 @@ describe('SidebarComponent', () => {
             {} as PolygonService,
             {} as ColorPickerService,
             {} as PaintService,
-            {} as SelectionToolService,
+            {} as RectangleSelectionService,
+            {} as EllipseSelectionService,
+            {} as DrawingService
         );
 
         TestBed.configureTestingModule({

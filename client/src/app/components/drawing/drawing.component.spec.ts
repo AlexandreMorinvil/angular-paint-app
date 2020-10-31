@@ -40,7 +40,7 @@ describe('DrawingComponent', () => {
 
     beforeEach(async(() => {
         toolStub = new ToolStub({} as DrawingService, {} as Description);
-        drawingStub = new DrawingService();
+        drawingStub = new DrawingService({} as WorkzoneSizeService);
 
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],
