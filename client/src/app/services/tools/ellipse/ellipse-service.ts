@@ -12,7 +12,7 @@ import { WidthService } from '@app/services/tool-modifier/width/width.service';
     providedIn: 'root',
 })
 export class EllipseService extends Tool {
-    pathData: Vec2[];
+    private pathData: Vec2[];
 
     constructor(
         drawingService: DrawingService,
@@ -82,7 +82,7 @@ export class EllipseService extends Tool {
         }
     }
 
-    drawEllipse(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    private drawEllipse(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         const mouseMoveCoord = path[path.length - 1];
         const centerX = (mouseMoveCoord.x + this.mouseDownCoord.x) / 2;
@@ -104,7 +104,7 @@ export class EllipseService extends Tool {
         this.applyTrace(ctx);
     }
 
-    drawPreviewRect(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    private drawPreviewRect(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         const mouseMoveCoord = path[path.length - 1];
         const width = mouseMoveCoord.x - this.mouseDownCoord.x;
@@ -131,7 +131,7 @@ export class EllipseService extends Tool {
         this.drawEllipse(this.drawingService.previewCtx, this.pathData);
     }
 
-    drawCircle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    private drawCircle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
 
         const mouseMoveCoord = path[path.length - 1];
@@ -160,7 +160,7 @@ export class EllipseService extends Tool {
         this.applyTrace(ctx);
     }
 
-    applyTrace(ctx: CanvasRenderingContext2D): void {
+    private applyTrace(ctx: CanvasRenderingContext2D): void {
         ctx.lineWidth = this.widthService.getWidth();
         ctx.fillStyle = this.colorService.getPrimaryColor();
         ctx.strokeStyle = this.colorService.getSecondaryColor();
@@ -174,7 +174,7 @@ export class EllipseService extends Tool {
         }
     }
 
-    clearPath(): void {
+    private clearPath(): void {
         this.pathData = [];
     }
 
