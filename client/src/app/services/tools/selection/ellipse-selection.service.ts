@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
+// import { InteractionSelection } from '@app/classes/action/interaction-selection';
 import { Description } from '@app/classes/description';
 import { MouseButton } from '@app/classes/mouse';
 import { Vec2 } from '@app/classes/vec2';
+// import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
@@ -18,6 +20,7 @@ export class EllipseSelectionService extends SelectionToolService {
 
     constructor(
         drawingService: DrawingService,
+        // private drawingStateTrackingService: DrawingStateTrackerService,
         private ellipseService: EllipseService,
         private tracingService: TracingService,
         private colorService: ColorService,
@@ -247,4 +250,8 @@ export class EllipseSelectionService extends SelectionToolService {
         this.ellipseService.drawEllipse(this.drawingService.baseCtx, this.pathData);
         this.resetTransform();
     }
+
+    // execute(interaction: InteractionSelection): void {
+    //     this.resetTransform();
+    // }
 }
