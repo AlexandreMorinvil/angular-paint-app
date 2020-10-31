@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
+import { InteractionStartEnd } from '@app/classes/action/interaction-start-end';
 import { Description } from '@app/classes/description';
 import { MouseButton } from '@app/classes/mouse';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
@@ -16,6 +18,7 @@ export class RectangleService extends Tool {
 
     constructor(
         public drawingService: DrawingService,
+        private drawingStateTrackingService: DrawingStateTrackerService,
         private colorService: ColorService,
         private tracingService: TracingService,
         private widthService: WidthService,
@@ -42,6 +45,7 @@ export class RectangleService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.drawRectangle(this.drawingService.baseCtx, this.pathData);
+            this.drawingStateTrackingService.addAction(this, new InteractionStartEnd(this.mouseDownCoord, this.pathData, this.shiftDown));
         }
         this.mouseDown = false;
         this.clearPath();
@@ -192,5 +196,11 @@ export class RectangleService extends Tool {
     private resetBorder(): void {
         this.drawingService.previewCtx.canvas.width = this.drawingService.baseCtx.canvas.width;
         this.drawingService.previewCtx.canvas.height = this.drawingService.baseCtx.canvas.height;
+    }
+
+    execute(interaction: InteractionStartEnd): void {
+        this.mouseDownCoord = interaction.startPoint;
+        this.shiftDown = interaction.shiftDown;
+        this.drawRectangle(this.drawingService.baseCtx, interaction.path);
     }
 }

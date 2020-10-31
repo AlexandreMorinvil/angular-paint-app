@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
+import { InteractionPaint } from '@app/classes/action/interaction-paint';
 import { Description } from '@app/classes/description';
 import { MouseButton } from '@app/classes/mouse';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { ToleranceService } from '@app/services/tool-modifier/tolerance/tolerance.service';
@@ -21,7 +23,12 @@ export class PaintService extends Tool {
     private startG: number;
     private startB: number;
 
-    constructor(drawingService: DrawingService, private colorService: ColorService, public toleranceService: ToleranceService) {
+    constructor(
+        drawingService: DrawingService,
+        private drawingStateTrackingService: DrawingStateTrackerService,
+        private colorService: ColorService,
+        public toleranceService: ToleranceService,
+    ) {
         super(drawingService, new Description('Paint', 'b', 'paint_icon.png'));
         this.modifiers.push(this.colorService);
         this.modifiers.push(this.toleranceService);
@@ -34,11 +41,29 @@ export class PaintService extends Tool {
         this.setStartColor();
         this.setFillColor();
         if (this.isInCanvas(this.mouseDownCoord)) {
+            let hasFilled = false;
+            const newPosition: Vec2 = { x: this.pathData[0].x, y: this.pathData[0].y };
             if (event.button === MouseButton.Left) {
                 this.floodFill(this.drawingService.baseCtx, this.pathData);
+                hasFilled = true;
             } else if (event.button === MouseButton.Right) {
                 this.sameColorFill(this.drawingService.baseCtx);
+                hasFilled = true;
             }
+            if (hasFilled)
+                this.drawingStateTrackingService.addAction(
+                    this,
+                    new InteractionPaint(
+                        event.button,
+                        newPosition,
+                        this.startR,
+                        this.startG,
+                        this.startB,
+                        this.fillColorR,
+                        this.fillColorG,
+                        this.fillColorB,
+                    ),
+                );
         }
     }
 
@@ -162,5 +187,19 @@ export class PaintService extends Tool {
 
     private isInCanvas(mousePosition: Vec2): boolean {
         return mousePosition.x <= this.drawingService.previewCtx.canvas.width && mousePosition.y <= this.drawingService.previewCtx.canvas.height;
+    }
+
+    execute(interaction: InteractionPaint): void {
+        this.clearPath();
+        this.pathData.push(interaction.mouseDownCoord);
+        this.startR = interaction.startR;
+        this.startG = interaction.startG;
+        this.startB = interaction.startB;
+        this.fillColorR = interaction.fillColorR;
+        this.fillColorG = interaction.fillColorG;
+        this.fillColorB = interaction.fillColorB;
+        const mouseButton = interaction.mouseButton;
+        if (mouseButton === MouseButton.Left) this.floodFill(this.drawingService.baseCtx, this.pathData);
+        else if (mouseButton === MouseButton.Right) this.sameColorFill(this.drawingService.baseCtx);
     }
 }

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ToolModifier } from '@app/classes/tool-modifier';
+import { ToleranceModifierState } from './tolerance-state';
 
 @Injectable({
     providedIn: 'root',
@@ -30,5 +31,14 @@ export class ToleranceService extends ToolModifier {
 
     getPercentTolerance(): number {
         return this.percentTolerance;
+    }
+
+    getState(): ToleranceModifierState {
+        return new ToleranceModifierState(this.percentTolerance, this.pixelTolerance);
+    }
+
+    setState(state: ToleranceModifierState): void {
+        this.percentTolerance = state.percentTolerance;
+        this.pixelTolerance = state.percentTolerance;
     }
 }
