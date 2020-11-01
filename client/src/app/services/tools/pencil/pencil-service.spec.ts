@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { InteractionPath } from '@app/classes/action/interaction-path';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -145,5 +146,16 @@ describe('PencilService', () => {
         service.onMouseMove(mouseEvent2);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawLineSpy).not.toHaveBeenCalled();
+    });
+
+    it('should execute and drawLine is called', () => {
+        let interaction = {
+            path: [
+                { x: 0, y: 0 },
+                { x: 1, y: 1 },
+            ],
+        } as InteractionPath;
+        service.execute(interaction);
+        expect(drawLineSpy).toHaveBeenCalled();
     });
 });

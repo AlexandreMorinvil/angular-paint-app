@@ -41,7 +41,7 @@ export abstract class Tool {
     onCtrlShiftZDown(event: KeyboardEvent): void {}
 
     onCtrlZDown(event: KeyboardEvent): void {}
-    
+
     onArrowDown(event: KeyboardEvent): void {}
 
     onArrowUp(event: KeyboardEvent): void {}
@@ -52,9 +52,7 @@ export abstract class Tool {
         return { x: event.offsetX, y: event.offsetY };
     }
 
-    execute(interaction: Interaction): void {
-        console.log('It executed');
-    }
+    execute(interaction: Interaction): void {}
 
     needsModifierManager(modifier: ToolModifier): boolean {
         return this.modifiers.includes(modifier);

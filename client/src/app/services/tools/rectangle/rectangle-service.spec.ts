@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { InteractionStartEnd } from '@app/classes/action/interaction-start-end';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -401,5 +402,15 @@ describe('RectangleService', () => {
         mouseEvent = { offsetX: 40, offsetY: 70, button: 0 } as MouseEvent;
         service.onMouseMove(mouseEvent);
         expect(drawPreviewRectSpy).toHaveBeenCalled();
+    });
+
+    it('should execute and drawRectangle is called', () => {
+        let interaction = {
+            startPoint: { x: 100, y: 100 },
+            path: [{}],
+            shiftDown: false,
+        } as InteractionStartEnd;
+        service.execute(interaction);
+        expect(drawRectangleSpy).toHaveBeenCalled();
     });
 });

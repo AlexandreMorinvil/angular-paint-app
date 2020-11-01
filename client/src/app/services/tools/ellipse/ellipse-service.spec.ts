@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { InteractionStartEnd } from '@app/classes/action/interaction-start-end';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -345,5 +346,31 @@ describe('EllipseService', () => {
         service.onShiftUp();
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawEllipseSpy).toHaveBeenCalled();
+    });
+
+    it('should execute and drawEllipse is called if shift is not pressed', () => {
+        let interaction = {
+            startPoint: { x: 100, y: 100 },
+            path: [
+                { x: 100, y: 100 },
+                { x: 150, y: 150 },
+            ],
+            shiftDown: false,
+        } as InteractionStartEnd;
+        service.execute(interaction);
+        expect(drawEllipseSpy).toHaveBeenCalled();
+    });
+
+    it('should execute and drawEllipse is called if shift is pressed', () => {
+        let interaction = {
+            startPoint: { x: 100, y: 100 },
+            path: [
+                { x: 100, y: 100 },
+                { x: 110, y: 110 },
+            ],
+            shiftDown: true,
+        } as InteractionStartEnd;
+        service.execute(interaction);
+        expect(drawCircleSpy).toHaveBeenCalled();
     });
 });

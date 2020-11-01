@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { InteractionResize } from '@app/classes/action/interaction-resize';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -13,6 +14,7 @@ describe('CursorService', () => {
     let checkHitSpy: jasmine.Spy<any>;
     let moveHeightSpy: jasmine.Spy<any>;
     let moveWidthSpy: jasmine.Spy<any>;
+    let resizeDrawingZoneSpy: jasmine.Spy<any>;
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
@@ -32,6 +34,7 @@ describe('CursorService', () => {
         checkHitSpy = spyOn<any>(service, 'checkHit').and.callThrough();
         moveHeightSpy = spyOn<any>(service, 'moveHeight').and.callThrough();
         moveWidthSpy = spyOn<any>(service, 'moveWidth').and.callThrough();
+        resizeDrawingZoneSpy = spyOn<any>(service, 'resizeDrawingZone').and.callThrough();
 
         const canvasWidth = 1200;
         const canvasHeight = 1000;
@@ -194,5 +197,47 @@ describe('CursorService', () => {
         (service as any).checkHit(service.mouseDownCoord, service['drawingService'].canvas);
         expect((service as any).anchorHit).toEqual(3);
         expect((service as any).clickOnAnchor).toEqual(true);
+    });
+
+    it('should execute and resizeDrawingZone with interaction', () => {
+        let interaction = {
+            size: { x: 1000, y: 1000 },
+        } as InteractionResize;
+        service.execute(interaction);
+        expect(resizeDrawingZoneSpy).toHaveBeenCalled();
+    });
+
+    it('should onMouseUp call drawAnchor and resizeDrawingZone', () => {
+        (service as any).clickOnAnchor = false;
+        service.mouseDown = false;
+        service['drawingService'].baseCtx.canvas.width = 100;
+        service['drawingService'].baseCtx.canvas.width = 100;
+        service['drawingService'].previewCtx.canvas.width = 101;
+        service['drawingService'].previewCtx.canvas.width = 101;
+
+        service.onMouseUp(mouseEvent25);
+
+        expect(drawnAnchorSpy).toHaveBeenCalled();
+        expect(resizeDrawingZoneSpy).toHaveBeenCalled();
+    });
+
+    it('should onMouseMove call moveWidth and moveHeight correctly if mouse down coordinate is smaller or equal to minimum surface size', () => {
+        (service as any).anchorHit = 1;
+        (service as any).clickOnAnchor = true;
+        service.mouseDown = true;
+        service.mouseDownCoord = { x: 0, y: 0 };
+        let minSurfaceSize = 10;
+
+        let mouseEvent = {
+            offsetX: 0,
+            offsetY: 0,
+            button: 0,
+        } as MouseEvent;
+        service['drawingService'].previewCtx.canvas.width = 100;
+        service['drawingService'].previewCtx.canvas.height = 101;
+
+        service.onMouseMove(mouseEvent);
+        expect(service['drawingService'].previewCtx.canvas.width).toBe(minSurfaceSize);
+        expect(service['drawingService'].previewCtx.canvas.height).toBe(minSurfaceSize);
     });
 });

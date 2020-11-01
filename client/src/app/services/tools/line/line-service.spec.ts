@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { InteractionPath } from '@app/classes/action/interaction-path';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -25,6 +26,7 @@ describe('LineService', () => {
     let ctxStroke: jasmine.Spy<any>;
     let clearPathSpy: jasmine.Spy<any>;
     let clearPathSavedSpy: jasmine.Spy<any>;
+    let isAround20PixelsSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -49,6 +51,8 @@ describe('LineService', () => {
         drawAlignLineSpy = spyOn<any>(service, 'drawAlignLine').and.callThrough();
         clearPathSpy = spyOn<any>(service, 'clearPath').and.callThrough();
         clearPathSavedSpy = spyOn<any>(service, 'clearPathSaved').and.callThrough();
+        isAround20PixelsSpy = spyOn<any>(service, 'isAround20Pixels').and.callThrough();
+
         const canvasWidth = 1000;
         const canvasHeight = 800;
 
@@ -461,5 +465,28 @@ describe('LineService', () => {
         service.onBackspaceDown();
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(service.mouseDownCoord).toEqual(result);
+    });
+    it('should execute and drawLine is called and if is around20Pixels', () => {
+        let interaction = {
+            path: [
+                { x: 0, y: 0 },
+                { x: 1, y: 1 },
+            ],
+        } as InteractionPath;
+        service.execute(interaction);
+        expect(drawLineSpy).toHaveBeenCalled();
+        expect(isAround20PixelsSpy).toHaveBeenCalled();
+    });
+
+    it('should execute and drawLine is called and if is not around20Pixels', () => {
+        let interaction = {
+            path: [
+                { x: 0, y: 0 },
+                { x: 100, y: 100 },
+            ],
+        } as InteractionPath;
+        service.execute(interaction);
+        expect(drawLineSpy).toHaveBeenCalled();
+        expect(isAround20PixelsSpy).toHaveBeenCalled();
     });
 });
