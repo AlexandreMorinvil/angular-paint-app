@@ -1,5 +1,5 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component, Inject } from '@angular/core';
+import { Component, HostListener, Inject } from '@angular/core';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DialogData } from '@app/classes/dialog-data';
@@ -7,6 +7,11 @@ import { FILE_SERVER_BASE_URL } from '@app/services/api/api-drawing/api-drawing.
 import { RemoteMemoryService } from '@app/services/remote-memory/remote-memory.service.ts';
 import { Tag, TagFilter } from '@app/services/tag-filter/tag-filter.service';
 import { DrawingToDatabase } from '@common/communication/drawingtodatabase';
+
+enum PurposeofClick {
+    Delete,
+    Load,
+}
 
 @Component({
     selector: 'app-modal-drawing-carousel',
@@ -16,6 +21,7 @@ import { DrawingToDatabase } from '@common/communication/drawingtodatabase';
 export class DrawingCarouselComponent {
     private currentDrawings: DrawingToDatabase[] = [];
     private currentActivesIndexes: number[];
+    private drawingSelectedPurpose: PurposeofClick = PurposeofClick.Load;
     visible: boolean = true;
     readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
@@ -39,6 +45,7 @@ export class DrawingCarouselComponent {
     }
 
     setCurrentImages() {
+        console.log(this.memoryService.drawingsFromDatabase);
         this.currentDrawings = [];
         this.currentActivesIndexes = [0, 1, 2];
         for (let i of this.currentActivesIndexes) {
@@ -100,6 +107,36 @@ export class DrawingCarouselComponent {
         for (let i = 0; i < this.currentDrawings.length; i++) {
             this.currentDrawings[i] = this.tagFilterService.filteredDrawings[this.currentActivesIndexes[i] + 1];
             this.currentActivesIndexes[i] += 1;
+        }
+    }
+
+    @HostListener('window:keydown', ['$event'])
+    onShiftDown(event: KeyboardEvent): void {
+        if (event.key === 'ArrowRight') {
+            this.moveNext();
+        } else if (event.key === 'ArrowLeft') {
+            this.movePrevious();
+        }
+    }
+
+    drawingClicked(drawing: DrawingToDatabase) {
+        if (this.drawingSelectedPurpose === PurposeofClick.Load) {
+            //load drawing
+            console.log('dessin charge');
+        }
+        if (this.drawingSelectedPurpose === PurposeofClick.Delete) {
+            //deletedrawing
+            console.log('dessin supprime');
+        }
+    }
+
+    deleteDrawingSelected() {
+        if (this.drawingSelectedPurpose === PurposeofClick.Load) {
+            this.drawingSelectedPurpose = PurposeofClick.Delete;
+            //afficher message que le user doit choisir un message a supprimé
+        }
+        if (this.drawingSelectedPurpose === PurposeofClick.Delete) {
+            this.drawingSelectedPurpose = PurposeofClick.Load;
         }
     }
 }

@@ -56,7 +56,7 @@ export class SidebarComponent {
         this.modalHandler.openSaveDialog();
     }
 
-    openCarouselDialog(): void{
+    openCarouselDialog(): void {
         this.modalHandler.openDrawingCarouselDialog();
     }
 }

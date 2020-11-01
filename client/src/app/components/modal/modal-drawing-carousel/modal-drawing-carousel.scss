@@ -21,7 +21,7 @@
     flex-direction: column;
     justify-content: center;
     text-align: center;
-    width:auto
+    width: auto;
 }
 
 .area-back-button {
@@ -49,6 +49,10 @@
     background-color: rgb(245, 245, 245);
     padding: 10px;
 }
+.drawing-form:focus {
+    background-color: rgb(200, 242, 253);
+    padding: 10px;
+}
 
 img {
     object-fit: contain;
@@ -56,9 +60,10 @@ img {
 }
 
 button {
-  color: rgb(69, 66, 94);
-  font-weight: bold;
-  font-family: Helvetica;
+    color: rgb(69, 66, 94);
+    font-weight: bold;
+    font-family: Helvetica;
+    focus: rgb(81, 77, 116);
 }
 
 p {
@@ -67,8 +72,6 @@ p {
     font-family: Helvetica;
     flex-direction: column;
 }
-
-
 
 // .grid-color-selected {
 //     display: grid;
