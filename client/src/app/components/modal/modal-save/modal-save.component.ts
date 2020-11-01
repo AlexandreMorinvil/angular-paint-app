@@ -128,10 +128,10 @@ export class ModalSaveComponent {
 
     sendMessageToServer(): void {
         const NewURLDrawing: Drawing = {
+            _id: '',
             name: this.drawName.value,
             tags: this.tags,
             imageSrc: this.saveService.imageSource,
-            _id: '',
         };
         this.apiImageTransferService.basicPost(NewURLDrawing).subscribe();
     }

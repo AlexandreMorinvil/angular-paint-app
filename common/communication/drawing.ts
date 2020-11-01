@@ -1,8 +1,8 @@
 export class Drawing {
+    _id: any;
     name: string;
     tags: string[];
     imageSrc: string | undefined;
-    _id: any;
 }
 
 export const MAX_NAME_LENGTH = 50;

@@ -83,7 +83,6 @@ export class DatabaseController {
                         const imageSource: string = req.body.imageSrc;
                         this.valideImageSource(imageSource);
                         this.saveDrawIntoImageFolder(imageSource, this.databaseService.drawId);
-                        this.deleteDrawIntoImageFolder('5f9e16be6867df2f40aa859');
                     } catch (error) {
                         throw error;
                     }
@@ -126,14 +125,13 @@ export class DatabaseController {
         if (imageSource === undefined) return;
         let img64 = imageSource.replace('data:image/png;base64,', '');
         img64 = img64.split(/\s/).join('');
-        fs.writeFileSync('/drawings/images' + nameDirectory, img64, { encoding: 'base64' });
+        fs.writeFileSync('./drawings/images' + nameDirectory, img64, { encoding: 'base64' });
     }
 
     private deleteDrawIntoImageFolder(id: string) {
         const fs = require('fs');
         const path: string = './drawings/images' + '/' + id + '.png';
         fs.unlinkSync(path);
-        //code to delete draww from server
     }
     private valideImageSource(source: string): void {
         if (source == '' || source == undefined) throw new Error(this.ERROR_NO_IMAGE_SOURCE);
