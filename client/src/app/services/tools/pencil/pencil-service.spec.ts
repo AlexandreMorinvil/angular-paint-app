@@ -101,8 +101,8 @@ describe('PencilService', () => {
         service.mouseDown = true;
 
         service.onMouseMove(mouseEvent);
-        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawLineSpy).toHaveBeenCalled();
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
     });
 
     it(' onMouseMove should not call drawLine if mouse was not already down', () => {

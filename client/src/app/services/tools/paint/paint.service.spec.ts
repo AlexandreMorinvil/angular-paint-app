@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { InteractionPaint } from '@app/classes/action/interaction-paint';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 //import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -106,5 +107,51 @@ describe('PaintService', () => {
 
         expect(floodFillSpy).not.toHaveBeenCalled();
         expect(sameColorFillSpy).not.toHaveBeenCalled();
+    });
+
+    it(' should execute and call floodfill if left mouse button is pressed with correct rgb colors assigned', () => {
+        let interactionPaint = {
+            mouseButton: 0,
+            mouseDownCoord: { x: 201, y: 201 },
+            startR: 1,
+            startG: 1,
+            startB: 1,
+            fillColorR: 255,
+            fillColorG: 255,
+            fillColorB: 255,
+        } as InteractionPaint;
+        service.execute(interactionPaint);
+        expect(floodFillSpy).toHaveBeenCalled();
+    });
+
+    it(' should execute and call samefill if right mouse button is pressed with correct rgb colors assigned', () => {
+        let interactionPaint = {
+            mouseButton: 2,
+            mouseDownCoord: { x: 201, y: 201 },
+            startR: 1,
+            startG: 1,
+            startB: 1,
+            fillColorR: 255,
+            fillColorG: 255,
+            fillColorB: 255,
+        } as InteractionPaint;
+        service.execute(interactionPaint);
+        expect(sameColorFillSpy).toHaveBeenCalled();
+    });
+
+    it(' should execute and not call samefill/floodfill if right mouse button or left button is not pressed', () => {
+        let interactionPaint = {
+            mouseButton: 1,
+            mouseDownCoord: { x: 201, y: 201 },
+            startR: 1,
+            startG: 1,
+            startB: 1,
+            fillColorR: 255,
+            fillColorG: 255,
+            fillColorB: 255,
+        } as InteractionPaint;
+        service.execute(interactionPaint);
+        expect(sameColorFillSpy).not.toHaveBeenCalled();
+        expect(floodFillSpy).not.toHaveBeenCalled();
     });
 });
