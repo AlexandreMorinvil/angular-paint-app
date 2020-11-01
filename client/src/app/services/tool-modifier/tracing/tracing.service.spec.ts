@@ -1,13 +1,15 @@
 import { TestBed } from '@angular/core/testing';
-
+import { TracingModifierState } from './tracing-state';
 import { TracingService } from './tracing.service';
 
 describe('TracingService', () => {
     let service: TracingService;
+    let setStateSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(TracingService);
+        setStateSpy = spyOn<any>(service, 'setState').and.callThrough();
     });
 
     it('should be created', () => {
@@ -35,5 +37,16 @@ describe('TracingService', () => {
         const value = true;
         service.setHasContour(value);
         expect(service.getHasContour()).toEqual(value);
+    });
+
+    it(' should call setState with the correct incoming argument and set hasContour and hasFill to true', () => {
+        let state = {
+            hasContour: true,
+            hasFill: true,
+        } as TracingModifierState;
+        service.setState(state);
+        expect(setStateSpy).toHaveBeenCalled();
+        expect(service.getHasContour()).toBeTrue();
+        expect(service.getHasFill()).toBeTrue();
     });
 });

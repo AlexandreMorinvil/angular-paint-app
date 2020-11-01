@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { ToleranceModifierState } from './tolerance-state';
 import { ToleranceService } from './tolerance.service';
 
 describe('ToleranceService', () => {
@@ -61,7 +62,7 @@ describe('ToleranceService', () => {
         let state = {
             percentTolerance: 0,
             pixelTolerance: 0,
-        };
+        } as ToleranceModifierState;
         service.setState(state);
         expect(setStateSpy).toHaveBeenCalled();
         expect(service.getPercentTolerance()).toEqual(state.percentTolerance);
