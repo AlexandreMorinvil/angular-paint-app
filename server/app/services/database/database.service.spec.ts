@@ -37,8 +37,6 @@
 //         client.close();
 //     })
 
-
-
 //     it('should get all courses from DB', async () => {
 //         let courses = await databaseService.getAllCourses();
 //         expect(courses.length).to.equal(1);
@@ -69,7 +67,6 @@
 //         expect(courses[0].teacher).to.not.equals(testCourse.teacher);
 
 //     });
-
 
 //     it('should insert a new course', async () => {
 //         let secondCourse: Course = { name: "Test Course 2", subjectCode: "LOG1002", credits: 1, teacher: "John Doe" };

@@ -130,7 +130,7 @@ export class DatabaseController {
 
     private deleteDrawIntoImageFolder(id: string) {
         const fs = require('fs');
-        const path: string = './drawings/images' + '/' + id + '.png';
+        const path: string = './drawings/images/' + id + '.png';
         fs.unlinkSync(path);
     }
     private valideImageSource(source: string): void {

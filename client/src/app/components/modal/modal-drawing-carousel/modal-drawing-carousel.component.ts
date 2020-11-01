@@ -4,6 +4,7 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DialogData } from '@app/classes/dialog-data';
 import { FILE_SERVER_BASE_URL } from '@app/services/api/api-drawing/api-drawing.service';
+import { LoadService } from '@app/services/load/load.service';
 import { RemoteMemoryService } from '@app/services/remote-memory/remote-memory.service.ts';
 import { Tag, TagFilter } from '@app/services/tag-filter/tag-filter.service';
 import { DrawingToDatabase } from '@common/communication/drawingtodatabase';
@@ -25,7 +26,12 @@ export class DrawingCarouselComponent {
     visible: boolean = true;
     readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
-    constructor(public memoryService: RemoteMemoryService, public tagFilterService: TagFilter, @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+    constructor(
+        public memoryService: RemoteMemoryService,
+        public tagFilterService: TagFilter,
+        public loadService: LoadService,
+        @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    ) {
         for (let i = 0; i < 3; i++) {
             this.currentDrawings.push({ _id: null, name: 'En chargement', tags: [] });
         }
@@ -45,7 +51,7 @@ export class DrawingCarouselComponent {
 
     getDrawingUrl(drawing: DrawingToDatabase) {
         if (!drawing.name) return 'assets/images/nothing.png';
-        return FILE_SERVER_BASE_URL + 'home_icon.png';
+        return FILE_SERVER_BASE_URL + drawing._id + '.png';
     }
 
     setCurrentImages() {
@@ -127,7 +133,8 @@ export class DrawingCarouselComponent {
     drawingClicked(drawing: DrawingToDatabase) {
         if (this.drawingSelectedPurpose === PurposeofClick.Load) {
             //load drawing
-            console.log('dessin charge');
+            console.log(this.getDrawingUrl(drawing));
+            this.loadService.loadDraw(this.getDrawingUrl(drawing));
         } else if (this.drawingSelectedPurpose === PurposeofClick.Delete) {
             //deletedrawing
             console.log('dessin supprime');
@@ -139,6 +146,7 @@ export class DrawingCarouselComponent {
         if (this.drawingSelectedPurpose === PurposeofClick.Load) {
             this.drawingSelectedPurpose = PurposeofClick.Delete;
             //afficher message que le user doit choisir un message a supprimé
+            alert('Veuillez choisir un message a supprimé');
         } else if (this.drawingSelectedPurpose === PurposeofClick.Delete) {
             this.drawingSelectedPurpose = PurposeofClick.Load;
         }

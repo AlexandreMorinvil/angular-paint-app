@@ -6,7 +6,7 @@
             <button (click)="movePrevious()">Précédent</button>
         </div>
         <button class="drawing-form grid-drawing-form" *ngFor="let drawing of getCurrentDrawings()" (click)="drawingClicked(drawing)">
-            <img [src]="getDrawingUrl(drawing)" alt="slide" />
+            <img [src]="getDrawingUrl(drawing)" onerror="this.onerror=null; this.src='assets/images/nothing.png'" />
             <p>{{ drawing.name}}</p>
             <p>{{ drawing.tags}}</p>
         </button>
