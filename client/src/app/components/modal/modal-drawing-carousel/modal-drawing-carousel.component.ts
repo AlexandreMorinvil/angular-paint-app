@@ -26,9 +26,13 @@ export class DrawingCarouselComponent {
     readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
     constructor(public memoryService: RemoteMemoryService, public tagFilterService: TagFilter, @Inject(MAT_DIALOG_DATA) public data: DialogData) {
-        this.memoryService.getAllFromDatabase();
-        this.tagFilterService.filterByTag(this.memoryService.drawingsFromDatabase);
-        this.setCurrentImages();
+        for (let i = 0; i < 3; i++) {
+            this.currentDrawings.push({ _id: null, name: 'En chargement', tags: [] });
+        }
+        this.memoryService.getAllFromDatabase().then(() => {
+            this.tagFilterService.filterByTag(this.memoryService.drawingsFromDatabase);
+            this.setCurrentImages();
+        });
     }
 
     getCurrentDrawings(): DrawingToDatabase[] {
@@ -45,7 +49,7 @@ export class DrawingCarouselComponent {
     }
 
     setCurrentImages() {
-        console.log(this.memoryService.drawingsFromDatabase);
+        //console.log(this.memoryService.drawingsFromDatabase);
         this.currentDrawings = [];
         this.currentActivesIndexes = [0, 1, 2];
         for (let i of this.currentActivesIndexes) {
