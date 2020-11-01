@@ -74,9 +74,7 @@ export class DatabaseController {
             const drawingToDatabase: DrawingToDatabase = {
                 name: req.body.name,
                 tags: req.body.tags,
-                //_id: '',
             };
-            console.log(req.body.imageSrc);
             this.databaseService
                 .addDrawing(drawingToDatabase)
                 .then(() => {
@@ -109,6 +107,9 @@ export class DatabaseController {
             this.databaseService
                 .deleteDrawing(req.params.drawingId)
                 .then(() => {
+                    //supprimer dans server
+                    const id: string = req.body.id;
+                    this.deleteDrawIntoImageFolder(id);
                     res.status(StatusCodes.NO_CONTENT).send();
                 })
                 .catch((error: Error) => {
@@ -124,6 +125,10 @@ export class DatabaseController {
         let img64 = imageSource.replace('data:image/png;base64,', '');
         img64 = img64.split(/\s/).join('');
         fs.writeFileSync('./drawings/images' + nameDirectory, img64, { encoding: 'base64' });
+    }
+
+    private deleteDrawIntoImageFolder(id: string) {
+        //code to delete draww from server
     }
     private valideImageSource(source: string): void {
         if (source == '' || source == undefined) throw new Error(this.ERROR_NO_IMAGE_SOURCE);

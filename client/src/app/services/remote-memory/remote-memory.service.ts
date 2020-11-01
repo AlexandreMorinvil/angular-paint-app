@@ -14,8 +14,8 @@ export class RemoteMemoryService {
         this.apiDrawingService.getAll().subscribe((drawingsFetched: Drawing[]) => {
             this.drawingsFromDatabase = drawingsFetched;
             //TO BE REMOVED TEST ONLY
-            this.drawingsFromDatabase.push(new Drawing());
-            this.drawingsFromDatabase.push(new Drawing());
+            // this.drawingsFromDatabase.push(new Drawing());
+            // this.drawingsFromDatabase.push(new Drawing());
         });
     }
 
