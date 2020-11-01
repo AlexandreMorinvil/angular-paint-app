@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Drawing } from '@common/schema/drawing';
+import { Drawing } from '@common/communication/drawing';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 

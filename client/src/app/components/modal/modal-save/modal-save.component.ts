@@ -7,8 +7,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { DialogData } from '@app/classes/dialog-data';
 import { ApiImageTransferService } from '@app/services/api/image-transfer/api-image-transfer.service';
 import { SaveService } from '@app/services/save/save.service';
-import { Drawing } from '@common/schema/drawing';
-import { map } from 'rxjs/operators';
+import { Drawing } from '@common/communication/drawing';
 
 @Component({
     selector: 'app-modal-save',
@@ -132,15 +131,16 @@ export class ModalSaveComponent {
             name: this.drawName.value,
             tags: this.tags,
             imageSrc: this.saveService.imageSource,
+            _id: '',
         };
         this.apiImageTransferService.basicPost(NewURLDrawing).subscribe();
     }
     /*Fonction utile pour recevoir linfo du serveur*/
-    getMessageFromServer(): void {
-        this.apiImageTransferService.basicGet().pipe(
-            map((drawing: Drawing) => {
-                return '${drawing.name}${drawing.tags}${drawing.imageSrc}';
-            }),
-        );
-    }
+    // getMessageFromServer(): void {
+    //     this.apiImageTransferService.basicGet().pipe(
+    //         map((drawing: Drawing) => {
+    //             return '${drawing.name}${drawing.tags}${drawing.imageSrc}';
+    //         }),
+    //     );
+    // }
 }

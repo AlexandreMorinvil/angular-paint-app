@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Drawing } from '@common/schema/drawing';
+import { DrawingToDatabase } from '@common/communication/drawingtodatabase';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
-export const BASE_URL: string = 'http://localhost:3000/api/drawing/';
+export const BASE_URL: string = 'http://localhost:3000/api/drawingtodatabase/';
 export const FILE_SERVER_BASE_URL: string = 'http://localhost:3000/files/';
 
 @Injectable({
@@ -13,28 +13,28 @@ export const FILE_SERVER_BASE_URL: string = 'http://localhost:3000/files/';
 export class ApiDrawingService {
     constructor(private http: HttpClient) {}
 
-    getAll(): Observable<Drawing[]> {
-        return this.http.get<Drawing[]>(BASE_URL).pipe(catchError(this.handleError<Drawing[]>('getAll')));
+    getAll(): Observable<DrawingToDatabase[]> {
+        return this.http.get<DrawingToDatabase[]>(BASE_URL).pipe(catchError(this.handleError<DrawingToDatabase[]>('getAll')));
     }
 
-    getById(id: string): Observable<Drawing> {
-        return this.http.get<Drawing>(BASE_URL + id).pipe(catchError(this.handleError<Drawing>('getByID')));
+    getById(id: string): Observable<DrawingToDatabase> {
+        return this.http.get<DrawingToDatabase>(BASE_URL + id).pipe(catchError(this.handleError<DrawingToDatabase>('getByID')));
     }
 
-    getByName(name: string): Observable<Drawing[]> {
-        return this.http.get<Drawing[]>(BASE_URL + name).pipe(catchError(this.handleError<Drawing[]>('getByName')));
+    getByName(name: string): Observable<DrawingToDatabase[]> {
+        return this.http.get<DrawingToDatabase[]>(BASE_URL + name).pipe(catchError(this.handleError<DrawingToDatabase[]>('getByName')));
     }
 
-    getByTag(tag: string): Observable<Drawing[]> {
-        return this.http.get<Drawing[]>(BASE_URL + 'tag/' + tag).pipe(catchError(this.handleError<Drawing[]>('getByTag')));
+    getByTag(tag: string): Observable<DrawingToDatabase[]> {
+        return this.http.get<DrawingToDatabase[]>(BASE_URL + 'tag/' + tag).pipe(catchError(this.handleError<DrawingToDatabase[]>('getByTag')));
     }
 
-    save(drawing: Drawing): Observable<void> {
-        return this.http.post<void>(BASE_URL, drawing).pipe(catchError(this.handleError<void>('save')));
+    save(drawingtodatabase: DrawingToDatabase): Observable<void> {
+        return this.http.post<void>(BASE_URL, drawingtodatabase).pipe(catchError(this.handleError<void>('save')));
     }
 
-    update(id: string, drawing: Drawing): Observable<Drawing> {
-        return this.http.patch<Drawing>(BASE_URL + id, drawing).pipe(catchError(this.handleError<Drawing>('update')));
+    update(id: string, drawingtodatabase: DrawingToDatabase): Observable<DrawingToDatabase> {
+        return this.http.patch<DrawingToDatabase>(BASE_URL + id, drawingtodatabase).pipe(catchError(this.handleError<DrawingToDatabase>('update')));
     }
 
     delete(id: string): Observable<void> {

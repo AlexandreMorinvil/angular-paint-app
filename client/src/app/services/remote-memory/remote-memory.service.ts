@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ApiDrawingService } from '@app/services/api/api-drawing/api-drawing.service';
-import { Drawing } from '@common/schema/drawing';
+import { Drawing } from '@common/communication/drawing';
 
 @Injectable({
     providedIn: 'root',

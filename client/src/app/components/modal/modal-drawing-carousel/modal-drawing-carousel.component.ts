@@ -6,7 +6,7 @@ import { DialogData } from '@app/classes/dialog-data';
 import { FILE_SERVER_BASE_URL } from '@app/services/api/api-drawing/api-drawing.service';
 import { RemoteMemoryService } from '@app/services/remote-memory/remote-memory.service.ts';
 import { Tag, TagFilter } from '@app/services/tag-filter/tag-filter.service';
-import { Drawing } from '@common/schema/drawing';
+import { Drawing } from '@common/communication/drawing';
 
 @Component({
     selector: 'app-modal-drawing-carousel',
