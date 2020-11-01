@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
 import { ApiDrawingService } from '@app/services/api/api-drawing/api-drawing.service';
-import { Drawing } from '@common/communication/drawing';
+import { DrawingToDatabase } from '@common/communication/drawingtodatabase';
 
 @Injectable({
     providedIn: 'root',
 })
 export class RemoteMemoryService {
-    drawingsFromDatabase: Drawing[];
+    drawingsFromDatabase: DrawingToDatabase[];
 
     constructor(private apiDrawingService: ApiDrawingService) {}
 
     getAllFromDatabase(): void {
-        this.apiDrawingService.getAll().subscribe((drawingsFetched: Drawing[]) => {
+        this.apiDrawingService.getAll().subscribe((drawingsFetched: DrawingToDatabase[]) => {
             this.drawingsFromDatabase = drawingsFetched;
             //TO BE REMOVED TEST ONLY
             // this.drawingsFromDatabase.push(new Drawing());
@@ -19,7 +19,7 @@ export class RemoteMemoryService {
         });
     }
 
-    saveToDatabase(drawing: Drawing): void {
+    saveToDatabase(drawing: DrawingToDatabase): void {
         this.apiDrawingService.save(drawing).subscribe(() => {});
     }
 }

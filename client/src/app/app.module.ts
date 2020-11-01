@@ -21,10 +21,10 @@ import { AttributesToleranceComponent } from './components/attributes-panel/attr
 import { AttributeTracingComponent } from './components/attributes-panel/attribute-tracing/attributes-tracing.component';
 import { AttributeWidthComponent } from './components/attributes-panel/attribute-width/attributes-width.component';
 import { AttributesPanelComponent } from './components/attributes-panel/attributes-panel.component';
-import { DrawingCarouselComponent } from './components/modal/modal-drawing-carousel/modal-drawing-carousel.component';
 import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorPageComponent } from './components/editor-page/editor-page.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
+import { DrawingCarouselComponent } from './components/modal/modal-drawing-carousel/modal-drawing-carousel.component';
 import { ModalSaveComponent } from './components/modal/modal-save/modal-save.component';
 import { UserGuideModalComponent } from './components/modal/modal-user-guide/modal-user-guide.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';

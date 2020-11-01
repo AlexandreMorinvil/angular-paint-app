@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Drawing } from '@common/communication/drawing';
+import { DrawingToDatabase } from '@common/communication/drawingtodatabase';
 
 export interface Tag {
     tagName: string;
@@ -9,7 +9,7 @@ export interface Tag {
     providedIn: 'root',
 })
 export class TagFilter {
-    filteredDrawings: Drawing[] = [];
+    filteredDrawings: DrawingToDatabase[] = [];
     activeTags: Tag[] = [];
 
     constructor() {}
@@ -26,7 +26,7 @@ export class TagFilter {
         }
     }
 
-    filterByTag(listToFilter: Drawing[]) {
+    filterByTag(listToFilter: DrawingToDatabase[]) {
         //No filter need to be applied
         if (this.activeTags.length === 0) {
             this.filteredDrawings = listToFilter;

@@ -6,7 +6,7 @@ import { DialogData } from '@app/classes/dialog-data';
 import { FILE_SERVER_BASE_URL } from '@app/services/api/api-drawing/api-drawing.service';
 import { RemoteMemoryService } from '@app/services/remote-memory/remote-memory.service.ts';
 import { Tag, TagFilter } from '@app/services/tag-filter/tag-filter.service';
-import { Drawing } from '@common/communication/drawing';
+import { DrawingToDatabase } from '@common/communication/drawingtodatabase';
 
 @Component({
     selector: 'app-modal-drawing-carousel',
@@ -14,7 +14,7 @@ import { Drawing } from '@common/communication/drawing';
     styleUrls: ['./modal-drawing-carousel.scss'],
 })
 export class DrawingCarouselComponent {
-    private currentDrawings: Drawing[] = [];
+    private currentDrawings: DrawingToDatabase[] = [];
     private currentActivesIndexes: number[];
     visible: boolean = true;
     readonly separatorKeysCodes: number[] = [ENTER, COMMA];
@@ -25,7 +25,7 @@ export class DrawingCarouselComponent {
         this.setCurrentImages();
     }
 
-    getCurrentDrawings(): Drawing[] {
+    getCurrentDrawings(): DrawingToDatabase[] {
         return this.currentDrawings;
     }
 
@@ -33,7 +33,7 @@ export class DrawingCarouselComponent {
         return this.tagFilterService.activeTags;
     }
 
-    getDrawingUrl(drawing: Drawing) {
+    getDrawingUrl(drawing: DrawingToDatabase) {
         if (!drawing.name) return 'assets/images/nothing.png';
         return FILE_SERVER_BASE_URL + 'home_icon.png';
     }
@@ -44,7 +44,7 @@ export class DrawingCarouselComponent {
         for (let i of this.currentActivesIndexes) {
             if (typeof this.tagFilterService.filteredDrawings[i] === 'undefined') {
                 // Insert a placeholder in case there isn't the minimum of 3 data to fill the forms
-                this.currentDrawings.push(new Drawing());
+                this.currentDrawings.push(new DrawingToDatabase());
             } else this.currentDrawings.push(this.tagFilterService.filteredDrawings[i]);
         }
     }

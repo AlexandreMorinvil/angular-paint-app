@@ -1,7 +1,7 @@
 import { DatabaseService } from '@app/services/database/database.service';
 import { TYPES } from '@app/types';
 import { Drawing } from '@common/communication/drawing';
-import { DrawingToDatabase } from '@common/communication/drawingToDatabase';
+import { DrawingToDatabase } from '@common/communication/drawingtodatabase';
 import { NextFunction, Request, Response, Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { inject, injectable } from 'inversify';
