@@ -72,7 +72,6 @@ export class DrawingCarouselComponent {
 
         // Update the carousel
         this.tagFilterService.filterByTag(this.memoryService.drawingsFromDatabase);
-        console.log(this.tagFilterService.filteredDrawings);
         this.setCurrentImages();
     }
 
@@ -90,21 +89,23 @@ export class DrawingCarouselComponent {
 
     movePrevious() {
         // If there is no more drawings, do nothing
-        const firstIndex: number = 0;
-        if (this.currentActivesIndexes[firstIndex] === 0) return;
 
         for (let i = 0; i < this.currentDrawings.length; i++) {
+            if (this.currentActivesIndexes[i] - 1 < 0) {
+                this.currentDrawings[i] = this.tagFilterService.filteredDrawings[this.tagFilterService.filteredDrawings.length - 1];
+                this.currentActivesIndexes[i] = this.tagFilterService.filteredDrawings.length - 1;
+            }
             this.currentDrawings[i] = this.tagFilterService.filteredDrawings[this.currentActivesIndexes[i] - 1];
             this.currentActivesIndexes[i] -= 1;
         }
     }
 
     moveNext() {
-        // If there is no more drawings, do nothing
-        const lastIndex: number = 2;
-        if (this.currentActivesIndexes[lastIndex] >= this.tagFilterService.filteredDrawings.length - 1) return;
-
         for (let i = 0; i < this.currentDrawings.length; i++) {
+            if (this.currentActivesIndexes[i] + 1 > this.tagFilterService.filteredDrawings.length - 1) {
+                this.currentDrawings[i] = this.tagFilterService.filteredDrawings[0];
+                this.currentActivesIndexes[i] = 0;
+            }
             this.currentDrawings[i] = this.tagFilterService.filteredDrawings[this.currentActivesIndexes[i] + 1];
             this.currentActivesIndexes[i] += 1;
         }
@@ -123,10 +124,10 @@ export class DrawingCarouselComponent {
         if (this.drawingSelectedPurpose === PurposeofClick.Load) {
             //load drawing
             console.log('dessin charge');
-        }
-        if (this.drawingSelectedPurpose === PurposeofClick.Delete) {
+        } else if (this.drawingSelectedPurpose === PurposeofClick.Delete) {
             //deletedrawing
             console.log('dessin supprime');
+            this.drawingSelectedPurpose = PurposeofClick.Load;
         }
     }
 
@@ -134,8 +135,7 @@ export class DrawingCarouselComponent {
         if (this.drawingSelectedPurpose === PurposeofClick.Load) {
             this.drawingSelectedPurpose = PurposeofClick.Delete;
             //afficher message que le user doit choisir un message a supprimé
-        }
-        if (this.drawingSelectedPurpose === PurposeofClick.Delete) {
+        } else if (this.drawingSelectedPurpose === PurposeofClick.Delete) {
             this.drawingSelectedPurpose = PurposeofClick.Load;
         }
     }
