@@ -22,7 +22,7 @@ export class SidebarComponent {
         private drawingService: DrawingService,
         private router: Router,
         private modalHandler: ModalHandlerService,
-        private drawingStateTracker: DrawingStateTrackerService
+        private drawingStateTracker: DrawingStateTrackerService,
     ) {}
 
     undo(): void {
@@ -61,7 +61,7 @@ export class SidebarComponent {
         this.modalHandler.openUserGuide();
     }
 
-    saveDialog(): void {
+    openSaveDialog(): void {
         this.modalHandler.openSaveDialog();
     }
 }

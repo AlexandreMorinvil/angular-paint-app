@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Action } from '@app/classes/action/action';
 import { Interaction } from '@app/classes/action/interactions';
 import { Tool } from '@app/classes/tool';
-import { DrawingService } from '../drawing/drawing.service';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Injectable({
     providedIn: 'root',
@@ -65,7 +65,8 @@ export class DrawingStateTrackerService {
         this.actionsToRedo = [];
         this.canvasesToRedo = [];
     }
-
+    /********************************************************** */
+    // tslint:disable:no-bitwise
     private reconstituteCanvas(): void {
         const indexCanvas = (this.actions.length / this.intervalCanvasSave) | 0;
         const actionsToCompute = this.actions.length % this.intervalCanvasSave;

@@ -13,6 +13,6 @@ export class ColorPickerViewerService extends ToolModifier {
     getState(): ColorPickerViewerModifierState {
         return new ColorPickerViewerModifierState();
     }
-
+    // tslint:disable:no-empty
     setState(state: ColorPickerViewerModifierState): void {}
 }

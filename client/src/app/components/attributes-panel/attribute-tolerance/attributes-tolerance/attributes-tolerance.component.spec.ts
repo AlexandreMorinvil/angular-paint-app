@@ -1,16 +1,17 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { AttributesToleranceComponent } from './attributes-tolerance.component';
 
 describe('AttributesToleranceComponent', () => {
     let component: AttributesToleranceComponent;
     let fixture: ComponentFixture<AttributesToleranceComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [AttributesToleranceComponent],
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                declarations: [AttributesToleranceComponent],
+            }).compileComponents();
+        }),
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(AttributesToleranceComponent);
