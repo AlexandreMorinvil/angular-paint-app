@@ -9,6 +9,7 @@ describe('WidthService', () => {
     // tslint:disable:no-any
     let setWidthSpy: jasmine.Spy<any>;
     let getWidthSpy: jasmine.Spy<any>;
+    let setStateSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
@@ -16,6 +17,7 @@ describe('WidthService', () => {
         // tslint:disable:no-any
         setWidthSpy = spyOn<any>(service, 'setWidth').and.callThrough();
         getWidthSpy = spyOn<any>(service, 'getWidth').and.callThrough();
+        setStateSpy = spyOn<any>(service, 'setState').and.callThrough();
     });
 
     it('should be created', () => {
@@ -46,5 +48,14 @@ describe('WidthService', () => {
         expect(setWidthSpy).toHaveBeenCalled();
         expect(service.getWidth()).toEqual(minWidth);
         expect(getWidthSpy).toHaveBeenCalled();
+    });
+
+    it(' should call setState to the incoming argument and getWidth should return the right number', () => {
+        let state = {
+            width: 100,
+        };
+        service.setState(state);
+        expect(setStateSpy).toHaveBeenCalled();
+        expect(service.getWidth()).toEqual(state.width);
     });
 });

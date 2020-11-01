@@ -489,16 +489,4 @@ describe('LineService', () => {
         expect(drawLineSpy).toHaveBeenCalled();
         expect(isAround20PixelsSpy).toHaveBeenCalled();
     });
-
-    it('should call drawLine if mouse down coordinate, shift not pressed and is in canvas ', () => {
-        service.mouseClick = true;
-        let mouseEvent = {
-            offsetX: 25,
-            offsetY: 25,
-            button: 0,
-            shiftKey: false,
-        } as MouseEvent;
-        service.onMouseMove(mouseEvent);
-        expect(drawLineSpy).toHaveBeenCalled();
-    });
 });
