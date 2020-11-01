@@ -26,4 +26,8 @@ export class RemoteMemoryService {
     saveToDatabase(drawing: DrawingToDatabase): void {
         this.apiDrawingService.save(drawing).subscribe(() => {});
     }
+
+    deleteFromDatabase(id: string) {
+        this.apiDrawingService.delete(id);
+    }
 }

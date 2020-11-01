@@ -104,9 +104,10 @@ export class DrawingCarouselComponent {
             if (this.currentActivesIndexes[i] - 1 < 0) {
                 this.currentDrawings[i] = this.tagFilterService.filteredDrawings[this.tagFilterService.filteredDrawings.length - 1];
                 this.currentActivesIndexes[i] = this.tagFilterService.filteredDrawings.length - 1;
+            } else {
+                this.currentDrawings[i] = this.tagFilterService.filteredDrawings[this.currentActivesIndexes[i] - 1];
+                this.currentActivesIndexes[i] -= 1;
             }
-            this.currentDrawings[i] = this.tagFilterService.filteredDrawings[this.currentActivesIndexes[i] - 1];
-            this.currentActivesIndexes[i] -= 1;
         }
     }
 
@@ -115,9 +116,10 @@ export class DrawingCarouselComponent {
             if (this.currentActivesIndexes[i] + 1 > this.tagFilterService.filteredDrawings.length - 1) {
                 this.currentDrawings[i] = this.tagFilterService.filteredDrawings[0];
                 this.currentActivesIndexes[i] = 0;
+            } else {
+                this.currentDrawings[i] = this.tagFilterService.filteredDrawings[this.currentActivesIndexes[i] + 1];
+                this.currentActivesIndexes[i] += 1;
             }
-            this.currentDrawings[i] = this.tagFilterService.filteredDrawings[this.currentActivesIndexes[i] + 1];
-            this.currentActivesIndexes[i] += 1;
         }
     }
 
@@ -139,10 +141,11 @@ export class DrawingCarouselComponent {
             //deletedrawing
             console.log('dessin supprime');
             this.drawingSelectedPurpose = PurposeofClick.Load;
+            this.memoryService.deleteFromDatabase(drawing._id);
         }
     }
 
-    deleteDrawingSelected() {
+    deleteDrawingButtonSelected() {
         if (this.drawingSelectedPurpose === PurposeofClick.Load) {
             this.drawingSelectedPurpose = PurposeofClick.Delete;
             //afficher message que le user doit choisir un message a supprimé
