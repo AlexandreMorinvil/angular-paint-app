@@ -7,6 +7,7 @@ describe('SidesService', () => {
     let setSideSpy: jasmine.Spy<any>;
     let getSideSpy: jasmine.Spy<any>;
     let setStateSpy: jasmine.Spy<any>;
+    let getStateSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
@@ -14,6 +15,7 @@ describe('SidesService', () => {
         setSideSpy = spyOn<any>(service, 'setSide').and.callThrough();
         setStateSpy = spyOn<any>(service, 'setState').and.callThrough();
         getSideSpy = spyOn<any>(service, 'getSide').and.callThrough();
+        getStateSpy = spyOn<any>(service, 'getSide').and.callThrough();
     });
 
     it('should be created', () => {
@@ -57,5 +59,18 @@ describe('SidesService', () => {
         expect(setStateSpy).toHaveBeenCalled();
         expect(service.getSide()).toBe(state.numberSides);
         expect(getSideSpy).toHaveBeenCalled();
+    });
+
+    it(' should call getState and return SidesModifierState with correct number of sides ', () => {
+        let state = {
+            numberSides: 2,
+        } as SidesModifierState;
+        service.setState(state);
+        service.getState();
+        expect(setStateSpy).toHaveBeenCalled();
+        expect(service.getSide()).toBe(state.numberSides);
+        expect(getSideSpy).toHaveBeenCalled();
+
+        expect(getStateSpy).toHaveBeenCalled();
     });
 });
