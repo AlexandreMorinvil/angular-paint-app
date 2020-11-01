@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Tool } from '@app/classes/tool';
+import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ModalHandlerService } from '@app/services/modal-handler/modal-handler';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
@@ -21,7 +22,16 @@ export class SidebarComponent {
         private drawingService: DrawingService,
         private router: Router,
         private modalHandler: ModalHandlerService,
+        private drawingStateTracker: DrawingStateTrackerService,
     ) {}
+
+    undo(): void {
+        this.drawingStateTracker.undo();
+    }
+
+    redo(): void {
+        this.drawingStateTracker.redo();
+    }
 
     getListOfTools(): Tool[] {
         return this.toolboxSevice.getAvailableTools();
@@ -51,7 +61,7 @@ export class SidebarComponent {
         this.modalHandler.openUserGuide();
     }
 
-    saveDialog(): void {
+    openSaveDialog(): void {
         this.modalHandler.openSaveDialog();
     }
 }
