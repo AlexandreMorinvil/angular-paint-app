@@ -139,7 +139,6 @@ export class DrawingCarouselComponent {
             this.loadService.loadDraw(this.getDrawingUrl(drawing));
         } else if (this.drawingSelectedPurpose === PurposeofClick.Delete) {
             //deletedrawing
-            console.log('dessin supprime');
             this.drawingSelectedPurpose = PurposeofClick.Load;
             this.memoryService.deleteFromDatabase(drawing._id);
         }

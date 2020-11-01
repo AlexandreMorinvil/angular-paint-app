@@ -1,6 +1,5 @@
 import { DatabaseService } from '@app/services/database/database.service';
 import { TYPES } from '@app/types';
-import { Drawing } from '@common/communication/drawing';
 import { DrawingToDatabase } from '@common/communication/drawingtodatabase';
 import { NextFunction, Request, Response, Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
@@ -29,7 +28,7 @@ export class DatabaseController {
         this.router.get(this.ROUTING_GET_ALL, async (req: Request, res: Response, next: NextFunction) => {
             this.databaseService
                 .getAllDrawings()
-                .then((drawings: Drawing[]) => {
+                .then((drawings: DrawingToDatabase[]) => {
                     res.json(drawings);
                 })
                 .catch((error: Error) => {
@@ -38,9 +37,10 @@ export class DatabaseController {
         });
 
         this.router.get(this.ROUTING_GET_DRAWING_ID, async (req: Request, res: Response, next: NextFunction) => {
+            console.log('passe par le get');
             this.databaseService
                 .getDrawing(req.params.drawingId)
-                .then((drawing: Drawing) => {
+                .then((drawing: DrawingToDatabase) => {
                     res.json(drawing);
                 })
                 .catch((error: Error) => {
@@ -51,7 +51,7 @@ export class DatabaseController {
         this.router.get(this.ROUTING_GET_NAME, async (req: Request, res: Response, next: NextFunction) => {
             this.databaseService
                 .getDrawingByName(req.params.name)
-                .then((drawing: Drawing[]) => {
+                .then((drawing: DrawingToDatabase[]) => {
                     res.json(drawing);
                 })
                 .catch((error: Error) => {
@@ -62,7 +62,7 @@ export class DatabaseController {
         this.router.get(this.ROUTING_GET_TAG, async (req: Request, res: Response, next: NextFunction) => {
             this.databaseService
                 .getDrawingByTags(req.params.tag)
-                .then((drawing: Drawing[]) => {
+                .then((drawing: DrawingToDatabase[]) => {
                     res.json(drawing);
                 })
                 .catch((error: Error) => {
@@ -96,7 +96,7 @@ export class DatabaseController {
         this.router.patch(this.ROUTING_PATCH, async (req: Request, res: Response, next: NextFunction) => {
             this.databaseService
                 .updateDrawing(req.params.drawingId, req.body)
-                .then((drawing: Drawing) => {
+                .then((drawing: DrawingToDatabase) => {
                     res.json(drawing);
                 })
                 .catch((error: Error) => {
@@ -109,7 +109,7 @@ export class DatabaseController {
                 .deleteDrawing(req.params.drawingId)
                 .then(() => {
                     //supprimer dans server
-                    const id: string = req.body.id;
+                    const id: string = req.params.drawingId;
                     this.deleteDrawIntoImageFolder(id);
                     res.status(StatusCodes.NO_CONTENT).send();
                 })
