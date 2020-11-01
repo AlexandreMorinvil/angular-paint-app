@@ -29,12 +29,12 @@ export class ColorPickerService extends Tool {
         this.modifiers.push(this.colorService);
     }
 
-    componentToHex(channel: number): string {
+    private componentToHex(channel: number): string {
         const hex = channel.toString(16);
         return hex.length === 1 ? '0' + hex : hex;
     }
 
-    rgbColorToHEXString(r: number, g: number, b: number): string {
+    private rgbColorToHEXString(r: number, g: number, b: number): string {
         return '#' + this.componentToHex(r) + this.componentToHex(g) + this.componentToHex(b);
     }
 
@@ -74,7 +74,7 @@ export class ColorPickerService extends Tool {
         this.colorPickerVisual(event, colorHEXString);
     }
 
-    colorPickerVisual(event: MouseEvent, colorHEXString: string): void {
+    private colorPickerVisual(event: MouseEvent, colorHEXString: string): void {
         const borderColor = colorHEXString;
         const borderWidth = 1;
         const squareWidth = 60;

@@ -119,7 +119,7 @@ describe('PencilService', () => {
         pathData.push(expectedResult);
         pathData.push(expectedResult);
         pathData.push(expectedResult);
-        service.drawLine(previewCtxStub, pathData);
+        (service as any).drawLine(previewCtxStub, pathData);
         expect(pathData.length).not.toEqual(1);
     });
 

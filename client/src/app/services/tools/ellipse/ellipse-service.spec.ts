@@ -223,7 +223,7 @@ describe('EllipseService', () => {
         tracingService.setHasContour(true);
         tracingService.getHasContour();
 
-        service.applyTrace(previewCtxStub);
+        (service as any).applyTrace(previewCtxStub);
         expect(applyTraceSpy).toHaveBeenCalled();
         expect(ctxContourSpy).toHaveBeenCalled();
     });
@@ -232,7 +232,7 @@ describe('EllipseService', () => {
         tracingService.setHasFill(true);
         tracingService.getHasFill();
 
-        service.applyTrace(previewCtxStub);
+        (service as any).applyTrace(previewCtxStub);
         expect(applyTraceSpy).toHaveBeenCalled();
         expect(ctxFillSpy).toHaveBeenCalled();
     });
@@ -243,7 +243,7 @@ describe('EllipseService', () => {
         tracingService.setHasContour(true);
         tracingService.getHasContour();
 
-        service.applyTrace(previewCtxStub);
+        (service as any).applyTrace(previewCtxStub);
         expect(applyTraceSpy).toHaveBeenCalled();
         expect(ctxContourSpy).toHaveBeenCalled();
         expect(ctxFillSpy).toHaveBeenCalled();
@@ -255,7 +255,7 @@ describe('EllipseService', () => {
         tracingService.setHasFill(false);
         tracingService.getHasFill();
 
-        service.applyTrace(previewCtxStub);
+        (service as any).applyTrace(previewCtxStub);
         expect(applyTraceSpy).toHaveBeenCalled();
 
         expect(ctxContourSpy).not.toHaveBeenCalled();
@@ -272,7 +272,7 @@ describe('EllipseService', () => {
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 20, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
-        service.drawEllipse(previewCtxStub, service.pathData);
+        (service as any).drawEllipse(previewCtxStub, (service as any).pathData);
 
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawEllipseSpy).toHaveBeenCalled();
@@ -283,7 +283,7 @@ describe('EllipseService', () => {
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 20, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
-        service.drawEllipse(previewCtxStub, service.pathData);
+        (service as any).drawEllipse(previewCtxStub, (service as any).pathData);
         expect(applyTraceSpy).toHaveBeenCalled();
     });
 
@@ -295,7 +295,7 @@ describe('EllipseService', () => {
         tracingService.setHasContour(true);
         tracingService.getHasContour();
         colorService.setSecondaryColor('#0000ff');
-        service.applyTrace(previewCtxStub);
+        (service as any).applyTrace(previewCtxStub);
         expect(previewCtxStub.strokeStyle).toBe('#0000ff');
     });
 
@@ -307,7 +307,7 @@ describe('EllipseService', () => {
         tracingService.setHasFill(true);
         tracingService.getHasFill();
         colorService.setPrimaryColor('#ff0000');
-        service.applyTrace(previewCtxStub);
+        (service as any).applyTrace(previewCtxStub);
         expect(previewCtxStub.fillStyle).toBe('#ff0000');
     });
 
@@ -322,7 +322,7 @@ describe('EllipseService', () => {
         tracingService.getHasContour();
         colorService.setPrimaryColor('#ff0000');
         colorService.setSecondaryColor('#0000ff');
-        service.applyTrace(previewCtxStub);
+        (service as any).applyTrace(previewCtxStub);
         expect(previewCtxStub.strokeStyle).toBe('#0000ff');
         expect(previewCtxStub.fillStyle).toBe('#ff0000');
     });

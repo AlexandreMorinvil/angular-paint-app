@@ -235,7 +235,7 @@ describe('RectangleService', () => {
     it(' should call setAttribute with trace of type contour', () => {
         tracingService.setHasContour(true);
         tracingService.getHasContour();
-        service.setAttribute(previewCtxStub);
+        (service as any).setAttribute(previewCtxStub);
         expect(setAttributeSpy).toHaveBeenCalled();
         expect(ctxContourSpy).toHaveBeenCalled();
     });
@@ -243,7 +243,7 @@ describe('RectangleService', () => {
     it(' should call setAttribute with trace of type full', () => {
         tracingService.setHasFill(true);
         tracingService.getHasFill();
-        service.setAttribute(previewCtxStub);
+        (service as any).setAttribute(previewCtxStub);
         expect(setAttributeSpy).toHaveBeenCalled();
         expect(ctxFillSpy).toHaveBeenCalled();
     });
@@ -253,7 +253,7 @@ describe('RectangleService', () => {
         tracingService.getHasFill();
         tracingService.setHasContour(true);
         tracingService.getHasContour();
-        service.setAttribute(previewCtxStub);
+        (service as any).setAttribute(previewCtxStub);
         expect(setAttributeSpy).toHaveBeenCalled();
         expect(ctxContourSpy).toHaveBeenCalled();
         expect(ctxFillSpy).toHaveBeenCalled();
@@ -265,7 +265,7 @@ describe('RectangleService', () => {
         tracingService.setHasFill(false);
         tracingService.getHasFill();
 
-        service.setAttribute(previewCtxStub);
+        (service as any).setAttribute(previewCtxStub);
         expect(setAttributeSpy).toHaveBeenCalled();
         expect(ctxContourSpy).not.toHaveBeenCalled();
         expect(ctxFillSpy).not.toHaveBeenCalled();
@@ -279,7 +279,7 @@ describe('RectangleService', () => {
         tracingService.setHasContour(true);
         tracingService.getHasContour();
         colorService.setSecondaryColor('#0000ff');
-        service.setAttribute(previewCtxStub);
+        (service as any).setAttribute(previewCtxStub);
         expect(previewCtxStub.strokeStyle).toBe('#0000ff');
     });
 
@@ -291,7 +291,7 @@ describe('RectangleService', () => {
         tracingService.setHasFill(true);
         tracingService.getHasFill();
         colorService.setPrimaryColor('#ff0000');
-        service.setAttribute(previewCtxStub);
+        (service as any).setAttribute(previewCtxStub);
         expect(previewCtxStub.fillStyle).toBe('#ff0000');
     });
 
@@ -306,7 +306,7 @@ describe('RectangleService', () => {
         tracingService.getHasContour();
         colorService.setPrimaryColor('#ff0000');
         colorService.setSecondaryColor('#0000ff');
-        service.setAttribute(previewCtxStub);
+        (service as any).setAttribute(previewCtxStub);
         expect(previewCtxStub.strokeStyle).toBe('#0000ff');
         expect(previewCtxStub.fillStyle).toBe('#ff0000');
     });
@@ -337,31 +337,31 @@ describe('RectangleService', () => {
 
     it('on set Attribute should set fill if shape has fill ', () => {
         tracingService.setHasFill(true);
-        service.setAttribute(previewCtxStub);
+        (service as any).setAttribute(previewCtxStub);
         expect(ctxFillSpy).toHaveBeenCalled();
     });
 
     it('on set Attribute should not set fill if shape has fill ', () => {
         tracingService.setHasFill(false);
-        service.setAttribute(previewCtxStub);
+        (service as any).setAttribute(previewCtxStub);
         expect(ctxFillSpy).not.toHaveBeenCalled();
     });
 
     it('on set Attribute should set contour if shape has countour ', () => {
         tracingService.setHasContour(true);
-        service.setAttribute(previewCtxStub);
+        (service as any).setAttribute(previewCtxStub);
         expect(ctxContourSpy).toHaveBeenCalled();
     });
 
     it('on set Attribute should not set contour if shape has no contour ', () => {
         tracingService.setHasContour(false);
-        service.setAttribute(previewCtxStub);
+        (service as any).setAttribute(previewCtxStub);
         expect(ctxContourSpy).not.toHaveBeenCalled();
     });
 
     it('should draw a Preview rectangle if height is negatif and width positif', () => {
         const width = 22;
-        service.widthService.setWidth(width);
+        (service as any).widthService.setWidth(width);
         mouseEvent = { offsetX: 50, offsetY: 60, button: 0 } as MouseEvent;
         service.onMouseDown(mouseEvent);
         service.shiftDown = true;
@@ -372,7 +372,7 @@ describe('RectangleService', () => {
 
     it('should drawing a preview rectangle if height is negatif and width negatif', () => {
         const width = 22;
-        service.widthService.setWidth(width);
+        (service as any).widthService.setWidth(width);
         mouseEvent = { offsetX: 50, offsetY: 60, button: 0 } as MouseEvent;
         service.onMouseDown(mouseEvent);
         service.shiftDown = true;
@@ -383,7 +383,7 @@ describe('RectangleService', () => {
 
     it('should drawing a preview rectangle if height is positif and width positif', () => {
         const width = 22;
-        service.widthService.setWidth(width);
+        (service as any).widthService.setWidth(width);
         mouseEvent = { offsetX: 50, offsetY: 60, button: 0 } as MouseEvent;
         service.onMouseDown(mouseEvent);
         service.shiftDown = true;
@@ -394,7 +394,7 @@ describe('RectangleService', () => {
 
     it('should drawing a preview rectangle if height is positif and width negatif', () => {
         const width = 22;
-        service.widthService.setWidth(width);
+        (service as any).widthService.setWidth(width);
         mouseEvent = { offsetX: 50, offsetY: 60, button: 0 } as MouseEvent;
         service.onMouseDown(mouseEvent);
         service.shiftDown = true;

@@ -13,7 +13,7 @@ import { WidthService } from '@app/services/tool-modifier/width/width.service';
     providedIn: 'root',
 })
 export class PencilService extends Tool {
-    pathData: Vec2[];
+    private pathData: Vec2[];
 
     constructor(
         drawingService: DrawingService,
@@ -65,7 +65,7 @@ export class PencilService extends Tool {
         }
     }
 
-    drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
         ctx.lineWidth = this.widthService.getWidth(); // width ajustment

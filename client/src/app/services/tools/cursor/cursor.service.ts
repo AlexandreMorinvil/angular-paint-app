@@ -14,15 +14,12 @@ const minSurfaceSize = 10;
 export class CursorService extends Tool {
     mouseDownCoord: Vec2;
     mouseDown: boolean = false;
-    dotsize: number = 10;
-    clickOnAnchor: boolean = false;
-    anchorHit: number = 0;
+    private dotsize: number = 10;
+    private clickOnAnchor: boolean = false;
+    private anchorHit: number = 0;
     imageData: ImageData;
 
-    constructor(
-        drawingService: DrawingService,
-        private drawingStateTrackingService: DrawingStateTrackerService
-    ) {
+    constructor(drawingService: DrawingService, private drawingStateTrackingService: DrawingStateTrackerService) {
         super(drawingService, new Description('redimensionneur', 'y', 'crop-icon.png'));
     }
 

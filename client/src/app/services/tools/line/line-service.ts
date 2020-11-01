@@ -25,12 +25,12 @@ export enum AlignmentAngle {
     providedIn: 'root',
 })
 export class LineService extends Tool {
-    pathData: Vec2[];
-    pathDataSaved: Vec2[];
-    savedImage: ImageData;
-    undo: ImageData[];
-    click: number;
-    alignmentCoord: Vec2;
+    private pathData: Vec2[];
+    private pathDataSaved: Vec2[];
+    private savedImage: ImageData;
+    private undo: ImageData[];
+    private click: number;
+    private alignmentCoord: Vec2;
     constructor(
         drawingService: DrawingService,
         private drawingStateTrackingService: DrawingStateTrackerService,
@@ -146,7 +146,7 @@ export class LineService extends Tool {
         return mousePosition.x <= this.drawingService.previewCtx.canvas.width && mousePosition.y <= this.drawingService.previewCtx.canvas.height;
     }
 
-    drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         const firstPath = path[0];
         const lastPath = path[path.length - 1];
@@ -159,7 +159,7 @@ export class LineService extends Tool {
         ctx.stroke();
     }
 
-    drawJunction(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    private drawJunction(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         const radius = this.junctionService.getDiameter() / 2;
         const startCenterX = this.mouseDownCoord.x;
@@ -167,7 +167,7 @@ export class LineService extends Tool {
         ctx.arc(startCenterX, startCenterY, radius, 0, Math.PI * 2);
         ctx.fill();
     }
-    isAround20Pixels(): boolean {
+    private isAround20Pixels(): boolean {
         // Calculate the distance between first and last point
         const limit20Pixels = 20;
         const firstCurrentPoint = this.pathDataSaved[0];
@@ -183,7 +183,7 @@ export class LineService extends Tool {
         return false;
     }
 
-    closeShape(): void {
+    private closeShape(): void {
         this.drawingService.baseCtx.beginPath();
         const firstPath = this.pathDataSaved[0];
         const lastPath = this.pathDataSaved[this.pathDataSaved.length - 1];
@@ -194,12 +194,12 @@ export class LineService extends Tool {
         this.drawJunction(this.drawingService.baseCtx, this.pathData);
     }
 
-    savedPoints(): void {
+    private savedPoints(): void {
         this.pathDataSaved.push(this.mouseDownCoord);
         this.savedImage = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
         this.undo.push(this.savedImage);
     }
-    drawAlignLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    private drawAlignLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         const alignmentAngle = this.findAlignmentAngle(path);
         const firstPath = path[0];
@@ -256,7 +256,7 @@ export class LineService extends Tool {
     }
     // the number value of angle ranges is clear, and there's no need to add a self-referencing constant name if there's no other meaning
     // tslint:disable:no-magic-numbers
-    roundToNearestAngle(angle: number): number {
+    private roundToNearestAngle(angle: number): number {
         if (angle >= 337.5 || angle < 22.5) {
             return AlignmentAngle.right;
         } else if (angle >= 22.5 && angle < 67.5) {
@@ -276,7 +276,7 @@ export class LineService extends Tool {
         }
     }
 
-    findAlignmentAngle(path: Vec2[]): number {
+    private findAlignmentAngle(path: Vec2[]): number {
         const mouseMoveCoord = path[path.length - 1];
         const mouseDownCoord = path[0];
         const pointX = mouseMoveCoord.x - mouseDownCoord.x;
@@ -296,11 +296,10 @@ export class LineService extends Tool {
         }
     }
 
-    clearPath(): void {
+    private clearPath(): void {
         this.pathData = [];
     }
-
-    clearPathSaved(): void {
+    private clearPathSaved(): void {
         this.pathDataSaved = [];
     }
 
