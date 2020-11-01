@@ -86,7 +86,7 @@ export class EllipseService extends Tool {
         }
     }
 
-    private drawEllipse(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    drawEllipse(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         const mouseMoveCoord = path[path.length - 1];
         const centerX = (mouseMoveCoord.x + this.mouseDownCoord.x) / 2;
@@ -108,7 +108,7 @@ export class EllipseService extends Tool {
         this.applyTrace(ctx);
     }
 
-    private drawPreviewRect(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    drawPreviewRect(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         const mouseMoveCoord = path[path.length - 1];
         const width = mouseMoveCoord.x - this.mouseDownCoord.x;

@@ -186,7 +186,7 @@ export class PaintService extends Tool {
         return [r, g, b];
     }
 
-    private isInCanvas(mousePosition: Vec2): boolean {
+    isInCanvas(mousePosition: Vec2): boolean {
         return mousePosition.x <= this.drawingService.previewCtx.canvas.width && mousePosition.y <= this.drawingService.previewCtx.canvas.height;
     }
 
