@@ -98,7 +98,13 @@ export class DrawingCarouselComponent {
     }
 
     movePrevious() {
-        // If there is no more drawings, do nothing
+        // If we have below three drawings, dont do anything
+        if (
+            Object.keys(this.currentDrawings[0]).length === 0 ||
+            Object.keys(this.currentDrawings[1]).length === 0 ||
+            Object.keys(this.currentDrawings[2]).length === 0
+        )
+            return;
 
         for (let i = 0; i < this.currentDrawings.length; i++) {
             if (this.currentActivesIndexes[i] - 1 < 0) {
@@ -112,6 +118,14 @@ export class DrawingCarouselComponent {
     }
 
     moveNext() {
+        // If we have below three drawings, dont do anything
+        if (
+            Object.keys(this.currentDrawings[0]).length === 0 ||
+            Object.keys(this.currentDrawings[1]).length === 0 ||
+            Object.keys(this.currentDrawings[2]).length === 0
+        )
+            return;
+
         for (let i = 0; i < this.currentDrawings.length; i++) {
             if (this.currentActivesIndexes[i] + 1 > this.tagFilterService.filteredDrawings.length - 1) {
                 this.currentDrawings[i] = this.tagFilterService.filteredDrawings[0];
@@ -134,16 +148,15 @@ export class DrawingCarouselComponent {
 
     drawingClicked(drawing: DrawingToDatabase) {
         if (this.drawingSelectedPurpose === PurposeofClick.Load) {
-            //load drawing
             this.loadService.loadDraw(this.getDrawingUrl(drawing));
+            this.drawingSelectedPurpose = PurposeofClick.Delete;
         } else if (this.drawingSelectedPurpose === PurposeofClick.Delete) {
-            //delete drawing
-            this.drawingSelectedPurpose = PurposeofClick.Load;
             this.memoryService.deleteFromDatabase(drawing._id).then(() => {
                 this.memoryService.getAllFromDatabase().then(() => {
                     this.setCurrentImages();
                 });
             });
+            this.drawingSelectedPurpose = PurposeofClick.Load;
         }
     }
 
