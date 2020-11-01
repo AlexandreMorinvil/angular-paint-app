@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ToolModifier } from '@app/classes/tool-modifier';
+import { SidesModifierState } from './sides-state';
 
 @Injectable({
     providedIn: 'root',
@@ -22,5 +23,13 @@ export class SidesService extends ToolModifier {
 
     getSide(): number {
         return this.numberSides;
+    }
+
+    getState(): SidesModifierState {
+        return new SidesModifierState(this.numberSides);
+    }
+
+    setState(state: SidesModifierState): void {
+        this.numberSides = state.numberSides;
     }
 }

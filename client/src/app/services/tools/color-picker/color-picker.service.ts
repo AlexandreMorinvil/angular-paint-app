@@ -11,9 +11,9 @@ import { BehaviorSubject, Observable } from 'rxjs';
     providedIn: 'root',
 })
 export class ColorPickerService extends Tool {
+    // tslint:disable:no-empty
     private pickedPrimaryColorSource: BehaviorSubject<string>;
     currentPickedPrimaryColor: Observable<string>;
-
     private pickedSecondaryColorSource: BehaviorSubject<string>;
     currentPickedSecondaryColor: Observable<string>;
 

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ToolModifier } from '@app/classes/tool-modifier';
+import { FillingModifierState } from './filling-state';
 
 @Injectable({
     providedIn: 'root',
@@ -18,5 +19,13 @@ export class FillingService extends ToolModifier {
 
     getNeighbourPixelsOnly(): boolean {
         return this.neighboursPixelsOnly;
+    }
+
+    getState(): FillingModifierState {
+        return new FillingModifierState(this.neighboursPixelsOnly);
+    }
+
+    setState(state: FillingModifierState): void {
+        this.neighboursPixelsOnly = state.neighboursPixelsOnly;
     }
 }

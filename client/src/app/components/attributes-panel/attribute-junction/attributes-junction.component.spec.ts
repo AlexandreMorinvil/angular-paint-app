@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { JunctionService } from '@app/services/tool-modifier/junction/junction.service';
 import { AttributeJunctionComponent } from './attributes-junction.component';
 
@@ -7,12 +7,14 @@ describe('AttributeJunctionComponent', () => {
     let fixture: ComponentFixture<AttributeJunctionComponent>;
     let junctionService: JunctionService;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [AttributeJunctionComponent],
-            providers: [JunctionService],
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                declarations: [AttributeJunctionComponent],
+                providers: [JunctionService],
+            }).compileComponents();
+        }),
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(AttributeJunctionComponent);
