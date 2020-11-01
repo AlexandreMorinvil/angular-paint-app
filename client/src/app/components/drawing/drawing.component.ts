@@ -130,10 +130,10 @@ export class DrawingComponent implements AfterViewInit {
             this.modalHandlerService.openSaveDialog();
         } else if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'z') {
             event.preventDefault(); // to prevent key of windows
-            this.drawingStateTrackerService.onCtrlShiftZDown(event);
+            this.drawingStateTrackerService.onCtrlShiftZDown();
         } else if (event.ctrlKey && event.key.toLowerCase() === 'z') {
             event.preventDefault(); // to prevent key of windows
-            this.drawingStateTrackerService.onCtrlZDown(event);
+            this.drawingStateTrackerService.onCtrlZDown();
         } else if (event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown') {
             this.toolbox.getCurrentTool().onArrowDown(event);
         } else if (event.ctrlKey && event.key.toLowerCase() === 'a') {

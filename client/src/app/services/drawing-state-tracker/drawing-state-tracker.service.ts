@@ -16,11 +16,11 @@ export class DrawingStateTrackerService {
 
     constructor(private drawingService: DrawingService) {}
 
-    onCtrlZDown(event: KeyboardEvent): void {
+    onCtrlZDown(): void {
         this.undo();
     }
 
-    onCtrlShiftZDown(event: KeyboardEvent): void {
+    onCtrlShiftZDown(): void {
         this.redo();
     }
 
@@ -40,8 +40,8 @@ export class DrawingStateTrackerService {
         this.actionsToRedo.push(actionUndone);
 
         if (this.actions.length % this.intervalCanvasSave === this.intervalCanvasSave - 1) {
-            const cavasUndone: ImageData | undefined = this.canvases.pop();
-            if (cavasUndone) this.canvasesToRedo.push(cavasUndone);
+            const cavasUndone: ImageData = this.canvases.pop()!;
+            this.canvasesToRedo.push(cavasUndone);
         }
         this.reconstituteCanvas();
     }
@@ -53,8 +53,8 @@ export class DrawingStateTrackerService {
         this.actions.push(actionToRedo);
 
         if (this.actions.length % this.intervalCanvasSave === 0) {
-            const cavasToRedo: ImageData | undefined = this.canvasesToRedo.pop();
-            if (cavasToRedo) this.canvases.push(cavasToRedo);
+            const cavasToRedo: ImageData = this.canvasesToRedo.pop()!;
+            this.canvases.push(cavasToRedo);
         }
         this.reconstituteCanvas();
     }
