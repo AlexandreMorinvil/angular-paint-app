@@ -36,7 +36,6 @@ export class DrawingCarouselComponent {
             this.currentDrawings.push({ _id: null, name: 'En chargement', tags: [] });
         }
         this.memoryService.getAllFromDatabase().then(() => {
-            this.tagFilterService.filterByTag(this.memoryService.drawingsFromDatabase);
             this.setCurrentImages();
         });
     }
@@ -45,7 +44,7 @@ export class DrawingCarouselComponent {
         return this.currentDrawings;
     }
 
-    getTags() {
+    getActiveTags() {
         return this.tagFilterService.activeTags;
     }
 
@@ -56,6 +55,7 @@ export class DrawingCarouselComponent {
 
     setCurrentImages() {
         //console.log(this.memoryService.drawingsFromDatabase);
+        this.tagFilterService.filterByTag(this.memoryService.drawingsFromDatabase);
         this.currentDrawings = [];
         this.currentActivesIndexes = [0, 1, 2];
         for (let i of this.currentActivesIndexes) {
@@ -135,20 +135,21 @@ export class DrawingCarouselComponent {
     drawingClicked(drawing: DrawingToDatabase) {
         if (this.drawingSelectedPurpose === PurposeofClick.Load) {
             //load drawing
-            console.log(this.getDrawingUrl(drawing));
             this.loadService.loadDraw(this.getDrawingUrl(drawing));
         } else if (this.drawingSelectedPurpose === PurposeofClick.Delete) {
-            //deletedrawing
+            //delete drawing
             this.drawingSelectedPurpose = PurposeofClick.Load;
-            this.memoryService.deleteFromDatabase(drawing._id);
+            this.memoryService.deleteFromDatabase(drawing._id).then(() => {
+                this.memoryService.getAllFromDatabase().then(() => {
+                    this.setCurrentImages();
+                });
+            });
         }
     }
 
     deleteDrawingButtonSelected() {
         if (this.drawingSelectedPurpose === PurposeofClick.Load) {
             this.drawingSelectedPurpose = PurposeofClick.Delete;
-            //afficher message que le user doit choisir un message a supprimé
-            alert('Veuillez choisir un message a supprimé');
         } else if (this.drawingSelectedPurpose === PurposeofClick.Delete) {
             this.drawingSelectedPurpose = PurposeofClick.Load;
         }

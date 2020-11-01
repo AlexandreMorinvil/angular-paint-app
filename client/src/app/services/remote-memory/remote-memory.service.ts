@@ -27,9 +27,15 @@ export class RemoteMemoryService {
         this.apiDrawingService.save(drawing).subscribe(() => {});
     }
 
-    deleteFromDatabase(id: string): void {
-        this.apiDrawingService.delete(id).subscribe((string: string) => {
-            console.log(string);
+    deleteFromDatabase(id: string): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            try {
+                this.apiDrawingService.delete(id).subscribe(() => {
+                    resolve();
+                });
+            } catch (err) {
+                reject(err);
+            }
         });
     }
 }

@@ -19,7 +19,7 @@
         <mat-form-field class="tags">
             <mat-chip-list #chipList aria-label="tag selection">
                 <mat-label>Filtrage par Étiquettes</mat-label>
-                <mat-chip *ngFor="let tag of getTags()" (removed)="removeTag(tag)">
+                <mat-chip *ngFor="let tag of getActiveTags()" (removed)="removeTag(tag)">
                     {{ tag.tagName }}
                     <mat-icon matChipRemove>x</mat-icon>
                 </mat-chip>
@@ -34,6 +34,7 @@
     </div>
 
     <div mat-dialog-actions>
+        <p>Pour effacer un dessin, appuyer sur le bouton Effacer puis sélectionner le dessin a supprimé</p>
         <button (click)="deleteDrawingButtonSelected()">Effacer</button>
     </div>
 </div>
