@@ -1,6 +1,7 @@
 import { DatabaseService } from '@app/services/database/database.service';
 import { TYPES } from '@app/types';
-import { Drawing } from '@common/schema/drawing';
+import { Drawing } from '@common/communication/drawing';
+import { DrawingToDatabase } from '@common/communication/drawingToDatabase';
 import { NextFunction, Request, Response, Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { inject, injectable } from 'inversify';
@@ -15,6 +16,7 @@ export class DatabaseController {
     private readonly ROUTING_GET_TAG: string = '/tag/:tag';
     private readonly ROUTING_PATCH: string = '/:drawingId';
     private readonly ROUTING_DELETE: string = '/:drawingId';
+    private readonly ERROR_NO_IMAGE_SOURCE: string = 'Le dessin a pas une image source';
 
     constructor(@inject(TYPES.DatabaseService) private databaseService: DatabaseService) {
         this.configureRouter();
@@ -69,9 +71,22 @@ export class DatabaseController {
         });
 
         this.router.post(this.ROUTING_POST, async (req: Request, res: Response, next: NextFunction) => {
+            const drawingToDatabase: DrawingToDatabase = {
+                name: req.body.name,
+                tags: req.body.tags,
+                //_id: '',
+            };
+            console.log(req.body.imageSrc);
             this.databaseService
-                .addDrawing(req.body)
+                .addDrawing(drawingToDatabase)
                 .then(() => {
+                    try {
+                        const imageSource: string = req.body.imageSrc;
+                        this.valideImageSource(imageSource);
+                        this.saveDrawIntoImageFolder(imageSource, this.databaseService.drawId);
+                    } catch (error) {
+                        throw error;
+                    }
                     res.status(StatusCodes.CREATED).send();
                 })
                 .catch((error: Error) => {
@@ -100,5 +115,17 @@ export class DatabaseController {
                     res.status(StatusCodes.NOT_FOUND).send(error.message);
                 });
         });
+    }
+
+    private saveDrawIntoImageFolder(imageSource: string, id: string): void {
+        const fs = require('fs');
+        const nameDirectory = '/' + id + '.png';
+        if (imageSource === undefined) return;
+        let img64 = imageSource.replace('data:image/png;base64,', '');
+        img64 = img64.split(/\s/).join('');
+        fs.writeFileSync('./drawings/images' + nameDirectory, img64, { encoding: 'base64' });
+    }
+    private valideImageSource(source: string): void {
+        if (source == '' || source == undefined) throw new Error(this.ERROR_NO_IMAGE_SOURCE);
     }
 }
