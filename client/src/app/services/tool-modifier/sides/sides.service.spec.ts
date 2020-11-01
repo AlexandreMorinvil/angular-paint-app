@@ -15,7 +15,7 @@ describe('SidesService', () => {
         setSideSpy = spyOn<any>(service, 'setSide').and.callThrough();
         setStateSpy = spyOn<any>(service, 'setState').and.callThrough();
         getSideSpy = spyOn<any>(service, 'getSide').and.callThrough();
-        getStateSpy = spyOn<any>(service, 'getSide').and.callThrough();
+        getStateSpy = spyOn<any>(service, 'getState').and.callThrough();
     });
 
     it('should be created', () => {
