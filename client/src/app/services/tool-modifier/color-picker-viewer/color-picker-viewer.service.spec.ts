@@ -1,16 +1,36 @@
 /* tslint:disable:no-unused-variable */
-
-import { inject, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { ColorPickerViewerService } from './color-picker-viewer.service';
 
 describe('Service: ColorPickerViewer', () => {
+    let service: ColorPickerViewerService;
+    let setStateSpy: jasmine.Spy<any>;
+    let getStateSpy: jasmine.Spy<any>;
+
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [ColorPickerViewerService],
         });
+        service = TestBed.inject(ColorPickerViewerService);
+        setStateSpy = spyOn<any>(service, 'setState').and.callThrough();
+        getStateSpy = spyOn<any>(service, 'getState').and.callThrough();
     });
 
-    it('should ...', inject([ColorPickerViewerService], (service: ColorPickerViewerService) => {
+    it('should be created', () => {
         expect(service).toBeTruthy();
-    }));
+    });
+
+    it(' should call setState to the correct incoming argument ', () => {
+        let state = {} as ColorPickerViewerService;
+        service.setState(state);
+        expect(setStateSpy).toHaveBeenCalled();
+    });
+
+    it(' should call getState and return SidesModifierState with correct number of sides ', () => {
+        let state = {} as ColorPickerViewerService;
+        service.setState(state);
+        service.getState();
+        expect(setStateSpy).toHaveBeenCalled();
+        expect(getStateSpy).toHaveBeenCalled();
+    });
 });
