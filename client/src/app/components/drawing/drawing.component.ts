@@ -123,6 +123,9 @@ export class DrawingComponent implements AfterViewInit {
         } else if (event.ctrlKey && event.key.toLowerCase() === 's') {
             event.preventDefault(); // to prevent key of windows
             this.modalHandlerService.openSaveDialog();
+        } else if (event.ctrlKey && event.key.toLowerCase() === 'g') {
+            event.preventDefault(); // to prevent key of windows
+            this.modalHandlerService.openDrawingCarouselDialog();
         }
     }
 

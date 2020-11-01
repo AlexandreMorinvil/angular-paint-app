@@ -1,15 +1,15 @@
 <div class="container">
-   <h1 class="title">Choisir un Dessin</h1>
+    <h1 class="title">Choisir un Dessin</h1>
 
     <div id="carouselExampleControls" class="grid-carousel" data-ride="carousel">
         <div class="area-back-button area-button">
             <button (click)="movePrevious()">Précédent</button>
         </div>
-        <div class="drawing-form grid-drawing-form" *ngFor="let drawing of getCurrentDrawings()">
+        <button class="drawing-form grid-drawing-form" *ngFor="let drawing of getCurrentDrawings()" (click)="drawingClicked(drawing)">
             <img [src]="getDrawingUrl(drawing)" alt="slide" />
             <p>{{ drawing.name}}</p>
             <p>{{ drawing.tags}}</p>
-        </div>
+        </button>
         <div class="area-front-button area-button">
             <button (click)="moveNext()">Suivant</button>
         </div>
@@ -34,6 +34,6 @@
     </div>
 
     <div mat-dialog-actions>
-        <button>Effacer</button>
+        <button (click)="deleteDrawingSelected()">Effacer</button>
     </div>
 </div>
