@@ -31,7 +31,7 @@ describe('TextureService', () => {
         expect(service.getTexture()).toEqual('ombrée');
     });
 
-    it(' should call setState with the correct incoming argument and set hasContour and hasFill to true', () => {
+    it(' should call setState with the correct incoming argument and set texte with the string: dégradée', () => {
         let state = {
             texture: 'dégradée',
         } as TextureModifierState;

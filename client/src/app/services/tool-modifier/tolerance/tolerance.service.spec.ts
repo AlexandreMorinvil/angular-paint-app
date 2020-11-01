@@ -26,7 +26,7 @@ describe('ToleranceService', () => {
         expect(service).toBeTruthy();
     });
 
-    it(' setTolerance should set width to the incoming argument and getWidth should return the right number', () => {
+    it(' setTolerance should set tolerance to the incoming argument and getPercentTolerance/getPixelTolerance should equal the right number', () => {
         let tolerance = 25;
         service.setTolerance(tolerance);
         expect(setToleranceSpy).toHaveBeenCalled();
