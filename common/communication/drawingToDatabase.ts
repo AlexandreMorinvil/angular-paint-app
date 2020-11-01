@@ -1,5 +1,5 @@
 export class DrawingToDatabase {
+    _id: any;
     name: string;
     tags: string[];
-    //_id: any | undefined;
 }
