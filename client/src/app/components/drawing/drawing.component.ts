@@ -115,17 +115,19 @@ export class DrawingComponent implements AfterViewInit {
 
     @HostListener('window:keydown', ['$event'])
     onShiftDown(event: KeyboardEvent): void {
-        if (event.key === 'Shift') {
-            this.toolbox.getCurrentTool().onShiftDown(event);
-        } else if (event.key === 'Escape') {
-            this.toolbox.getCurrentTool().onEscapeDown(event);
-            this.hasBeenDrawnOnto = true;
-        } else if (event.ctrlKey && event.key.toLowerCase() === 's') {
-            event.preventDefault(); // to prevent key of windows
-            this.modalHandlerService.openSaveDialog();
-        } else if (event.ctrlKey && event.key.toLowerCase() === 'g') {
-            event.preventDefault(); // to prevent key of windows
-            this.modalHandlerService.openDrawingCarouselDialog();
+        if (this.drawingService.shortcutEnable) {
+            if (event.key === 'Shift') {
+                this.toolbox.getCurrentTool().onShiftDown(event);
+            } else if (event.key === 'Escape') {
+                this.toolbox.getCurrentTool().onEscapeDown(event);
+                this.hasBeenDrawnOnto = true;
+            } else if (event.ctrlKey && event.key.toLowerCase() === 's') {
+                event.preventDefault(); // to prevent key of windows
+                this.modalHandlerService.openSaveDialog();
+            } else if (event.ctrlKey && event.key.toLowerCase() === 'g') {
+                event.preventDefault(); // to prevent key of windows
+                this.modalHandlerService.openDrawingCarouselDialog();
+            }
         }
     }
 

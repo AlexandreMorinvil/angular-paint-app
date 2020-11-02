@@ -15,6 +15,7 @@ export class LoadService {
             alert("Il n'y a pas de dessin ! Veuillez en choisir un autre");
             return;
         }
+
         const base = this.drawingService.baseCtx;
         const preview = this.drawingService.previewCtx;
         console.log(imageSrc);

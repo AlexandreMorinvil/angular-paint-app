@@ -12,14 +12,14 @@ export class ModalHandlerService {
     constructor(private drawingService: DrawingService, public dialog: MatDialog) {}
 
     openDrawingCarouselDialog(): void {
-        // this.drawingService.shortcutEnable = false;
+        this.drawingService.shortcutEnable = false;
         const dialogRef = this.dialog.open(DrawingCarouselComponent, {
             width: '800px',
             height: '700px',
             data: {},
         });
         dialogRef.afterClosed().subscribe(() => {
-            //    this.drawingService.shortcutEnable = true;
+            this.drawingService.shortcutEnable = true;
         });
     }
 
@@ -36,11 +36,14 @@ export class ModalHandlerService {
     }
 
     openUserGuide(): void {
+        this.drawingService.shortcutEnable = false;
         const dialogRef = this.dialog.open(UserGuideModalComponent, {
             width: '1000px',
             height: '800px',
             data: {},
         });
-        dialogRef.afterClosed();
+        dialogRef.afterClosed().subscribe((value) => {
+            this.drawingService.shortcutEnable = true; // to enable other command on save dialog close
+        });
     }
 }

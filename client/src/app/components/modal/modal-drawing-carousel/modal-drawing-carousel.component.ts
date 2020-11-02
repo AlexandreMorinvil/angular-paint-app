@@ -32,6 +32,7 @@ export class DrawingCarouselComponent {
         public loadService: LoadService,
         @Inject(MAT_DIALOG_DATA) public data: DialogData,
     ) {
+        tagFilterService.activeTags = [];
         for (let i = 0; i < 3; i++) {
             this.currentDrawings.push({ _id: null, name: 'En chargement', tags: [] });
         }
@@ -149,6 +150,7 @@ export class DrawingCarouselComponent {
     drawingClicked(drawing: DrawingToDatabase) {
         if (this.drawingSelectedPurpose === PurposeofClick.Load) {
             this.loadService.loadDraw(this.getDrawingUrl(drawing));
+
             this.drawingSelectedPurpose = PurposeofClick.Delete;
         } else if (this.drawingSelectedPurpose === PurposeofClick.Delete) {
             this.memoryService.deleteFromDatabase(drawing._id).then(() => {
