@@ -200,7 +200,7 @@ export class RectangleSelectionService extends SelectionToolService {
         this.onMouseUp(mouseEvent);
     }
 
-    createOnMouseMoveEvent(): void {
+    private createOnMouseMoveEvent(): void {
         if (this.mouseDown) {
             const mouseEvent = {
                 offsetX: this.pathData[this.pathData.length - 1].x,
@@ -211,7 +211,7 @@ export class RectangleSelectionService extends SelectionToolService {
         }
     }
 
-    resetTransform(): void {
+    private resetTransform(): void {
         this.widthService.setWidth(1);
         this.colorService.setPrimaryColor('#000000');
         this.colorService.setSecondaryColor('#000000');

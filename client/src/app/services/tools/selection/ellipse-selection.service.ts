@@ -191,7 +191,7 @@ export class EllipseSelectionService extends SelectionToolService {
         this.onMouseUp(mouseEvent);
     }
 
-    createOnMouseMoveEvent(): void {
+    private createOnMouseMoveEvent(): void {
         if (this.mouseDown) {
             const mouseEvent = {
                 offsetX: this.pathData[this.pathData.length - 1].x,
@@ -202,7 +202,7 @@ export class EllipseSelectionService extends SelectionToolService {
         }
     }
 
-    resetTransform(): void {
+    private resetTransform(): void {
         this.widthService.setWidth(1);
         this.colorService.setPrimaryColor('#000000');
         this.colorService.setSecondaryColor('#000000');
@@ -210,7 +210,7 @@ export class EllipseSelectionService extends SelectionToolService {
         this.tracingService.setHasContour(true);
     }
 
-    showSelection(canvas: CanvasRenderingContext2D, image: HTMLImageElement, offset: number = 0): void {
+    private showSelection(canvas: CanvasRenderingContext2D, image: HTMLImageElement, offset: number = 0): void {
         canvas.save();
         const ellipsePath = this.getPath(offset);
         canvas.clip(ellipsePath);
@@ -227,7 +227,7 @@ export class EllipseSelectionService extends SelectionToolService {
         canvas.restore();
     }
 
-    getPath(offset: number): Path2D {
+    private getPath(offset: number): Path2D {
         const ellipsePath = new Path2D();
         const mouseMoveCoord = this.pathLastCoord;
         const centerX = (mouseMoveCoord.x + this.startDownCoord.x) / 2;
@@ -242,7 +242,7 @@ export class EllipseSelectionService extends SelectionToolService {
         return ellipsePath;
     }
 
-    clearCanvasEllipse(): void {
+    private clearCanvasEllipse(): void {
         this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.pathData);
         this.colorService.setPrimaryColor('#FFFFFF');
         this.tracingService.setHasFill(true);
