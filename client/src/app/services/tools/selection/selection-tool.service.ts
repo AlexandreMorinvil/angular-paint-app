@@ -23,22 +23,22 @@ const DOTSIZE = 10;
 })
 export abstract class SelectionToolService extends Tool {
     mouseDownCoord: Vec2;
-    startDownCoord: Vec2;
-    pathLastCoord: Vec2;
-    imageData: ImageData;
-    oldImageData: ImageData;
+    protected startDownCoord: Vec2;
+    protected pathLastCoord: Vec2;
+    protected imageData: ImageData;
+    protected oldImageData: ImageData;
     protected pathData: Vec2[];
-    selectionCreated: boolean;
-    draggingImage: boolean;
-    clickOnAnchor: boolean;
-    anchorHit: number = 0;
-    image: HTMLImageElement;
-    oldImage: HTMLImageElement;
+    protected selectionCreated: boolean;
+    protected draggingImage: boolean;
+    protected clickOnAnchor: boolean;
+    protected anchorHit: number = 0;
+    protected image: HTMLImageElement;
+    protected oldImage: HTMLImageElement;
     shiftDown: boolean;
-    arrowPress: boolean[];
-    arrowDown: boolean;
-    arrowCoord: Vec2;
-    firstTranslation: boolean;
+    protected arrowPress: boolean[];
+    protected arrowDown: boolean;
+    protected arrowCoord: Vec2;
+    protected firstTranslation: boolean;
 
     constructor(drawingService: DrawingService, private color: ColorService, description: Description) {
         super(drawingService, description);
@@ -224,15 +224,19 @@ export abstract class SelectionToolService extends Tool {
     }
 
     protected getOldImageData(mousePosition: Vec2): ImageData {
-        return this.drawingService.baseCtx.getImageData(
-            this.startDownCoord.x,
-            this.startDownCoord.y,
-            (mousePosition.x - this.startDownCoord.x) * 2,
-            (mousePosition.y - this.startDownCoord.y) * 2,
-        );
+        let imageDat: ImageData = new ImageData(1, 1);
+        if (this.startDownCoord.x !== mousePosition.x && this.startDownCoord.y !== mousePosition.y) {
+            imageDat = this.drawingService.baseCtx.getImageData(
+                this.startDownCoord.x,
+                this.startDownCoord.y,
+                (mousePosition.x - this.startDownCoord.x) * 2,
+                (mousePosition.y - this.startDownCoord.y) * 2,
+            );
+        }
+        return imageDat;
     }
 
-    evenImageStartCoord(mousePosition: Vec2): Vec2 {
+    protected evenImageStartCoord(mousePosition: Vec2): Vec2 {
         // tslint:disable:prefer-const
         let startCoord = { x: mousePosition.x - this.imageData.width / 2, y: mousePosition.y - this.imageData.height / 2 };
         if (this.imageData.width % 2 !== 0 || this.imageData.height % 2 !== 0) {
