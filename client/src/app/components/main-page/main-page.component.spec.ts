@@ -1,5 +1,5 @@
 import { HttpClientModule } from '@angular/common/http';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
 import { UserGuideModalComponent } from '@app/components/modal/modal-user-guide/modal-user-guide.component';
@@ -14,17 +14,19 @@ describe('MainPageComponent', () => {
     const dialogRefSpy: jasmine.SpyObj<MatDialogRef<MainPageComponent, any>> = jasmine.createSpyObj('MatDialogRef', ['afterClosed']);
     dialogSpy.open.and.returnValue(dialogRefSpy);
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            imports: [RouterTestingModule, HttpClientModule],
-            declarations: [MainPageComponent, UserGuideModalComponent],
-            providers: [
-                { provide: MAT_DIALOG_DATA, useValue: {} },
-                { provide: MatDialogRef, useValue: {} },
-                { provide: MatDialog, useValue: dialogSpy },
-            ],
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                imports: [RouterTestingModule, HttpClientModule],
+                declarations: [MainPageComponent, UserGuideModalComponent],
+                providers: [
+                    { provide: MAT_DIALOG_DATA, useValue: {} },
+                    { provide: MatDialogRef, useValue: {} },
+                    { provide: MatDialog, useValue: dialogSpy },
+                ],
+            }).compileComponents();
+        }),
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(MainPageComponent);

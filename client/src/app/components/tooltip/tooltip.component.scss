@@ -15,7 +15,7 @@
     border-radius: 3px;
     padding: 10px;
 
-    /* Position the tooltip */ 
+    /* Position the tooltip */
     position: absolute;
     z-index: 1;
     top: 0%;
@@ -24,7 +24,7 @@
 
 // Arrow of the tooltip
 .tooltip::after {
-    content: "";
+    content: '';
     position: absolute;
     top: calc(50% - var(--arrow-size));
     right: 100%;
@@ -32,4 +32,4 @@
     border-width: var(--arrow-size);
     border-style: solid;
     border-color: transparent var(--tooltip-color) transparent transparent;
-  }
+}

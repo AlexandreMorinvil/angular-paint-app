@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
+import { InteractionStartEnd } from '@app/classes/action/interaction-start-end';
 import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { SidesService } from '@app/services/tool-modifier/sides/sides.service';
@@ -23,15 +25,17 @@ export class PolygonService extends Tool {
     private pathData: Vec2[];
     private savedData: Vec2[];
     private angle: number;
+    private radius: number;
 
     constructor(
         drawingService: DrawingService,
+        private drawingStateTrackingService: DrawingStateTrackerService,
         private colorService: ColorService,
         private tracingService: TracingService,
         public widthService: WidthService,
         public sidesService: SidesService,
     ) {
-        super(drawingService, new Description('Polygone', '3', 'polygon_icon.png'));
+        super(drawingService, new Description('polygone', '3', 'polygon_icon.png'));
         this.modifiers.push(this.colorService);
         this.modifiers.push(this.widthService);
         this.modifiers.push(this.tracingService);
@@ -54,6 +58,7 @@ export class PolygonService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.drawPolygon(this.drawingService.baseCtx, this.pathData);
+            this.drawingStateTrackingService.addAction(this, new InteractionStartEnd(this.mouseDownCoord, this.pathData, this.shiftDown));
         }
         this.mouseDown = false;
         this.clearPath();
@@ -74,12 +79,12 @@ export class PolygonService extends Tool {
             } else {
                 this.resetBorder();
             }
-            this.drawPreviewCircle(this.drawingService.previewCtx, this.pathData);
             this.drawPolygon(this.drawingService.previewCtx, this.pathData);
+            this.drawPreviewCircle(this.drawingService.previewCtx, this.pathData);
         }
     }
 
-    private setAttribute(ctx: CanvasRenderingContext2D): void {
+    setAttribute(ctx: CanvasRenderingContext2D): void {
         ctx.lineWidth = this.widthService.getWidth();
         ctx.fillStyle = this.colorService.getPrimaryColor();
         ctx.strokeStyle = this.colorService.getSecondaryColor();
@@ -99,6 +104,7 @@ export class PolygonService extends Tool {
         const radius = Math.sqrt(
             Math.pow(this.mouseDownCoord.x - lastMouseMoveCoord.x, 2) + Math.pow(this.mouseDownCoord.y - lastMouseMoveCoord.y, 2),
         );
+        this.radius = radius;
         for (let i = 0; i < this.sidesService.getSide(); i++) {
             this.savedData.push({
                 x: this.mouseDownCoord.x + radius * Math.cos(this.angle),
@@ -113,21 +119,39 @@ export class PolygonService extends Tool {
             ctx.lineTo(this.savedData[k].x, this.savedData[k].y);
         }
         ctx.closePath();
-        ctx.fill();
         ctx.setLineDash([0]);
         this.setAttribute(ctx);
     }
 
     drawPreviewCircle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
-        const mouseMoveCoord = path[path.length - 1];
-        let radius = Math.sqrt(Math.pow(this.mouseDownCoord.x - mouseMoveCoord.x, 2) + Math.pow(this.mouseDownCoord.y - mouseMoveCoord.y, 2));
         const centerX = this.mouseDownCoord.x;
         const centerY = this.mouseDownCoord.y;
-        if (this.widthService.getWidth() > 1) {
-            radius = radius + this.widthService.getWidth() - 1; /* -1 car le minimum est 1 pixel pk on px pas zero*/
+        const numberMinSide = 5;
+        const numberSquareSide = 4;
+        const numberTriangleSide = 3;
+        const halfCircleAngle = 180;
+        const circleAngle = 360;
+        if (this.tracingService.getHasContour() === true && this.sidesService.getSide() >= numberMinSide) {
+            this.radius = this.radius - this.widthService.getWidth() / 2;
+            const spaceBetweenTwoPolygon =
+                (2 * this.radius * Math.cos((((halfCircleAngle - circleAngle / this.sidesService.getSide()) / 2) * Math.PI) / halfCircleAngle) +
+                    (2 * this.widthService.getWidth()) /
+                        Math.tan((((halfCircleAngle - circleAngle / this.sidesService.getSide()) / 2) * Math.PI) / halfCircleAngle)) /
+                (2 * Math.cos((((halfCircleAngle - circleAngle / this.sidesService.getSide()) / 2) * Math.PI) / halfCircleAngle));
+            this.radius = spaceBetweenTwoPolygon;
+        } else if (this.tracingService.getHasContour() === true && this.sidesService.getSide() === numberSquareSide) {
+            const spaceBetweenTwoSquare = Math.sqrt(Math.pow(this.widthService.getWidth(), 2) + Math.pow(this.widthService.getWidth(), 2));
+            this.radius = this.radius - spaceBetweenTwoSquare / 2;
+            this.radius = this.radius + spaceBetweenTwoSquare;
+        } else if (this.tracingService.getHasContour() === true && this.sidesService.getSide() === numberTriangleSide) {
+            this.radius = this.radius - this.widthService.getWidth();
+            const spaceBetweenTwoTriangle =
+                this.widthService.getWidth() / Math.sin(((halfCircleAngle / numberTriangleSide / 2) * Math.PI) / halfCircleAngle);
+            this.radius = this.radius + spaceBetweenTwoTriangle;
         }
-        ctx.arc(centerX, centerY, radius, 0, this.angle);
+        const angleCircle = 2 * Math.PI;
+        ctx.arc(centerX, centerY, this.radius, 0, angleCircle);
         const lineDashValue = 6;
         ctx.strokeStyle = 'black';
         ctx.setLineDash([lineDashValue]);
@@ -145,5 +169,10 @@ export class PolygonService extends Tool {
     private resetBorder(): void {
         this.drawingService.previewCtx.canvas.width = this.drawingService.baseCtx.canvas.width;
         this.drawingService.previewCtx.canvas.height = this.drawingService.baseCtx.canvas.height;
+    }
+
+    execute(interaction: InteractionStartEnd): void {
+        this.mouseDownCoord = interaction.startPoint;
+        this.drawPolygon(this.drawingService.baseCtx, interaction.path);
     }
 }

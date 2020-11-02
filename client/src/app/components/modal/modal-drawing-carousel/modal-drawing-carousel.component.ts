@@ -150,8 +150,6 @@ export class DrawingCarouselComponent {
     drawingClicked(drawing: DrawingToDatabase) {
         if (this.drawingSelectedPurpose === PurposeofClick.Load) {
             this.loadService.loadDraw(this.getDrawingUrl(drawing));
-
-            this.drawingSelectedPurpose = PurposeofClick.Delete;
         } else if (this.drawingSelectedPurpose === PurposeofClick.Delete) {
             this.memoryService.deleteFromDatabase(drawing._id).then(() => {
                 this.memoryService.getAllFromDatabase().then(() => {
