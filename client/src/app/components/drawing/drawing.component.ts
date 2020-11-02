@@ -1,5 +1,6 @@
 // import { variable } from '@angular/compiler/src/output/output_ast';
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ModalHandlerService } from '@app/services/modal-handler/modal-handler';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
@@ -29,6 +30,7 @@ export class DrawingComponent implements AfterViewInit {
         private drawingService: DrawingService,
         public toolbox: ToolboxService,
         private workzoneSizeService: WorkzoneSizeService,
+        private drawingStateTrackerService: DrawingStateTrackerService,
     ) {}
 
     ngAfterViewInit(): void {
@@ -115,17 +117,25 @@ export class DrawingComponent implements AfterViewInit {
 
     @HostListener('window:keydown', ['$event'])
     onShiftDown(event: KeyboardEvent): void {
-        if (event.key === 'Shift') {
-            this.toolbox.getCurrentTool().onShiftDown(event);
-        } else if (event.key === 'Escape') {
-            this.toolbox.getCurrentTool().onEscapeDown(event);
-            this.hasBeenDrawnOnto = true;
-        } else if (event.ctrlKey && event.key.toLowerCase() === 's') {
-            event.preventDefault(); // to prevent key of windows
-            this.modalHandlerService.openSaveDialog();
-        } else if (event.ctrlKey && event.key.toLowerCase() === 'g') {
-            event.preventDefault(); // to prevent key of windows
-            this.modalHandlerService.openDrawingCarouselDialog();
+        if (this.drawingService.shortcutEnable) {
+            if (event.key === 'Shift') {
+                this.toolbox.getCurrentTool().onShiftDown(event);
+            } else if (event.key === 'Escape') {
+                this.toolbox.getCurrentTool().onEscapeDown(event);
+                this.hasBeenDrawnOnto = true;
+            } else if (event.ctrlKey && event.key.toLowerCase() === 's') {
+                event.preventDefault(); // to prevent key of windows
+                this.modalHandlerService.openSaveDialog();
+            } else if (event.ctrlKey && event.key.toLowerCase() === 'g') {
+                event.preventDefault(); // to prevent key of windows
+                this.modalHandlerService.openDrawingCarouselDialog();
+            } else if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'z') {
+                event.preventDefault(); // to prevent key of windows
+                this.drawingStateTrackerService.onCtrlShiftZDown(event);
+            } else if (event.ctrlKey && event.key.toLowerCase() === 'z') {
+                event.preventDefault(); // to prevent key of windows
+                this.drawingStateTrackerService.onCtrlZDown(event);
+            }
         }
     }
 

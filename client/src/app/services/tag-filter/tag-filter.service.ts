@@ -35,10 +35,12 @@ export class TagFilter {
 
         // List is reinitialised and filters are applied
         this.filteredDrawings = [];
-        for (let drawingtodatabase of listToFilter) {
+        for (let drawing of listToFilter) {
+            //Prevent errors
+            if (typeof drawing.tags === 'undefined') drawing.tags = [];
             for (let tag of this.activeTags) {
-                if (drawingtodatabase.tags.includes(tag.tagName)) {
-                    this.filteredDrawings.push(drawingtodatabase);
+                if (drawing.tags.includes(tag.tagName)) {
+                    this.filteredDrawings.push(drawing);
                     break;
                 }
             }

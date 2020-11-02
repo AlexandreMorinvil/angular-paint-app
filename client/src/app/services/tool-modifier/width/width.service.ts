@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ToolModifier } from '@app/classes/tool-modifier';
+import { WidthModifierState } from './width-state';
 
 @Injectable({
     providedIn: 'root',
@@ -21,5 +22,13 @@ export class WidthService extends ToolModifier {
 
     getWidth(): number {
         return this.width;
+    }
+
+    getState(): WidthModifierState {
+        return new WidthModifierState(this.width);
+    }
+
+    setState(state: WidthModifierState): void {
+        this.width = state.width;
     }
 }

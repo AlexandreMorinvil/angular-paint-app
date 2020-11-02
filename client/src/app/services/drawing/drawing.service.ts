@@ -24,7 +24,23 @@ export class DrawingService {
         }
     }
 
+    printCanvas(image: ImageData): void {
+        this.clearCanvas(this.baseCtx);
+        // this.baseCtx.globalCompositeOperation = 'destination-over';
+        this.baseCtx.fillStyle = 'white';
+        this.baseCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.baseCtx.putImageData(image, 0, 0);
+    }
+
     clearCanvas(context: CanvasRenderingContext2D): void {
         context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    getWidth(): number {
+        return this.canvas.width;
+    }
+
+    getHeight(): number {
+        return this.canvas.height;
     }
 }

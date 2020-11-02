@@ -1,4 +1,5 @@
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { Interaction } from './action/interactions';
 import { Description } from './description';
 import { ToolModifier } from './tool-modifier';
 import { Vec2 } from './vec2';
@@ -7,7 +8,7 @@ import { Vec2 } from './vec2';
 // tslint:disable:no-empty
 export abstract class Tool {
     private description: Description;
-    protected modifiers: ToolModifier[] = [];
+    modifiers: ToolModifier[] = [];
 
     mouseDownCoord: Vec2;
     mouseDown: boolean = false;
@@ -37,8 +38,16 @@ export abstract class Tool {
 
     onShiftUp(event: KeyboardEvent): void {}
 
+    onCtrlShiftZDown(event: KeyboardEvent): void {}
+
+    onCtrlZDown(event: KeyboardEvent): void {}
+
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };
+    }
+
+    execute(interaction: Interaction): void {
+        console.log('It executed');
     }
 
     needsModifierManager(modifier: ToolModifier): boolean {

@@ -6,7 +6,7 @@
             <button (click)="movePrevious()">Précédent</button>
         </div>
         <button class="drawing-form grid-drawing-form" *ngFor="let drawing of getCurrentDrawings()" (click)="drawingClicked(drawing)">
-            <img [src]="getDrawingUrl(drawing)" alt="slide" />
+            <img [src]="getDrawingUrl(drawing)" onerror="this.onerror=null; this.src='assets/images/nothing.png'" />
             <p>{{ drawing.name}}</p>
             <p>{{ drawing.tags}}</p>
         </button>
@@ -19,7 +19,7 @@
         <mat-form-field class="tags">
             <mat-chip-list #chipList aria-label="tag selection">
                 <mat-label>Filtrage par Étiquettes</mat-label>
-                <mat-chip *ngFor="let tag of getTags()" (removed)="removeTag(tag)">
+                <mat-chip *ngFor="let tag of getActiveTags()" (removed)="removeTag(tag)">
                     {{ tag.tagName }}
                     <mat-icon matChipRemove>x</mat-icon>
                 </mat-chip>
@@ -34,6 +34,7 @@
     </div>
 
     <div mat-dialog-actions>
-        <button (click)="deleteDrawingSelected()">Effacer</button>
+        <p>Pour effacer un dessin, appuyer sur le bouton Effacer puis sélectionner le dessin a supprimé</p>
+        <button (click)="deleteDrawingButtonSelected()">Effacer</button>
     </div>
 </div>

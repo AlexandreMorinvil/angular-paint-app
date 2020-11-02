@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ToolModifier } from '@app/classes/tool-modifier';
+import { TracingModifierState } from './tracing-state';
 
 @Injectable({
     providedIn: 'root',
@@ -28,5 +29,14 @@ export class TracingService extends ToolModifier {
 
     setHasContour(input: boolean): void {
         this.hasContour = input;
+    }
+
+    getState(): TracingModifierState {
+        return new TracingModifierState(this.hasContour, this.hasFill);
+    }
+
+    setState(state: TracingModifierState): void {
+        this.hasContour = state.hasContour;
+        this.hasFill = state.hasFill;
     }
 }

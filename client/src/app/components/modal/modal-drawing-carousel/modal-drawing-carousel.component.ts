@@ -4,6 +4,7 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DialogData } from '@app/classes/dialog-data';
 import { FILE_SERVER_BASE_URL } from '@app/services/api/api-drawing/api-drawing.service';
+import { LoadService } from '@app/services/load/load.service';
 import { RemoteMemoryService } from '@app/services/remote-memory/remote-memory.service.ts';
 import { Tag, TagFilter } from '@app/services/tag-filter/tag-filter.service';
 import { DrawingToDatabase } from '@common/communication/drawingtodatabase';
@@ -25,27 +26,37 @@ export class DrawingCarouselComponent {
     visible: boolean = true;
     readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
-    constructor(public memoryService: RemoteMemoryService, public tagFilterService: TagFilter, @Inject(MAT_DIALOG_DATA) public data: DialogData) {
-        this.memoryService.getAllFromDatabase();
-        this.tagFilterService.filterByTag(this.memoryService.drawingsFromDatabase);
-        this.setCurrentImages();
+    constructor(
+        public memoryService: RemoteMemoryService,
+        public tagFilterService: TagFilter,
+        public loadService: LoadService,
+        @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    ) {
+        tagFilterService.activeTags = [];
+        for (let i = 0; i < 3; i++) {
+            this.currentDrawings.push({ _id: null, name: 'En chargement', tags: [] });
+        }
+        this.memoryService.getAllFromDatabase().then(() => {
+            this.setCurrentImages();
+        });
     }
 
     getCurrentDrawings(): DrawingToDatabase[] {
         return this.currentDrawings;
     }
 
-    getTags() {
+    getActiveTags() {
         return this.tagFilterService.activeTags;
     }
 
     getDrawingUrl(drawing: DrawingToDatabase) {
         if (!drawing.name) return 'assets/images/nothing.png';
-        return FILE_SERVER_BASE_URL + 'home_icon.png';
+        return FILE_SERVER_BASE_URL + drawing._id + '.png';
     }
 
     setCurrentImages() {
-        console.log(this.memoryService.drawingsFromDatabase);
+        //console.log(this.memoryService.drawingsFromDatabase);
+        this.tagFilterService.filterByTag(this.memoryService.drawingsFromDatabase);
         this.currentDrawings = [];
         this.currentActivesIndexes = [0, 1, 2];
         for (let i of this.currentActivesIndexes) {
@@ -72,7 +83,6 @@ export class DrawingCarouselComponent {
 
         // Update the carousel
         this.tagFilterService.filterByTag(this.memoryService.drawingsFromDatabase);
-        console.log(this.tagFilterService.filteredDrawings);
         this.setCurrentImages();
     }
 
@@ -89,24 +99,42 @@ export class DrawingCarouselComponent {
     }
 
     movePrevious() {
-        // If there is no more drawings, do nothing
-        const firstIndex: number = 0;
-        if (this.currentActivesIndexes[firstIndex] === 0) return;
+        // If we have below three drawings, dont do anything
+        if (
+            Object.keys(this.currentDrawings[0]).length === 0 ||
+            Object.keys(this.currentDrawings[1]).length === 0 ||
+            Object.keys(this.currentDrawings[2]).length === 0
+        )
+            return;
 
         for (let i = 0; i < this.currentDrawings.length; i++) {
-            this.currentDrawings[i] = this.tagFilterService.filteredDrawings[this.currentActivesIndexes[i] - 1];
-            this.currentActivesIndexes[i] -= 1;
+            if (this.currentActivesIndexes[i] - 1 < 0) {
+                this.currentDrawings[i] = this.tagFilterService.filteredDrawings[this.tagFilterService.filteredDrawings.length - 1];
+                this.currentActivesIndexes[i] = this.tagFilterService.filteredDrawings.length - 1;
+            } else {
+                this.currentDrawings[i] = this.tagFilterService.filteredDrawings[this.currentActivesIndexes[i] - 1];
+                this.currentActivesIndexes[i] -= 1;
+            }
         }
     }
 
     moveNext() {
-        // If there is no more drawings, do nothing
-        const lastIndex: number = 2;
-        if (this.currentActivesIndexes[lastIndex] >= this.tagFilterService.filteredDrawings.length - 1) return;
+        // If we have below three drawings, dont do anything
+        if (
+            Object.keys(this.currentDrawings[0]).length === 0 ||
+            Object.keys(this.currentDrawings[1]).length === 0 ||
+            Object.keys(this.currentDrawings[2]).length === 0
+        )
+            return;
 
         for (let i = 0; i < this.currentDrawings.length; i++) {
-            this.currentDrawings[i] = this.tagFilterService.filteredDrawings[this.currentActivesIndexes[i] + 1];
-            this.currentActivesIndexes[i] += 1;
+            if (this.currentActivesIndexes[i] + 1 > this.tagFilterService.filteredDrawings.length - 1) {
+                this.currentDrawings[i] = this.tagFilterService.filteredDrawings[0];
+                this.currentActivesIndexes[i] = 0;
+            } else {
+                this.currentDrawings[i] = this.tagFilterService.filteredDrawings[this.currentActivesIndexes[i] + 1];
+                this.currentActivesIndexes[i] += 1;
+            }
         }
     }
 
@@ -121,21 +149,21 @@ export class DrawingCarouselComponent {
 
     drawingClicked(drawing: DrawingToDatabase) {
         if (this.drawingSelectedPurpose === PurposeofClick.Load) {
-            //load drawing
-            console.log('dessin charge');
-        }
-        if (this.drawingSelectedPurpose === PurposeofClick.Delete) {
-            //deletedrawing
-            console.log('dessin supprime');
+            this.loadService.loadDraw(this.getDrawingUrl(drawing));
+        } else if (this.drawingSelectedPurpose === PurposeofClick.Delete) {
+            this.memoryService.deleteFromDatabase(drawing._id).then(() => {
+                this.memoryService.getAllFromDatabase().then(() => {
+                    this.setCurrentImages();
+                });
+            });
+            this.drawingSelectedPurpose = PurposeofClick.Load;
         }
     }
 
-    deleteDrawingSelected() {
+    deleteDrawingButtonSelected() {
         if (this.drawingSelectedPurpose === PurposeofClick.Load) {
             this.drawingSelectedPurpose = PurposeofClick.Delete;
-            //afficher message que le user doit choisir un message a supprimé
-        }
-        if (this.drawingSelectedPurpose === PurposeofClick.Delete) {
+        } else if (this.drawingSelectedPurpose === PurposeofClick.Delete) {
             this.drawingSelectedPurpose = PurposeofClick.Load;
         }
     }

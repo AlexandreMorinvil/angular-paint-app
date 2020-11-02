@@ -5,7 +5,7 @@ import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 export const BASE_URL: string = 'http://localhost:3000/api/drawing/';
-export const FILE_SERVER_BASE_URL: string = 'http://localhost:3000/files/';
+export const FILE_SERVER_BASE_URL: string = 'http://localhost:3000/files/images/';
 
 @Injectable({
     providedIn: 'root',
@@ -37,8 +37,8 @@ export class ApiDrawingService {
         return this.http.patch<DrawingToDatabase>(BASE_URL + id, drawingtodatabase).pipe(catchError(this.handleError<DrawingToDatabase>('update')));
     }
 
-    delete(id: string): Observable<void> {
-        return this.http.delete<void>(BASE_URL + id).pipe(catchError(this.handleError<void>('')));
+    delete(id: string): Observable<string> {
+        return this.http.delete<string>(BASE_URL + id).pipe(catchError(this.handleError<string>('delete')));
     }
 
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {

@@ -1,6 +1,5 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TextureEnum, TextureService } from '@app/services/tool-modifier/texture/texture.service';
-
 import { AttributeTextureComponent } from './attributes-texture.component';
 
 describe('AttributeTextureComponent', () => {
@@ -8,12 +7,14 @@ describe('AttributeTextureComponent', () => {
     let fixture: ComponentFixture<AttributeTextureComponent>;
     let textureService: TextureService;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [AttributeTextureComponent],
-            providers: [TextureService],
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                declarations: [AttributeTextureComponent],
+                providers: [TextureService],
+            }).compileComponents();
+        }),
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(AttributeTextureComponent);

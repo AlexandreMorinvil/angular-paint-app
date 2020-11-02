@@ -37,6 +37,7 @@ export class DatabaseController {
         });
 
         this.router.get(this.ROUTING_GET_DRAWING_ID, async (req: Request, res: Response, next: NextFunction) => {
+            console.log('passe par le get');
             this.databaseService
                 .getDrawing(req.params.drawingId)
                 .then((drawing: DrawingToDatabase) => {
