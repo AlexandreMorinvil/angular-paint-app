@@ -34,8 +34,7 @@ export class Application {
 
     bindRoutes(): void {
         // Notre application utilise le routeur de notre API `Index`
-        this.app.use('/files', express.static(__dirname + '/../drawings'));
-        // this.app.use('/api/index', this.indexController.router);
+        //this.app.use('/files', express.static(__dirname + '/../drawings'));
         this.app.use('/api/drawing', this.databaseController.router);
         this.errorHandling();
     }

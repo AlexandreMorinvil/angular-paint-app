@@ -24,6 +24,9 @@ export class DatabaseService {
     private readonly ERROR_UPDATE_DRAWING: string = 'Échec lors de la tentative de mise à jour du dessin';
     private readonly ERROR_NO_DRAWING_FOUND: string = "Le dessin demandé n'a pas été trouvé";
     private readonly ERROR_GET_ALL_DRAWING: string = 'Échec lors de la tentative de récupération de tous les dessins';
+    private readonly ERROR_ADD_DRAWING: string = "Échec lors de l'ajout du dessin";
+    private readonly ERROR_GET_DRAWING_BY_TAG: string = "Échec lors de la tentative de récupération de tous les dessins ayant l'étiquettes";
+    private readonly ERROR_GET_DRAWING_BY_NAME: string = 'Échec lors de la tentative de récupération de tous les dessins nommés';
     private readonly CONNECTION_ERROR: string = 'CONNECTION ERROR. EXITING PROCESS';
 
     private options: MongoClientOptions = {
@@ -31,7 +34,7 @@ export class DatabaseService {
         useUnifiedTopology: true,
     };
 
-    start(): void {
+    constructor() {
         MongoClient.connect(DATABASE_URL, this.options)
             .then((client: MongoClient) => {
                 this.client = client;
@@ -59,7 +62,7 @@ export class DatabaseService {
     async getDrawing(drawingID: string): Promise<DrawingToDatabase> {
         try {
             const drawing: DrawingToDatabase | null = await this.collection.findOne({ _id: new ObjectID(drawingID) });
-            if (!drawing) throw new Error(this.ERROR_NO_DRAWING_FOUND);
+            if (drawing == null) throw new Error(this.ERROR_NO_DRAWING_FOUND);
             return drawing;
         } catch (error) {
             throw error;
@@ -71,7 +74,7 @@ export class DatabaseService {
             const drawings: DrawingToDatabase[] = await this.collection.find({ name: drawingName }).toArray();
             return drawings;
         } catch (error) {
-            throw new Error(`Échec lors de la tentative de récupération de tous les dessins nommés ${drawingName}`);
+            throw new Error(this.ERROR_GET_DRAWING_BY_NAME + drawingName);
         }
     }
 
@@ -80,7 +83,7 @@ export class DatabaseService {
             const drawings: DrawingToDatabase[] = await this.collection.find({ tags: drawingTag }).toArray();
             return drawings;
         } catch (error) {
-            throw new Error(`Échec lors de la tentative de récupération de tous les dessins ayant l'étiquettes ${drawingTag}`);
+            throw new Error(this.ERROR_GET_DRAWING_BY_TAG + drawingTag);
         }
     }
 
@@ -90,7 +93,7 @@ export class DatabaseService {
             this.drawId = await (await this.collection.insertOne(drawing)).insertedId.toString();
             return;
         } catch (error) {
-            throw error;
+            throw new Error(this.ERROR_ADD_DRAWING);
         }
     }
 
