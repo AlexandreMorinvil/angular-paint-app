@@ -18,7 +18,8 @@ import { PaintService } from '@app/services/tools/paint/paint.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
-import { SelectionToolService } from '@app/services/tools/selection/selection-tool.service';
+import { RectangleSelectionService } from '@app/services/tools/selection/rectangle-selection.service';
+import { EllipseSelectionService } from '@app/services/tools/selection/ellipse-selection.service';
 import { SidebarComponent } from './sidebar.component';
 class ToolStub extends Tool {}
 
@@ -49,7 +50,9 @@ describe('SidebarComponent', () => {
             {} as PolygonService,
             {} as ColorPickerService,
             {} as PaintService,
-            {} as SelectionToolService,
+            {} as RectangleSelectionService,
+            {} as EllipseSelectionService,
+            // {} as DrawingService,
         );
 
         TestBed.configureTestingModule({

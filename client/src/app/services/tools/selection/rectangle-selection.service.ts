@@ -33,7 +33,7 @@ export class RectangleSelectionService extends SelectionToolService {
         if (this.selectionCreated && this.hitSelection(this.mouseDownCoord.x, this.mouseDownCoord.y)) {
             this.pathData.push(this.pathLastCoord);
             // Puts back what was under the selection
-            if (this.firstTranslation) {
+            if (this.hasDoneFirstTranslation) {
                 this.putImageData(this.startDownCoord, this.drawingService.baseCtx, this.oldImageData);
             }
             // Puts a white rectangle on selection original placement
@@ -89,7 +89,7 @@ export class RectangleSelectionService extends SelectionToolService {
             this.drawingService.previewCtx.stroke();
             this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
             this.draggingImage = false;
-            this.firstTranslation = true;
+            this.hasDoneFirstTranslation = true;
             // creation
         } else if (this.mouseDown) {
             if (this.rectangleService.shiftDown) {
@@ -106,7 +106,7 @@ export class RectangleSelectionService extends SelectionToolService {
             this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
             this.selectionCreated = true;
             this.pathLastCoord = this.pathData[this.pathData.length - 1];
-            this.firstTranslation = false;
+            this.hasDoneFirstTranslation = false;
         }
         this.mouseDown = false;
         this.clearPath();

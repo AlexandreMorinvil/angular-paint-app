@@ -38,7 +38,7 @@ export abstract class SelectionToolService extends Tool {
     protected arrowPress: boolean[];
     protected arrowDown: boolean;
     protected arrowCoord: Vec2;
-    protected firstTranslation: boolean;
+    protected hasDoneFirstTranslation: boolean;
 
     constructor(drawingService: DrawingService, private color: ColorService, description: Description) {
         super(drawingService, description);
@@ -50,10 +50,10 @@ export abstract class SelectionToolService extends Tool {
         this.image = new Image();
         this.oldImage = new Image();
         this.shiftDown = false;
-        this.firstTranslation = false;
+        this.hasDoneFirstTranslation = false;
     }
 
-    onEscapeDown(event: KeyboardEvent): void {
+    onEscapeDown(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.selectionCreated = false;
         this.arrowDown = true;
@@ -180,6 +180,7 @@ export abstract class SelectionToolService extends Tool {
                 this.arrowPress[3] = true;
                 break;
             default:
+                this.arrowDown = false;
                 break;
         }
 
