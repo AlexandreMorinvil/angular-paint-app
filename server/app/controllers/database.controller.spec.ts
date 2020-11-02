@@ -46,7 +46,6 @@ describe('DatabaseController', () => {
     let application: Express.Application;
     let databaseController: DatabaseController;
     let databaseService: Stubbed<DatabaseService>;
-    let time: sinon.SinonFakeTimers;
 
     beforeEach(async () => {
         const [container, sandbox] = await testingContainer();

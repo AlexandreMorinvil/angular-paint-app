@@ -17,9 +17,9 @@ describe('Database service', () => {
     let client: MongoClient;
     let testDrawing: DrawingToDatabase;
 
-    const DATABASE_URL = 'mongodb+srv://team106:secret106@cluster0.fspbf.azure.mongodb.net/integrator-project?retryWrites=true&w=majority';
-    const DATABASE_NAME = 'integrator-project';
-    const DATABASE_COLLECTION = 'drawing';
+    // const DATABASE_URL = 'mongodb+srv://team106:secret106@cluster0.fspbf.azure.mongodb.net/integrator-project?retryWrites=true&w=majority';
+    // const DATABASE_NAME = 'integrator-project';
+    // const DATABASE_COLLECTION = 'drawing';
     //const ERROR_NO_DRAWING_FOUND: string = "Le dessin demandé n'a pas été trouvé";
 
     beforeEach(async () => {
