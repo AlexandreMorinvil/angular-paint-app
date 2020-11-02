@@ -15,11 +15,11 @@ export class DatabaseController {
     private readonly ROUTING_GET_TAG: string = '/tag/:tag';
     private readonly ROUTING_PATCH: string = '/:drawingId';
     private readonly ROUTING_DELETE: string = '/:drawingId';
-    private readonly ERROR_NO_IMAGE_SOURCE: string = 'Le dessin a pas une image source';
+    private readonly PATH_SAVE_IMAGE_TO_SERVER: string = './drawings/images';
 
     constructor(@inject(TYPES.DatabaseService) private databaseService: DatabaseService) {
         this.configureRouter();
-        this.databaseService.start();
+        //this.databaseService.start();
     }
 
     private configureRouter(): void {
@@ -81,8 +81,9 @@ export class DatabaseController {
                 .then(() => {
                     try {
                         const imageSource: string = req.body.imageSrc;
-                        this.valideImageSource(imageSource);
-                        this.saveDrawIntoImageFolder(imageSource, this.databaseService.drawId);
+                        if (this.valideImageSource(imageSource)) {
+                            this.saveDrawIntoImageFolder(imageSource, this.databaseService.drawId, this.PATH_SAVE_IMAGE_TO_SERVER);
+                        }
                     } catch (error) {
                         throw error;
                     }
@@ -108,9 +109,9 @@ export class DatabaseController {
             this.databaseService
                 .deleteDrawing(req.params.drawingId)
                 .then(() => {
-                    //supprimer dans server
+                    // supprimer dans server
                     const id: string = req.params.drawingId;
-                    this.deleteDrawIntoImageFolder(id);
+                    this.deleteDrawIntoImageFolder(id, this.PATH_SAVE_IMAGE_TO_SERVER);
                     res.status(StatusCodes.NO_CONTENT).send();
                 })
                 .catch((error: Error) => {
@@ -119,21 +120,23 @@ export class DatabaseController {
         });
     }
 
-    private saveDrawIntoImageFolder(imageSource: string, id: string): void {
+    private saveDrawIntoImageFolder(imageSource: string, id: string, path: string): void {
+        // tslint:disable:no-require-imports
         const fs = require('fs');
         const nameDirectory = '/' + id + '.png';
-        if (imageSource === undefined) return;
         let img64 = imageSource.replace('data:image/png;base64,', '');
         img64 = img64.split(/\s/).join('');
-        fs.writeFileSync('./drawings/images' + nameDirectory, img64, { encoding: 'base64' });
+        console.log(img64);
+        fs.writeFileSync(path + nameDirectory, img64, { encoding: 'base64' });
     }
 
-    private deleteDrawIntoImageFolder(id: string) {
+    private deleteDrawIntoImageFolder(id: string, path: string): void {
+        // tslint:disable:no-require-imports
         const fs = require('fs');
-        const path: string = './drawings/images/' + id + '.png';
-        fs.unlinkSync(path);
+        const pathToUnlink: string = path + '/' + id + '.png';
+        fs.unlinkSync(pathToUnlink);
     }
-    private valideImageSource(source: string): void {
-        if (source == '' || source == undefined) throw new Error(this.ERROR_NO_IMAGE_SOURCE);
+    private valideImageSource(source: string): boolean {
+        return !(source === '');
     }
 }
