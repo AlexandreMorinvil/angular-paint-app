@@ -80,13 +80,9 @@ export class DatabaseController {
             this.databaseService
                 .addDrawing(drawingToDatabase)
                 .then(() => {
-                    try {
-                        const imageSource: string = req.body.imageSrc;
-                        if (this.valideImageSource(imageSource)) {
-                            this.saveDrawIntoImageFolder(imageSource, this.databaseService.drawId, this.PATH_SAVE_IMAGE_TO_SERVER);
-                        }
-                    } catch (error) {
-                        throw error;
+                    const imageSource: string = req.body.imageSrc;
+                    if (this.valideImageSource(imageSource)) {
+                        this.saveDrawIntoImageFolder(imageSource, this.databaseService.drawId, this.PATH_SAVE_IMAGE_TO_SERVER);
                     }
                     res.status(StatusCodes.CREATED).send();
                 })
