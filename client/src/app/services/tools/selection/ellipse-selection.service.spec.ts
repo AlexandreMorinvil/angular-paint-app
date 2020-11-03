@@ -435,7 +435,7 @@ describe('EllipseSelectionService', () => {
         expect(tracingService.getHasContour()).toEqual(true);
     });
 
-    fit('should ... correctly after showSelection', () => {
+    it('should ... correctly after showSelection', () => {
         (service as any).startDownCoord = { x: 14, y: 14 };
         (service as any).pathLastCoord = { x: 10, y: 10 };
         (service as any).imageData = { width: 10, height: 10 };
