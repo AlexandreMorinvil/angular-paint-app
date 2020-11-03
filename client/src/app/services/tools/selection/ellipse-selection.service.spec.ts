@@ -16,7 +16,6 @@ describe('EllipseSelectionService', () => {
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let canvasStub: HTMLCanvasElement;
-    // let imageStub: HTMLImageElement;
     let mouseEventNotInCanvas: MouseEvent;
     let mouseEvent25: MouseEvent;
     let mouseEvent50: MouseEvent;
@@ -29,11 +28,16 @@ describe('EllipseSelectionService', () => {
 
     let resetTransformSpy: jasmine.Spy<any>;
     let onMouseDownSpy: jasmine.Spy<any>;
+    let onMouseUpSpy: jasmine.Spy<any>;
+    let onMouseMoveSpy: jasmine.Spy<any>;
     let clearCanvasEllipseSpy: jasmine.Spy<any>;
     let showSelectionSpy: jasmine.Spy<any>;
     let offsetAnchorsSpy: jasmine.Spy<any>;
     let getSquaredSizeSpy: jasmine.Spy<any>;
     let clearPathSpy: jasmine.Spy<any>;
+    let createOnMouseMoveEventSpy: jasmine.Spy<any>;
+    let checkArrowHitSpy: jasmine.Spy<any>;
+    let onArrowDownSpy: jasmine.Spy<any>;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     let ellipseServiceSpy: jasmine.SpyObj<EllipseService>;
 
@@ -43,7 +47,7 @@ describe('EllipseSelectionService', () => {
         canvasStub = canvasTestHelper.canvas;
 
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
-        ellipseServiceSpy = jasmine.createSpyObj('EllipseService', ['onMouseMove']);
+        ellipseServiceSpy = jasmine.createSpyObj('EllipseService', ['onMouseMove', 'drawEllipse', 'drawPreviewRect']);
 
         TestBed.configureTestingModule({
             providers: [
@@ -61,8 +65,12 @@ describe('EllipseSelectionService', () => {
         offsetAnchorsSpy = spyOn<any>(service as any, 'offsetAnchors').and.callThrough();
         getSquaredSizeSpy = spyOn<any>(service as any, 'getSquaredSize').and.callThrough();
         onMouseDownSpy = spyOn<any>(service, 'onMouseDown').and.callThrough();
+        onMouseUpSpy = spyOn<any>(service, 'onMouseUp').and.callThrough();
+        onMouseMoveSpy = spyOn<any>(service, 'onMouseMove').and.callThrough();
         clearPathSpy = spyOn<any>(service, 'clearPath').and.callThrough();
-
+        createOnMouseMoveEventSpy = spyOn<any>(service, 'createOnMouseMoveEvent').and.callThrough();
+        checkArrowHitSpy = spyOn<any>(service, 'checkArrowHit').and.callThrough();
+        onArrowDownSpy = spyOn<any>(service, 'onArrowDown').and.callThrough();
         const canvasWidth = 1000;
         const canvasHeight = 800;
         // tslint:disable:no-string-literal
@@ -297,43 +305,120 @@ describe('EllipseSelectionService', () => {
     it('should on shiftDown', () => {
         const keyboardEvent = {} as KeyboardEvent;
         service.onShiftDown(keyboardEvent);
+        expect((service as any).ellipseService.shiftDown).toBeTrue();
+        expect(createOnMouseMoveEventSpy).toHaveBeenCalled();
     });
 
     it('should on onShiftUp', () => {
         const keyboardEvent = {} as KeyboardEvent;
         service.onShiftUp(keyboardEvent);
+        expect((service as any).ellipseService.shiftDown).toBeFalse();
+        expect(createOnMouseMoveEventSpy).toHaveBeenCalled();
     });
 
     it('should on arrowDown', () => {
         const keyboardEvent = {} as KeyboardEvent;
+        (service as any).startDownCoord = { x: 14, y: 14 };
+        (service as any).imageData = { width: 10, height: 10 };
+        (service as any).arrowDown = true;
+        (service as any).ellipseService.pathData = pathTest;
+
         service.onArrowDown(keyboardEvent);
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect(showSelectionSpy).toHaveBeenCalled();
+        expect((service as any).draggingImage).toBeFalse();
     });
     it('should on arrowDown', () => {
         (service as any).arrowDown = false;
         const keyboardEvent = {} as KeyboardEvent;
+        (service as any).startDownCoord = { x: 14, y: 14 };
+        (service as any).pathLastCoord = { x: 10, y: 10 };
+        (service as any).arrowPress = [true, false, false, false];
+        (service as any).imageData = { width: 10, height: 10 };
         (service as any).selectionCreated = true;
+        (service as any).draggingImage = true;
+        (service as any).mouseDown = true;
+        service.firstEllipseCoord = { x: 0, y: 20 };
+        service.mouseDownCoord = { x: 1, y: 1 };
+        (service as any).pathData = pathTest;
+
         service.onArrowDown(keyboardEvent);
+        expect((service as any).arrowCoord).toEqual({ x: 24, y: 24 });
+        expect((service as any).ellipseService.mouseDownCoord).toEqual({ x: 14, y: 14 });
+        expect(clearCanvasEllipseSpy).toHaveBeenCalled();
+        expect(checkArrowHitSpy).toHaveBeenCalled();
     });
     it('should on arrowUp', () => {
         const keyboardEvent = {} as KeyboardEvent;
+        (service as any).startDownCoord = { x: 14, y: 14 };
+        (service as any).pathLastCoord = { x: 10, y: 10 };
+        (service as any).arrowPress = [false, false, false, false];
+        (service as any).imageData = { width: 10, height: 10 };
         (service as any).selectionCreated = true;
+        (service as any).mouseDown = true;
+        service.firstEllipseCoord = { x: 0, y: 20 };
+        service.mouseDownCoord = { x: 1, y: 1 };
+        (service as any).pathData = pathTest;
+        service.onArrowUp(keyboardEvent);
+
+        expect((service as any).arrowDown).toBeFalse();
+        expect(clearPathSpy).toHaveBeenCalled();
+        expect((service as any).ellipseService.mouseDownCoord).toEqual((service as any).startDownCoord);
+        expect(clearCanvasEllipseSpy).toHaveBeenCalled();
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect((service as any).draggingImage).toBeFalse();
+    });
+
+    it('should on arrowUp', () => {
+        const keyboardEvent = {} as KeyboardEvent;
+        (service as any).startDownCoord = { x: 14, y: 14 };
+        (service as any).pathLastCoord = { x: 10, y: 10 };
+        (service as any).arrowPress = [true, true, true, true];
+        (service as any).imageData = { width: 10, height: 10 };
+        (service as any).selectionCreated = true;
+        (service as any).mouseDown = true;
+        service.firstEllipseCoord = { x: 0, y: 20 };
+        service.mouseDownCoord = { x: 1, y: 1 };
+        (service as any).pathData = pathTest;
+        (service as any).arrowDown = true;
 
         service.onArrowUp(keyboardEvent);
+        expect(onArrowDownSpy).toHaveBeenCalled();
+    });
+    it('should on arrowUp', () => {
+        (service as any).selectionCreated = false;
+        const keyboardEvent = {} as KeyboardEvent;
+        service.onArrowUp(keyboardEvent);
+        expect(onArrowDownSpy).not.toHaveBeenCalled();
     });
 
-    it('should on onCtrlADown', () => {
+    it('should on onCtrlADown assign values correctly', () => {
         service.onCtrlADown();
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect(resetTransformSpy).toHaveBeenCalled();
+        expect((service as any).mouseDown).toBeTrue();
+        expect((service as any).startDownCoord).toEqual({ x: 0, y: 0 });
+        expect((service as any).firstEllipseCoord).toEqual({ x: 0, y: 0 });
+        expect((service as any).ellipseService.mouseDownCoord).toEqual({ x: 0, y: 0 });
+
+        expect(onMouseUpSpy).toHaveBeenCalled();
     });
 
-    it('should on call on mouse move if mouse is not down for createOnMouseMoveEvent', () => {
+    it('should on call on mouse move event if mouseDown is set to true for createOnMouseMoveEvent', () => {
         service.mouseDown = true;
         (service as any).pathData = pathTest;
         (service as any).createOnMouseMoveEvent();
+        expect(onMouseMoveSpy).toHaveBeenCalled();
     });
-    it('should on call on mouse move if mouse is not down for createOnMouseMoveEvent', () => {
+    it('should not call on mouse move event if mouseDown is set to false for createOnMouseMoveEvent', () => {
         service.mouseDown = false;
+        (service as any).startDownCoord = { x: 14, y: 14 };
+
         (service as any).pathData = pathTest;
+        (service as any).ellipseService.shiftDown = true;
+
         (service as any).createOnMouseMoveEvent();
+        expect(onMouseMoveSpy).not.toHaveBeenCalled();
     });
 
     /* it('should set correctly after resetTransform', () => {
