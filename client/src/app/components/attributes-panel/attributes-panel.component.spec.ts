@@ -11,18 +11,24 @@ import { ToolboxService } from '@app/services/toolbox/toolbox.service';
 import { AttributesPanelComponent } from './attributes-panel.component';
 class ToolStub extends Tool {}
 
+// The disablement of the "any" tslint rule is justified in this situation as the prototype
+// of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
+// tslint:disable:no-any
 describe('AttributesPanelComponent', () => {
     let component: AttributesPanelComponent;
     let fixture: ComponentFixture<AttributesPanelComponent>;
     let toolStub: ToolStub;
+    const canvasWidth = 1200;
+    const canvasHeight = 1000;
 
     // Service
-    let toolBoxSercive: ToolboxService;
+    let toolBoxService: ToolboxService;
     let junctionService: JunctionService;
     let textureService: TextureService;
     let tracingService: TracingService;
     let widthService: WidthService;
-    let drawServiceSpy: jasmine.SpyObj<DrawingService>;
+    let previewCtxStub: CanvasRenderingContext2D;
+    let canvasStub: HTMLCanvasElement;
 
     beforeEach(
         waitForAsync(() => {
@@ -34,18 +40,21 @@ describe('AttributesPanelComponent', () => {
     );
 
     beforeEach(() => {
-        //previewCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+        previewCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+        canvasStub = canvasTestHelper.canvas;
         fixture = TestBed.createComponent(AttributesPanelComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
         toolStub = new ToolStub({} as DrawingService, {} as Description);
-        toolBoxSercive = TestBed.inject(ToolboxService);
+        toolBoxService = TestBed.inject(ToolboxService);
         junctionService = TestBed.inject(JunctionService);
         textureService = TestBed.inject(TextureService);
         tracingService = TestBed.inject(TracingService);
         widthService = TestBed.inject(WidthService);
-       
+        (toolBoxService as any).drawingService.previewCtx = previewCtxStub;
+        (toolBoxService as any).drawingService.canvas = canvasStub;
+        (toolBoxService as any).drawingService.canvas.width = canvasWidth;
+        (toolBoxService as any).drawingService.canvas.height = canvasHeight;
     });
 
     it('should create', () => {
@@ -62,7 +71,7 @@ describe('AttributesPanelComponent', () => {
     it('if the current tool possesses a junction modifier there should be a need for a junction atrribute modifier', () => {
         // tslint:disable-next-line:no-string-literal
         toolStub['modifiers'] = [junctionService];
-        toolBoxSercive.setSelectedTool(toolStub);
+        toolBoxService.setSelectedTool(toolStub);
         const expectedOutput = true;
         const ouput = component.needsJunctionAttribute();
         expect(ouput).toEqual(expectedOutput);
@@ -71,7 +80,7 @@ describe('AttributesPanelComponent', () => {
     it('if the current tool does not possess a junction modifier there should be a need for a junction atrribute modifier', () => {
         // tslint:disable-next-line:no-string-literal
         toolStub['modifiers'] = [];
-        toolBoxSercive.setSelectedTool(toolStub);
+        toolBoxService.setSelectedTool(toolStub);
         const expectedOutput = false;
         const ouput = component.needsJunctionAttribute();
         expect(ouput).toEqual(expectedOutput);
@@ -80,7 +89,7 @@ describe('AttributesPanelComponent', () => {
     it('if the current tool possesses a texture modifier there should be a need for a texture atrribute modifier', () => {
         // tslint:disable-next-line:no-string-literal
         toolStub['modifiers'] = [textureService];
-        toolBoxSercive.setSelectedTool(toolStub);
+        toolBoxService.setSelectedTool(toolStub);
         const expectedOutput = true;
         const ouput = component.needsTextureAttribute();
         expect(ouput).toEqual(expectedOutput);
@@ -89,7 +98,7 @@ describe('AttributesPanelComponent', () => {
     it('if the current tool does not possesses a texture modifier there should be a need for a texture atrribute modifier', () => {
         // tslint:disable-next-line:no-string-literal
         toolStub['modifiers'] = [];
-        toolBoxSercive.setSelectedTool(toolStub);
+        toolBoxService.setSelectedTool(toolStub);
         const expectedOutput = false;
         const ouput = component.needsTextureAttribute();
         expect(ouput).toEqual(expectedOutput);
@@ -98,7 +107,7 @@ describe('AttributesPanelComponent', () => {
     it('if the current tool possesses a tracing modifier there should be a need for a tracing atrribute modifier', () => {
         // tslint:disable-next-line:no-string-literal
         toolStub['modifiers'] = [tracingService];
-        toolBoxSercive.setSelectedTool(toolStub);
+        toolBoxService.setSelectedTool(toolStub);
         const expectedOutput = true;
         const ouput = component.needsTracingAttribute();
         expect(ouput).toEqual(expectedOutput);
@@ -107,7 +116,7 @@ describe('AttributesPanelComponent', () => {
     it('if the current tool does not possess a tracing modifier there should be a need for a tracing atrribute modifier', () => {
         // tslint:disable-next-line:no-string-literal
         toolStub['modifiers'] = [];
-        toolBoxSercive.setSelectedTool(toolStub);
+        toolBoxService.setSelectedTool(toolStub);
         const expectedOutput = false;
         const ouput = component.needsTracingAttribute();
         expect(ouput).toEqual(expectedOutput);
@@ -116,7 +125,7 @@ describe('AttributesPanelComponent', () => {
     it('if the current tool possesses a width modifier there should be a need for a width atrribute modifier', () => {
         // tslint:disable-next-line:no-string-literal
         toolStub['modifiers'] = [widthService];
-        toolBoxSercive.setSelectedTool(toolStub);
+        toolBoxService.setSelectedTool(toolStub);
         const expectedOutput = true;
         const ouput = component.needsWidthAttribute();
         expect(ouput).toEqual(expectedOutput);
@@ -125,7 +134,7 @@ describe('AttributesPanelComponent', () => {
     it('if the current tool does not possesses a width modifier there should be a need for a width atrribute modifier', () => {
         // tslint:disable-next-line:no-string-literal
         toolStub['modifiers'] = [];
-        toolBoxSercive.setSelectedTool(toolStub);
+        toolBoxService.setSelectedTool(toolStub);
         const expectedOutput = false;
         const ouput = component.needsWidthAttribute();
         expect(ouput).toEqual(expectedOutput);

@@ -1,9 +1,9 @@
-// tslint:disable:ordered-imports
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
@@ -40,6 +40,8 @@ describe('SidebarComponent', () => {
     let redoSpy: jasmine.Spy<any>;
     let resetDrawingWithWarningSpy: jasmine.Spy<any>;
     let openGuideSpy: jasmine.Spy<any>;
+    let previewCtxStub: CanvasRenderingContext2D;
+    let canvasStub: HTMLCanvasElement;
     // let openSaveDialogSpy: jasmine.Spy<any>;
 
     beforeEach(
@@ -94,7 +96,6 @@ describe('SidebarComponent', () => {
         component = fixture.componentInstance;
         component['toolboxSevice'] = toolserviceMock;
         routerSpy = spyOn<any>(component['router'], 'navigate').and.callThrough();
-
         resetDrawingWithWarningSpy = spyOn<any>(component['drawingService'], 'resetDrawingWithWarning');
         openGuideSpy = spyOn<any>(component['modalHandler'], 'openUserGuide');
         // openSaveDialogSpy = spyOn<any>(component['modalHandler'], 'openSaveDialog');
@@ -120,6 +121,15 @@ describe('SidebarComponent', () => {
     });
 
     it('should set currentTool to right stubTool', () => {
+        const canvasWidth = 1200;
+        const canvasHeight = 1000;
+        previewCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+        canvasStub = canvasTestHelper.canvas;
+        (toolserviceMock as any).drawingService = drawingStub;
+        (toolserviceMock as any).drawingService.previewCtx = previewCtxStub;
+        (toolserviceMock as any).drawingService.canvas = canvasStub;
+        (toolserviceMock as any).drawingService.canvas.width = canvasWidth;
+        (toolserviceMock as any).drawingService.canvas.height = canvasHeight;
         component.setCurrentTool({} as PencilService);
         expect(component.getCurrentTool()).toEqual({} as PencilService);
     });

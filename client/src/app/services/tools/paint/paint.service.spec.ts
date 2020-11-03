@@ -8,12 +8,13 @@ import { PaintService } from './paint.service';
 
 describe('PaintService', () => {
     let service: PaintService;
-    // let mouseEvent: MouseEvent;
+    let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     let colorService: ColorService;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let canvasStub: HTMLCanvasElement;
+
     // The disablement of the "any" tslint rule is justified in this situation as the prototype
     // of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
     // tslint:disable:no-any
@@ -54,44 +55,45 @@ describe('PaintService', () => {
         service['drawingService'].baseCtx.fillStyle = '#000100';
         service['drawingService'].baseCtx.fillRect(50, 50, 50, 50);
 
-        // mouseEvent = {
-        //     offsetX: 25,
-        //     offsetY: 25,
-        //     button: 0,
-        // } as MouseEvent;
+        mouseEvent = {
+            offsetX: 25,
+            offsetY: 25,
+            button: 0,
+        } as MouseEvent;
     });
 
     it('should be created', () => {
         expect(service).toBeTruthy();
     });
 
-    // it(' Left click should call floodFill ', () => {
-    //     service.onMouseDown(mouseEvent);
-    //     expect(floodFillSpy).toHaveBeenCalled();
-    // });
+    it(' Left click should call floodFill ', () => {
+        service.onMouseDown(mouseEvent);
+        expect(floodFillSpy).toHaveBeenCalled();
+    });
 
-    // it(' Right click should call sameColorFill ', () => {
-    //     let mouseEvent2 = {
-    //         offsetX: 25,
-    //         offsetY: 25,
-    //         button: 2,
-    //     } as MouseEvent;
-    //     service.onMouseDown(mouseEvent2);
-    //     expect(sameColorFillSpy).toHaveBeenCalled();
-    // });
+    it(' Right click should call sameColorFill ', () => {
+        const mouseEvent2 = {
+            offsetX: 25,
+            offsetY: 25,
+            button: 2,
+        } as MouseEvent;
+        service.onMouseDown(mouseEvent2);
+        expect(sameColorFillSpy).toHaveBeenCalled();
+    });
 
-    // it(' should make sure that matchStartColor verify correctly with fill rgb and target surface', () => {
-    //     colorService.setPrimaryColor('#010102');
+    // Doesn't work
+    /* it(' should make sure that matchStartColor verify correctly with fill rgb and target surface', () => {
+        colorService.setPrimaryColor('#010102');
 
-    //     let mouseEvent2 = {
-    //         offsetX: 200,
-    //         offsetY: 200,
-    //         button: 0,
-    //     } as MouseEvent;
-    //     service.onMouseDown(mouseEvent2);
+        let mouseEvent2 = {
+            offsetX: 200,
+            offsetY: 200,
+            button: 0,
+        } as MouseEvent;
+        service.onMouseDown(mouseEvent2);
 
-    //     expect(floodFillSpy).toHaveBeenCalled();
-    // });
+        expect(floodFillSpy).toHaveBeenCalled();
+    });*/
 
     it(' should make sure that function are not called if mouseEvent is not in canvas', () => {
         const mouseEvent2 = {

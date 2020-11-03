@@ -75,13 +75,13 @@ describe('EraserService', () => {
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
 
-    // it(' onMouseUp should call drawLine if mouse was already down', () => {
-    //     service.mouseDownCoord = { x: 0, y: 0 };
-    //     service.mouseDown = true;
+    it(' onMouseUp should call drawLine if mouse was already down', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
 
-    //     service.onMouseUp(mouseEvent);
-    //     expect(drawLineSpy).toHaveBeenCalled();
-    // });
+        service.onMouseUp(mouseEvent);
+        expect(drawLineSpy).toHaveBeenCalled();
+    });
 
     it(' onMouseUp should not call drawLine if mouse was not already down', () => {
         service.mouseDown = false;
