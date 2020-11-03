@@ -47,7 +47,7 @@ export class SelectionToolService extends Tool {
         private tracing: TracingService,
         private colorService: ColorService,
     ) {
-        super(drawingService, new Description('selection rectangle', 'r', 'question_mark.png'));
+        super(drawingService, new Description('selection rectangle', 'r', 'rectangle-selection.png'));
         this.mouseDown = false;
         this.clearPath();
         this.selectionCreated = false;
