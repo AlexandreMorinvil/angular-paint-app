@@ -27,6 +27,7 @@ export class DatabaseService {
     private readonly ERROR_ADD_DRAWING: string = "Échec lors de l'ajout du dessin";
     private readonly ERROR_GET_DRAWING_BY_TAG: string = "Échec lors de la tentative de récupération de tous les dessins ayant l'étiquettes";
     private readonly ERROR_GET_DRAWING_BY_NAME: string = 'Échec lors de la tentative de récupération de tous les dessins nommés';
+    private readonly ERROR_NO_IMAGE_SOURCE: string = "Échec lors de la tentative d'ajout il n'y a pas d'image source";
     private readonly CONNECTION_ERROR: string = 'CONNECTION ERROR. EXITING PROCESS';
 
     private options: MongoClientOptions = {
@@ -87,8 +88,9 @@ export class DatabaseService {
         }
     }
 
-    async addDrawing(drawing: DrawingToDatabase): Promise<string> {
+    async addDrawing(drawing: DrawingToDatabase, imageSource: string): Promise<string> {
         try {
+            this.valideImageSource(imageSource);
             this.validateDrawing(drawing);
             this.drawId = (await this.collection.insertOne(drawing)).insertedId.toString();
             return this.drawId;
@@ -116,16 +118,20 @@ export class DatabaseService {
     }
 
     async deleteDrawing(drawingID: string): Promise<any> {
-        try {
-            await this.collection.findOneAndDelete({ _id: new ObjectID(drawingID) });
-        } catch (error) {
-            throw new Error(this.ERROR_DELETE_DRAWING);
-        }
+        return this.collection
+            .findOneAndDelete({ _id: new ObjectID(drawingID) })
+            .then(() => {})
+            .catch((error: Error) => {
+                throw new Error(this.ERROR_DELETE_DRAWING);
+            });
     }
 
     private validateDrawing(drawing: DrawingToDatabase): void {
         this.validateName(drawing.name);
         this.validateTag(drawing.tags);
+    }
+    private valideImageSource(source: string): void {
+        if (source === '') throw new Error(this.ERROR_NO_IMAGE_SOURCE);
     }
 
     private validateName(name: string): void {
