@@ -24,7 +24,6 @@ fdescribe('EllipseSelectionService', () => {
     let mouseEvent50: MouseEvent;
     let mouseEvent100: MouseEvent;
     // tslint:disable-next-line:prefer-const
-    // const imageStub: HTMLImageElement = new Image(1,1);
     const pathTest: Vec2[] = [
         { x: 10, y: 10 },
         { x: 11, y: 11 },
