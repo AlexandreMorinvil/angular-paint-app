@@ -59,6 +59,7 @@ export class ModalSaveComponent {
     }
 
     saveToServer(): void {
+        console.log(this.saveService.imageSource);
         if (this.validateValue(this.drawName.value, this.tags, this.saveService.imageSource)) {
             this.saveService.saveDraw();
             this.sendMessageToServer();

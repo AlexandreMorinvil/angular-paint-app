@@ -7,9 +7,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 })
 export class SaveService {
     imageSource: string;
-    constructor(private drawingService: DrawingService, public dialog: MatDialog) {
-        this.imageSource = '';
-    }
+    constructor(private drawingService: DrawingService, public dialog: MatDialog) {}
 
     saveDraw(): void {
         const contex = this.drawingService.baseCtx;
