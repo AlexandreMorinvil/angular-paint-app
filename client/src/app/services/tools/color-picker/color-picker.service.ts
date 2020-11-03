@@ -7,6 +7,8 @@ import { ColorPickerViewerService } from '@app/services/tool-modifier/color-pick
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 
+const SQUARE_SIDE_SIZE = 4;
+
 @Injectable({
     providedIn: 'root',
 })
@@ -30,19 +32,21 @@ export class ColorPickerService extends Tool {
         this.pickedSecondaryColorSource = new BehaviorSubject<string>(colorService.getSecondaryColor());
         this.currentPickedSecondaryColor = this.pickedSecondaryColorSource.asObservable();
 
-        this.previsualizationZoneSource = new BehaviorSubject<Uint8ClampedArray>(new Uint8ClampedArray(4 * this.SQUARE_DIM * this.SQUARE_DIM));
+        this.previsualizationZoneSource = new BehaviorSubject<Uint8ClampedArray>(
+            new Uint8ClampedArray(SQUARE_SIDE_SIZE * this.SQUARE_DIM * this.SQUARE_DIM),
+        );
         this.currentPrevisualizationZoneSource = this.previsualizationZoneSource.asObservable();
 
         this.modifiers.push(this.colorPickerViewerService);
         this.modifiers.push(this.colorService);
     }
 
-    componentToHex(channel: number): string {
+    private componentToHex(channel: number): string {
         const hex = channel.toString(16);
         return hex.length === 1 ? '0' + hex : hex;
     }
 
-    rgbColorToHEXString(r: number, g: number, b: number): string {
+    private rgbColorToHEXString(r: number, g: number, b: number): string {
         return '#' + this.componentToHex(r) + this.componentToHex(g) + this.componentToHex(b);
     }
 

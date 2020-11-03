@@ -1,4 +1,4 @@
-// import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+// import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 // import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 // import { BrowserModule } from '@angular/platform-browser';
 // import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
@@ -9,7 +9,7 @@
 //     let component: SaveComponent;
 //     let fixture: ComponentFixture<SaveComponent>;
 
-//     beforeEach(async(() => {
+//     beforeEach(waitForAsync(() => {
 //         TestBed.configureTestingModule({
 //             declarations: [SaveComponent],
 //             imports: [MatDialogModule, BrowserModule],
