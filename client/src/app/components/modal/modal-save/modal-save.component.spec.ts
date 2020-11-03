@@ -16,13 +16,16 @@ class HTMLInputElement {
 describe('ModalSaveComponent', () => {
     let component: ModalSaveComponent;
     let fixture: ComponentFixture<ModalSaveComponent>;
-    const dialogRefSpy: jasmine.SpyObj<MatDialogRef<ModalSaveComponent, any>> = jasmine.createSpyObj('MatDialogRef', ['close']);
-    let sendMessageToServerSpy: jasmine.Spy<any>;
-    let saveDrawSpy: jasmine.Spy<any>;
     let canvasStub: HTMLCanvasElement;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
+    // tslint:disable:no-any
     let basicPostSpy: jasmine.Spy<any>;
+    let sendMessageToServerSpy: jasmine.Spy<any>;
+    let saveDrawSpy: jasmine.Spy<any>;
+    let pushSpy: jasmine.Spy<any>;
+    let spliceSpy: jasmine.Spy<any>;
+    const dialogRefSpy: jasmine.SpyObj<MatDialogRef<ModalSaveComponent, any>> = jasmine.createSpyObj('MatDialogRef', ['close']);
 
     beforeEach(
         waitForAsync(() => {
@@ -52,13 +55,16 @@ describe('ModalSaveComponent', () => {
         fixture = TestBed.createComponent(ModalSaveComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
-
+        // tslint:disable:no-string-literal
         component['saveService']['drawingService'].baseCtx = baseCtxStub;
         component['saveService']['drawingService'].previewCtx = previewCtxStub;
         component['saveService']['drawingService'].canvas = canvasStub;
+        // tslint:disable:no-magic-numbers
         component['saveService']['drawingService'].canvas.width = 1000;
         component['saveService']['drawingService'].canvas.height = 800;
 
+        spliceSpy = spyOn(component.tags, 'splice').and.callThrough();
+        pushSpy = spyOn(component.tags, 'push').and.callThrough();
         saveDrawSpy = spyOn<any>(component['saveService'], 'saveDraw').and.callThrough();
         sendMessageToServerSpy = spyOn<any>(component, 'sendMessageToServer').and.callThrough();
         component['saveService'].imageSource = 'IMAGESOURCE';
@@ -80,79 +86,79 @@ describe('ModalSaveComponent', () => {
     });
 
     it('validate image source should return true if image source is valid', () => {
-        const imageSource: string = 'KEJDHTERTGSU';
+        const imageSource = 'KEJDHTERTGSU';
         expect((component as any).validateImageSRC(imageSource)).toBeTruthy();
     });
 
     it('validate image source should return false if image source is invalid', () => {
-        const imageSource: string = '';
+        const imageSource = '';
         expect((component as any).validateImageSRC(imageSource)).toBeFalse();
     });
 
     it('validate  a tag should return true if the tag is valid', () => {
-        const tag: string = 'valid';
+        const tag = 'valid';
         expect((component as any).validateTag(tag)).toBeTruthy();
     });
 
     it('validate  a tag should return false if the tag is empty', () => {
-        const tag: string = '';
+        const tag = '';
         expect((component as any).validateTag(tag)).toBeFalse();
     });
 
     it('validate  a tag should return false if the tag lenght is bigger than max ', () => {
-        const tag: string = 'alsoergdhtryejdklstegreddhud';
+        const tag = 'alsoergdhtryejdklstegreddhud';
         expect((component as any).validateTag(tag)).toBeFalse();
     });
 
     it('validate  a tag should return false if the tag has special character', () => {
-        const tag: string = '!@^ahs';
+        const tag = '!@^ahs';
         expect((component as any).validateTag(tag)).toBeFalse();
     });
 
     it('validate  a name should return true if the name is valid', () => {
-        const name: string = 'valid';
+        const name = 'valid';
         expect((component as any).validateDrawName(name)).toBeTruthy();
     });
 
     it('validate  a name should return false if the name is empty', () => {
-        const name: string = '';
+        const name = '';
         expect((component as any).validateDrawName(name)).toBeFalse();
     });
 
     it('validate  a tag should return false if the tag lenght is bigger than max', () => {
-        const name: string = 'alsoergdhtryejdklstegreddhudalsoergdhtryejdklstegreddhudamskedjrh';
+        const name = 'alsoergdhtryejdklstegreddhudalsoergdhtryejdklstegreddhudamskedjrh';
         expect((component as any).validateDrawName(name)).toBeFalse();
     });
 
     it('validate  a name should return false if the name has special character', () => {
-        const name: string = 'a!!@^name';
+        const name = 'a!!@^name';
         expect((component as any).validateDrawName(name)).toBeFalse();
     });
 
     it('validate value should return true if the name, tags and image source is valid', () => {
-        const name: string = 'dessin';
-        const imageSource: string = 'KEJDHTERTGSU';
+        const name = 'dessin';
+        const imageSource = 'KEJDHTERTGSU';
         const tags: string[] = ['tag2', 'b', 'c'];
         expect((component as any).validateValue(name, tags, imageSource)).toBeTruthy();
     });
 
     it('validate value should return false if the name is invalid', () => {
-        const name: string = '';
-        const imageSource: string = 'KEJDHTERTGSU';
+        const name = '';
+        const imageSource = 'KEJDHTERTGSU';
         const tags: string[] = ['$$$$', 'b', 'c'];
         expect((component as any).validateValue(name, tags, imageSource)).toBeFalse();
     });
 
     it('validate value should return false if the tags is invalid', () => {
-        const name: string = 'valid';
-        const imageSource: string = 'KEJDHTERTGSU';
+        const name = 'valid';
+        const imageSource = 'KEJDHTERTGSU';
         const tags: string[] = ['@a1!', '!!ml'];
         expect((component as any).validateValue(name, tags, imageSource)).toBeFalse();
     });
 
     it('validate value should return false if the image source is invalid', () => {
-        const name: string = 'valid';
-        const imageSource: string = '';
+        const name = 'valid';
+        const imageSource = '';
         const tags: string[] = ['a', 'b', 'c'];
         expect((component as any).validateValue(name, tags, imageSource)).toBeFalse();
     });
@@ -160,12 +166,10 @@ describe('ModalSaveComponent', () => {
     it('add should call tags.push if the value is not empty ', () => {
         const event = new HTMLInputElement();
         event.input = 'inp';
-        const value: string = 'val';
-        const eventInput: any = { input: event, value: value };
+        const eventInput: any = { input: event, value: 'val' };
         (component as any).tags = ['a', 'b'];
-        let spyOnPush: jasmine.Spy<any> = spyOn(component.tags, 'push');
         component.add(eventInput);
-        expect(spyOnPush).toHaveBeenCalled();
+        expect(pushSpy).toHaveBeenCalled();
     });
 
     it('add should not call tags.push if the input is empty ', () => {
@@ -173,22 +177,19 @@ describe('ModalSaveComponent', () => {
         event.input = 'input';
         const eventInput: any = { input: event, value: '' };
         (component as any).tags = ['a', 'b'];
-        let pushSpy: jasmine.Spy<any> = spyOn(component.tags, 'push');
         component.add(eventInput);
         expect(pushSpy).not.toHaveBeenCalled();
     });
 
     it('remove tag should  call tags.splice if the tag and index are valid', () => {
         (component as any).tags = ['a', 'b'];
-        let spliceSpy: jasmine.Spy<any> = spyOn(component.tags, 'splice');
         component.remove(component.tags[1]);
         expect(spliceSpy).toHaveBeenCalled();
     });
 
     it('remove tag should  call tags.splice if the tag and index are invalid', () => {
         (component as any).tags = ['a', 'b'];
-        const tag: string = 'd';
-        let spliceSpy: jasmine.Spy<any> = spyOn(component.tags, 'splice');
+        const tag = 'd';
         component.remove(tag);
         expect(spliceSpy).not.toHaveBeenCalled();
     });
@@ -204,7 +205,6 @@ describe('ModalSaveComponent', () => {
     it('should save message to server when validate value is true', () => {
         (component as any).drawName.value = 'name';
         (component as any).tags = ['tag1', 'tag2'];
-        // (component as any).imageSource = 'LKAEGTHRJEKIDTH';
         component.saveService.saveDraw();
         component.saveToServer();
         expect(saveDrawSpy).toHaveBeenCalled();
@@ -214,7 +214,6 @@ describe('ModalSaveComponent', () => {
     it('should not save message to server when validate value is false', () => {
         (component as any).drawName.value = '';
         (component as any).tags = ['tag1', 'tag2'];
-        // (component as any).imageSource = 'LKAEGTHRJEKIDTH';
         component.saveToServer();
         expect(saveDrawSpy).not.toHaveBeenCalled();
         expect(sendMessageToServerSpy).not.toHaveBeenCalled();

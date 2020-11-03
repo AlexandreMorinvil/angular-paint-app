@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { LoadService } from '@app/services/load/load.service';
@@ -28,31 +28,33 @@ describe('DrawingCarouselComponent', () => {
         { _id: '2', name: 'test3', tags: ['tag', 'gat'] },
     ];
 
-    beforeEach(async(() => {
-        memoryServiceSpy = jasmine.createSpyObj('RemoteMemoryService', {
-            getAllFromDatabase: Promise.resolve(),
-            getDrawingsFromDatabase: testData,
-            deleteFromDatabase: Promise.resolve(),
-        });
-        tagFilterServiceSpy = jasmine.createSpyObj('TagFilterService', {
-            getActiveTags: [],
-            filterByTag: testData,
-            addTag: {},
-            removeTag: {},
-        });
-        loadServiceSpy = jasmine.createSpyObj('LoadService', {
-            loadDraw: {},
-        });
-        TestBed.configureTestingModule({
-            declarations: [DrawingCarouselComponent],
-            providers: [
-                { provide: RemoteMemoryService, useValue: memoryServiceSpy },
-                { provide: TagFilterService, useValue: tagFilterServiceSpy },
-                { provide: LoadService, useValue: loadServiceSpy },
-                { provide: MAT_DIALOG_DATA, useValue: data },
-            ],
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            memoryServiceSpy = jasmine.createSpyObj('RemoteMemoryService', {
+                getAllFromDatabase: Promise.resolve(),
+                getDrawingsFromDatabase: testData,
+                deleteFromDatabase: Promise.resolve(),
+            });
+            tagFilterServiceSpy = jasmine.createSpyObj('TagFilterService', {
+                getActiveTags: [],
+                filterByTag: testData,
+                addTag: {},
+                removeTag: {},
+            });
+            loadServiceSpy = jasmine.createSpyObj('LoadService', {
+                loadDraw: {},
+            });
+            TestBed.configureTestingModule({
+                declarations: [DrawingCarouselComponent],
+                providers: [
+                    { provide: RemoteMemoryService, useValue: memoryServiceSpy },
+                    { provide: TagFilterService, useValue: tagFilterServiceSpy },
+                    { provide: LoadService, useValue: loadServiceSpy },
+                    { provide: MAT_DIALOG_DATA, useValue: data },
+                ],
+            }).compileComponents();
+        }),
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(DrawingCarouselComponent);
