@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { DrawingToDatabase } from '@common/communication/drawingtodatabase';
+import { DrawingToDatabase } from '@common/communication/drawing-to-database';
 import { Tag, TagFilterService } from './tag-filter.service';
 
 describe('TagFilterService', () => {

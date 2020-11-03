@@ -4,7 +4,7 @@ import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { LoadService } from '@app/services/load/load.service';
 import { RemoteMemoryService } from '@app/services/remote-memory/remote-memory.service';
 import { Tag, TagFilterService } from '@app/services/tag-filter/tag-filter.service';
-import { DrawingToDatabase } from '@common/communication/drawingtodatabase';
+import { DrawingToDatabase } from '@common/communication/drawing-to-database';
 import { DrawingCarouselComponent } from './modal-drawing-carousel.component';
 
 describe('DrawingCarouselComponent', () => {

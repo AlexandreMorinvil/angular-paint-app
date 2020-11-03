@@ -7,7 +7,7 @@ import { FILE_SERVER_BASE_URL } from '@app/services/api/api-drawing/api-drawing.
 import { LoadService } from '@app/services/load/load.service';
 import { RemoteMemoryService } from '@app/services/remote-memory/remote-memory.service.ts';
 import { Tag, TagFilterService } from '@app/services/tag-filter/tag-filter.service';
-import { DrawingToDatabase } from '@common/communication/drawingtodatabase';
+import { DrawingToDatabase } from '@common/communication/drawing-to-database';
 
 enum PurposeofClick {
     Delete,
