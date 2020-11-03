@@ -54,14 +54,6 @@ export class SaveComponent {
         }
     }
 
-    saveToPNG(): void {
-        if (this.validateValue()) {
-            (document.getElementById('buttonSavePNG') as HTMLInputElement).disabled = true;
-            const drawName = this.drawName.value;
-            this.saveService.saveDrawToPNG(drawName);
-        }
-    }
-
     saveToServer(): void {
         if (this.validateValue()) {
             // code for saving into server image

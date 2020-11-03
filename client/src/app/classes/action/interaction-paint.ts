@@ -1,6 +1,6 @@
+import { Interaction } from '@app/classes/action/interactions';
 import { MouseButton } from '@app/classes/mouse';
 import { Vec2 } from '@app/classes/vec2';
-import { Interaction } from './interactions';
 
 export class InteractionPaint extends Interaction {
     mouseButton: MouseButton;

@@ -1,4 +1,5 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -14,7 +15,6 @@ describe('AttributesPanelComponent', () => {
     let component: AttributesPanelComponent;
     let fixture: ComponentFixture<AttributesPanelComponent>;
     let toolStub: ToolStub;
-    let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
     // Service
     let toolBoxSercive: ToolboxService;
@@ -22,26 +22,30 @@ describe('AttributesPanelComponent', () => {
     let textureService: TextureService;
     let tracingService: TracingService;
     let widthService: WidthService;
+    let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
-    beforeEach(async(() => {
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
-        TestBed.configureTestingModule({
-            declarations: [AttributesPanelComponent],
-            providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                declarations: [AttributesPanelComponent],
+                providers: [ToolboxService, JunctionService, TextureService, TracingService, WidthService],
+            }).compileComponents();
+        }),
+    );
 
     beforeEach(() => {
+        //previewCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         fixture = TestBed.createComponent(AttributesPanelComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
-
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
         toolStub = new ToolStub({} as DrawingService, {} as Description);
         toolBoxSercive = TestBed.inject(ToolboxService);
         junctionService = TestBed.inject(JunctionService);
         textureService = TestBed.inject(TextureService);
         tracingService = TestBed.inject(TracingService);
         widthService = TestBed.inject(WidthService);
+       
     });
 
     it('should create', () => {

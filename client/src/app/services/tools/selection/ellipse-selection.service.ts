@@ -184,7 +184,7 @@ export class EllipseSelectionService extends SelectionToolService {
             else {
                 this.clearCanvasEllipse();
             }
-            this.startSelectionPoint = { x: this.startDownCoord.x, y : this.startDownCoord.y };
+            this.startSelectionPoint = { x: this.startDownCoord.x, y: this.startDownCoord.y };
         }
         if (this.selectionCreated) {
             this.checkArrowHit(event);

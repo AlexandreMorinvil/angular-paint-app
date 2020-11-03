@@ -1,6 +1,5 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
-
 import { AttributeColorComponent } from './attributes-color.component';
 
 describe('AttributeColorComponent', () => {
@@ -14,12 +13,14 @@ describe('AttributeColorComponent', () => {
     let validateColorSpy: jasmine.Spy<any>;
     let validateOpacitySpy: jasmine.Spy<any>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [AttributeColorComponent],
-            providers: [ColorService],
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                declarations: [AttributeColorComponent],
+                providers: [ColorService],
+            }).compileComponents();
+        }),
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(AttributeColorComponent);

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ToleranceService } from '@app/services/tool-modifier/tolerance/tolerance.service';
 import { AttributesToleranceComponent } from './attributes-tolerance.component';
 
@@ -7,12 +7,14 @@ describe('AttributesToleranceComponent', () => {
     let fixture: ComponentFixture<AttributesToleranceComponent>;
     let toleranceService: ToleranceService;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [AttributesToleranceComponent],
-            providers: [ToleranceService],
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                declarations: [AttributesToleranceComponent],
+                providers: [ToleranceService],
+            }).compileComponents();
+        }),
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(AttributesToleranceComponent);

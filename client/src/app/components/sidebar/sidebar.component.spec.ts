@@ -1,6 +1,6 @@
 // tslint:disable:ordered-imports
 import { HttpClientModule } from '@angular/common/http';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -40,51 +40,53 @@ describe('SidebarComponent', () => {
     let redoSpy: jasmine.Spy<any>;
     let resetDrawingWithWarningSpy: jasmine.Spy<any>;
     let openGuideSpy: jasmine.Spy<any>;
-    let openSaveDialogSpy: jasmine.Spy<any>;
+    // let openSaveDialogSpy: jasmine.Spy<any>;
 
-    beforeEach(async(() => {
-        toolStub = new ToolStub({} as DrawingService, {} as Description);
-        drawingStub = new DrawingService({} as WorkzoneSizeService);
-        drawingStateStub = new DrawingStateTrackerService({} as DrawingService);
-        toolboxSpy = jasmine.createSpyObj('toolboxSpy', ['getAvailableTools', 'getCurrentTool', 'setSelectedTool']);
+    beforeEach(
+        waitForAsync(() => {
+            toolStub = new ToolStub({} as DrawingService, {} as Description);
+            drawingStub = new DrawingService({} as WorkzoneSizeService);
+            drawingStateStub = new DrawingStateTrackerService({} as DrawingService);
+            toolboxSpy = jasmine.createSpyObj('toolboxSpy', ['getAvailableTools', 'getCurrentTool', 'setSelectedTool']);
 
-        toolserviceMock = new ToolboxService(
-            {} as CursorService,
-            {} as PencilService,
-            {} as BrushService,
-            {} as EraserService,
-            {} as RectangleService,
-            {} as EllipseService,
-            {} as LineService,
-            {} as PolygonService,
-            {} as ColorPickerService,
-            {} as PaintService,
-            {} as RectangleSelectionService,
-            {} as EllipseSelectionService,
-            {} as DrawingService,
-        );
+            toolserviceMock = new ToolboxService(
+                {} as CursorService,
+                {} as PencilService,
+                {} as BrushService,
+                {} as EraserService,
+                {} as RectangleService,
+                {} as EllipseService,
+                {} as LineService,
+                {} as PolygonService,
+                {} as ColorPickerService,
+                {} as PaintService,
+                {} as RectangleSelectionService,
+                {} as EllipseSelectionService,
+                {} as DrawingService,
+            );
 
-        TestBed.configureTestingModule({
-            imports: [RouterTestingModule, HttpClientModule],
-            declarations: [SidebarComponent],
-            providers: [
-                { provide: PencilService, useValue: toolStub },
-                { provide: LineService, useValue: toolStub },
-                { provide: BrushService, useValue: toolStub },
-                { provide: DrawingService, useValue: drawingStub },
-                { provide: RectangleService, useValue: toolStub },
-                { provide: EllipseService, useValue: toolStub },
-                { provide: PolygonService, useValue: toolStub },
-                { provide: CursorService, useValue: toolStub },
-                { provide: ToolboxService, useValue: toolboxSpy },
-                { provide: DrawingStateTrackerService, useValue: drawingStateStub },
-                { provide: RouterModule, useValue: routerSpy },
-                { provide: MAT_DIALOG_DATA, useValue: {} },
-                { provide: MatDialogRef, useValue: {} },
-                { provide: MatDialog, useValue: {} },
-            ],
-        }).compileComponents();
-    }));
+            TestBed.configureTestingModule({
+                imports: [RouterTestingModule, HttpClientModule],
+                declarations: [SidebarComponent],
+                providers: [
+                    { provide: PencilService, useValue: toolStub },
+                    { provide: LineService, useValue: toolStub },
+                    { provide: BrushService, useValue: toolStub },
+                    { provide: DrawingService, useValue: drawingStub },
+                    { provide: RectangleService, useValue: toolStub },
+                    { provide: EllipseService, useValue: toolStub },
+                    { provide: PolygonService, useValue: toolStub },
+                    { provide: CursorService, useValue: toolStub },
+                    { provide: ToolboxService, useValue: toolboxSpy },
+                    { provide: DrawingStateTrackerService, useValue: drawingStateStub },
+                    { provide: RouterModule, useValue: routerSpy },
+                    { provide: MAT_DIALOG_DATA, useValue: {} },
+                    { provide: MatDialogRef, useValue: {} },
+                    { provide: MatDialog, useValue: {} },
+                ],
+            }).compileComponents();
+        }),
+    );
 
     beforeEach(() => {
         // tslint:disable:no-string-literal
@@ -95,7 +97,7 @@ describe('SidebarComponent', () => {
 
         resetDrawingWithWarningSpy = spyOn<any>(component['drawingService'], 'resetDrawingWithWarning');
         openGuideSpy = spyOn<any>(component['modalHandler'], 'openUserGuide');
-        openSaveDialogSpy = spyOn<any>(component['modalHandler'], 'openSaveDialog');
+        // openSaveDialogSpy = spyOn<any>(component['modalHandler'], 'openSaveDialog');
 
         undoSpy = spyOn<any>(component['drawingStateTracker'], 'undo');
         redoSpy = spyOn<any>(component['drawingStateTracker'], 'redo');
@@ -136,10 +138,11 @@ describe('SidebarComponent', () => {
         component.openGuide();
         expect(openGuideSpy).toHaveBeenCalled();
     });
-    it('should call saveDialog', () => {
-        component.saveDialog();
-        expect(openSaveDialogSpy).toHaveBeenCalled();
-    });
+
+    // it('should call saveDialog', () => {
+    //     component.saveDialog();
+    //     expect(openSaveDialogSpy).toHaveBeenCalled();
+    // });
 
     it('should call undo', () => {
         component.undo();

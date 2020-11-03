@@ -87,7 +87,7 @@ export class RectangleSelectionService extends SelectionToolService {
         if (this.draggingImage) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             // saves what was under the selection
-            const savedOldImageData = this.oldImageData; 
+            const savedOldImageData = this.oldImageData;
             this.oldImageData = this.getOldImageData(mousePosition);
             this.putImageData(this.evenImageStartCoord(mousePosition), this.drawingService.baseCtx, this.imageData);
             this.drawingStateTrackingService.addAction(
@@ -116,8 +116,13 @@ export class RectangleSelectionService extends SelectionToolService {
                 this.pathData.push(mousePosition);
             }
             // saves what was under the selection
-            this.oldImageData = this.drawingService.baseCtx.getImageData(this.startDownCoord.x,this.startDownCoord.y,this.imageData.width, this.imageData.height);
-            //this.getOldImageData(mousePosition);
+            this.oldImageData = this.drawingService.baseCtx.getImageData(
+                this.startDownCoord.x,
+                this.startDownCoord.y,
+                this.imageData.width,
+                this.imageData.height,
+            );
+            // this.getOldImageData(mousePosition);
             this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.pathData);
             this.offsetAnchors(this.startDownCoord);
             this.drawingService.previewCtx.putImageData(this.imageData, this.startDownCoord.x, this.startDownCoord.y);
@@ -150,10 +155,10 @@ export class RectangleSelectionService extends SelectionToolService {
             else {
                 this.drawingService.baseCtx.clearRect(this.arrowCoord.x, this.arrowCoord.y, this.imageData.width, this.imageData.height);
             }
-            this.startSelectionPoint = { x: this.startDownCoord.x, y : this.startDownCoord.y };
+            this.startSelectionPoint = { x: this.startDownCoord.x, y: this.startDownCoord.y };
         }
         if (this.selectionCreated) {
-            this.pathLastCoord = {x:this.startDownCoord.x + this.imageData.width, y:this.startDownCoord.y + this.imageData.height};
+            this.pathLastCoord = { x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y + this.imageData.height };
             this.checkArrowHit(event);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clearPath();
@@ -170,10 +175,15 @@ export class RectangleSelectionService extends SelectionToolService {
             if (this.arrowPress.every((v) => v === false)) {
                 this.arrowDown = false;
                 this.clearPath();
-                this.pathLastCoord = {x:this.startDownCoord.x + this.imageData.width, y:this.startDownCoord.y + this.imageData.height};
+                this.pathLastCoord = { x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y + this.imageData.height };
                 this.pathData.push(this.pathLastCoord);
                 const savedOldImageData = this.oldImageData;
-                this.oldImageData = this.drawingService.baseCtx.getImageData(this.startDownCoord.x,this.startDownCoord.y,this.imageData.width, this.imageData.height);
+                this.oldImageData = this.drawingService.baseCtx.getImageData(
+                    this.startDownCoord.x,
+                    this.startDownCoord.y,
+                    this.imageData.width,
+                    this.imageData.height,
+                );
                 this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.pathData);
                 this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
                 this.putImageData(this.startDownCoord, this.drawingService.baseCtx, this.imageData);
