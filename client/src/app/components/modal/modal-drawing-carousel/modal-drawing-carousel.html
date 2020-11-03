@@ -7,9 +7,11 @@
         </div>
         <ng-container *ngFor="let drawing of getCurrentDrawings()">
             <button class="drawing-form grid-drawing-form" (click)="drawingClicked(drawing)">
-                <img [src]="getDrawingUrl(drawing)" onerror="this.onerror=null; this.src='assets/images/nothing.png'" />
-                <p>{{ drawing.name}}</p>
-                <p>{{ drawing.tags}}</p>
+                <img [src]="getDrawingUrl(drawing)" (error)="onImgError($event, drawing)" />
+                <ng-container *ngIf="showInfo; else imageNotOnServer">
+                    <p>{{ drawing.name}}</p>
+                    <p>{{ drawing.tags}}</p>
+                </ng-container>
             </button>
         </ng-container>
         <div class="area-front-button area-button">

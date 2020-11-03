@@ -23,7 +23,6 @@ export class DrawingCarouselComponent {
   private currentDrawings: DrawingToDatabase[] = [];
   private currentActivesIndexes: number[];
   private drawingSelectedPurpose: PurposeofClick = PurposeofClick.Load;
-  visible: boolean = true;
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
   constructor(
@@ -49,8 +48,16 @@ export class DrawingCarouselComponent {
   }
 
   getDrawingUrl(drawing: DrawingToDatabase) {
-    if (!drawing.name) return 'assets/images/nothing.png';
+    if (!drawing.name) {
+      return 'assets/images/nothing.png';
+    }
     return FILE_SERVER_BASE_URL + drawing._id + '.png';
+  }
+
+  onImgError(event: ErrorEvent, drawing: DrawingToDatabase) {
+    event.target.src = 'assets/images/nothing.png';
+    drawing.name = "Erreur ! Votre dessin n'est pas sur le serveur";
+    drawing.tags = [];
   }
 
   setCurrentImages() {
@@ -65,6 +72,7 @@ export class DrawingCarouselComponent {
       } else this.currentDrawings.push(this.tagFilterService.filteredDrawings[i]);
     }
   }
+
 
   addTag(event: MatChipInputEvent): void {
     const input = event.input;
