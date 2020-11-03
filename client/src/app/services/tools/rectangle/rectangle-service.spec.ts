@@ -12,9 +12,9 @@ describe('RectangleService', () => {
     // tslint:disable:max-file-line-count
     let service: RectangleService;
     let tracingService: TracingService;
-    let mouseEvent: MouseEvent;
     let colorService: ColorService;
-    let drawServiceSpy: jasmine.SpyObj<DrawingService>;
+    let mouseEvent: MouseEvent;
+
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let canvasStub: HTMLCanvasElement;
@@ -24,6 +24,7 @@ describe('RectangleService', () => {
     let setAttributeSpy: jasmine.Spy<any>;
     let ctxFillSpy: jasmine.Spy<any>;
     let ctxContourSpy: jasmine.Spy<any>;
+    let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
     beforeEach(() => {
         // tslint: disable: no-any;

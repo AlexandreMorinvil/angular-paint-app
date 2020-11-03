@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-
 import { RectangleSelectionService } from './rectangle-selection.service';
 
 describe('RectangleSelectionService', () => {
