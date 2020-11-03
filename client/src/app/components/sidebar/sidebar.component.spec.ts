@@ -1,4 +1,4 @@
-// tslint:disable:ordered-imports
+/* // tslint:disable:ordered-imports
 import { HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -118,3 +118,4 @@ describe('SidebarComponent', () => {
         expect(openGuideSpy).toHaveBeenCalled();
     });
 });
+ */
