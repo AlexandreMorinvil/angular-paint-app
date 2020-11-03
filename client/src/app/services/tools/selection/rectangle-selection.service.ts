@@ -143,7 +143,7 @@ export class RectangleSelectionService extends SelectionToolService {
         if (!this.arrowDown) {
             this.arrowCoord = this.startDownCoord;
             this.drawingService.baseCtx.clearRect(this.arrowCoord.x, this.arrowCoord.y, this.imageData.width, this.imageData.height);
-            this.startSelectionPoint = { x: this.startDownCoord.x, y : this.startDownCoord.y };
+            this.startSelectionPoint = { x: this.startDownCoord.x, y: this.startDownCoord.y };
         }
         if (this.selectionCreated) {
             this.checkArrowHit(event);

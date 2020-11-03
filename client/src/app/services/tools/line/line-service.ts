@@ -308,6 +308,8 @@ export class LineService extends Tool {
             const pathData: Vec2[] = [interaction.path[i], interaction.path[i + 1]];
             this.drawLine(this.drawingService.baseCtx, pathData);
         }
+        // Index of for loops is used in this context
+        // tslint:disable:prefer-for-of
         for (let i = 0; i < interaction.path.length; i++) {
             this.mouseDownCoord = interaction.path[i];
             this.drawJunction(this.drawingService.baseCtx, interaction.path);

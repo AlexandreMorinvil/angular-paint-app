@@ -116,19 +116,16 @@ export abstract class SelectionToolService extends Tool {
             }
         }
     }
-
-    protected drawImage(canvas: CanvasRenderingContext2D, startCoord: Vec2, imageStart: Vec2, offset: Vec2, image: HTMLImageElement, size: Vec2): void {
-        canvas.drawImage(
-            image,
-            imageStart.x,
-            imageStart.y,
-            size.x,
-            size.y,
-            startCoord.x,
-            startCoord.y,
-            offset.x,
-            offset.y,
-        );
+    // tslint:disable:max-file-length
+    protected drawImage(
+        canvas: CanvasRenderingContext2D,
+        startCoord: Vec2,
+        imageStart: Vec2,
+        offset: Vec2,
+        image: HTMLImageElement,
+        size: Vec2,
+    ): void {
+        canvas.drawImage(image, imageStart.x, imageStart.y, size.x, size.y, startCoord.x, startCoord.y, offset.x, offset.y);
     }
 
     protected putImageData(startCoord: Vec2, canvas: CanvasRenderingContext2D, image: ImageData): void {

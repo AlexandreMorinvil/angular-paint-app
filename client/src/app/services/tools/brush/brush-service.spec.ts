@@ -156,7 +156,7 @@ describe('BrushService', () => {
     });
 
     it('should execute and drawLine is called', () => {
-        let interaction = {
+        const interaction = {
             path: [
                 { x: 0, y: 0 },
                 { x: 1, y: 1 },

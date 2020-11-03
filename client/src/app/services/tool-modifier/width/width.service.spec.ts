@@ -52,7 +52,7 @@ describe('WidthService', () => {
     });
 
     it(' should call setState to the incoming argument and getWidth should return the right number', () => {
-        let state = {
+        const state = {
             width: 100,
         } as WidthModifierState;
         service.setState(state);

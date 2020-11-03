@@ -1,4 +1,4 @@
-import { Vec2 } from '../vec2';
+import { Vec2 } from '@app/classes/vec2';
 
 export class InteractionSelectionEllipse {
     hasDoneFirstSelection: boolean;
@@ -10,20 +10,20 @@ export class InteractionSelectionEllipse {
     imageStart: Vec2;
 
     constructor(
-        //hasDoneFirstSelection: boolean,
+        // hasDoneFirstSelection: boolean,
         startSelectionPoint: Vec2, // point debut selection
-        //movePosition: Vec2, // point debut selection apres mouvement
+        // movePosition: Vec2, // point debut selection apres mouvement
         selection: ImageData,
-        //belowSelection: ImageData,
-        //imageSize: Vec2,    // width et height selection
-        //imageStart: Vec2
+        // belowSelection: ImageData,
+        // imageSize: Vec2,    // width et height selection
+        // imageStart: Vec2
     ) {
-        //this.hasDoneFirstSelection = hasDoneFirstSelection;
+        // this.hasDoneFirstSelection = hasDoneFirstSelection;
         this.startSelectionPoint = startSelectionPoint;
-        //this.movePosition = movePosition;
+        // this.movePosition = movePosition;
         this.selection = selection;
-        //this.belowSelection = belowSelection;
-        //this.imageSize = imageSize;
-        //this.imageStart = imageStart;
+        // this.belowSelection = belowSelection;
+        // this.imageSize = imageSize;
+        // this.imageStart = imageStart;
     }
 }

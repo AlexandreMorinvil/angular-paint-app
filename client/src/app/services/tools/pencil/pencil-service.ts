@@ -4,8 +4,8 @@ import { Description } from '@app/classes/description';
 import { MouseButton } from '@app/classes/mouse';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
-import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
 

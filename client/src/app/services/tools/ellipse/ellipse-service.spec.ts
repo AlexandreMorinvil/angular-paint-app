@@ -7,8 +7,9 @@ import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
 import { EllipseService } from './ellipse-service';
-
 describe('EllipseService', () => {
+    // Illogical to split file for the same service
+    // tslint:disable:max-file-line-count
     let service: EllipseService;
     let tracingService: TracingService;
     let colorService: ColorService;
@@ -349,7 +350,7 @@ describe('EllipseService', () => {
     });
 
     it('should execute and drawEllipse is called if shift is not pressed', () => {
-        let interaction = {
+        const interaction = {
             startPoint: { x: 100, y: 100 },
             path: [
                 { x: 100, y: 100 },
@@ -362,7 +363,7 @@ describe('EllipseService', () => {
     });
 
     it('should execute and drawEllipse is called if shift is pressed', () => {
-        let interaction = {
+        const interaction = {
             startPoint: { x: 100, y: 100 },
             path: [
                 { x: 100, y: 100 },

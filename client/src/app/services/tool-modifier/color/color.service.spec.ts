@@ -278,7 +278,7 @@ describe('ColorService', () => {
     });
 
     it(' should call setState to the correct incoming argument ', () => {
-        let state = {
+        const state = {
             primaryColor: '#ffffff',
             primaryColorOpacity: 1,
             secondaryColor: '#000000',

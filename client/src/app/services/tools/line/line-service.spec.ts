@@ -467,7 +467,7 @@ describe('LineService', () => {
         expect(service.mouseDownCoord).toEqual(result);
     });
     it('should execute and drawLine is called and if is around20Pixels', () => {
-        let interaction = {
+        const interaction = {
             path: [
                 { x: 0, y: 0 },
                 { x: 1, y: 1 },
@@ -479,7 +479,7 @@ describe('LineService', () => {
     });
 
     it('should execute and drawLine is called and if is not around20Pixels', () => {
-        let interaction = {
+        const interaction = {
             path: [
                 { x: 0, y: 0 },
                 { x: 100, y: 100 },

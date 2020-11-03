@@ -4,11 +4,14 @@ import { TracingService } from './tracing.service';
 
 describe('TracingService', () => {
     let service: TracingService;
+    // The disablement of the "any" tslint rule is justified in this situation as the prototype
+    // of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
+    // tslint:disable:no-any
     let setStateSpy: jasmine.Spy<any>;
-
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(TracingService);
+        // tslint:disable:no-any
         setStateSpy = spyOn<any>(service, 'setState').and.callThrough();
     });
 
@@ -40,7 +43,7 @@ describe('TracingService', () => {
     });
 
     it(' should call setState with the correct incoming argument and set hasContour and hasFill to true', () => {
-        let state = {
+        const state = {
             hasContour: true,
             hasFill: true,
         } as TracingModifierState;

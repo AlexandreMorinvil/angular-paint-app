@@ -72,7 +72,7 @@ export class CursorService extends Tool {
         }
     }
 
-    resizeDrawingZone(width: number, height: number) {
+    resizeDrawingZone(width: number, height: number): void {
         this.drawingService.resize(width, height);
     }
 

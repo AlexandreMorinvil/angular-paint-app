@@ -4,6 +4,9 @@ import { TextureEnum, TextureService } from './texture.service';
 
 describe('TextureService', () => {
     let service: TextureService;
+    // The disablement of the "any" tslint rule is justified in this situation as the prototype
+    // of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
+    // tslint:disable:no-any
     let setStateSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
@@ -32,7 +35,7 @@ describe('TextureService', () => {
     });
 
     it(' should call setState with the correct incoming argument and set texte with the string: dégradée', () => {
-        let state = {
+        const state = {
             texture: 'dégradée',
         } as TextureModifierState;
         service.setState(state);

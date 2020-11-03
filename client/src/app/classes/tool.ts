@@ -8,7 +8,7 @@ import { Vec2 } from './vec2';
 // tslint:disable:no-empty
 export abstract class Tool {
     private description: Description;
-    public modifiers: ToolModifier[] = [];
+    modifiers: ToolModifier[] = [];
 
     mouseDownCoord: Vec2;
     mouseDown: boolean = false;

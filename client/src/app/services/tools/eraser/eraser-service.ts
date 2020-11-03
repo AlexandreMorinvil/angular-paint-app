@@ -14,11 +14,9 @@ import { WidthService } from '@app/services/tool-modifier/width/width.service';
 export class EraserService extends Tool {
     private pathData: Vec2[];
     private eraserColor: string = '#FFFFFF';
-    public minWidth: number = 5;
+    minWidth: number = 5;
 
-    constructor(drawingService: DrawingService, 
-        private drawingStateTrackingService: DrawingStateTrackerService,
-        private widthService: WidthService) {
+    constructor(drawingService: DrawingService, private drawingStateTrackingService: DrawingStateTrackerService, private widthService: WidthService) {
         super(drawingService, new Description('efface', 'e', 'erase_icon.png'));
         this.modifiers.push(this.widthService);
         this.clearPath();

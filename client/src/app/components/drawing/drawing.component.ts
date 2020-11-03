@@ -117,7 +117,9 @@ export class DrawingComponent implements AfterViewInit {
             }
         }
     }
-
+    // The disablement of the "cyclomatic-complexity" tslint rule is justified in this situation
+    // since it is required for the program to have a number of linearly independents paths that is high
+    // tslint:disable:cyclomatic-complexity
     @HostListener('window:keydown', ['$event'])
     onShiftDown(event: KeyboardEvent): void {
         if (event.key === 'Shift') {

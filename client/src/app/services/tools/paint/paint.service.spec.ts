@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { InteractionPaint } from '@app/classes/action/interaction-paint';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
-//import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { PaintService } from './paint.service';
@@ -14,6 +13,7 @@ describe('PaintService', () => {
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let canvasStub: HTMLCanvasElement;
+    // tslint:disable:no-any
     let sameColorFillSpy: jasmine.Spy<any>;
     let floodFillSpy: jasmine.Spy<any>;
 
@@ -27,6 +27,7 @@ describe('PaintService', () => {
         });
         service = TestBed.inject(PaintService);
         colorService = TestBed.inject(ColorService);
+        // tslint:disable:no-any
         sameColorFillSpy = spyOn<any>(service, 'sameColorFill').and.callThrough();
         floodFillSpy = spyOn<any>(service, 'floodFill').and.callThrough();
 
@@ -40,6 +41,8 @@ describe('PaintService', () => {
         service['drawingService'].canvas.width = canvasWidth;
         service['drawingService'].canvas.height = canvasHeight;
         service['colorService'] = colorService;
+        // No need to justify numbers to create a mock rectangles
+        // tslint:disable:no-magic-numbers
         service['drawingService'].baseCtx.fillStyle = '#000000';
         service['drawingService'].baseCtx.fillRect(0, 0, 1000, 800);
         service['drawingService'].baseCtx.fillStyle = '#010101';
@@ -64,7 +67,7 @@ describe('PaintService', () => {
     });
 
     it(' Right click should call sameColorFill ', () => {
-        let mouseEvent2 = {
+        const mouseEvent2 = {
             offsetX: 25,
             offsetY: 25,
             button: 2,
@@ -76,7 +79,7 @@ describe('PaintService', () => {
     it(' should make sure that matchStartColor verify correctly with fill rgb and target surface', () => {
         colorService.setPrimaryColor('#010102');
 
-        let mouseEvent2 = {
+        const mouseEvent2 = {
             offsetX: 201,
             offsetY: 201,
             button: 0,
@@ -87,7 +90,7 @@ describe('PaintService', () => {
     });
 
     it(' should make sure that function are not called if mouseEvent is not in canvas', () => {
-        let mouseEvent2 = {
+        const mouseEvent2 = {
             offsetX: 0,
             offsetY: 2000,
             button: 0,
@@ -98,7 +101,7 @@ describe('PaintService', () => {
     });
 
     it(' should make sure that function are not called if mouseEvent is not left and right mouse click', () => {
-        let mouseEvent2 = {
+        const mouseEvent2 = {
             offsetX: 0,
             offsetY: 0,
             button: 1,
@@ -110,7 +113,7 @@ describe('PaintService', () => {
     });
 
     it(' should execute and call floodfill if left mouse button is pressed with correct rgb colors assigned', () => {
-        let interactionPaint = {
+        const interactionPaint = {
             mouseButton: 0,
             mouseDownCoord: { x: 201, y: 201 },
             startR: 1,
@@ -125,7 +128,7 @@ describe('PaintService', () => {
     });
 
     it(' should execute and call samefill if right mouse button is pressed with correct rgb colors assigned', () => {
-        let interactionPaint = {
+        const interactionPaint = {
             mouseButton: 2,
             mouseDownCoord: { x: 201, y: 201 },
             startR: 1,
@@ -140,7 +143,7 @@ describe('PaintService', () => {
     });
 
     it(' should execute and not call samefill/floodfill if right mouse button or left button is not pressed', () => {
-        let interactionPaint = {
+        const interactionPaint = {
             mouseButton: 1,
             mouseDownCoord: { x: 201, y: 201 },
             startR: 1,

@@ -200,7 +200,7 @@ describe('CursorService', () => {
     });
 
     it('should execute and resizeDrawingZone with interaction', () => {
-        let interaction = {
+        const interaction = {
             size: { x: 1000, y: 1000 },
         } as InteractionResize;
         service.execute(interaction);
@@ -226,9 +226,9 @@ describe('CursorService', () => {
         (service as any).clickOnAnchor = true;
         service.mouseDown = true;
         service.mouseDownCoord = { x: 0, y: 0 };
-        let minSurfaceSize = 10;
+        const minSurfaceSize = 10;
 
-        let mouseEvent = {
+        const mouseEvent = {
             offsetX: 0,
             offsetY: 0,
             button: 0,
