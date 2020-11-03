@@ -1,9 +1,9 @@
 <div class="container">
     <h1 class="title">Choisir un Dessin</h1>
 
-    <div id="carouselExampleControls" class="grid-carousel" data-ride="carousel">
+    <div id="carouselExampleControls" class="grid-carousel">
         <div class="area-back-button area-button">
-            <button (click)="movePrevious()">Précédent</button>
+            <button id="back-button" (click)="movePrevious()">Précédent</button>
         </div>
         <ng-container *ngFor="let drawing of getCurrentDrawings()">
             <button class="drawing-form grid-drawing-form" (click)="drawingClicked(drawing)">
@@ -39,7 +39,10 @@
     </div>
 
     <div mat-dialog-actions>
-        <p>Pour effacer un dessin, appuyer sur le bouton Effacer puis sélectionner le dessin a supprimé</p>
+        <mat-label>
+            Pour effacer un dessin, appuyer sur le bouton Effacer puis sélectionner le dessin. Pour annuler la sélection, appuyer de de nouveau sur le
+            bouton.
+        </mat-label>
         <button (click)="deleteDrawingButtonSelected()">Effacer</button>
     </div>
 </div>

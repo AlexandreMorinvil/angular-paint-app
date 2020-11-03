@@ -14,7 +14,7 @@ export class RemoteMemoryService {
         return this.drawingsFromDatabase;
     }
 
-    getAllFromDatabase(): Promise<void> {
+    async getAllFromDatabase(): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             try {
                 this.apiDrawingService.getAll().subscribe((drawingsFetched: DrawingToDatabase[]) => {
@@ -31,7 +31,7 @@ export class RemoteMemoryService {
         this.apiDrawingService.save(drawing).subscribe();
     }
 
-    deleteFromDatabase(id: string): Promise<void> {
+    async deleteFromDatabase(id: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             try {
                 this.apiDrawingService.delete(id).subscribe(() => {

@@ -4,8 +4,8 @@ import { DrawingToDatabase } from '@common/communication/drawingtodatabase';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
-export const BASE_URL: string = 'http://localhost:3000/api/drawing/';
-export const FILE_SERVER_BASE_URL: string = 'http://localhost:3000/files/';
+export const BASE_URL = 'http://localhost:3000/api/drawing/';
+export const FILE_SERVER_BASE_URL = 'http://localhost:3000/files/';
 
 @Injectable({
     providedIn: 'root',

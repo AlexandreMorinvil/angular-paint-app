@@ -17,7 +17,7 @@ export class ApiImageTransferService {
     }
 
     basicPost(drawing: Drawing): Observable<Drawing> {
-        return this.http.post<Drawing>(this.BASE_URL, drawing); //JSON.stringify(drawing));
+        return this.http.post<Drawing>(this.BASE_URL, drawing);
     }
 
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
