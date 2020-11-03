@@ -15,9 +15,9 @@ import { Drawing } from '@common/communication/drawing';
     styleUrls: ['./modal-save.component.scss'],
 })
 export class ModalSaveComponent {
-    private readonly MAX_NUMBER_OF_TAGS = 15;
-    private readonly MAX_LENGHT_DRAW_NAME = 50;
-    private readonly MAX_LENGHT_NAME_TAG = 25;
+    private readonly MAX_NUMBER_OF_TAGS: number = 15;
+    private readonly MAX_LENGHT_DRAW_NAME: number = 50;
+    private readonly MAX_LENGHT_NAME_TAG: number = 25;
     // private readonly ERROR_NO_DRAWING_NAME = 'Les dessins doivent contenir un nom';
     // private readonly ERROR_NUMBER_TAG_GREATER_MAXIMUM = 'Le nombre détiquettes est supérieur à la limite de 15';
     // private readonly ERROR_NO_TAG_NAME = 'Les étiquettes assignées ne peuvent pas être vides';
@@ -95,12 +95,12 @@ export class ModalSaveComponent {
     }
 
     sendMessageToServer(): void {
-        const NewURLDrawing: Drawing = {
+        const newDrawingToSend: Drawing = {
             _id: '',
             name: this.drawName.value,
             tags: this.tags,
             imageSrc: this.saveService.imageSource,
         };
-        this.apiImageTransferService.basicPost(NewURLDrawing).subscribe();
+        this.apiImageTransferService.basicPost(newDrawingToSend).subscribe();
     }
 }

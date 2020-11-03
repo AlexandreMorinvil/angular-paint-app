@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import { StatusCodes } from 'http-status-codes';
 import { describe } from 'mocha';
+import * as sinon from 'sinon';
 import * as tests from 'supertest';
 import { Stubbed, testingContainer } from '../../test/test-utils';
 import { Application } from '../app';
@@ -46,6 +47,7 @@ describe('DatabaseController', () => {
     let application: Express.Application;
     let databaseController: DatabaseController;
     let databaseService: Stubbed<DatabaseService>;
+    let timer: sinon.SinonFakeTimers;
 
     beforeEach(async () => {
         const [container, sandbox] = await testingContainer();
@@ -61,6 +63,11 @@ describe('DatabaseController', () => {
         application = container.get<Application>(TYPES.Application).app;
         databaseService = container.get(TYPES.DatabaseService);
         databaseController = container.get<DatabaseController>(TYPES.DatabaseController);
+        timer = sinon.useFakeTimers();
+    });
+
+    afterEach(() => {
+        timer.restore();
     });
 
     it('should get all drawing from the database when routing is all drawing ', async () => {
@@ -184,21 +191,31 @@ describe('DatabaseController', () => {
 
     // it('should add drawing from the database when routing is post ', async () => {
     //     // Il faudrait passer par la fonction saveDraw into image folder pr avoir le bon code
-    //     const id1: string = '1';
+    //     const id1: string = 'null';
     //     const name1: string = 'alex';
     //     const tags1 = new Array<string>('tag1', 'tag2');
     //     const drawing1 = new DrawingToDatabase();
     //     drawing1._id = id1;
     //     drawing1.name = name1;
     //     drawing1.tags = tags1;
-    //     let spy = await databaseService.addDrawing(drawing1);
-    //     databaseService.addDrawing.resolves(null);
+    //     //const imageSource = 'IAMELRKFH';
+    //     //const path: string = './drawings/images';
+    //     databaseService.addDrawing.resolves();
+    //     //databaseService.addDrawing.resolves();
+    //     //(databaseController as any).valideImageSource.resolves(true);
+    //     //(databaseController as any).saveDrawIntoImageFolder.resolves(null);
+
     //     return tests(application)
     //         .post(ROUTING_POST)
-    //         .expect(HTTP_STATUS_CODE_NOT_FOUND)
+    //         .expect(HTTPS_STATUS_CODE_CREATED)
     //         .then((res: any) => {
+    //             //databaseService.addDrawing(drawing1);
+    //             //await(databaseController as any).valideImageSource(imageSource);
+    //             //let spy2 = await(databaseController as any).saveDrawIntoImageFolder(imageSource, id1, path);
+    //             //(databaseController as any).saveDrawIntoImageFolder.resolves(null);
     //             //expect(res.status).to.equal(HTTPS_STATUS_CODE_CREATED);
-    //             expect(spy).to.have.been.caller();
+    //             //expect(spy1).to.have.been.caller();
+    //             //expect(spy2).to.have.been.caller();
     //         });
     // });
 

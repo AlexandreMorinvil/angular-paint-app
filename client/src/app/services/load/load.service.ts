@@ -6,7 +6,6 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     providedIn: 'root',
 })
 export class LoadService {
-    imageSource: string;
     constructor(private drawingService: DrawingService, public dialog: MatDialog) {}
 
     loadDraw(imageSrc: string): void {

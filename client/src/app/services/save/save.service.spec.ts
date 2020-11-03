@@ -5,10 +5,10 @@ import { SaveService } from './save.service';
 
 describe('SaveService', () => {
     let service: SaveService;
-    //let drawingService: DrawingService;
     let canvasStub: HTMLCanvasElement;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
+    // tslint:disable:no-any
     let saveSpy: jasmine.Spy<any>;
     let restoreSpy: jasmine.Spy<any>;
     let drawImageSpy: jasmine.Spy<any>;
@@ -23,11 +23,11 @@ describe('SaveService', () => {
             providers: [MatDialog],
         });
         service = TestBed.inject(SaveService);
-
+        // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
         service['drawingService'].canvas = canvasStub;
-
+        // tslint:disable:no-magic-numbers
         service['drawingService'].canvas.width = 1000;
         service['drawingService'].canvas.height = 800;
 

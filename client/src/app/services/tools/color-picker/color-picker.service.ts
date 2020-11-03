@@ -29,7 +29,7 @@ export class ColorPickerService extends Tool {
 
         this.pickedSecondaryColorSource = new BehaviorSubject<string>(colorService.getSecondaryColor());
         this.currentPickedSecondaryColor = this.pickedSecondaryColorSource.asObservable();
-
+        // tslint:disable:no-magic-numbers
         this.previsualizationZoneSource = new BehaviorSubject<Uint8ClampedArray>(new Uint8ClampedArray(4 * this.SQUARE_DIM * this.SQUARE_DIM));
         this.currentPrevisualizationZoneSource = this.previsualizationZoneSource.asObservable();
 
