@@ -171,7 +171,19 @@ export class EllipseSelectionService extends SelectionToolService {
             this.arrowCoord = { x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y + this.imageData.height };
             this.ellipseService.mouseDownCoord = this.startDownCoord;
             this.pathData.push(this.arrowCoord);
-            this.clearCanvasEllipse();
+            if (this.hasDoneFirstTranslation) {
+                this.showSelection(
+                    this.drawingService.baseCtx,
+                    this.oldImage,
+                    { x: this.imageData.width, y: this.imageData.height },
+                    this.firstEllipseCoord,
+                    1,
+                );
+            }
+            // Puts a white rectangle on selection original placement
+            else {
+                this.clearCanvasEllipse();
+            }
             this.startSelectionPoint = { x: this.startDownCoord.x, y : this.startDownCoord.y };
         }
         if (this.selectionCreated) {
@@ -196,11 +208,11 @@ export class EllipseSelectionService extends SelectionToolService {
                 this.clearPath();
                 this.pathData.push(this.pathLastCoord);
                 this.ellipseService.mouseDownCoord = this.startDownCoord;
-                this.clearCanvasEllipse();
                 this.clearPath();
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.onMouseUp({ offsetX: 25, offsetY: 25, button: 0 } as MouseEvent);
                 this.draggingImage = false;
+                this.hasDoneFirstTranslation = true;
             }
             if (this.arrowDown) {
                 this.onArrowDown({} as KeyboardEvent);
