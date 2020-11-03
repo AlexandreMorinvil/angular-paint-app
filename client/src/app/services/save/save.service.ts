@@ -12,7 +12,7 @@ export class SaveService {
     saveDraw(): void {
         const contex = this.drawingService.baseCtx;
         contex.save();
-        contex.globalCompositeOperation = 'destination-over';
+        contex.globalCompositeOperation = 'source-over';
         contex.fillStyle = 'white';
         contex.fillRect(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
         contex.restore();

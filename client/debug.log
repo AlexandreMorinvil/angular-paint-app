@@ -720,3 +720,5 @@
 [1102/232830.703:ERROR:filesystem_win.cc(129)] GetFileAttributes C:\Users\sofia\AppData\Local\Temp\karma-35312997\Crashpad\attachments\91ba31d2-88d2-447b-982d-475cc1e2ba9b: Le chemin d’accès spécifié est introuvable. (0x3)
 [1102/232830.832:ERROR:process_reader_win.cc(151)] SuspendThread: Accès refusé. (0x5)
 [1102/232830.832:ERROR:process_reader_win.cc(151)] SuspendThread: Accès refusé. (0x5)
+[1102/234436.794:ERROR:filesystem_win.cc(129)] GetFileAttributes C:\Users\sofia\AppData\Local\Temp\karma-40028856\Crashpad\attachments\2e2c8893-1b91-447f-9218-c00e30677090: Le chemin d’accès spécifié est introuvable. (0x3)
+[1102/234437.383:ERROR:process_reader_win.cc(151)] SuspendThread: Accès refusé. (0x5)
