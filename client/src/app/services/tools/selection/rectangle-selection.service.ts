@@ -142,10 +142,17 @@ export class RectangleSelectionService extends SelectionToolService {
     onArrowDown(event: KeyboardEvent): void {
         if (!this.arrowDown) {
             this.arrowCoord = this.startDownCoord;
-            this.drawingService.baseCtx.clearRect(this.arrowCoord.x, this.arrowCoord.y, this.imageData.width, this.imageData.height);
+            if (this.hasDoneFirstTranslation) {
+                this.putImageData(this.arrowCoord, this.drawingService.baseCtx, this.oldImageData);
+            }
+            // Puts a white rectangle on selection original placement
+            else {
+                this.drawingService.baseCtx.clearRect(this.arrowCoord.x, this.arrowCoord.y, this.imageData.width, this.imageData.height);
+            }
             this.startSelectionPoint = { x: this.startDownCoord.x, y : this.startDownCoord.y };
         }
         if (this.selectionCreated) {
+            this.pathLastCoord = {x:this.startDownCoord.x + this.imageData.width, y:this.startDownCoord.y + this.imageData.height};
             this.checkArrowHit(event);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clearPath();
@@ -160,21 +167,27 @@ export class RectangleSelectionService extends SelectionToolService {
             this.checkArrowUnhit(event);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             if (this.arrowPress.every((v) => v === false)) {
+                
                 this.arrowDown = false;
+                this.clearPath();
+                this.pathLastCoord = {x:this.startDownCoord.x + this.imageData.width, y:this.startDownCoord.y + this.imageData.height};
                 this.pathData.push(this.pathLastCoord);
+                this.oldImageData = this.getOldImageData(this.pathLastCoord);
                 this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.pathData);
                 this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
                 this.putImageData(this.startDownCoord, this.drawingService.baseCtx, this.imageData);
                 this.drawingStateTrackingService.addAction(
                     this,
                     new InteractionSelection(
-                        this.hasDoneFirstTranslation,
+                        //this.hasDoneFirstTranslation,
+                        false,
                         this.startSelectionPoint,
                         this.startDownCoord,
                         this.imageData,
-                        this.getOldImageData(this.pathLastCoord),
+                        this.oldImageData,
                     ),
                 );
+                this.hasDoneFirstTranslation = true;
             }
             if (this.arrowDown) {
                 this.onArrowDown({} as KeyboardEvent);

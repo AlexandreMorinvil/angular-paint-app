@@ -112,7 +112,6 @@ export class EllipseSelectionService extends SelectionToolService {
         const mousePosition = this.getPositionFromMouse(event);
         // translate
         if (this.draggingImage) {
-            this.startDownCoord = this.evenImageStartCoord(mousePosition);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.oldImage.src = this.drawingService.baseCtx.canvas.toDataURL();
             this.ellipseService.mouseDownCoord = this.startDownCoord;
@@ -173,6 +172,7 @@ export class EllipseSelectionService extends SelectionToolService {
             this.ellipseService.mouseDownCoord = this.startDownCoord;
             this.pathData.push(this.arrowCoord);
             this.clearCanvasEllipse();
+            this.startSelectionPoint = { x: this.startDownCoord.x, y : this.startDownCoord.y };
         }
         if (this.selectionCreated) {
             this.checkArrowHit(event);
