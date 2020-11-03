@@ -4,6 +4,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
+import { EllipseService } from '../ellipse/ellipse-service';
 import { EllipseSelectionService } from './ellipse-selection.service';
 
 describe('EllipseSelectionService', () => {
@@ -16,7 +17,7 @@ describe('EllipseSelectionService', () => {
     let previewCtxStub: CanvasRenderingContext2D;
     let canvasStub: HTMLCanvasElement;
     // let imageStub: HTMLImageElement;
-    // let mouseEvent5: MouseEvent;
+    let mouseEventNotInCanvas: MouseEvent;
     let mouseEvent25: MouseEvent;
     let mouseEvent50: MouseEvent;
     let mouseEvent100: MouseEvent;
@@ -31,8 +32,10 @@ describe('EllipseSelectionService', () => {
     let clearCanvasEllipseSpy: jasmine.Spy<any>;
     let showSelectionSpy: jasmine.Spy<any>;
     let offsetAnchorsSpy: jasmine.Spy<any>;
+    let getSquaredSizeSpy: jasmine.Spy<any>;
 
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
+    let ellipseServiceSpy: jasmine.SpyObj<EllipseService>;
 
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -40,9 +43,13 @@ describe('EllipseSelectionService', () => {
         canvasStub = canvasTestHelper.canvas;
 
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
+        ellipseServiceSpy = jasmine.createSpyObj('EllipseService', ['onMouseMove']);
 
         TestBed.configureTestingModule({
-            providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
+            providers: [
+                { provide: DrawingService, useValue: drawServiceSpy },
+                { provide: EllipseService, useValue: ellipseServiceSpy },
+            ],
         });
         service = TestBed.inject(EllipseSelectionService);
         tracingService = TestBed.inject(TracingService);
@@ -52,7 +59,7 @@ describe('EllipseSelectionService', () => {
         clearCanvasEllipseSpy = spyOn<any>(service, 'clearCanvasEllipse').and.callThrough();
         showSelectionSpy = spyOn<any>(service, 'showSelection').and.callThrough();
         offsetAnchorsSpy = spyOn<any>(service as any, 'offsetAnchors').and.callThrough();
-
+        getSquaredSizeSpy = spyOn<any>(service as any, 'getSquaredSize').and.callThrough();
         onMouseDownSpy = spyOn<any>(service, 'onMouseDown').and.callThrough();
 
         const canvasWidth = 1000;
@@ -67,12 +74,12 @@ describe('EllipseSelectionService', () => {
         service['drawingService'].canvas.height = canvasHeight;
         service['tracingService'] = tracingService;
 
-        /* mouseEvent5 = {
-            offsetX: 5,
-            offsetY: 5,
+        mouseEventNotInCanvas = {
+            offsetX: 2000,
+            offsetY: 2000,
             button: 0,
             shiftKey: false,
-        } as MouseEvent; */
+        } as MouseEvent;
 
         mouseEvent25 = {
             offsetX: 25,
@@ -170,43 +177,37 @@ describe('EllipseSelectionService', () => {
         });
     });
 
-    it('should set attribute and translate a selection', () => {
-        (service as any).draggingImage = true;
+    fit('should set attribute and on creation of selection when on mouse move if mouseDown is true and draggingImage is false', () => {
+        (service as any).draggingImage = false;
         (service as any).mouseDown = true;
         service.firstEllipseCoord = { x: 0, y: 0 };
         (service as any).startDownCoord = { x: 0, y: 0 };
         (service as any).imageData = { width: 10, height: 10 };
-
         service.pathLastCoord = { x: 10, y: 10 };
         (service as any).pathData = pathTest;
         service.onMouseMove(mouseEvent100);
+        expect(ellipseServiceSpy.onMouseMove).toHaveBeenCalled();
+        expect((service as any).pathData).toContain(service.getPositionFromMouse(mouseEvent100));
     });
-    it('should set attribute and translate a selection', () => {
-        (service as any).draggingImage = true;
+
+    fit('should do nothing when mouseEvent is not in canvas', () => {
+        (service as any).draggingImage = false;
         (service as any).mouseDown = true;
         service.firstEllipseCoord = { x: 20, y: 0 };
         (service as any).startDownCoord = { x: 0, y: 0 };
         (service as any).imageData = { width: 10, height: 10 };
-
         service.pathLastCoord = { x: 10, y: 10 };
         (service as any).pathData = pathTest;
-        service.onMouseMove(mouseEvent100);
-    });
-    it('should set attribute and translate a selection', () => {
-        (service as any).draggingImage = true;
-        (service as any).mouseDown = true;
-        service.firstEllipseCoord = { x: 0, y: 20 };
-        (service as any).startDownCoord = { x: 0, y: 0 };
-        (service as any).imageData = { width: 10, height: 10 };
 
-        service.pathLastCoord = { x: 10, y: 10 };
-        (service as any).pathData = pathTest;
-        service.onMouseMove(mouseEvent100);
+        service.onMouseMove(mouseEventNotInCanvas);
+        expect(ellipseServiceSpy.onMouseMove).not.toHaveBeenCalled();
+        expect((service as any).pathData).not.toContain(service.getPositionFromMouse(mouseEventNotInCanvas));
     });
 
-    it('should set attribute and create a selection', () => {
+    fit('should set attribute and during creation of a selection', () => {
         (service as any).draggingImage = false;
         (service as any).mouseDown = true;
+        (service as any).ellipseService.shiftDown = true;
         service.firstEllipseCoord = { x: 0, y: 20 };
         (service as any).startDownCoord = { x: 0, y: 0 };
         (service as any).imageData = { width: 10, height: 10 };
@@ -214,6 +215,7 @@ describe('EllipseSelectionService', () => {
         service.pathLastCoord = { x: 10, y: 10 };
         (service as any).pathData = pathTest;
         service.onMouseMove(mouseEvent100);
+        expect(getSquaredSizeSpy).toHaveBeenCalled();
     });
 
     it('should set attribute and create a selection', () => {
