@@ -127,6 +127,7 @@ describe('EllipseService', () => {
     it(' onMouseMove should call drawCircle if mouse was already down and shift is pressed down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
+        service.shiftDown = true;
         mouseEvent = { shiftKey: true } as MouseEvent;
 
         service.onMouseMove(mouseEvent);
@@ -136,6 +137,7 @@ describe('EllipseService', () => {
     it(' onMouseUp should call drawCircle if mouse down and shift is pressed down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
+        service.shiftDown = true;
         mouseEvent = { shiftKey: true } as MouseEvent;
 
         service.onMouseUp(mouseEvent);
@@ -145,6 +147,7 @@ describe('EllipseService', () => {
 
     it(' onMouseMove should call drawCircle if mouse down and shift is pressed down ', () => {
         // bottom right
+        service.shiftDown = true;
         mouseEvent = { offsetX: 10, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 11, offsetY: 11, button: 0, shiftKey: true } as MouseEvent;
@@ -156,6 +159,7 @@ describe('EllipseService', () => {
 
     it(' onMouseMove should call drawCircle if mouse down and shift is pressed down ', () => {
         // top right
+        service.shiftDown = true;
         mouseEvent = { offsetX: 10, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 9, offsetY: 9, button: 0, shiftKey: true } as MouseEvent;
@@ -166,6 +170,7 @@ describe('EllipseService', () => {
     });
 
     it(' onMouseMove should call drawCircle if mouse down and shift is pressed down ', () => {
+        service.shiftDown = true;
         mouseEvent = { offsetX: 20, offsetY: 9, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 50, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
@@ -177,6 +182,7 @@ describe('EllipseService', () => {
 
     it(' onMouseMove should call drawCircle if mouse down and shift is pressed down  ', () => {
         // top right
+        service.shiftDown = true;
         mouseEvent = { offsetX: 10, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 9, offsetY: 9, button: 0, shiftKey: true } as MouseEvent;

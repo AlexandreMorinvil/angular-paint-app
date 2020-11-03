@@ -36,7 +36,7 @@ export class EllipseSelectionService extends SelectionToolService {
         // translate
         if (this.selectionCreated && this.hitSelection(this.mouseDownCoord.x, this.mouseDownCoord.y)) {
             this.pathData.push(this.pathLastCoord);
-            if (this.firstTranslation) {
+            if (this.hasDoneFirstTranslation) {
                 this.clearCanvasEllipse();
                 this.showSelection(this.drawingService.baseCtx, this.oldImage, 1);
             } else {
@@ -97,7 +97,7 @@ export class EllipseSelectionService extends SelectionToolService {
             this.draggingImage = false;
             this.firstEllipseCoord = this.startDownCoord;
             this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
-            this.firstTranslation = true;
+            this.hasDoneFirstTranslation = true;
             // creation
         } else if (this.mouseDown) {
             if (this.ellipseService.shiftDown) {
@@ -113,7 +113,7 @@ export class EllipseSelectionService extends SelectionToolService {
             this.selectionCreated = true;
             this.pathLastCoord = this.pathData[this.pathData.length - 1];
             this.showSelection(this.drawingService.previewCtx, this.image);
-            this.firstTranslation = false;
+            this.hasDoneFirstTranslation = false;
         }
         this.mouseDown = false;
         this.clearPath();
@@ -239,7 +239,7 @@ export class EllipseSelectionService extends SelectionToolService {
         return ellipsePath;
     }
 
-    clearCanvasEllipse(): void {
+    private clearCanvasEllipse(): void {
         this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.pathData);
         this.colorService.setPrimaryColor('#FFFFFF');
         this.tracingService.setHasFill(true);
