@@ -32,8 +32,6 @@ export abstract class SelectionToolService extends Tool {
     protected draggingImage: boolean;
     protected clickOnAnchor: boolean;
     protected anchorHit: number = 0;
-    protected image: HTMLImageElement;
-    protected oldImage: HTMLImageElement;
     shiftDown: boolean;
     protected arrowPress: boolean[];
     protected arrowDown: boolean;
@@ -48,8 +46,6 @@ export abstract class SelectionToolService extends Tool {
         this.selectionCreated = false;
         this.draggingImage = false;
         this.clickOnAnchor = false;
-        this.image = new Image();
-        this.oldImage = new Image();
         this.shiftDown = false;
         this.hasDoneFirstTranslation = false;
     }
@@ -121,13 +117,13 @@ export abstract class SelectionToolService extends Tool {
         }
     }
 
-    protected drawImage(canvas: CanvasRenderingContext2D, startCoord: Vec2, imageStart: Vec2, offset: Vec2, image: HTMLImageElement): void {
+    protected drawImage(canvas: CanvasRenderingContext2D, startCoord: Vec2, imageStart: Vec2, offset: Vec2, image: HTMLImageElement, size: Vec2): void {
         canvas.drawImage(
             image,
             imageStart.x,
             imageStart.y,
-            this.imageData.width,
-            this.imageData.height,
+            size.x,
+            size.y,
             startCoord.x,
             startCoord.y,
             offset.x,
