@@ -22,7 +22,6 @@ describe('EllipseSelectionService', () => {
     let mouseEvent25: MouseEvent;
     let mouseEvent50: MouseEvent;
     let mouseEvent100: MouseEvent;
-    let imageStub: HTMLImageElement;
     const pathTest: Vec2[] = [
         { x: 10, y: 10 },
         { x: 11, y: 11 },
@@ -402,7 +401,7 @@ describe('EllipseSelectionService', () => {
         service.onCtrlADown();
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(resetTransformSpy).toHaveBeenCalled();
-        expect((service as any).mouseDown).toBeTrue();
+        expect((service as any).mouseDown).toBeFalse();
         expect((service as any).startDownCoord).toEqual({ x: 0, y: 0 });
         expect((service as any).firstEllipseCoord).toEqual({ x: 0, y: 0 });
         expect((service as any).ellipseService.mouseDownCoord).toEqual({ x: 0, y: 0 });
@@ -439,16 +438,26 @@ describe('EllipseSelectionService', () => {
         (service as any).startDownCoord = { x: 14, y: 14 };
         (service as any).pathLastCoord = { x: 10, y: 10 };
         (service as any).imageData = { width: 10, height: 10 };
+        (service as any).mouseDown = true;
         service.firstEllipseCoord = { x: 0, y: 20 };
-
-        (service as any).showSelection(previewCtxStub, imageStub, 0);
+        (service as any).showSelection(previewCtxStub, (service as any).image, 0);
     });
 
-    /* it('should ... correctly after getPath', () => {
-        (service as any).getPath(0);
+    it('should return ellipsePath correctly after getPath is called', () => {
+        (service as any).startDownCoord = { x: 14, y: 14 };
+        (service as any).pathLastCoord = { x: 10, y: 10 };
+        (service as any).imageData = { width: 10, height: 10 };
+        (service as any).mouseDown = true;
+        service.firstEllipseCoord = { x: 0, y: 20 };
+        expect((service as any).getPath(0));
     });
-
-    it('should ... correctly after clearCanvasEllipse', () => {
+    // resetTransform changes color and tracing
+    it('should clear canvas with a white ellipse after clearCanvasEllipse', () => {
         (service as any).clearCanvasEllipse();
-    });  */
+        expect(ellipseServiceSpy.drawEllipse).toHaveBeenCalled();
+        expect((service as any).colorService.getPrimaryColor()).toEqual('#000000');
+        expect((service as any).tracingService.getHasFill()).toBeFalse();
+        expect((service as any).tracingService.getHasContour()).toBeTrue();
+        expect(resetTransformSpy).toHaveBeenCalled();
+    });
 });
