@@ -19,7 +19,6 @@ export class DatabaseController {
 
     constructor(@inject(TYPES.DatabaseService) private databaseService: DatabaseService) {
         this.configureRouter();
-        //this.databaseService.start();
     }
 
     private configureRouter(): void {

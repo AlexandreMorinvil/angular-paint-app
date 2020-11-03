@@ -90,7 +90,7 @@ export class DatabaseService {
     async addDrawing(drawing: DrawingToDatabase): Promise<void> {
         try {
             this.validateDrawing(drawing);
-            this.drawId = await (await this.collection.insertOne(drawing)).insertedId.toString();
+            this.drawId = (await this.collection.insertOne(drawing)).insertedId.toString();
             return;
         } catch (error) {
             throw new Error(this.ERROR_ADD_DRAWING);
