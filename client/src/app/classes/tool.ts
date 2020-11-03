@@ -1,4 +1,5 @@
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { Interaction } from './action/interactions';
 import { Description } from './description';
 import { ToolModifier } from './tool-modifier';
 import { Vec2 } from './vec2';
@@ -7,7 +8,7 @@ import { Vec2 } from './vec2';
 // tslint:disable:no-empty
 export abstract class Tool {
     private description: Description;
-    protected modifiers: ToolModifier[] = [];
+    modifiers: ToolModifier[] = [];
 
     mouseDownCoord: Vec2;
     mouseDown: boolean = false;
@@ -37,6 +38,10 @@ export abstract class Tool {
 
     onShiftUp(event: KeyboardEvent): void {}
 
+    onCtrlShiftZDown(event: KeyboardEvent): void {}
+
+    onCtrlZDown(event: KeyboardEvent): void {}
+
     onArrowDown(event: KeyboardEvent): void {}
 
     onArrowUp(event: KeyboardEvent): void {}
@@ -47,12 +52,19 @@ export abstract class Tool {
         return { x: event.offsetX, y: event.offsetY };
     }
 
+    execute(interaction: Interaction): void {}
+
     needsModifierManager(modifier: ToolModifier): boolean {
         return this.modifiers.includes(modifier);
     }
 
     isInCanvas(mousePosition: Vec2): boolean {
-        return mousePosition.x <= this.drawingService.baseCtx.canvas.width && mousePosition.y <= this.drawingService.baseCtx.canvas.height;
+        return (
+            mousePosition.x <= this.drawingService.previewCtx.canvas.width &&
+            mousePosition.x >= 0 &&
+            mousePosition.y <= this.drawingService.previewCtx.canvas.height &&
+            mousePosition.y >= 0
+        );
     }
 
     get name(): string {

@@ -1,5 +1,5 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
@@ -38,29 +38,31 @@ describe('DrawingComponent', () => {
     let onBackspaceDownSpy: jasmine.Spy<any>;
     let onResizeSpy: jasmine.Spy<any>;
 
-    beforeEach(async(() => {
-        toolStub = new ToolStub({} as DrawingService, {} as Description);
-        drawingStub = new DrawingService();
+    beforeEach(
+        waitForAsync(() => {
+            toolStub = new ToolStub({} as DrawingService, {} as Description);
+            drawingStub = new DrawingService({} as WorkzoneSizeService);
 
-        TestBed.configureTestingModule({
-            declarations: [DrawingComponent],
-            imports: [MatDialogModule],
-            providers: [
-                { provide: DrawingService, useValue: drawingStub },
-                PencilService,
-                BrushService,
-                RectangleService,
-                EllipseService,
-                CursorService,
-                EraserService,
-                LineService,
-                ToolboxService,
-                WorkzoneSizeService,
-                MatDialog,
-                Overlay,
-            ],
-        }).compileComponents();
-    }));
+            TestBed.configureTestingModule({
+                declarations: [DrawingComponent],
+                imports: [MatDialogModule],
+                providers: [
+                    { provide: DrawingService, useValue: drawingStub },
+                    PencilService,
+                    BrushService,
+                    RectangleService,
+                    EllipseService,
+                    CursorService,
+                    EraserService,
+                    LineService,
+                    ToolboxService,
+                    WorkzoneSizeService,
+                    MatDialog,
+                    Overlay,
+                ],
+            }).compileComponents();
+        }),
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(DrawingComponent);

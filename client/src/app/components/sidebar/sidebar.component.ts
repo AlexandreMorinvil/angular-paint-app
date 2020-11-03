@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Tool } from '@app/classes/tool';
+import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ModalHandlerService } from '@app/services/modal-handler/modal-handler';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
@@ -14,14 +15,24 @@ export class SidebarComponent {
     messageNewDrawing: string = 'Nouveau dessin\n(Raccourci: Ctr + O)';
     messageUserGuide: string = "Guide d'utilisation";
     messageBack: string = 'Retour';
-    messageSaveDialog: string = 'Sauvegarde\n(Raccourci: Ctr + S)';
+    messageExportDialog: string = 'Exporter\n(Raccourci: Ctr + E)';
+    messageSaveDialog: string = 'Sauvegarder\n(Raccourci: Ctr + S)';
 
     constructor(
         private toolboxSevice: ToolboxService,
         private drawingService: DrawingService,
         private router: Router,
         private modalHandler: ModalHandlerService,
+        private drawingStateTracker: DrawingStateTrackerService,
     ) {}
+
+    undo(): void {
+        this.drawingStateTracker.undo();
+    }
+
+    redo(): void {
+        this.drawingStateTracker.redo();
+    }
 
     getListOfTools(): Tool[] {
         return this.toolboxSevice.getAvailableTools();
@@ -51,7 +62,10 @@ export class SidebarComponent {
         this.modalHandler.openUserGuide();
     }
 
-    saveDialog(): void {
+    openSaveDialog(): void {
         this.modalHandler.openSaveDialog();
+    }
+    openExportDialog(): void {
+        this.modalHandler.openExportDialog();
     }
 }
