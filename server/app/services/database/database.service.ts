@@ -115,7 +115,7 @@ export class DatabaseService {
         }
     }
 
-    async deleteDrawing(drawingID: string): Promise<any> {
+    async deleteDrawing(drawingID: string): Promise<void> {
         try {
             await this.collection.findOneAndDelete({ _id: new ObjectID(drawingID) });
         } catch (error) {
