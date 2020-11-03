@@ -125,20 +125,16 @@ export class DrawingComponent implements AfterViewInit {
         } else if (event.ctrlKey && event.key.toLowerCase() === 's') {
             event.preventDefault(); // to prevent key of windows
             this.modalHandlerService.openSaveDialog();
-		} else if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'z') {
+        } else if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'z') {
             event.preventDefault(); // to prevent key of windows
             this.drawingStateTrackerService.onCtrlShiftZDown(event);
         } else if (event.ctrlKey && event.key.toLowerCase() === 'z') {
             event.preventDefault(); // to prevent key of windows
             this.drawingStateTrackerService.onCtrlZDown(event);
-      
         } else if (event.ctrlKey && event.key.toLowerCase() === 'e') {
             event.preventDefault(); // to prevent key of windows
             this.modalHandlerService.openExportDialog();
-
-
-
-              }
+        }
     }
 
     get width(): number {
