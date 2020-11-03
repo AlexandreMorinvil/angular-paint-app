@@ -44,7 +44,7 @@ export class EllipseSelectionService extends SelectionToolService {
         if (this.selectionCreated && this.hitSelection(this.mouseDownCoord.x, this.mouseDownCoord.y)) {
             this.pathData.push(this.pathLastCoord);
             if (this.hasDoneFirstTranslation) {
-                this.startSelectionPoint = this.evenImageStartCoord(this.getPositionFromMouse(event));
+                this.startSelectionPoint = this.startDownCoord;
                 this.clearCanvasEllipse();
                 this.showSelection(
                     this.drawingService.baseCtx,

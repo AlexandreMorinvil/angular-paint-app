@@ -38,7 +38,7 @@ export class RectangleSelectionService extends SelectionToolService {
             // Puts back what was under the selection
             if (this.hasDoneFirstTranslation) {
                 this.putImageData(this.startDownCoord, this.drawingService.baseCtx, this.oldImageData);
-                this.startSelectionPoint = this.evenImageStartCoord(this.mouseDownCoord);
+                this.startSelectionPoint = this.startDownCoord;
             }
             // Puts a white rectangle on selection original placement
             else {
@@ -87,17 +87,17 @@ export class RectangleSelectionService extends SelectionToolService {
         if (this.draggingImage) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             // saves what was under the selection
+            const savedOldImageData = this.oldImageData; 
             this.oldImageData = this.getOldImageData(mousePosition);
-            console.log('Mouse position action:', mousePosition);
             this.putImageData(this.evenImageStartCoord(mousePosition), this.drawingService.baseCtx, this.imageData);
             this.drawingStateTrackingService.addAction(
                 this,
                 new InteractionSelection(
                     this.hasDoneFirstTranslation,
                     this.startSelectionPoint,
-                    this.evenImageStartCoord(mousePosition),
+                    this.startDownCoord,
                     this.imageData,
-                    this.oldImageData,
+                    savedOldImageData,
                 ),
             );
             this.drawingService.previewCtx.beginPath();
@@ -116,7 +116,8 @@ export class RectangleSelectionService extends SelectionToolService {
                 this.pathData.push(mousePosition);
             }
             // saves what was under the selection
-            this.oldImageData = this.getOldImageData(mousePosition);
+            this.oldImageData = this.drawingService.baseCtx.getImageData(this.startDownCoord.x,this.startDownCoord.y,this.imageData.width, this.imageData.height);
+            //this.getOldImageData(mousePosition);
             this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.pathData);
             this.offsetAnchors(this.startDownCoord);
             this.drawingService.previewCtx.putImageData(this.imageData, this.startDownCoord.x, this.startDownCoord.y);
@@ -167,24 +168,23 @@ export class RectangleSelectionService extends SelectionToolService {
             this.checkArrowUnhit(event);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             if (this.arrowPress.every((v) => v === false)) {
-                
                 this.arrowDown = false;
                 this.clearPath();
                 this.pathLastCoord = {x:this.startDownCoord.x + this.imageData.width, y:this.startDownCoord.y + this.imageData.height};
                 this.pathData.push(this.pathLastCoord);
-                this.oldImageData = this.getOldImageData(this.pathLastCoord);
+                const savedOldImageData = this.oldImageData;
+                this.oldImageData = this.drawingService.baseCtx.getImageData(this.startDownCoord.x,this.startDownCoord.y,this.imageData.width, this.imageData.height);
                 this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.pathData);
                 this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
                 this.putImageData(this.startDownCoord, this.drawingService.baseCtx, this.imageData);
                 this.drawingStateTrackingService.addAction(
                     this,
                     new InteractionSelection(
-                        //this.hasDoneFirstTranslation,
-                        false,
+                        this.hasDoneFirstTranslation,
                         this.startSelectionPoint,
                         this.startDownCoord,
                         this.imageData,
-                        this.oldImageData,
+                        savedOldImageData,
                     ),
                 );
                 this.hasDoneFirstTranslation = true;
