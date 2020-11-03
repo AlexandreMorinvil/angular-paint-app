@@ -112,7 +112,7 @@ describe('EllipseSelectionService', () => {
         expect(onMouseDownSpy).toHaveBeenCalled();
     });
 
-    /*  fit('should set attribute correctly and create a selection on mouse down', () => {
+    /*  it('should set attribute correctly and create a selection on mouse down', () => {
         (service as any).selectionCreated = false;
         (service as any).firstTranslation = false;
         (service as any).startDownCoord = { x: 0, y: 0 };
@@ -150,7 +150,7 @@ describe('EllipseSelectionService', () => {
         expect((service as any).draggingImage).toBeTrue();
     });
 
-    fit('should set attribute and translate a selection on mouse move if mouseDown and draggingImage are true', () => {
+    it('should set attribute and translate a selection on mouse move if mouseDown and draggingImage are true', () => {
         (service as any).draggingImage = true;
         (service as any).mouseDown = true;
         service.firstEllipseCoord = { x: 20, y: 20 };
