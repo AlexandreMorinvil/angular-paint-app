@@ -8,10 +8,8 @@
         <ng-container *ngFor="let drawing of getCurrentDrawings()">
             <button class="drawing-form grid-drawing-form" (click)="drawingClicked(drawing)">
                 <img [src]="getDrawingUrl(drawing)" (error)="onImgError($event, drawing)" />
-                <ng-container *ngIf="showInfo; else imageNotOnServer">
-                    <p>{{ drawing.name}}</p>
-                    <p>{{ drawing.tags}}</p>
-                </ng-container>
+                <p>{{ drawing.name}}</p>
+                <p>{{ drawing.tags}}</p>
             </button>
         </ng-container>
         <div class="area-front-button area-button">
@@ -35,6 +33,9 @@
                 />
             </mat-chip-list>
         </mat-form-field>
+        <ng-container *ngIf="getFilteredDrawings().length === 0">
+            <p id="NoResults">Aucun dessin ne corresponds à votre recherche</p>
+        </ng-container>
     </div>
 
     <div mat-dialog-actions>

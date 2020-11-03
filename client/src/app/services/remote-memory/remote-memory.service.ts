@@ -6,12 +6,16 @@ import { DrawingToDatabase } from '@common/communication/drawingtodatabase';
     providedIn: 'root',
 })
 export class RemoteMemoryService {
-    drawingsFromDatabase: DrawingToDatabase[];
+    private drawingsFromDatabase: DrawingToDatabase[];
 
     constructor(private apiDrawingService: ApiDrawingService) {}
 
-    getAllFromDatabase(): Promise<DrawingToDatabase> {
-        return new Promise<DrawingToDatabase>((resolve, reject) => {
+    getDrawingsFromDatabase(): DrawingToDatabase[] {
+        return this.drawingsFromDatabase;
+    }
+
+    getAllFromDatabase(): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             try {
                 this.apiDrawingService.getAll().subscribe((drawingsFetched: DrawingToDatabase[]) => {
                     this.drawingsFromDatabase = drawingsFetched;
@@ -24,7 +28,7 @@ export class RemoteMemoryService {
     }
 
     saveToDatabase(drawing: DrawingToDatabase): void {
-        this.apiDrawingService.save(drawing).subscribe(() => {});
+        this.apiDrawingService.save(drawing).subscribe();
     }
 
     deleteFromDatabase(id: string): Promise<void> {

@@ -72,7 +72,9 @@ p {
     font-family: Helvetica;
     flex-direction: column;
 }
-
+#NoResults {
+    color: rgb(255, 0, 0);
+}
 // .grid-color-selected {
 //     display: grid;
 //     grid-gap: 10px;
