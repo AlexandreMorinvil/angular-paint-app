@@ -5,11 +5,13 @@
         <div class="area-back-button area-button">
             <button (click)="movePrevious()">Précédent</button>
         </div>
-        <button class="drawing-form grid-drawing-form" *ngFor="let drawing of getCurrentDrawings()" (click)="drawingClicked(drawing)">
-            <img [src]="getDrawingUrl(drawing)" onerror="this.onerror=null; this.src='assets/images/nothing.png'" />
-            <p>{{ drawing.name}}</p>
-            <p>{{ drawing.tags}}</p>
-        </button>
+        <ng-container *ngFor="let drawing of getCurrentDrawings()">
+            <button class="drawing-form grid-drawing-form" (click)="drawingClicked(drawing)">
+                <img [src]="getDrawingUrl(drawing)" onerror="this.onerror=null; this.src='assets/images/nothing.png'" />
+                <p>{{ drawing.name}}</p>
+                <p>{{ drawing.tags}}</p>
+            </button>
+        </ng-container>
         <div class="area-front-button area-button">
             <button (click)="moveNext()">Suivant</button>
         </div>
