@@ -144,7 +144,7 @@ export class PolygonService extends Tool {
             const spaceBetweenTwoSquare = Math.sqrt(Math.pow(this.widthService.getWidth(), 2) + Math.pow(this.widthService.getWidth(), 2));
             this.radius = this.radius - spaceBetweenTwoSquare / 2;
             this.radius = this.radius + spaceBetweenTwoSquare;
-        } else if (this.tracingService.getHasContour() === true && this.sidesService.getSide() === numberTriangleSide) {
+        } else {
             this.radius = this.radius - this.widthService.getWidth();
             const spaceBetweenTwoTriangle =
                 this.widthService.getWidth() / Math.sin(((halfCircleAngle / numberTriangleSide / 2) * Math.PI) / halfCircleAngle);

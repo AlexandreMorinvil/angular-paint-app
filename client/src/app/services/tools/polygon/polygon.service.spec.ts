@@ -19,6 +19,7 @@ describe('PolygonService', () => {
     let canvasStub: HTMLCanvasElement;
     // tslint:disable:no-any
     let drawPolygonSpy: jasmine.Spy<any>;
+    let drawPreviewCircleSpy: jasmine.Spy<any>;
     let setAttributeSpy: jasmine.Spy<any>;
     let ctxFillSpy: jasmine.Spy<any>;
     let ctxContourSpy: jasmine.Spy<any>;
@@ -37,6 +38,7 @@ describe('PolygonService', () => {
         colorService = TestBed.inject(ColorService);
         // tslint:disable:no-any
         drawPolygonSpy = spyOn<any>(service, 'drawPolygon').and.callThrough();
+        drawPreviewCircleSpy = spyOn<any>(service, 'drawPreviewCircle').and.callThrough();
         setAttributeSpy = spyOn<any>(service, 'setAttribute').and.callThrough();
         const canvasWidth = 1000;
         const canvasHeight = 800;
@@ -79,12 +81,12 @@ describe('PolygonService', () => {
         expect(service.mouseDown).toEqual(false);
     });
 
-    // it(' onMouseUp should call drawPolygon if mouse was already down', () => {
-    //     service.mouseDownCoord = { x: 0, y: 0 };
-    //     service.mouseDown = true;
-    //     service.onMouseUp(mouseEvent);
-    //     expect(drawPolygonSpy).toHaveBeenCalled();
-    // });
+    it(' onMouseUp should call drawPolygon if mouse was already down', () => {
+        service.mouseDownCoord = { x: 25, y: 12 };
+        service.mouseDown = true;
+        service.onMouseUp(mouseEvent);
+        expect(drawPolygonSpy).toHaveBeenCalled();
+    });
 
     it(' onMouseUp should not call drawPolygon if mouse was not already down', () => {
         service.mouseDown = false;
@@ -104,7 +106,6 @@ describe('PolygonService', () => {
     it(' on Mouse mouve should call setAttribute if mouse was already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
-        // mouseEvent = { shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(setAttributeSpy).toHaveBeenCalled();
@@ -113,126 +114,51 @@ describe('PolygonService', () => {
     it(' on Mouse mouve should not call setAttribute if mouse was not already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = false;
-        // mouseEvent = { shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(setAttributeSpy).not.toHaveBeenCalled();
     });
-    it(' should be a triangle when drawing polygon and number side is 3', () => {
-        const numberSide = 3;
-        service.sidesService.setSide(numberSide);
-        /*mouseEvent = { offsetX: 30, offsetY: 6, button: 0, shiftKey: true } as MouseEvent;
-        service.onMouseDown(mouseEvent);
-        mouseEvent = { offsetX: 10, offsetY: 5, button: 0, shiftKey: true } as MouseEvent;
+
+    it(' should draw polygone when number of side is 6 with contour', () => {
+        const numberSides = 6;
+        service.sidesService.setSide(numberSides);
+        tracingService.setHasContour(true);
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+        mouseEvent = { offsetX: 20, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
-        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-        expect(mouseEvent.offsetX === mouseEvent.offsetY);
-        */
+        expect(drawPolygonSpy).toHaveBeenCalled();
+        expect(drawPreviewCircleSpy).toHaveBeenCalled();
+        expect(setAttributeSpy).toHaveBeenCalled();
+        expect(ctxContourSpy).toHaveBeenCalled();
     });
 
-    it(' should be a square when drawing polygon and number side is 4', () => {
-        const numberSide = 4;
-        service.sidesService.setSide(numberSide);
-        /*mouseEvent = { offsetX: 30, offsetY: 6, button: 0, shiftKey: true } as MouseEvent;
-        service.onMouseDown(mouseEvent);
-        mouseEvent = { offsetX: 10, offsetY: 5, button: 0, shiftKey: true } as MouseEvent;
+    it(' should draw square when number of side is 6 with contour', () => {
+        const numberSides = 4;
+        service.sidesService.setSide(numberSides);
+        tracingService.setHasContour(true);
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+        mouseEvent = { offsetX: 20, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
-        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-        expect(mouseEvent.offsetX === mouseEvent.offsetY);
-        */
+        expect(drawPolygonSpy).toHaveBeenCalled();
+        expect(drawPreviewCircleSpy).toHaveBeenCalled();
+        expect(setAttributeSpy).toHaveBeenCalled();
+        expect(ctxContourSpy).toHaveBeenCalled();
     });
 
-    it(' should be a pentagon when drawing polygon and number side is 5', () => {
-        const numberSide = 5;
-        service.sidesService.setSide(numberSide);
-        /*mouseEvent = { offsetX: 30, offsetY: 6, button: 0, shiftKey: true } as MouseEvent;
-    service.onMouseDown(mouseEvent);
-    mouseEvent = { offsetX: 10, offsetY: 5, button: 0, shiftKey: true } as MouseEvent;
-    service.onMouseMove(mouseEvent);
-    expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-    expect(mouseEvent.offsetX === mouseEvent.offsetY);
-    */
-    });
-
-    it(' should be a hexagon when drawing polygon and number side is 6', () => {
-        const numberSide = 6;
-        service.sidesService.setSide(numberSide);
-        /*mouseEvent = { offsetX: 30, offsetY: 6, button: 0, shiftKey: true } as MouseEvent;
-      service.onMouseDown(mouseEvent);
-      mouseEvent = { offsetX: 10, offsetY: 5, button: 0, shiftKey: true } as MouseEvent;
-      service.onMouseMove(mouseEvent);
-      expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-      expect(mouseEvent.offsetX === mouseEvent.offsetY);
-      */
-    });
-    it(' should be a heptagon when drawing polygon and number side is 7', () => {
-        const numberSide = 7;
-        service.sidesService.setSide(numberSide);
-        /*mouseEvent = { offsetX: 30, offsetY: 6, button: 0, shiftKey: true } as MouseEvent;
-      service.onMouseDown(mouseEvent);
-      mouseEvent = { offsetX: 10, offsetY: 5, button: 0, shiftKey: true } as MouseEvent;
-      service.onMouseMove(mouseEvent);
-      expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-      expect(mouseEvent.offsetX === mouseEvent.offsetY);
-      */
-    });
-    it(' should be a octogon when drawing polygon and number side is 8', () => {
-        const numberSide = 8;
-        service.sidesService.setSide(numberSide);
-        /*mouseEvent = { offsetX: 30, offsetY: 6, button: 0, shiftKey: true } as MouseEvent;
-      service.onMouseDown(mouseEvent);
-      mouseEvent = { offsetX: 10, offsetY: 5, button: 0, shiftKey: true } as MouseEvent;
-      service.onMouseMove(mouseEvent);
-      expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-      expect(mouseEvent.offsetX === mouseEvent.offsetY);
-      */
-    });
-    it(' should be a eenagon when drawing polygon and number side is 9', () => {
-        const numberSide = 9;
-        service.sidesService.setSide(numberSide);
-        /*mouseEvent = { offsetX: 30, offsetY: 6, button: 0, shiftKey: true } as MouseEvent;
-      service.onMouseDown(mouseEvent);
-      mouseEvent = { offsetX: 10, offsetY: 5, button: 0, shiftKey: true } as MouseEvent;
-      service.onMouseMove(mouseEvent);
-      expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-      expect(mouseEvent.offsetX === mouseEvent.offsetY);
-      */
-    });
-
-    it(' should be a decagon when drawing polygon and number side is 10', () => {
-        const numberSide = 10;
-        service.sidesService.setSide(numberSide);
-        /*mouseEvent = { offsetX: 30, offsetY: 6, button: 0, shiftKey: true } as MouseEvent;
-      service.onMouseDown(mouseEvent);
-      mouseEvent = { offsetX: 10, offsetY: 5, button: 0, shiftKey: true } as MouseEvent;
-      service.onMouseMove(mouseEvent);
-      expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-      expect(mouseEvent.offsetX === mouseEvent.offsetY);
-      */
-    });
-
-    it(' should be a hendecagon when drawing polygon and number side is 11', () => {
-        const numberSide = 11;
-        service.sidesService.setSide(numberSide);
-        /*mouseEvent = { offsetX: 30, offsetY: 6, button: 0, shiftKey: true } as MouseEvent;
-      service.onMouseDown(mouseEvent);
-      mouseEvent = { offsetX: 10, offsetY: 5, button: 0, shiftKey: true } as MouseEvent;
-      service.onMouseMove(mouseEvent);
-      expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-      expect(mouseEvent.offsetX === mouseEvent.offsetY);
-      */
-    });
-
-    it(' should be a dodecagon when drawing polygon and number side is 12', () => {
-        const numberSide = 12;
-        service.sidesService.setSide(numberSide);
-        /*mouseEvent = { offsetX: 30, offsetY: 6, button: 0, shiftKey: true } as MouseEvent;
-      service.onMouseDown(mouseEvent);
-      mouseEvent = { offsetX: 10, offsetY: 5, button: 0, shiftKey: true } as MouseEvent;
-      service.onMouseMove(mouseEvent);
-      expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-      expect(mouseEvent.offsetX === mouseEvent.offsetY);
-      */
+    it(' sshould draw a triangle when number of side is 6 with contour', () => {
+        const numberSides = 3;
+        service.sidesService.setSide(numberSides);
+        tracingService.setHasContour(true);
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+        mouseEvent = { offsetX: 20, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
+        service.onMouseMove(mouseEvent);
+        expect(drawPolygonSpy).toHaveBeenCalled();
+        expect(drawPreviewCircleSpy).toHaveBeenCalled();
+        expect(setAttributeSpy).toHaveBeenCalled();
+        expect(ctxContourSpy).toHaveBeenCalled();
     });
 
     it(' should call setAttribute with trace of type contour', () => {
