@@ -1,5 +1,5 @@
 import { MAX_DRAW_NAME_LENGTH, MAX_NUMBER_TAG, MAX_TAG_NAME_LENGHT } from '@common/communication/drawing';
-import { DrawingToDatabase } from '@common/communication/drawingtodatabase';
+import { DrawingToDatabase } from '@common/communication/drawing-to-database';
 import { injectable } from 'inversify';
 import { Collection, FilterQuery, MongoClient, MongoClientOptions, ObjectID, UpdateQuery } from 'mongodb';
 import 'reflect-metadata';

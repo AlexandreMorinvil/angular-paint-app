@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DrawingToDatabase } from '@common/communication/drawingtodatabase';
+import { DrawingToDatabase } from '@common/communication/drawing-to-database';
 
 export interface Tag {
     tagName: string;
