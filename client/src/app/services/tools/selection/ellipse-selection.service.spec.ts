@@ -26,7 +26,7 @@ describe('EllipseSelectionService', () => {
     let mouseEvent50: MouseEvent;
     let mouseEvent100: MouseEvent;
     // tslint:disable-next-line:prefer-const
-    const imageStub: HTMLImageElement = new Image(1,1);
+    // const imageStub: HTMLImageElement = new Image(1,1);
     const pathTest: Vec2[] = [
         { x: 10, y: 10 },
         { x: 11, y: 11 },
@@ -53,7 +53,13 @@ describe('EllipseSelectionService', () => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         canvasStub = canvasTestHelper.canvas;
-        ellipseStub = new EllipseService({} as DrawingService, {} as DrawingStateTrackerService, {} as ColorService, {} as TracingService, {} as WidthService);
+        ellipseStub = new EllipseService(
+            {} as DrawingService,
+            {} as DrawingStateTrackerService,
+            {} as ColorService,
+            {} as TracingService,
+            {} as WidthService,
+        );
 
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
         ellipseServiceSpy = jasmine.createSpyObj('EllipseService', ['onMouseMove', 'drawEllipse', 'drawPreviewRect']);
@@ -489,18 +495,28 @@ describe('EllipseSelectionService', () => {
         (service as any).startDownCoord = { x: 14, y: 14 };
         (service as any).pathLastCoord = { x: 10, y: 10 };
         (service as any).imageData = { width: 10, height: 10 };
+        (service as any).mouseDown = true;
         service.firstEllipseCoord = { x: 0, y: 20 };
-        const size: Vec2 = {x:(service as any).imageData.width,y:(service as any).imageData.height};
-
-        (service as any).showSelection(previewCtxStub, imageStub,size, (service as any).startDownCoord);
+        const size: Vec2 = { x: (service as any).imageData.width, y: (service as any).imageData.height };
+        (service as any).showSelection(previewCtxStub, (service as any).image, size, (service as any).startDownCoord, 0);
         expect(gethPathSpy).toHaveBeenCalled();
     });
 
-    /*it('should ... correctly after getPath', () => {
-        (service as any).getPath(0);
+    it('should return ellipsePath correctly after getPath is called', () => {
+        (service as any).startDownCoord = { x: 14, y: 14 };
+        (service as any).pathLastCoord = { x: 10, y: 10 };
+        (service as any).imageData = { width: 10, height: 10 };
+        (service as any).mouseDown = true;
+        service.firstEllipseCoord = { x: 0, y: 20 };
+        expect((service as any).getPath(0));
     });
-
-    it('should ... correctly after clearCanvasEllipse', () => {
+    // resetTransform changes color and tracing
+    it('should clear canvas with a white ellipse after clearCanvasEllipse', () => {
         (service as any).clearCanvasEllipse();
-    });*/
+        expect(ellipseServiceSpy.drawEllipse).toHaveBeenCalled();
+        expect((service as any).colorService.getPrimaryColor()).toEqual('#000000');
+        expect((service as any).tracingService.getHasFill()).toBeFalse();
+        expect((service as any).tracingService.getHasContour()).toBeTrue();
+        expect(resetTransformSpy).toHaveBeenCalled();
+    });
 });
