@@ -8,17 +8,18 @@ export interface Tag {
 @Injectable({
     providedIn: 'root',
 })
-export class TagFilter {
-    filteredDrawings: DrawingToDatabase[] = [];
-    activeTags: Tag[] = [];
+export class TagFilterService {
+    private activeTags: Tag[] = [];
 
-    constructor() {}
+    getActiveTags(): Tag[] {
+        return this.activeTags;
+    }
 
-    addTag(tag: Tag) {
+    addTag(tag: Tag): void {
         this.activeTags.push(tag);
     }
 
-    removeTag(tagToRemove: Tag) {
+    removeTag(tagToRemove: Tag): void {
         for (let i = 0; i < this.activeTags.length; i++) {
             if (this.activeTags[i] === tagToRemove) {
                 this.activeTags.splice(i, 1);
@@ -26,24 +27,25 @@ export class TagFilter {
         }
     }
 
-    filterByTag(listToFilter: DrawingToDatabase[]) {
-        //No filter need to be applied
+    filterByTag(listToFilter: DrawingToDatabase[]): DrawingToDatabase[] {
+        const filteredDrawings: DrawingToDatabase[] = [];
+        // No filter need to be applied
         if (this.activeTags.length === 0) {
-            this.filteredDrawings = listToFilter;
-            return;
+            return listToFilter;
         }
 
         // List is reinitialised and filters are applied
-        this.filteredDrawings = [];
-        for (let drawing of listToFilter) {
-            //Prevent errors
+        for (const drawing of listToFilter) {
+            // Prevent errors
             if (typeof drawing.tags === 'undefined') drawing.tags = [];
-            for (let tag of this.activeTags) {
+            for (const tag of this.activeTags) {
                 if (drawing.tags.includes(tag.tagName)) {
-                    this.filteredDrawings.push(drawing);
+                    filteredDrawings.push(drawing);
                     break;
                 }
             }
         }
+
+        return filteredDrawings;
     }
 }

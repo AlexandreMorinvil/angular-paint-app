@@ -13,5 +13,14 @@ export class ApiImageTransferService {
 
     basicPost(drawing: Drawing): Observable<Drawing> {
         return this.http.post<Drawing>(this.BASE_URL, drawing);
+<<<<<<< HEAD
+=======
+    }
+
+    private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
+        return (error: Error): Observable<T> => {
+            return of(result as T);
+        };
+>>>>>>> test/drawing-carousel
     }
 }
