@@ -10,12 +10,15 @@ fdescribe('EllipseSelectionService', () => {
     let service: EllipseSelectionService;
     let tracingService: TracingService;
     let colorService: ColorService;
-    let selectionTool: SelectionToolService;
+    let selectionToolService: SelectionToolService;
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let canvasStub: HTMLCanvasElement;
-    let mouseEvent: MouseEvent;
+    //let mouseEvent5: MouseEvent;
+    let mouseEvent25: MouseEvent;
+    let mouseEvent50: MouseEvent;
+    let mouseEvent100: MouseEvent;
 
     let resetTransformSpy: jasmine.Spy<any>;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
@@ -48,10 +51,29 @@ fdescribe('EllipseSelectionService', () => {
         service['drawingService'].canvas.width = canvasWidth;
         service['drawingService'].canvas.height = canvasHeight;
         service['tracingService'] = tracingService;
-        service['arrowCoord'];
-        mouseEvent = {
+        /* mouseEvent5 = {
+            offsetX: 5,
+            offsetY: 5,
+            button: 0,
+            shiftKey: false,
+        } as MouseEvent; */
+
+        mouseEvent25 = {
             offsetX: 25,
             offsetY: 25,
+            button: 0,
+            shiftKey: false,
+        } as MouseEvent;
+
+        mouseEvent50 = {
+            offsetX: 50,
+            offsetY: 50,
+            button: 0,
+            shiftKey: false,
+        } as MouseEvent;
+        mouseEvent100 = {
+            offsetX: 100,
+            offsetY: 100,
             button: 0,
             shiftKey: false,
         } as MouseEvent;
@@ -61,13 +83,37 @@ fdescribe('EllipseSelectionService', () => {
         expect(service).toBeTruthy();
     });
 
-    it('should be call resetTransform on mouse down and set attribute correctly', () => {
-        service.onMouseDown(mouseEvent);
-        expect(resetTransformSpy).toHaveBeenCalled();
+    it('should be call resetTransform on mouse down,set attribute correctly and create a selection', () => {
+        service.onMouseDown(mouseEvent25);
 
-        expect((selectionTool as any).arrowPress).toBe([false, false, false, false]);
-        expect((selectionTool as any).arrowDown).toBe(false);
+        service.onMouseDown(mouseEvent25);
+        service.onMouseMove(mouseEvent50);
+        service.onMouseUp(mouseEvent100);
+
+        expect((service as any).arrowPress).toEqual([false, false, false, false]);
+        expect((service as any).arrowDown).toBe(false);
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect((service as any).mouseDownCoord).toEqual(service.getPositionFromMouse(mouseEvent25));
+        expect((service as any).mouseDown).toBeFalse();
         expect(resetTransformSpy).toHaveBeenCalled();
-        expect(resetTransformSpy).toHaveBeenCalled();
+    });
+
+    fit('should set attribute correctly and translate a selection', () => {
+        /*  (service as any).selectionCreated = true;
+        (service as any).startDownCoord = { x: 0, y: 0 };
+        (service as any).imageData = { width: 10, height: 10 }; */
+        (selectionToolService as any).pathData = [
+            { x: 5, y: 5 },
+            { x: 10, y: 10 },
+        ];
+        service.pathLastCoord = { x: 0, y: 0 };
+        service.clearCanvasEllipse();
+        //service.onMouseDown(mouseEvent5);
+        /* service.onMouseMove(mouseEvent100);
+        service.onMouseUp(mouseEvent100);
+
+        service.onMouseDown(mouseEvent50);
+        service.onMouseMove(mouseEvent100);
+        service.onMouseUp(mouseEvent100); */
     });
 });

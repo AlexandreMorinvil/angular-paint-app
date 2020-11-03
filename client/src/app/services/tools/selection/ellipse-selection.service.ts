@@ -239,7 +239,7 @@ export class EllipseSelectionService extends SelectionToolService {
         return ellipsePath;
     }
 
-    private clearCanvasEllipse(): void {
+    clearCanvasEllipse(): void {
         this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.pathData);
         this.colorService.setPrimaryColor('#FFFFFF');
         this.tracingService.setHasFill(true);
