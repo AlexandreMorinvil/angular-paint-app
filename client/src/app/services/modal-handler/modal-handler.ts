@@ -15,7 +15,7 @@ export class ModalHandlerService {
         this.drawingService.shortcutEnable = false;
         const dialogRef = this.dialog.open(DrawingCarouselComponent, {
             width: '800px',
-            height: '750px',
+            height: '800px',
             data: {},
         });
         dialogRef.afterClosed().subscribe(() => {

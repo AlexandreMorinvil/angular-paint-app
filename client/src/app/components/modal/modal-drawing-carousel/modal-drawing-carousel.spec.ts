@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatChipInputEvent } from '@angular/material/chips';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { LoadService } from '@app/services/load/load.service';
 import { RemoteMemoryService } from '@app/services/remote-memory/remote-memory.service';
 import { Tag, TagFilterService } from '@app/services/tag-filter/tag-filter.service';
@@ -12,6 +13,8 @@ describe('DrawingCarouselComponent', () => {
     let memoryServiceSpy: jasmine.SpyObj<RemoteMemoryService>;
     let tagFilterServiceSpy: jasmine.SpyObj<TagFilterService>;
     let loadServiceSpy: jasmine.SpyObj<LoadService>;
+    // tslint:disable:prefer-const
+    let data: MatDialog;
     let testData: DrawingToDatabase[];
     let testData2: DrawingToDatabase[];
     let tagAdded: MatChipInputEvent;
@@ -46,6 +49,7 @@ describe('DrawingCarouselComponent', () => {
                 { provide: RemoteMemoryService, useValue: memoryServiceSpy },
                 { provide: TagFilterService, useValue: tagFilterServiceSpy },
                 { provide: LoadService, useValue: loadServiceSpy },
+                { provide: MAT_DIALOG_DATA, useValue: data },
             ],
         }).compileComponents();
     }));
