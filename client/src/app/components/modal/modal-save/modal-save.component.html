@@ -9,7 +9,7 @@
     </p>
     <p>
         <mat-form-field class="tags">
-            <mat-chip-list #chipList aria-label="Tag selection">
+            <mat-chip-list #chipList aria-label="tag selection">
                 <mat-label>Nom des Étiquettes</mat-label>
                 <mat-chip *ngFor="let tag of tags" (removed)="remove(tag)">
                     {{ tag.name }}
@@ -24,11 +24,9 @@
             </mat-chip-list>
         </mat-form-field>
     </p>
-
     <div mat-dialog-actions>
-        <button id="buttonSavePNG" (click)="saveToPNG()">Sauvegarder en PNG</button>
-        <button id="buttonSaveServer" (click)="saveToServer()">Sauvegarder sur le Serveur</button>
         <button id="buttonCancel" mat-button mat-dialog-close>Annuler</button>
+        <button id="buttonSaveServer" (click)="saveToServer()">Sauvegarder</button>
     </div>
     <h6>Choisir un nom de dessin entre 1 et 20 charactères, sans espaces et un maximum de 10 tags par dessin</h6>
 </div>

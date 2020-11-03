@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
+import { InteractionPath } from '@app/classes/action/interaction-path';
 import { Description } from '@app/classes/description';
 import { MouseButton } from '@app/classes/mouse';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
@@ -11,9 +13,14 @@ import { WidthService } from '@app/services/tool-modifier/width/width.service';
     providedIn: 'root',
 })
 export class PencilService extends Tool {
-    pathData: Vec2[];
+    private pathData: Vec2[];
 
-    constructor(drawingService: DrawingService, private colorService: ColorService, private widthService: WidthService) {
+    constructor(
+        drawingService: DrawingService,
+        private drawingStateTrackingService: DrawingStateTrackerService,
+        private colorService: ColorService,
+        private widthService: WidthService,
+    ) {
         super(drawingService, new Description('crayon', 'c', 'pencil_icon.png'));
         this.modifiers.push(this.colorService);
         this.modifiers.push(this.widthService);
@@ -36,6 +43,7 @@ export class PencilService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.drawLine(this.drawingService.baseCtx, this.pathData);
+            this.drawingStateTrackingService.addAction(this, new InteractionPath(this.pathData));
         }
         this.mouseDown = false;
         this.clearPath();
@@ -57,7 +65,7 @@ export class PencilService extends Tool {
         }
     }
 
-    drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
         ctx.lineWidth = this.widthService.getWidth(); // width ajustment
@@ -80,5 +88,9 @@ export class PencilService extends Tool {
 
     private clearPath(): void {
         this.pathData = [];
+    }
+
+    execute(interaction: InteractionPath): void {
+        this.drawLine(this.drawingService.baseCtx, interaction.path);
     }
 }

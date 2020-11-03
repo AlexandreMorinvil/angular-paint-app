@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
+import { InteractionPath } from '@app/classes/action/interaction-path';
 import { Description } from '@app/classes/description';
 import { MouseButton } from '@app/classes/mouse';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
 
@@ -13,8 +15,8 @@ export class EraserService extends Tool {
     private pathData: Vec2[];
     private eraserColor: string = '#FFFFFF';
     minWidth: number = 5;
-
-    constructor(drawingService: DrawingService, private widthService: WidthService) {
+    // tslint:disable:prettier
+    constructor(drawingService: DrawingService, private drawingStateTrackingService: DrawingStateTrackerService, private widthService: WidthService) {
         super(drawingService, new Description('efface', 'e', 'erase_icon.png'));
         this.modifiers.push(this.widthService);
         this.clearPath();
@@ -34,6 +36,7 @@ export class EraserService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.drawLine(this.drawingService.baseCtx, this.pathData);
+            this.drawingStateTrackingService.addAction(this, new InteractionPath(this.pathData));
         }
         this.mouseDown = false;
         this.clearPath();
@@ -98,12 +101,7 @@ export class EraserService extends Tool {
         this.pathData = [];
     }
 
-    /*private isInCanvas(mousePosition: Vec2): boolean {
-        return (
-            mousePosition.x <= this.drawingService.previewCtx.canvas.width &&
-            mousePosition.x >= 0 &&
-            mousePosition.y <= this.drawingService.previewCtx.canvas.height &&
-            mousePosition.y >= 0
-        );
-    }*/
+    execute(interaction: InteractionPath): void {
+        this.drawLine(this.drawingService.baseCtx, interaction.path);
+    }
 }

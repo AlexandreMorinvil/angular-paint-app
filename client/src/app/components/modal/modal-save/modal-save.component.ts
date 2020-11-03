@@ -8,7 +8,7 @@ import { DialogData } from '@app/classes/dialog-data';
 import { SaveService } from '@app/services/save/save.service';
 
 export interface Tag {
-    tagName: string;
+    name: string;
 }
 
 @Component({
@@ -37,7 +37,7 @@ export class SaveComponent {
 
         // Add the tag
         if ((value || '').trim()) {
-            this.tags.push({ tagName: value.trim() });
+            this.tags.push({ name: value.trim() });
         }
 
         // Reset the input value
@@ -51,14 +51,6 @@ export class SaveComponent {
 
         if (index >= 0) {
             this.tags.splice(index, 1);
-        }
-    }
-
-    saveToPNG(): void {
-        if (this.validateValue()) {
-            (document.getElementById('buttonSavePNG') as HTMLInputElement).disabled = true;
-            const drawName = this.drawName.value;
-            this.saveService.saveDrawToPNG(drawName);
         }
     }
 

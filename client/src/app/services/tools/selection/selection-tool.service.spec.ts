@@ -230,7 +230,8 @@ describe('SelectionToolService', () => {
         (service as any).image = new Image(10, 10);
         const position = { x: 0, y: 0 };
         (service as any).imageData = new ImageData(10, 10);
-        (service as any).drawImage(baseCtxStub, position, position, position, (service as any).image);
+        const size: Vec2 = {x:(service as any).imageData.width,y:(service as any).imageData.height};
+        (service as any).drawImage(baseCtxStub, position, position, position, (service as any).image, size);
     });
 
     it('getOldImageData should return the good imageData', () => {

@@ -1,6 +1,5 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
-
 import { AttributeTracingComponent } from './attributes-tracing.component';
 
 describe('AttributeTracingComponent', () => {
@@ -8,12 +7,14 @@ describe('AttributeTracingComponent', () => {
     let fixture: ComponentFixture<AttributeTracingComponent>;
     let tracingService: TracingService;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [AttributeTracingComponent],
-            providers: [TracingService],
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                declarations: [AttributeTracingComponent],
+                providers: [TracingService],
+            }).compileComponents();
+        }),
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(AttributeTracingComponent);
