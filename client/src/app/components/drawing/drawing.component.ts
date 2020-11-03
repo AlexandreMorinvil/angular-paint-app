@@ -136,6 +136,9 @@ export class DrawingComponent implements AfterViewInit {
         } else if (event.ctrlKey && event.key.toLowerCase() === 'z') {
             event.preventDefault(); // to prevent key of windows
             this.drawingStateTrackerService.onCtrlZDown();
+        } else if (event.ctrlKey && event.key.toLowerCase() === 'e') {
+            event.preventDefault(); // to prevent key of windows
+            this.modalHandlerService.openExportDialog();
         } else if (event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown') {
             this.toolbox.getCurrentTool().onArrowDown(event);
         } else if (event.ctrlKey && event.key.toLowerCase() === 'a') {
