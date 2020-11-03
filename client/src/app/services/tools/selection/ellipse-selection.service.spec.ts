@@ -4,6 +4,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
+import { WidthService } from '@app/services/tool-modifier/width/width.service';
 import { EllipseService } from '../ellipse/ellipse-service';
 import { EllipseSelectionService } from './ellipse-selection.service';
 
@@ -12,6 +13,7 @@ describe('EllipseSelectionService', () => {
     let service: EllipseSelectionService;
     let tracingService: TracingService;
     let colorService: ColorService;
+    let widthService: WidthService;
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
@@ -20,6 +22,7 @@ describe('EllipseSelectionService', () => {
     let mouseEvent25: MouseEvent;
     let mouseEvent50: MouseEvent;
     let mouseEvent100: MouseEvent;
+    let imageStub: HTMLImageElement;
     const pathTest: Vec2[] = [
         { x: 10, y: 10 },
         { x: 11, y: 11 },
@@ -58,6 +61,7 @@ describe('EllipseSelectionService', () => {
         service = TestBed.inject(EllipseSelectionService);
         tracingService = TestBed.inject(TracingService);
         colorService = TestBed.inject(ColorService);
+        widthService = TestBed.inject(WidthService);
 
         resetTransformSpy = spyOn<any>(service, 'resetTransform').and.callThrough();
         clearCanvasEllipseSpy = spyOn<any>(service, 'clearCanvasEllipse').and.callThrough();
@@ -76,6 +80,8 @@ describe('EllipseSelectionService', () => {
         // tslint:disable:no-string-literal
         service['tracingService'] = tracingService;
         service['colorService'] = colorService;
+        service['widthService'] = widthService;
+
         service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
         service['drawingService'].canvas = canvasStub;
@@ -406,34 +412,43 @@ describe('EllipseSelectionService', () => {
 
     it('should on call on mouse move event if mouseDown is set to true for createOnMouseMoveEvent', () => {
         service.mouseDown = true;
+        (service as any).startDownCoord = { x: 14, y: 14 };
+        (service as any).ellipseService.shiftDown = true;
         (service as any).pathData = pathTest;
         (service as any).createOnMouseMoveEvent();
         expect(onMouseMoveSpy).toHaveBeenCalled();
     });
     it('should not call on mouse move event if mouseDown is set to false for createOnMouseMoveEvent', () => {
         service.mouseDown = false;
-        (service as any).startDownCoord = { x: 14, y: 14 };
-
         (service as any).pathData = pathTest;
-        (service as any).ellipseService.shiftDown = true;
 
         (service as any).createOnMouseMoveEvent();
         expect(onMouseMoveSpy).not.toHaveBeenCalled();
     });
 
-    /* it('should set correctly after resetTransform', () => {
+    it('should set correctly after resetTransform', () => {
         (service as any).resetTransform();
+        expect(widthService.getWidth()).toEqual(1);
+        expect(colorService.getPrimaryColor()).toEqual('#000000');
+        expect(colorService.getSecondaryColor()).toEqual('#000000');
+        expect(tracingService.getHasFill()).toEqual(false);
+        expect(tracingService.getHasContour()).toEqual(true);
     });
 
-    it('should ... correctly after showSelection', () => {
+    fit('should ... correctly after showSelection', () => {
+        (service as any).startDownCoord = { x: 14, y: 14 };
+        (service as any).pathLastCoord = { x: 10, y: 10 };
+        (service as any).imageData = { width: 10, height: 10 };
+        service.firstEllipseCoord = { x: 0, y: 20 };
+
         (service as any).showSelection(previewCtxStub, imageStub, 0);
     });
 
-    it('should ... correctly after getPath', () => {
+    /* it('should ... correctly after getPath', () => {
         (service as any).getPath(0);
     });
 
     it('should ... correctly after clearCanvasEllipse', () => {
         (service as any).clearCanvasEllipse();
-    });*/
+    });  */
 });
