@@ -87,11 +87,11 @@ export class DatabaseService {
         }
     }
 
-    async addDrawing(drawing: DrawingToDatabase): Promise<void> {
+    async addDrawing(drawing: DrawingToDatabase): Promise<string> {
         try {
             this.validateDrawing(drawing);
             this.drawId = (await this.collection.insertOne(drawing)).insertedId.toString();
-            return;
+            return this.drawId;
         } catch (error) {
             throw new Error(this.ERROR_ADD_DRAWING);
         }
@@ -115,9 +115,9 @@ export class DatabaseService {
         }
     }
 
-    async deleteDrawing(drawingID: string): Promise<void> {
+    async deleteDrawing(drawingID: string): Promise<any> {
         try {
-            this.collection.findOneAndDelete({ _id: new ObjectID(drawingID) });
+            await this.collection.findOneAndDelete({ _id: new ObjectID(drawingID) });
         } catch (error) {
             throw new Error(this.ERROR_DELETE_DRAWING);
         }
