@@ -27,7 +27,7 @@ export abstract class SelectionToolService extends Tool {
     protected pathLastCoord: Vec2;
     protected imageData: ImageData;
     protected oldImageData: ImageData;
-    protected pathData: Vec2[];
+    public pathData: Vec2[];
     protected selectionCreated: boolean;
     protected draggingImage: boolean;
     protected clickOnAnchor: boolean;
