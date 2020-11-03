@@ -49,7 +49,7 @@ describe('EllipseSelectionService', () => {
         canvasStub = canvasTestHelper.canvas;
 
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
-        ellipseServiceSpy = jasmine.createSpyObj('EllipseService', ['onMouseMove', 'drawEllipse', 'drawPreviewRect']);
+        ellipseServiceSpy = jasmine.createSpyObj('EllipseService', ['onMouseMove', 'drawEllipse', 'drawPreviewRect', 'onMouseDown']);
 
         TestBed.configureTestingModule({
             providers: [
@@ -133,38 +133,30 @@ describe('EllipseSelectionService', () => {
         expect(onMouseDownSpy).toHaveBeenCalled();
     });
 
-    /*  fit('should set attribute correctly and create a selection on mouse down', () => {
-        (service as any).selectionCreated = false;
-        (service as any).firstTranslation = false;
-        (service as any).startDownCoord = { x: 0, y: 0 };
-        (service as any).imageData = { width: 100, height: 100 };
-
-        service.pathLastCoord = { x: 100, y: 100 };
-        service.onMouseDown(mouseEvent50);
-    }); */
-
-    // Need help with this test
     it('should set attribute correctly and translate a selection on mouse down if selection created and hit selection', () => {
         (service as any).selectionCreated = true;
         (service as any).startDownCoord = { x: 0, y: 0 };
         (service as any).imageData = { width: 100, height: 100 };
-        service.pathLastCoord = { x: 10, y: 10 };
+        (service as any).pathLastCoord = { x: 10, y: 10 };
         (service as any).pathData = pathTest;
+        (service as any).mouseDown = true;
+        service.firstEllipseCoord = { x: 0, y: 20 };
+
         service.onMouseDown(mouseEvent50);
         expect((service as any).pathData).toContain(service.pathLastCoord);
         expect(clearCanvasEllipseSpy).toHaveBeenCalled();
         expect((service as any).draggingImage).toBeTrue();
     });
-    // Need help with this test
     it('should set attribute correctly and translate a selection on mouse down for first translation', () => {
         (service as any).selectionCreated = true;
-        (service as any).hasDoneFirstTranslation = true;
         (service as any).startDownCoord = { x: 0, y: 0 };
         (service as any).imageData = { width: 100, height: 100 };
-        service.mouseDown = true;
-        service.mouseDownCoord = { x: 10, y: 10 };
-        service.pathLastCoord = { x: 10, y: 10 };
+        (service as any).pathLastCoord = { x: 10, y: 10 };
         (service as any).pathData = pathTest;
+        (service as any).mouseDown = true;
+        (service as any).hasDoneFirstTranslation = true;
+        service.firstEllipseCoord = { x: 0, y: 20 };
+
         service.onMouseDown(mouseEvent50);
         expect(clearCanvasEllipseSpy).toHaveBeenCalled();
         expect(showSelectionSpy).toHaveBeenCalled();
@@ -190,7 +182,6 @@ describe('EllipseSelectionService', () => {
             y: 105,
         });
     });
-
     it('should set attribute and on creation of selection when on mouse move if mouseDown is true and draggingImage is false on mouse move', () => {
         (service as any).draggingImage = false;
         (service as any).mouseDown = true;
@@ -231,8 +222,6 @@ describe('EllipseSelectionService', () => {
         service.onMouseMove(mouseEvent100);
         expect(getSquaredSizeSpy).toHaveBeenCalled();
     });
-
-    // Need help with this test
     it('should set attribute and translate a selection on mouse up', () => {
         (service as any).draggingImage = true;
         (service as any).mouseDown = true;
@@ -324,9 +313,13 @@ describe('EllipseSelectionService', () => {
     it('should on arrowDown', () => {
         const keyboardEvent = {} as KeyboardEvent;
         (service as any).startDownCoord = { x: 14, y: 14 };
+        (service as any).pathLastCoord = { x: 10, y: 10 };
         (service as any).imageData = { width: 10, height: 10 };
         (service as any).arrowDown = true;
+        (service as any).selectionCreated = true;
         (service as any).ellipseService.pathData = pathTest;
+        (service as any).arrowPress = [true, false, false, false];
+        service.firstEllipseCoord = { x: 0, y: 20 };
 
         service.onArrowDown(keyboardEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
@@ -334,8 +327,8 @@ describe('EllipseSelectionService', () => {
         expect((service as any).draggingImage).toBeFalse();
     });
     it('should on arrowDown', () => {
-        (service as any).arrowDown = false;
         const keyboardEvent = {} as KeyboardEvent;
+        (service as any).arrowDown = false;
         (service as any).startDownCoord = { x: 14, y: 14 };
         (service as any).pathLastCoord = { x: 10, y: 10 };
         (service as any).arrowPress = [true, false, false, false];
