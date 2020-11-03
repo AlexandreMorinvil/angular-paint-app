@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import { describe } from 'mocha';
 import { Db, MongoClient } from 'mongodb';
 import { MongoMemoryServer } from 'mongodb-memory-server';
+//import { DrawingToDatabase } from './communication/drawingtodatabase';
 import { DatabaseService } from './database.service';
 
 export class DrawingToDatabase {

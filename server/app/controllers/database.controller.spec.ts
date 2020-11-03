@@ -5,8 +5,8 @@ import * as sinon from 'sinon';
 import * as tests from 'supertest';
 import { Stubbed, testingContainer } from '../../test/test-utils';
 import { Application } from '../app';
-//import { DrawingToDatabase } from '../communication/drawingtodatabase';
 import { DatabaseService } from '../services/database/database.service';
+import { DrawingToDatabase } from '../services/database/database.service.spec';
 import { TYPES } from '../types';
 import { DatabaseController } from './database.controller';
 
@@ -23,17 +23,17 @@ const ERROR_ADD_DRAWING: string = "Échec lors de l'ajout du dessin";
 const ERROR_GET_DRAWING_BY_TAG: string = "Échec lors de la tentative de récupération de tous les dessins ayant l'étiquettes";
 const ERROR_GET_DRAWING_BY_NAME: string = 'Échec lors de la tentative de récupération de tous les dessins nommés';
 
-export class DrawingToDatabase {
-    _id: any;
-    name: string;
-    tags: string[];
-}
-export class Drawing {
-    _id: any;
-    name: string;
-    tags: string[];
-    imageSrc: string | undefined;
-}
+// export class DrawingToDatabase {
+//     _id: any;
+//     name: string;
+//     tags: string[];
+// }
+// export class Drawing {
+//     _id: any;
+//     name: string;
+//     tags: string[];
+//     imageSrc: string | undefined;
+// }
 
 describe('DatabaseController', () => {
     const ROUTING_GET_ALL: string = '/api/drawing';
@@ -299,19 +299,15 @@ describe('DatabaseController', () => {
         expect(databaseController['valideImageSource'](imageSource)).to.eq(true);
     });
 
-    // it('should save the draw in the right folder when imageSource is valid', async () => {
-    //     const imageSource: string =
-    //         'data:image/png;base64, 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';
-    //     const id1: string = '5fa04bbf20a82a5ac81a33b7';
-    //     const savingPath: string = './drawings/images';
-    //     await (databaseController as any).saveDrawIntoImageFolder(id1, imageSource, savingPath);
-    //     const filename = savingPath + '/' + id1 + '.png';
-    //     let img64 = imageSource.replace('data:image/png;base64,', '');
-    //     img64 = img64.split(/\s/).join('');
-    //     const fs = require('fs');
-    //     expect(fs.readFileSyn(filename, { encoding: 'base64' })).contain(img64);
-    //     expect(databaseController['valideImageSource'](imageSource)).to.eq(true);
-    // });
+    it('should save the draw in the right folder when imageSource is valid', async () => {
+        (databaseController as any).saveDrawIntoImageFolder.resolves(null);
+        // const filename = savingPath + '/' + id1 + '.png';
+        // let img64 = imageSource.replace('data:image/png;base64,', '');
+        // img64 = img64.split(/\s/).join('');
+        // const fs = require('fs');
+        // expect(fs.readFileSyn(filename, { encoding: 'base64' })).contain(img64);
+        //expect(databaseController['valideImageSource'](imageSource)).to.eq(true);
+    });
 
     // it('should remove the draw in the right folder when delete draw into image folder is called', async () => {
     //     const imageSource: string =

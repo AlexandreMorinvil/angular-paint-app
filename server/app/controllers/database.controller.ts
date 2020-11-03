@@ -127,7 +127,6 @@ export class DatabaseController {
         const nameDirectory = '/' + id + '.png';
         let img64 = imageSource.replace('data:image/png;base64,', '');
         img64 = img64.split(/\s/).join('');
-        console.log(img64);
         fs.writeFileSync(path + nameDirectory, img64, { encoding: 'base64' });
     }
 
