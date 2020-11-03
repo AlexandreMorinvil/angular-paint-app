@@ -5,7 +5,7 @@ import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { EllipseSelectionService } from './ellipse-selection.service';
 
-fdescribe('EllipseSelectionService', () => {
+describe('EllipseSelectionService', () => {
     let service: EllipseSelectionService;
     let tracingService: TracingService;
     let colorService: ColorService;
@@ -354,7 +354,7 @@ fdescribe('EllipseSelectionService', () => {
         (service as any).createOnMouseMoveEvent();
     });
 
-   /* it('should set correctly after resetTransform', () => {
+    /* it('should set correctly after resetTransform', () => {
         (service as any).resetTransform();
     });
 
