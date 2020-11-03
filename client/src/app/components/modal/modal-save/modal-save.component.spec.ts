@@ -4,6 +4,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
 import { Router } from '@angular/router';
+import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { ApiImageTransferService } from '@app/services/api/image-transfer/api-image-transfer.service';
 import { SaveService } from '@app/services/save/save.service';
 import { ModalSaveComponent } from './modal-save.component';
@@ -11,20 +12,18 @@ import { ModalSaveComponent } from './modal-save.component';
 class HTMLInputElement {
     input: string;
 }
-//             TestBed.overrideModule(BrowserDynamicTestingModule, {
-//                 set: {
-//                     entryComponents: [ModalSaveComponent],
-//                 },
-//             });
 
 describe('ModalSaveComponent', () => {
     let component: ModalSaveComponent;
     let fixture: ComponentFixture<ModalSaveComponent>;
     const dialogRefSpy: jasmine.SpyObj<MatDialogRef<ModalSaveComponent, any>> = jasmine.createSpyObj('MatDialogRef', ['close']);
-    // let sendMessageToServerSpy: jasmine.Spy<any>;
-    // let saveDrawSpy: jasmine.Spy<any>;
-    //let saveService = SaveService;
-    let saveServiceSpy: jasmine.Spy<any>;
+    let sendMessageToServerSpy: jasmine.Spy<any>;
+    let saveDrawSpy: jasmine.Spy<any>;
+    let canvasStub: HTMLCanvasElement;
+    let baseCtxStub: CanvasRenderingContext2D;
+    let previewCtxStub: CanvasRenderingContext2D;
+    let basicPostSpy: jasmine.Spy<any>;
+
     beforeEach(
         waitForAsync(() => {
             TestBed.configureTestingModule({
@@ -35,7 +34,7 @@ describe('ModalSaveComponent', () => {
                     { provide: MatDialog, useValue: {} },
                     { provide: Router, useValue: {} },
                     { provide: MatTabsModule, useValue: {} },
-                    { provide: SaveService, useValue: saveServiceSpy },
+                    SaveService,
                     HttpClientTestingModule,
                     HttpClient,
                     HttpTestingController,
@@ -43,21 +42,27 @@ describe('ModalSaveComponent', () => {
                     ApiImageTransferService,
                 ],
             }).compileComponents();
-            //component['saveService'].imageSource = 'ALKETRHEKRMEJ';
-            // saveService = TestBed.inject(SaveService);
-            // saveDrawSpy = spyOn<any>(component['saveService'], 'saveDraw').and.callThrough();
-            // sendMessageToServerSpy = spyOn<any>(component, 'sendMessageToServer').and.callThrough();
-            // component['saveService'].imageSource = 'LKETJRKERJTK';
         }),
     );
 
     beforeEach(() => {
+        baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+        previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        canvasStub = canvasTestHelper.canvas;
         fixture = TestBed.createComponent(ModalSaveComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
-    });
-    afterEach(() => {
-        // httpMock.verify();
+
+        component['saveService']['drawingService'].baseCtx = baseCtxStub;
+        component['saveService']['drawingService'].previewCtx = previewCtxStub;
+        component['saveService']['drawingService'].canvas = canvasStub;
+        component['saveService']['drawingService'].canvas.width = 1000;
+        component['saveService']['drawingService'].canvas.height = 800;
+
+        saveDrawSpy = spyOn<any>(component['saveService'], 'saveDraw').and.callThrough();
+        sendMessageToServerSpy = spyOn<any>(component, 'sendMessageToServer').and.callThrough();
+        component['saveService'].imageSource = 'IMAGESOURCE';
+        basicPostSpy = spyOn<any>(component['apiImageTransferService'], 'basicPost').and.callThrough();
     });
 
     it('should create', () => {
@@ -114,7 +119,7 @@ describe('ModalSaveComponent', () => {
         expect((component as any).validateDrawName(name)).toBeFalse();
     });
 
-    it('validate  a tag should return false if the tag lenght is bigger than max ', () => {
+    it('validate  a tag should return false if the tag lenght is bigger than max', () => {
         const name: string = 'alsoergdhtryejdklstegreddhudalsoergdhtryejdklstegreddhudamskedjrh';
         expect((component as any).validateDrawName(name)).toBeFalse();
     });
@@ -173,14 +178,14 @@ describe('ModalSaveComponent', () => {
         expect(pushSpy).not.toHaveBeenCalled();
     });
 
-    it('remove tag should  call tags.splice if the tag and index are valid ', () => {
+    it('remove tag should  call tags.splice if the tag and index are valid', () => {
         (component as any).tags = ['a', 'b'];
         let spliceSpy: jasmine.Spy<any> = spyOn(component.tags, 'splice');
         component.remove(component.tags[1]);
         expect(spliceSpy).toHaveBeenCalled();
     });
 
-    it('remove tag should  call tags.splice if the tag and index are invalid ', () => {
+    it('remove tag should  call tags.splice if the tag and index are invalid', () => {
         (component as any).tags = ['a', 'b'];
         const tag: string = 'd';
         let spliceSpy: jasmine.Spy<any> = spyOn(component.tags, 'splice');
@@ -188,19 +193,30 @@ describe('ModalSaveComponent', () => {
         expect(spliceSpy).not.toHaveBeenCalled();
     });
 
-    // it('send message to server should call basic post  ', () => {
-    //     (component as any).drawName = 'name';
-    //     (component as any).tags = ['a', 'b'];
-    //     (component.saveService as any).imageSource = 'JSHRTFGDEJRK';
-    //     component.sendMessageToServer();
-    // });
+    it('send message to server should call basic post', () => {
+        (component as any).drawName.value = 'name';
+        (component as any).tags = ['tag1', 'tag2'];
+        component.saveService.saveDraw();
+        component.sendMessageToServer();
+        expect(basicPostSpy).toHaveBeenCalled();
+    });
 
-    // it('save message to server should call basic sendMessage to server  ', () => {
-    //     // (component as any).drawName = 'name';
-    //     // (component as any).tags = ['a', 'b'];
-    //     // (component as any).imageSource = 'LKAEGTHRJEKIDTH';
-    //     component.saveToServer();
-    //     expect(saveDrawSpy).toHaveBeenCalled();
-    //     expect(sendMessageToServerSpy).toHaveBeenCalled();
-    // });
+    it('should save message to server when validate value is true', () => {
+        (component as any).drawName.value = 'name';
+        (component as any).tags = ['tag1', 'tag2'];
+        // (component as any).imageSource = 'LKAEGTHRJEKIDTH';
+        component.saveService.saveDraw();
+        component.saveToServer();
+        expect(saveDrawSpy).toHaveBeenCalled();
+        expect(sendMessageToServerSpy).toHaveBeenCalled();
+    });
+
+    it('should not save message to server when validate value is false', () => {
+        (component as any).drawName.value = '';
+        (component as any).tags = ['tag1', 'tag2'];
+        // (component as any).imageSource = 'LKAEGTHRJEKIDTH';
+        component.saveToServer();
+        expect(saveDrawSpy).not.toHaveBeenCalled();
+        expect(sendMessageToServerSpy).not.toHaveBeenCalled();
+    });
 });

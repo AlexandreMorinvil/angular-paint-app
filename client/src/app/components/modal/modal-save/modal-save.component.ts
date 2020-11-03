@@ -19,9 +19,9 @@ export class ModalSaveComponent {
     private readonly MAX_LENGHT_DRAW_NAME = 50;
     private readonly MAX_LENGHT_NAME_TAG = 25;
     // private readonly ERROR_NO_DRAWING_NAME = 'Les dessins doivent contenir un nom';
-    // // private readonly ERROR_NUMBER_TAG_GREATER_MAXIMUM = 'Le nombre détiquettes est supérieur à la limite de 15';
-    // // private readonly ERROR_NO_TAG_NAME = 'Les étiquettes assignées ne peuvent pas être vides';
-    // // private readonly ERROR_MAX_LENGTH_NAME_TAG = 'Les étiquettes des dessions doivent contenir un maximum de 25 caractères';
+    // private readonly ERROR_NUMBER_TAG_GREATER_MAXIMUM = 'Le nombre détiquettes est supérieur à la limite de 15';
+    // private readonly ERROR_NO_TAG_NAME = 'Les étiquettes assignées ne peuvent pas être vides';
+    // private readonly ERROR_MAX_LENGTH_NAME_TAG = 'Les étiquettes des dessions doivent contenir un maximum de 25 caractères';
     // private readonly ERROR_NO_IMAGE_SOURCE = 'Le dessin a pas une image source';
     // private readonly ERROR_MAX_LENGTH_NAME_DRAWING = 'Les noms des dessions doivent contenir un maximum de 50 caractères';
     readonly separatorKeysCodes: number[] = [ENTER, COMMA];
@@ -29,12 +29,12 @@ export class ModalSaveComponent {
     tags: string[] = [];
     drawName: FormControl = new FormControl('', Validators.required);
     constructor(
-        private apiImageTransferService: ApiImageTransferService,
-        public saveService: SaveService,
         public dialogRef: MatDialogRef<ModalSaveComponent>,
         @Inject(MAT_DIALOG_DATA) public data: DialogData,
         d: MatTabsModule,
         dialog: MatDialog,
+        public saveService: SaveService,
+        private apiImageTransferService: ApiImageTransferService,
     ) {}
 
     add(event: MatChipInputEvent): void {
