@@ -14,6 +14,7 @@ describe('AttributesPanelComponent', () => {
     let component: AttributesPanelComponent;
     let fixture: ComponentFixture<AttributesPanelComponent>;
     let toolStub: ToolStub;
+    let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
     // Service
     let toolBoxSercive: ToolboxService;
@@ -23,9 +24,10 @@ describe('AttributesPanelComponent', () => {
     let widthService: WidthService;
 
     beforeEach(async(() => {
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
         TestBed.configureTestingModule({
             declarations: [AttributesPanelComponent],
-            providers: [ToolboxService, JunctionService, TextureService, TracingService, WidthService],
+            providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         }).compileComponents();
     }));
 

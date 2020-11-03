@@ -27,39 +27,45 @@ describe('ToleranceService', () => {
     });
 
     it(' setTolerance should set tolerance to the incoming argument and getPercentTolerance/getPixelTolerance should equal the right number', () => {
-        let tolerance = 25;
+        const tolerance = 25;
         service.setTolerance(tolerance);
         expect(setToleranceSpy).toHaveBeenCalled();
         expect(service.getPercentTolerance()).toEqual(tolerance);
+        // We use magic number to calculate the convert the percentage limit in pixel
+        // tslint:disable:no-magic-numbers
         expect(service.getPixelTolerance()).toEqual(Math.round((tolerance * 255) / 100));
         expect(getPercentToleranceSpy).toHaveBeenCalled();
         expect(getPixelToleranceSpy).toHaveBeenCalled();
     });
 
     it(' setWidth should set width to the 100 if input is above 100', () => {
-        let tolerance = 101;
-        let maxTolerance = service.MAX_TOLERANCE;
+        const tolerance = 101;
+        const maxTolerance = service.MAX_TOLERANCE;
         service.setTolerance(tolerance);
         expect(setToleranceSpy).toHaveBeenCalled();
         expect(service.getPercentTolerance()).toEqual(maxTolerance);
+        // We use magic number to calculate the convert the percentage limit in pixel
+        // tslint:no-magic-numbers
         expect(service.getPixelTolerance()).toEqual(Math.round((maxTolerance * 255) / 100));
         expect(getPercentToleranceSpy).toHaveBeenCalled();
         expect(getPixelToleranceSpy).toHaveBeenCalled();
     });
 
     it(' setWidth should set width to 0 if input is below 0', () => {
-        let tolerance = -1;
-        let maxTolerance = service.MIN_TOLERANCE;
+        const tolerance = -1;
+        const maxTolerance = service.MIN_TOLERANCE;
         service.setTolerance(tolerance);
         expect(setToleranceSpy).toHaveBeenCalled();
         expect(service.getPercentTolerance()).toEqual(maxTolerance);
+        // We use magic number to calculate the convert the percentage limit in pixel
+        // tslint:disable:no-magic-numbers
         expect(service.getPixelTolerance()).toEqual(Math.round((maxTolerance * 255) / 100));
         expect(getPercentToleranceSpy).toHaveBeenCalled();
         expect(getPixelToleranceSpy).toHaveBeenCalled();
     });
 
     it(' should call setState to the correct incoming argument ', () => {
-        let state = {
+        const state = {
             percentTolerance: 0,
             pixelTolerance: 0,
         } as ToleranceModifierState;

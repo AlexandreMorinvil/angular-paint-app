@@ -1,9 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
-import { PencilService } from '../tools/pencil/pencil-service';
+import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { DrawingStateTrackerService } from './drawing-state-tracker.service';
 
 describe('DrawingStateTrackerService', () => {
+    // The disablement of the "any" tslint rule is justified in this situation as the prototype
+    // of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
+    // tslint:disable:no-any
     let service: DrawingStateTrackerService;
     let servicePencil: PencilService;
     let onCtrlZDownSpy: jasmine.Spy<any>;
@@ -61,7 +64,7 @@ describe('DrawingStateTrackerService', () => {
     it('should push a canvas with height and width in a array of canvases with a length of 0  after an action with pencil', () => {
         servicePencil.mouseDown = true;
         (service as any).canvases.length = 0;
-        let mouseEvent = {
+        const mouseEvent = {
             offsetX: 1,
             offsetY: 1,
             button: 0,
@@ -78,7 +81,7 @@ describe('DrawingStateTrackerService', () => {
     it('should push a canvas with height and width in a array of canvases with a length of 1  after an action with pencil', () => {
         servicePencil.mouseDown = true;
         (service as any).canvases.length = 1;
-        let mouseEvent = {
+        const mouseEvent = {
             offsetX: 1,
             offsetY: 1,
             button: 0,
@@ -97,7 +100,7 @@ describe('DrawingStateTrackerService', () => {
         (service as any).canvases.length = 0;
         (service as any).actions.length = 1;
         (service as any).intervalCanvasSave = 2;
-        let mouseEvent = {
+        const mouseEvent = {
             offsetX: 1,
             offsetY: 1,
             button: 0,
@@ -114,8 +117,7 @@ describe('DrawingStateTrackerService', () => {
 
     it('should call reconstituteCanvas when undo is called', () => {
         servicePencil.mouseDown = true;
-
-        let mouseEvent = {
+        const mouseEvent = {
             offsetX: 1,
             offsetY: 1,
             button: 0,
@@ -125,14 +127,12 @@ describe('DrawingStateTrackerService', () => {
             { x: 1, y: 1 },
         ];
         servicePencil.onMouseUp(mouseEvent);
-
         service.undo();
         expect(reconstituteCanvasSpy).toHaveBeenCalled();
     });
     it('should early return when undo is called when there is no action to pop', () => {
         servicePencil.mouseDown = false;
-
-        let mouseEvent = {
+        const mouseEvent = {
             offsetX: 1,
             offsetY: 1,
             button: 0,
@@ -152,8 +152,7 @@ describe('DrawingStateTrackerService', () => {
         (service as any).intervalCanvasSave = 1;
         (service as any).actionsToRedo = [];
         (service as any).canvasesToRedo = [];
-
-        let mouseEvent = {
+        const mouseEvent = {
             offsetX: 1,
             offsetY: 1,
             button: 0,
@@ -170,8 +169,7 @@ describe('DrawingStateTrackerService', () => {
 
     it('should call reconstituteCanvas when redo is called', () => {
         servicePencil.mouseDown = true;
-
-        let mouseEvent = {
+        const mouseEvent = {
             offsetX: 1,
             offsetY: 1,
             button: 0,
@@ -187,8 +185,7 @@ describe('DrawingStateTrackerService', () => {
     });
     it('should early return when undo is called when there is no action to pop', () => {
         servicePencil.mouseDown = false;
-
-        let mouseEvent = {
+        const mouseEvent = {
             offsetX: 1,
             offsetY: 1,
             button: 0,
@@ -209,8 +206,7 @@ describe('DrawingStateTrackerService', () => {
         (service as any).intervalCanvasSave = 1;
         (service as any).actionsToRedo = [];
         (service as any).canvasesToRedo = [];
-
-        let mouseEvent = {
+        const mouseEvent = {
             offsetX: 1,
             offsetY: 1,
             button: 0,

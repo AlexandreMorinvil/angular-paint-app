@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Action } from '@app/classes/action/action';
 import { Interaction } from '@app/classes/action/interactions';
 import { Tool } from '@app/classes/tool';
-import { DrawingService } from '../drawing/drawing.service';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Injectable({
     providedIn: 'root',
@@ -40,6 +40,8 @@ export class DrawingStateTrackerService {
         this.actionsToRedo.push(actionUndone);
 
         if (this.actions.length % this.intervalCanvasSave === this.intervalCanvasSave - 1) {
+            // Reduce line of code and reduce complexity of tests
+            // tslint:disable:no-non-null-assertion
             const cavasUndone: ImageData = this.canvases.pop()!;
             this.canvasesToRedo.push(cavasUndone);
         }
@@ -53,6 +55,8 @@ export class DrawingStateTrackerService {
         this.actions.push(actionToRedo);
 
         if (this.actions.length % this.intervalCanvasSave === 0) {
+            // Reduce line of code and reduce complexity of tests
+            // tslint:disable:no-non-null-assertion
             const cavasToRedo: ImageData = this.canvasesToRedo.pop()!;
             this.canvases.push(cavasToRedo);
         }
@@ -67,6 +71,8 @@ export class DrawingStateTrackerService {
     }
 
     private reconstituteCanvas(): void {
+        // Bitwise operation is needed for functionality to work as intended
+        // tslint:disable:no-bitwise
         const indexCanvas = (this.actions.length / this.intervalCanvasSave) | 0;
         const actionsToCompute = this.actions.length % this.intervalCanvasSave;
 

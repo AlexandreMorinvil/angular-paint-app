@@ -15,7 +15,6 @@ describe('RectangleService', () => {
     let tracingService: TracingService;
     let mouseEvent: MouseEvent;
     let colorService: ColorService;
-    let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let canvasStub: HTMLCanvasElement;
@@ -25,6 +24,7 @@ describe('RectangleService', () => {
     let setAttributeSpy: jasmine.Spy<any>;
     let ctxFillSpy: jasmine.Spy<any>;
     let ctxContourSpy: jasmine.Spy<any>;
+    let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
     beforeEach(() => {
         // tslint: disable: no-any;
@@ -405,7 +405,7 @@ describe('RectangleService', () => {
     });
 
     it('should execute and drawRectangle is called', () => {
-        let interaction = {
+        const interaction = {
             startPoint: { x: 100, y: 100 },
             path: [{}],
             shiftDown: false,

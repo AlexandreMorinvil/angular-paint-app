@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
+import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
 import { BrushService } from '@app/services/tools/brush/brush-service';
@@ -29,17 +30,24 @@ describe('SidebarComponent', () => {
     let fixture: ComponentFixture<SidebarComponent>;
     let toolStub: ToolStub;
     let drawingStub: DrawingService;
+    let drawingStateStub: DrawingStateTrackerService;
     let toolserviceMock: ToolboxService;
     // tslint:disable:no-any
     let toolboxSpy: any;
+
     let routerSpy: jasmine.Spy<any>;
-    let drawServiceSpy: jasmine.Spy<any>;
+    let undoSpy: jasmine.Spy<any>;
+    let redoSpy: jasmine.Spy<any>;
+    let resetDrawingWithWarningSpy: jasmine.Spy<any>;
     let openGuideSpy: jasmine.Spy<any>;
+    let openSaveDialogSpy: jasmine.Spy<any>;
 
     beforeEach(async(() => {
         toolStub = new ToolStub({} as DrawingService, {} as Description);
         drawingStub = new DrawingService({} as WorkzoneSizeService);
+        drawingStateStub = new DrawingStateTrackerService({} as DrawingService);
         toolboxSpy = jasmine.createSpyObj('toolboxSpy', ['getAvailableTools', 'getCurrentTool', 'setSelectedTool']);
+
         toolserviceMock = new ToolboxService(
             {} as CursorService,
             {} as PencilService,
@@ -53,7 +61,7 @@ describe('SidebarComponent', () => {
             {} as PaintService,
             {} as RectangleSelectionService,
             {} as EllipseSelectionService,
-            {} as DrawingService
+            {} as DrawingService,
         );
 
         TestBed.configureTestingModule({
@@ -69,6 +77,7 @@ describe('SidebarComponent', () => {
                 { provide: PolygonService, useValue: toolStub },
                 { provide: CursorService, useValue: toolStub },
                 { provide: ToolboxService, useValue: toolboxSpy },
+                { provide: DrawingStateTrackerService, useValue: drawingStateStub },
                 { provide: RouterModule, useValue: routerSpy },
                 { provide: MAT_DIALOG_DATA, useValue: {} },
                 { provide: MatDialogRef, useValue: {} },
@@ -83,8 +92,14 @@ describe('SidebarComponent', () => {
         component = fixture.componentInstance;
         component['toolboxSevice'] = toolserviceMock;
         routerSpy = spyOn<any>(component['router'], 'navigate').and.callThrough();
-        drawServiceSpy = spyOn<any>(component['drawingService'], 'resetDrawingWithWarning');
+
+        resetDrawingWithWarningSpy = spyOn<any>(component['drawingService'], 'resetDrawingWithWarning');
         openGuideSpy = spyOn<any>(component['modalHandler'], 'openUserGuide');
+        openSaveDialogSpy = spyOn<any>(component['modalHandler'], 'openSaveDialog');
+
+        undoSpy = spyOn<any>(component['drawingStateTracker'], 'undo');
+        redoSpy = spyOn<any>(component['drawingStateTracker'], 'redo');
+
         fixture.detectChanges();
     });
 
@@ -114,11 +129,25 @@ describe('SidebarComponent', () => {
 
     it('should call resetDrawingWithWarning', () => {
         component.resetDrawing();
-        expect(drawServiceSpy).toHaveBeenCalled();
+        expect(resetDrawingWithWarningSpy).toHaveBeenCalled();
     });
 
     it('should call openUserGuide', () => {
         component.openGuide();
         expect(openGuideSpy).toHaveBeenCalled();
+    });
+    it('should call saveDialog', () => {
+        component.saveDialog();
+        expect(openSaveDialogSpy).toHaveBeenCalled();
+    });
+
+    it('should call undo', () => {
+        component.undo();
+        expect(undoSpy).toHaveBeenCalled();
+    });
+
+    it('should call redo', () => {
+        component.redo();
+        expect(redoSpy).toHaveBeenCalled();
     });
 });

@@ -85,15 +85,12 @@ export class PaintService extends Tool {
     private floodFill(ctx: CanvasRenderingContext2D, pathPixel: Vec2[]): void {
         this.setAttribute(ctx);
         while (pathPixel.length) {
+            // Reduce number of if checks and makes to code a bit cleaner
+            // tslint:disable-next-line:no-non-null-assertion
             const popedPixel = pathPixel.pop()!;
             const pixelPos: Vec2 = { x: popedPixel.x, y: popedPixel.y };
-
             const xPosition = pixelPos.x;
             let yPosition = pixelPos.y;
-
-            // Get current pixel position
-
-            // Go up as long as the color matches and are inside the canvas
             // tslint:disable-next-line:no-magic-numbers
             while (yPosition-- > -1 && this.matchStartColor(pixelPos)) {
                 pixelPos.y -= 1;
@@ -104,13 +101,11 @@ export class PaintService extends Tool {
             let reachLeft = false;
             let reachRight = false;
 
-            // Go down as long as the color matches and in inside the canvas
             while (yPosition++ <= this.drawingService.baseCtx.canvas.height - 2 && this.matchStartColor(pixelPos)) {
                 this.colorPixel(pixelPos);
                 if (xPosition > 0) {
                     if (this.matchStartColor({ x: pixelPos.x - 1, y: pixelPos.y })) {
                         if (!reachLeft) {
-                            // Add pixel to stack
                             pathPixel.push({ x: xPosition - 1, y: yPosition });
                             reachLeft = true;
                         }
@@ -121,7 +116,6 @@ export class PaintService extends Tool {
                 if (xPosition < this.drawingService.baseCtx.canvas.width) {
                     if (this.matchStartColor({ x: pixelPos.x + 1, y: pixelPos.y })) {
                         if (!reachRight) {
-                            // Add pixel to stack
                             pathPixel.push({ x: xPosition + 1, y: yPosition });
                             reachRight = true;
                         }

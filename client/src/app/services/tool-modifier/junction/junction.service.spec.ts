@@ -4,6 +4,9 @@ import { JunctionService } from './junction.service';
 
 describe('WidthService', () => {
     let service: JunctionService;
+    // The disablement of the "any" tslint rule is justified in this situation as the prototype
+    // of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
+    // tslint:disable:no-any
     let setStateSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
@@ -54,7 +57,7 @@ describe('WidthService', () => {
     });
 
     it(' should call setState with the correct incoming argument and set diameter and hasJunction to true', () => {
-        let state = {
+        const state = {
             diameter: 10,
             hasJunctionPoint: true,
         } as JunctionModifierState;

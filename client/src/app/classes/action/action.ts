@@ -1,5 +1,5 @@
-import { Tool } from '../tool';
-import { ToolModifierState } from '../tool-modifier-state';
+import { Tool } from '@app/classes/tool';
+import { ToolModifierState } from '@app/classes/tool-modifier-state';
 import { Interaction } from './interactions';
 
 export class Action {

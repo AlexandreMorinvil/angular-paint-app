@@ -232,8 +232,8 @@ export class EllipseSelectionService extends SelectionToolService {
     }
 
     private addActionTracking(): void {
-        let imageDataStart: Vec2 = { x: 0, y: 0 };
-        let imageDataEnd: Vec2 = { x: 0, y: 0 };
+        const imageDataStart: Vec2 = { x: 0, y: 0 };
+        const imageDataEnd: Vec2 = { x: 0, y: 0 };
         imageDataStart.x = this.startSelectionPoint.x < this.startDownCoord.x ? this.startSelectionPoint.x : this.startDownCoord.x;
         imageDataStart.y = this.startSelectionPoint.y < this.startDownCoord.y ? this.startSelectionPoint.y : this.startDownCoord.y;
         imageDataEnd.x =
@@ -245,7 +245,7 @@ export class EllipseSelectionService extends SelectionToolService {
                 ? this.startSelectionPoint.y + this.imageData.height
                 : this.startDownCoord.y + this.imageData.height;
 
-        let imageDataSelection: ImageData = this.drawingService.baseCtx.getImageData(
+        const imageDataSelection: ImageData = this.drawingService.baseCtx.getImageData(
             imageDataStart.x,
             imageDataStart.y,
             imageDataEnd.x - imageDataStart.x,

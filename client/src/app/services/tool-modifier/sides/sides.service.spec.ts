@@ -4,6 +4,9 @@ import { SidesService } from './sides.service';
 
 describe('SidesService', () => {
     let service: SidesService;
+    // The disablement of the "any" tslint rule is justified in this situation as the prototype
+    // of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
+    // tslint:disable:no-any
     let setSideSpy: jasmine.Spy<any>;
     let getSideSpy: jasmine.Spy<any>;
     let setStateSpy: jasmine.Spy<any>;
@@ -23,7 +26,7 @@ describe('SidesService', () => {
     });
 
     it(' should set side with the incoming argument and getSide should equal to the right number', () => {
-        let sides = 5;
+        const sides = 5;
         service.setSide(sides);
         expect(setSideSpy).toHaveBeenCalled();
 
@@ -32,8 +35,8 @@ describe('SidesService', () => {
     });
 
     it(' setSide should set side to the 12 if input is above 12', () => {
-        let sides = 101;
-        let maxSides = service.MAX_POLYGON_SIDE;
+        const sides = 101;
+        const maxSides = service.MAX_POLYGON_SIDE;
         service.setSide(sides);
         expect(setSideSpy).toHaveBeenCalled();
 
@@ -42,8 +45,8 @@ describe('SidesService', () => {
     });
 
     it(' setWidth should set width to 0 if input is below 0', () => {
-        let sides = -10;
-        let minSides = service.MIN_POLYGON_SIDE;
+        const sides = -10;
+        const minSides = service.MIN_POLYGON_SIDE;
         service.setSide(sides);
         expect(setSideSpy).toHaveBeenCalled();
 
@@ -52,7 +55,7 @@ describe('SidesService', () => {
     });
 
     it(' should call setState to the correct incoming argument ', () => {
-        let state = {
+        const state = {
             numberSides: 2,
         } as SidesModifierState;
         service.setState(state);
@@ -62,7 +65,7 @@ describe('SidesService', () => {
     });
 
     it(' should call getState and return SidesModifierState with correct number of sides ', () => {
-        let state = {
+        const state = {
             numberSides: 2,
         } as SidesModifierState;
         service.setState(state);

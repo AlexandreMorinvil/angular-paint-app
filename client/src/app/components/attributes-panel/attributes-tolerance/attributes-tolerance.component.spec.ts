@@ -32,7 +32,9 @@ describe('AttributesToleranceComponent', () => {
         expect(componentTolerance).toEqual(serviceTolerance);
     });
 
-    it('should insert the tolerance and change to the minimal tolerance upon confirmation if a tolerance is below the minimal accepted tolerance', () => {
+    it('should insert the tolerance and change to the minimal tolerance upon confirmation', () => {
+        // Magic number is only for testing purposes
+        // tslint:disable:no-magic-numbers
         component.tolerance = -10;
 
         component.assign();

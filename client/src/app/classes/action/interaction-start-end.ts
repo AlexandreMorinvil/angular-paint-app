@@ -1,5 +1,5 @@
+import { Vec2 } from '@app/classes/vec2';
 import { Interaction } from './interactions';
-import { Vec2 } from '../vec2';
 
 export class InteractionStartEnd extends Interaction {
     startPoint: Vec2;
