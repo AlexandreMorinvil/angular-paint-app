@@ -1,8 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Drawing } from '@common/communication/drawing';
-import { Observable, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -12,17 +11,7 @@ export class ApiImageTransferService {
 
     constructor(private http: HttpClient) {}
 
-    basicGet(): Observable<Drawing> {
-        return this.http.get<Drawing>(this.BASE_URL).pipe(catchError(this.handleError<Drawing>('basicGet')));
-    }
-
     basicPost(drawing: Drawing): Observable<Drawing> {
-        return this.http.post<Drawing>(this.BASE_URL, drawing); //JSON.stringify(drawing));
-    }
-
-    private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
-        return (error: Error): Observable<T> => {
-            return of(result as T);
-        };
+        return this.http.post<Drawing>(this.BASE_URL, drawing);
     }
 }

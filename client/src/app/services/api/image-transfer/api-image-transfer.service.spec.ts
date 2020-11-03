@@ -1,6 +1,6 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { Drawing } from '@common/schema/drawing';
+import { Drawing } from '@common/communication/drawing';
 import { ApiImageTransferService } from './api-image-transfer.service';
 
 describe('IndexService', () => {
@@ -40,7 +40,7 @@ describe('IndexService', () => {
     // });
 
     it('should not return any message when sending a POST request (HttpClient called once)', () => {
-        const sentMessage: Drawing = { name: 'Drawing', tags: ['un', 'deux'], imageSrc: 'imageSrc' };
+        const sentMessage: Drawing = { _id: '1', name: 'Drawing', tags: ['un', 'deux'], imageSrc: 'imageSrc' };
         // subscribe to the mocked call
         service.basicPost(sentMessage).subscribe(() => {}, fail);
         const req = httpMock.expectOne(baseUrl + '/send');
