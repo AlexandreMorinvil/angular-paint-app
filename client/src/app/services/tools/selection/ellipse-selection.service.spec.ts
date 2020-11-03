@@ -1,11 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
+import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { EllipseSelectionService } from './ellipse-selection.service';
 
 describe('EllipseSelectionService', () => {
+    // tslint:disable:no-any
     let service: EllipseSelectionService;
     let tracingService: TracingService;
     let colorService: ColorService;
@@ -13,11 +15,16 @@ describe('EllipseSelectionService', () => {
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let canvasStub: HTMLCanvasElement;
-    //let imageStub: HTMLImageElement;
-    //let mouseEvent5: MouseEvent;
+    // let imageStub: HTMLImageElement;
+    // let mouseEvent5: MouseEvent;
     let mouseEvent25: MouseEvent;
     let mouseEvent50: MouseEvent;
     let mouseEvent100: MouseEvent;
+    const pathTest: Vec2[] = [
+        { x: 10, y: 10 },
+        { x: 11, y: 11 },
+        { x: 12, y: 12 },
+    ];
 
     let resetTransformSpy: jasmine.Spy<any>;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
@@ -36,13 +43,11 @@ describe('EllipseSelectionService', () => {
         colorService = TestBed.inject(ColorService);
 
         resetTransformSpy = spyOn<any>(service, 'resetTransform').and.callThrough();
-
-        service['tracingService'] = tracingService;
-        service['colorService'] = colorService;
-
         const canvasWidth = 1000;
         const canvasHeight = 800;
         // tslint:disable:no-string-literal
+        service['tracingService'] = tracingService;
+        service['colorService'] = colorService;
         service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
         service['drawingService'].canvas = canvasStub;
@@ -84,7 +89,6 @@ describe('EllipseSelectionService', () => {
 
     it('should be call resetTransform on mouse down,set attribute correctly and create a selection', () => {
         service.onMouseDown(mouseEvent25);
-
         expect((service as any).arrowPress).toEqual([false, false, false, false]);
         expect((service as any).arrowDown).toBe(false);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
@@ -109,11 +113,7 @@ describe('EllipseSelectionService', () => {
         (service as any).startDownCoord = { x: 0, y: 0 };
         (service as any).imageData = { width: 100, height: 100 };
         service.pathLastCoord = { x: 10, y: 10 };
-        (service as any).pathData = [
-            { x: 10, y: 10 },
-            { x: 11, y: 11 },
-            { x: 12, y: 12 },
-        ];
+        (service as any).pathData = pathTest;
         service.onMouseDown(mouseEvent50);
     });
     // Need help with this test
@@ -125,11 +125,7 @@ describe('EllipseSelectionService', () => {
         service.mouseDown = true;
         service.mouseDownCoord = { x: 10, y: 10 };
         service.pathLastCoord = { x: 10, y: 10 };
-        (service as any).pathData = [
-            { x: 10, y: 10 },
-            { x: 11, y: 11 },
-            { x: 12, y: 12 },
-        ];
+        (service as any).pathData = pathTest;
         service.onMouseDown(mouseEvent50);
     });
 
@@ -141,12 +137,7 @@ describe('EllipseSelectionService', () => {
         (service as any).imageData = { width: 10, height: 10 };
 
         service.pathLastCoord = { x: 10, y: 10 };
-        (service as any).pathData = [
-            { x: 10, y: 10 },
-            { x: 11, y: 11 },
-            { x: 12, y: 12 },
-        ];
-
+        (service as any).pathData = pathTest;
         service.onMouseMove(mouseEvent100);
     });
     it('should set attribute and translate a selection', () => {
@@ -157,12 +148,7 @@ describe('EllipseSelectionService', () => {
         (service as any).imageData = { width: 10, height: 10 };
 
         service.pathLastCoord = { x: 10, y: 10 };
-        (service as any).pathData = [
-            { x: 10, y: 10 },
-            { x: 11, y: 11 },
-            { x: 12, y: 12 },
-        ];
-
+        (service as any).pathData = pathTest;
         service.onMouseMove(mouseEvent100);
     });
     it('should set attribute and translate a selection', () => {
@@ -173,12 +159,7 @@ describe('EllipseSelectionService', () => {
         (service as any).imageData = { width: 10, height: 10 };
 
         service.pathLastCoord = { x: 10, y: 10 };
-        (service as any).pathData = [
-            { x: 10, y: 10 },
-            { x: 11, y: 11 },
-            { x: 12, y: 12 },
-        ];
-
+        (service as any).pathData = pathTest;
         service.onMouseMove(mouseEvent100);
     });
     it('should set attribute and translate a selection', () => {
@@ -189,12 +170,7 @@ describe('EllipseSelectionService', () => {
         (service as any).imageData = { width: 10, height: 10 };
 
         service.pathLastCoord = { x: 10, y: 10 };
-        (service as any).pathData = [
-            { x: 10, y: 10 },
-            { x: 11, y: 11 },
-            { x: 12, y: 12 },
-        ];
-
+        (service as any).pathData = pathTest;
         service.onMouseMove(mouseEvent100);
     });
 
@@ -206,12 +182,7 @@ describe('EllipseSelectionService', () => {
         (service as any).imageData = { width: 10, height: 10 };
 
         service.pathLastCoord = { x: 10, y: 10 };
-        (service as any).pathData = [
-            { x: 10, y: 10 },
-            { x: 11, y: 11 },
-            { x: 12, y: 12 },
-        ];
-
+        (service as any).pathData = pathTest;
         service.onMouseMove(mouseEvent100);
     });
 
@@ -223,12 +194,7 @@ describe('EllipseSelectionService', () => {
         (service as any).imageData = { width: 10, height: 10 };
 
         service.pathLastCoord = { x: 10, y: 10 };
-        (service as any).pathData = [
-            { x: 10, y: 10 },
-            { x: 11, y: 11 },
-            { x: 12, y: 12 },
-        ];
-
+        (service as any).pathData = pathTest;
         service.onMouseMove(mouseEvent100);
     });
     // Need help with this test
@@ -241,12 +207,7 @@ describe('EllipseSelectionService', () => {
         (service as any).imageData = { width: 10, height: 10 };
 
         service.pathLastCoord = { x: 10, y: 10 };
-        (service as any).pathData = [
-            { x: 10, y: 10 },
-            { x: 11, y: 11 },
-            { x: 12, y: 12 },
-        ];
-
+        (service as any).pathData = pathTest;
         service.onMouseMove(mouseEvent100);
     });
 
@@ -258,12 +219,7 @@ describe('EllipseSelectionService', () => {
         (service as any).imageData = { width: 10, height: 10 };
 
         service.pathLastCoord = { x: 10, y: 10 };
-        (service as any).pathData = [
-            { x: 10, y: 10 },
-            { x: 11, y: 11 },
-            { x: 12, y: 12 },
-        ];
-
+        (service as any).pathData = pathTest;
         service.onMouseUp(mouseEvent100);
     });
 
@@ -277,12 +233,7 @@ describe('EllipseSelectionService', () => {
         (service as any).imageData = { width: 10, height: 10 };
 
         service.pathLastCoord = { x: 10, y: 10 };
-        (service as any).pathData = [
-            { x: 10, y: 10 },
-            { x: 11, y: 11 },
-            { x: 12, y: 12 },
-        ];
-
+        (service as any).pathData = pathTest;
         service.onMouseUp(mouseEvent100);
     });
     it('should set attribute and create a selection', () => {
@@ -295,12 +246,7 @@ describe('EllipseSelectionService', () => {
         (service as any).imageData = { width: 10, height: 10 };
         (service as any).ellipseService.shiftDown = true; // why its not working???
         service.pathLastCoord = { x: 10, y: 10 };
-        (service as any).pathData = [
-            { x: 10, y: 10 },
-            { x: 11, y: 11 },
-            { x: 12, y: 12 },
-        ];
-
+        (service as any).pathData = pathTest;
         service.onMouseUp(mouseEvent100);
     });
 
@@ -337,20 +283,12 @@ describe('EllipseSelectionService', () => {
 
     it('should on call on mouse move if mouse is not down for createOnMouseMoveEvent', () => {
         service.mouseDown = true;
-        (service as any).pathData = [
-            { x: 10, y: 10 },
-            { x: 11, y: 11 },
-            { x: 12, y: 12 },
-        ];
+        (service as any).pathData = pathTest;
         (service as any).createOnMouseMoveEvent();
     });
     it('should on call on mouse move if mouse is not down for createOnMouseMoveEvent', () => {
         service.mouseDown = false;
-        (service as any).pathData = [
-            { x: 10, y: 10 },
-            { x: 11, y: 11 },
-            { x: 12, y: 12 },
-        ];
+        (service as any).pathData = pathTest;
         (service as any).createOnMouseMoveEvent();
     });
 
