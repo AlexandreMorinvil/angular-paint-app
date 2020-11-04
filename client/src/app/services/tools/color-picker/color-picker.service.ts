@@ -21,6 +21,7 @@ export class ColorPickerService extends Tool {
     currentPrevisualizationZoneSource: Observable<Uint8ClampedArray>;
 
     private SQUARE_DIM: number = 70;
+    private ARRAY_MULTIPLE: number = 4;
 
     constructor(drawingService: DrawingService, private colorService: ColorService, private colorPickerViewerService: ColorPickerViewerService) {
         super(drawingService, new Description('pipette', 'i', 'pipette_icon.png'));
@@ -30,7 +31,9 @@ export class ColorPickerService extends Tool {
         this.pickedSecondaryColorSource = new BehaviorSubject<string>(colorService.getSecondaryColor());
         this.currentPickedSecondaryColor = this.pickedSecondaryColorSource.asObservable();
 
-        this.previsualizationZoneSource = new BehaviorSubject<Uint8ClampedArray>(new Uint8ClampedArray(4 * this.SQUARE_DIM * this.SQUARE_DIM));
+        this.previsualizationZoneSource = new BehaviorSubject<Uint8ClampedArray>(
+            new Uint8ClampedArray(this.ARRAY_MULTIPLE * this.SQUARE_DIM * this.SQUARE_DIM),
+        );
         this.currentPrevisualizationZoneSource = this.previsualizationZoneSource.asObservable();
 
         this.modifiers.push(this.colorPickerViewerService);
@@ -47,16 +50,11 @@ export class ColorPickerService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        // get mouse position
         const mousePosition: Vec2 = this.getPositionFromMouse(event);
 
-        // get pixel data at currentMouse position
         const rgbColor: Uint8ClampedArray = this.drawingService.baseCtx.getImageData(mousePosition.x, mousePosition.y, 1, 1).data;
 
-        // get color HEX string from the pixel data
         const colorHEXString = this.rgbColorToHEXString(rgbColor[0], rgbColor[1], rgbColor[2]);
-
-        // set current color to the new color
 
         if (event.button === 0) {
             this.pickedPrimaryColorSource.next(colorHEXString);
