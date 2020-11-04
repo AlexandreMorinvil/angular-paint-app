@@ -16,31 +16,24 @@ export class RemoteMemoryService {
   }
 
   async getAllFromDatabase(): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      try {
-        this.apiDrawingService.getAll().subscribe((drawingsFetched: DrawingToDatabase[]) => {
-          this.drawingsFromDatabase = drawingsFetched;
-          resolve();
-        });
-      } catch (err) {
-        reject(err);
-      }
-    });
+    return new Promise<void>((resolve) => {
+      this.apiDrawingService.getAll().subscribe((drawingsFetched: DrawingToDatabase[]) => {
+        this.drawingsFromDatabase = drawingsFetched;
+        resolve();
+      });
+    })
   }
+
 
   saveToDatabase(drawing: DrawingToDatabase): void {
     this.apiDrawingService.save(drawing).subscribe();
   }
 
   async deleteFromDatabase(id: string): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      try {
-        this.apiDrawingService.delete(id).subscribe(() => {
-          resolve();
-        });
-      } catch (err) {
-        reject(err);
-      }
+    return new Promise<void>((resolve) => {
+      this.apiDrawingService.delete(id).subscribe(() => {
+        resolve();
+      });
     });
   }
 }
