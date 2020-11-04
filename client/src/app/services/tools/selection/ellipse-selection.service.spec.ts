@@ -42,7 +42,7 @@ fdescribe('EllipseSelectionService', () => {
     let createOnMouseMoveEventSpy: jasmine.Spy<any>;
     let checkArrowHitSpy: jasmine.Spy<any>;
     let onArrowDownSpy: jasmine.Spy<any>;
-    let gethPathSpy: jasmine.Spy<any>;
+    let getPathSpy: jasmine.Spy<any>;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     let ellipseServiceSpy: jasmine.SpyObj<EllipseService>;
 
@@ -74,7 +74,7 @@ fdescribe('EllipseSelectionService', () => {
         onMouseUpSpy = spyOn<any>(service, 'onMouseUp').and.callThrough();
         onMouseMoveSpy = spyOn<any>(service, 'onMouseMove').and.callThrough();
         clearPathSpy = spyOn<any>(service, 'clearPath').and.callThrough();
-        gethPathSpy = spyOn<any>(service, 'getPath').and.callThrough();
+        getPathSpy = spyOn<any>(service, 'getPath').and.callThrough();
         createOnMouseMoveEventSpy = spyOn<any>(service, 'createOnMouseMoveEvent').and.callThrough();
         checkArrowHitSpy = spyOn<any>(service, 'checkArrowHit').and.callThrough();
         onArrowDownSpy = spyOn<any>(service, 'onArrowDown').and.callThrough();
@@ -484,7 +484,7 @@ fdescribe('EllipseSelectionService', () => {
         expect(tracingService.getHasContour()).toEqual(true);
     });
 
-    it('should ... correctly after showSelection', () => {
+    it('should correctly call getPath after showSelection is called', () => {
         (service as any).startDownCoord = { x: 14, y: 14 };
         (service as any).pathLastCoord = { x: 10, y: 10 };
         (service as any).imageData = { width: 10, height: 10 };
@@ -492,7 +492,7 @@ fdescribe('EllipseSelectionService', () => {
         service.firstEllipseCoord = { x: 0, y: 20 };
         const size: Vec2 = { x: (service as any).imageData.width, y: (service as any).imageData.height };
         (service as any).showSelection(previewCtxStub, (service as any).image, size, (service as any).startDownCoord, 0);
-        expect(gethPathSpy).toHaveBeenCalled();
+        expect(getPathSpy).toHaveBeenCalled();
     });
 
     it('should return ellipsePath and not null after getPath is called', () => {
