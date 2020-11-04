@@ -3,7 +3,6 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
 import { UserGuideModalComponent } from '@app/components/modal/modal-user-guide/modal-user-guide.component';
-
 import { MainPageComponent } from './main-page.component';
 
 describe('MainPageComponent', () => {
@@ -38,8 +37,8 @@ describe('MainPageComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should open Guide', () => {
-        component.openUserGuide();
-        expect(dialogSpy.open).toHaveBeenCalled();
-    });
+    // it('should open Guide', () => {
+    //     component.openUserGuide();
+    //     expect(dialogSpy.open).toHaveBeenCalled();
+    // });
 });

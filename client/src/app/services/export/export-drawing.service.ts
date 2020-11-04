@@ -8,10 +8,19 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 export class ExportDrawingService {
     drawLink: string;
     FILTERS: string[];
-    currentFilter: string = 'Aucun';
+    private currFilter: string;
 
     constructor(private drawingService: DrawingService, public dialog: MatDialog) {
         this.FILTERS = ['aucun', 'blur', 'grayscale', 'sepia', 'saturate', 'invert'];
+        this.currentFilter = 'Aucun';
+    }
+
+    get currentFilter(): string {
+        return this.currFilter;
+    }
+
+    set currentFilter(value: string) {
+        this.currFilter = value;
     }
 
     applyFilter(filterName: string): void {

@@ -104,8 +104,8 @@ export class DatabaseController {
                 .deleteDrawing(req.params.drawingId)
                 .then(() => {
                     const id: string = req.params.drawingId;
+                    res.status(StatusCodes.NO_CONTENT).send();
                     this.deleteDrawIntoImageFolder(id);
-                    res.sendStatus(StatusCodes.NO_CONTENT).send();
                 })
                 .catch((error: Error) => {
                     res.status(StatusCodes.NOT_FOUND).send(error.message);
