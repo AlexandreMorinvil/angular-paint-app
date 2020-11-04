@@ -44,13 +44,11 @@ describe('BrushService', () => {
         const canvasWidth = 1000;
         const canvasHeight = 800;
 
-        // Configuration du spy du service
-        // tslint:disable:no-string-literal
-        service['drawingService'].baseCtx = baseCtxStub;
-        service['drawingService'].previewCtx = previewCtxStub;
-        service['drawingService'].canvas = canvasStub;
-        service['drawingService'].canvas.width = canvasWidth;
-        service['drawingService'].canvas.height = canvasHeight;
+        (service as any).drawingService.baseCtx = baseCtxStub;
+        (service as any).drawingService.previewCtx = previewCtxStub;
+        (service as any).drawingService.canvas = canvasStub;
+        (service as any).drawingService.canvas.width = canvasWidth;
+        (service as any).drawingService.canvas.height = canvasHeight;
 
         mouseEvent = {
             offsetX: 25,
