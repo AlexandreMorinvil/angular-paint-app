@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { InteractionSelectionEllipse } from '@app/classes/action/interaction-selection-ellipse';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -43,6 +44,7 @@ describe('EllipseSelectionService', () => {
     let checkArrowHitSpy: jasmine.Spy<any>;
     let onArrowDownSpy: jasmine.Spy<any>;
     let getPathSpy: jasmine.Spy<any>;
+    let executeSpy: jasmine.Spy<any>;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     let ellipseServiceSpy: jasmine.SpyObj<EllipseService>;
 
@@ -78,6 +80,8 @@ describe('EllipseSelectionService', () => {
         createOnMouseMoveEventSpy = spyOn<any>(service, 'createOnMouseMoveEvent').and.callThrough();
         checkArrowHitSpy = spyOn<any>(service, 'checkArrowHit').and.callThrough();
         onArrowDownSpy = spyOn<any>(service, 'onArrowDown').and.callThrough();
+        executeSpy = spyOn<any>(service, 'execute').and.callThrough();
+
         const canvasWidth = 1000;
         const canvasHeight = 800;
 
@@ -240,9 +244,26 @@ describe('EllipseSelectionService', () => {
     it('should set attribute and translate a selection on mouse up', () => {
         (service as any).draggingImage = true;
         (service as any).mouseDown = true;
-        (service as any).startSelectionPoint = { x: 14, y: 14 };
+        (service as any).startSelectionPoint = { x: 15, y: 15 };
         service.firstEllipseCoord = { x: 0, y: 20 };
         (service as any).startDownCoord = { x: 14, y: 14 };
+        service.mouseDownCoord = { x: 1, y: 1 };
+        (service as any).imageData = { width: 10, height: 10 };
+
+        service.pathLastCoord = { x: 10, y: 10 };
+        (service as any).pathData = pathTest;
+        service.onMouseUp(mouseEvent100);
+
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect((service as any).ellipseService.mouseDownCoord).toEqual((service as any).startDownCoord);
+        expect(showSelectionSpy).toHaveBeenCalled();
+    });
+    it('should set attribute and translate a selection on mouse up and make sure goes inside all branches in addActionTracking', () => {
+        (service as any).draggingImage = true;
+        (service as any).mouseDown = true;
+        (service as any).startSelectionPoint = { x: 14, y: 14 };
+        service.firstEllipseCoord = { x: 0, y: 20 };
+        (service as any).startDownCoord = { x: 15, y: 15 };
         service.mouseDownCoord = { x: 1, y: 1 };
         (service as any).imageData = { width: 10, height: 10 };
 
@@ -324,7 +345,7 @@ describe('EllipseSelectionService', () => {
         expect((service as any).ellipseService.shiftDown).toBeFalse();
         expect(createOnMouseMoveEventSpy).toHaveBeenCalled();
     });
-    it('should enter if in onArrowDown', () => {
+    it('should enter if in onArrowDown is false', () => {
         const keyboardEvent = {} as KeyboardEvent;
         (service as any).startDownCoord = { x: 14, y: 14 };
         (service as any).pathLastCoord = { x: 10, y: 10 };
@@ -338,7 +359,7 @@ describe('EllipseSelectionService', () => {
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(showSelectionSpy).toHaveBeenCalled();
     });
-    it('should NOT enter any if in onArrowDown', () => {
+    it('should NOT enter any if in onArrowDown is true', () => {
         const keyboardEvent = {} as KeyboardEvent;
         (service as any).startDownCoord = { x: 14, y: 14 };
         (service as any).pathLastCoord = { x: 10, y: 10 };
@@ -505,5 +526,15 @@ describe('EllipseSelectionService', () => {
         expect((service as any).tracingService.getHasFill()).toBeFalse();
         expect((service as any).tracingService.getHasContour()).toBeTrue();
         expect(resetTransformSpy).toHaveBeenCalled();
+    });
+
+    it('should start execute and put image data and clear canvas', () => {
+        const interaction = {
+            startSelectionPoint: { x: 0, y: 0 },
+            selection: new ImageData(1, 1),
+        } as InteractionSelectionEllipse;
+        service.execute(interaction);
+        expect(executeSpy).toHaveBeenCalled();
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
     });
 });
