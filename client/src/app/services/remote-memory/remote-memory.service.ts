@@ -9,7 +9,7 @@ import { DrawingToDatabase } from '@common/communication/drawingtodatabase';
 export class RemoteMemoryService {
   private drawingsFromDatabase: DrawingToDatabase[];
 
-  constructor(private apiDrawingService: ApiDrawingService) { }
+  constructor(public apiDrawingService: ApiDrawingService) { }
 
   getDrawingsFromDatabase(): DrawingToDatabase[] {
     return this.drawingsFromDatabase;
