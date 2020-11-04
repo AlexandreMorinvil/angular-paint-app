@@ -1,11 +1,12 @@
-// tslint:disable:ordered-imports
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
+import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
 import { BrushService } from '@app/services/tools/brush/brush-service';
@@ -18,7 +19,9 @@ import { PaintService } from '@app/services/tools/paint/paint.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
-import { SelectionToolService } from '@app/services/tools/selection/selection-tool.service';
+import { EllipseSelectionService } from '@app/services/tools/selection/ellipse-selection.service';
+import { RectangleSelectionService } from '@app/services/tools/selection/rectangle-selection.service';
+import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzone-size.service';
 import { SidebarComponent } from './sidebar.component';
 class ToolStub extends Tool {}
 
@@ -27,19 +30,27 @@ describe('SidebarComponent', () => {
     let fixture: ComponentFixture<SidebarComponent>;
     let toolStub: ToolStub;
     let drawingStub: DrawingService;
+    let drawingStateStub: DrawingStateTrackerService;
     let toolserviceMock: ToolboxService;
     // tslint:disable:no-any
     let toolboxSpy: any;
+
     let routerSpy: jasmine.Spy<any>;
-    let drawServiceSpy: jasmine.Spy<any>;
+    let undoSpy: jasmine.Spy<any>;
+    let redoSpy: jasmine.Spy<any>;
+    let resetDrawingWithWarningSpy: jasmine.Spy<any>;
     let openGuideSpy: jasmine.Spy<any>;
-    let openSaveDialogSpy: jasmine.Spy<any>;
+    let previewCtxStub: CanvasRenderingContext2D;
+    let canvasStub: HTMLCanvasElement;
+    // let openSaveDialogSpy: jasmine.Spy<any>;
 
     beforeEach(
         waitForAsync(() => {
             toolStub = new ToolStub({} as DrawingService, {} as Description);
-            drawingStub = new DrawingService();
+            drawingStub = new DrawingService({} as WorkzoneSizeService);
+            drawingStateStub = new DrawingStateTrackerService({} as DrawingService);
             toolboxSpy = jasmine.createSpyObj('toolboxSpy', ['getAvailableTools', 'getCurrentTool', 'setSelectedTool']);
+
             toolserviceMock = new ToolboxService(
                 {} as CursorService,
                 {} as PencilService,
@@ -51,7 +62,9 @@ describe('SidebarComponent', () => {
                 {} as PolygonService,
                 {} as ColorPickerService,
                 {} as PaintService,
-                {} as SelectionToolService,
+                {} as RectangleSelectionService,
+                {} as EllipseSelectionService,
+                {} as DrawingService,
             );
 
             TestBed.configureTestingModule({
@@ -67,6 +80,7 @@ describe('SidebarComponent', () => {
                     { provide: PolygonService, useValue: toolStub },
                     { provide: CursorService, useValue: toolStub },
                     { provide: ToolboxService, useValue: toolboxSpy },
+                    { provide: DrawingStateTrackerService, useValue: drawingStateStub },
                     { provide: RouterModule, useValue: routerSpy },
                     { provide: MAT_DIALOG_DATA, useValue: {} },
                     { provide: MatDialogRef, useValue: {} },
@@ -82,9 +96,13 @@ describe('SidebarComponent', () => {
         component = fixture.componentInstance;
         component['toolboxSevice'] = toolserviceMock;
         routerSpy = spyOn<any>(component['router'], 'navigate').and.callThrough();
-        drawServiceSpy = spyOn<any>(component['drawingService'], 'resetDrawingWithWarning');
+        resetDrawingWithWarningSpy = spyOn<any>(component['drawingService'], 'resetDrawingWithWarning');
         openGuideSpy = spyOn<any>(component['modalHandler'], 'openUserGuide');
-        openSaveDialogSpy = spyOn<any>(component['modalHandler'], 'openSaveDialog');
+        // openSaveDialogSpy = spyOn<any>(component['modalHandler'], 'openSaveDialog');
+
+        undoSpy = spyOn<any>(component['drawingStateTracker'], 'undo');
+        redoSpy = spyOn<any>(component['drawingStateTracker'], 'redo');
+
         fixture.detectChanges();
     });
 
@@ -103,6 +121,15 @@ describe('SidebarComponent', () => {
     });
 
     it('should set currentTool to right stubTool', () => {
+        const canvasWidth = 1200;
+        const canvasHeight = 1000;
+        previewCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+        canvasStub = canvasTestHelper.canvas;
+        (toolserviceMock as any).drawingService = drawingStub;
+        (toolserviceMock as any).drawingService.previewCtx = previewCtxStub;
+        (toolserviceMock as any).drawingService.canvas = canvasStub;
+        (toolserviceMock as any).drawingService.canvas.width = canvasWidth;
+        (toolserviceMock as any).drawingService.canvas.height = canvasHeight;
         component.setCurrentTool({} as PencilService);
         expect(component.getCurrentTool()).toEqual({} as PencilService);
     });
@@ -114,7 +141,7 @@ describe('SidebarComponent', () => {
 
     it('should call resetDrawingWithWarning', () => {
         component.resetDrawing();
-        expect(drawServiceSpy).toHaveBeenCalled();
+        expect(resetDrawingWithWarningSpy).toHaveBeenCalled();
     });
 
     it('should call openUserGuide', () => {
@@ -122,8 +149,18 @@ describe('SidebarComponent', () => {
         expect(openGuideSpy).toHaveBeenCalled();
     });
 
-    it('should call saveDialog', () => {
-        component.openSaveDialog();
-        expect(openSaveDialogSpy).toHaveBeenCalled();
+    // it('should call saveDialog', () => {
+    //     component.saveDialog();
+    //     expect(openSaveDialogSpy).toHaveBeenCalled();
+    // });
+
+    it('should call undo', () => {
+        component.undo();
+        expect(undoSpy).toHaveBeenCalled();
+    });
+
+    it('should call redo', () => {
+        component.redo();
+        expect(redoSpy).toHaveBeenCalled();
     });
 });

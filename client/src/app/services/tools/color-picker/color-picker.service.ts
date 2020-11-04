@@ -7,11 +7,12 @@ import { ColorPickerViewerService } from '@app/services/tool-modifier/color-pick
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 
+const SQUARE_SIDE_SIZE = 4;
+
 @Injectable({
     providedIn: 'root',
 })
 export class ColorPickerService extends Tool {
-    // tslint:disable:no-empty
     private pickedPrimaryColorSource: BehaviorSubject<string>;
     currentPickedPrimaryColor: Observable<string>;
     private pickedSecondaryColorSource: BehaviorSubject<string>;
@@ -21,7 +22,6 @@ export class ColorPickerService extends Tool {
     currentPrevisualizationZoneSource: Observable<Uint8ClampedArray>;
 
     private SQUARE_DIM: number = 70;
-    private ARRAY_MULTIPLE: number = 4;
 
     constructor(drawingService: DrawingService, private colorService: ColorService, private colorPickerViewerService: ColorPickerViewerService) {
         super(drawingService, new Description('pipette', 'i', 'pipette_icon.png'));
@@ -32,7 +32,7 @@ export class ColorPickerService extends Tool {
         this.currentPickedSecondaryColor = this.pickedSecondaryColorSource.asObservable();
 
         this.previsualizationZoneSource = new BehaviorSubject<Uint8ClampedArray>(
-            new Uint8ClampedArray(this.ARRAY_MULTIPLE * this.SQUARE_DIM * this.SQUARE_DIM),
+            new Uint8ClampedArray(SQUARE_SIDE_SIZE * this.SQUARE_DIM * this.SQUARE_DIM),
         );
         this.currentPrevisualizationZoneSource = this.previsualizationZoneSource.asObservable();
 
@@ -40,12 +40,16 @@ export class ColorPickerService extends Tool {
         this.modifiers.push(this.colorService);
     }
 
-    componentToHex(channel: number): string {
+    private componentToHex(channel: number): string {
         const hex = channel.toString(16);
-        return hex.length === 1 ? '0' + hex : hex;
+        if (hex.length === 1) {
+            return '0' + hex;
+        } else {
+            return hex;
+        }
     }
 
-    rgbColorToHEXString(r: number, g: number, b: number): string {
+    private rgbColorToHEXString(r: number, g: number, b: number): string {
         return '#' + this.componentToHex(r) + this.componentToHex(g) + this.componentToHex(b);
     }
 

@@ -67,7 +67,7 @@ export class PaintService extends Tool {
         }
     }
 
-    sameColorFill(ctx: CanvasRenderingContext2D): void {
+    private sameColorFill(ctx: CanvasRenderingContext2D): void {
         this.setAttribute(ctx);
         const pixelPos: Vec2 = { x: 0, y: 0 };
         while (pixelPos.y < ctx.canvas.height) {
@@ -82,7 +82,7 @@ export class PaintService extends Tool {
         }
     }
 
-    floodFill(ctx: CanvasRenderingContext2D, pathPixel: Vec2[]): void {
+    private floodFill(ctx: CanvasRenderingContext2D, pathPixel: Vec2[]): void {
         this.setAttribute(ctx);
         // tslint:disable:no-non-null-assertion
         while (pathPixel.length) {
@@ -101,13 +101,11 @@ export class PaintService extends Tool {
             let reachLeft = false;
             let reachRight = false;
 
-            // Go down as long as the color matches and in inside the canvas
             while (yPosition++ <= this.drawingService.baseCtx.canvas.height - 2 && this.matchStartColor(pixelPos)) {
                 this.colorPixel(pixelPos);
                 if (xPosition > 0) {
                     if (this.matchStartColor({ x: pixelPos.x - 1, y: pixelPos.y })) {
                         if (!reachLeft) {
-                            // Add pixel to stack
                             pathPixel.push({ x: xPosition - 1, y: yPosition });
                             reachLeft = true;
                         }
@@ -118,7 +116,6 @@ export class PaintService extends Tool {
                 if (xPosition < this.drawingService.baseCtx.canvas.width) {
                     if (this.matchStartColor({ x: pixelPos.x + 1, y: pixelPos.y })) {
                         if (!reachRight) {
-                            // Add pixel to stack
                             pathPixel.push({ x: xPosition + 1, y: yPosition });
                             reachRight = true;
                         }
@@ -131,7 +128,7 @@ export class PaintService extends Tool {
         }
     }
 
-    setStartColor(): void {
+    private setStartColor(): void {
         // get the pixel on the first Path of mouse
         const imageData: ImageData = this.drawingService.baseCtx.getImageData(this.pathData[0].x, this.pathData[0].y, 1, 1);
         this.startR = imageData.data[0];
@@ -139,14 +136,14 @@ export class PaintService extends Tool {
         this.startB = imageData.data[2];
     }
 
-    setFillColor(): void {
+    private setFillColor(): void {
         const rgb = this.convertHexToRGB(this.colorService.getPrimaryColor());
         this.fillColorR = rgb[0];
         this.fillColorG = rgb[1];
         this.fillColorB = rgb[2];
     }
 
-    matchStartColor(pixelPos: Vec2): boolean {
+    private matchStartColor(pixelPos: Vec2): boolean {
         const imageData: ImageData = this.drawingService.baseCtx.getImageData(pixelPos.x, pixelPos.y, 1, 1);
 
         const average = // tslint:disable-next-line:no-magic-numbers
@@ -161,20 +158,20 @@ export class PaintService extends Tool {
         return false;
     }
 
-    colorPixel(pixelPos: Vec2): void {
+    private colorPixel(pixelPos: Vec2): void {
         this.drawingService.baseCtx.fillRect(pixelPos.x, pixelPos.y, 1, 1);
     }
 
-    setAttribute(ctx: CanvasRenderingContext2D): void {
+    private setAttribute(ctx: CanvasRenderingContext2D): void {
         ctx.fillStyle = this.colorService.getPrimaryColor();
         ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
     }
 
-    clearPath(): void {
+    private clearPath(): void {
         this.pathData = [];
     }
 
-    convertHexToRGB(hex: string): number[] {
+    private convertHexToRGB(hex: string): number[] {
         hex = hex.substr(1);
         const values = hex.split('');
         const r = parseInt(values[0].toString() + values[1].toString(), 16);
