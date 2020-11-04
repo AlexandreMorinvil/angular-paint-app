@@ -35,23 +35,18 @@ describe('Database service', () => {
         client.close();
     });
 
-    // it('should get all drawing from the database', async () => {
-    //     client.close();
-    //     // mongoServer = new MongoMemoryServer();
-    //     // const mongoUri = await mongoServer.getUri();
-    //     client = await MongoClient.connect('', {
-    //         useNewUrlParser: false,
-    //         useUnifiedTopology: false,
-    //     });
-    //     // We use the local Mongo Instance and not the production database
-    //     db = client.db(await mongoServer.getDbName());
-    //     databaseService.collection = db.collection('test2');
-    //     try {
-    //         new DatabaseService();
-    //     } catch {
-    //         expect(client.connect).to.be.undefined;
-    //     }
-    // });
+    it('should throw error if connecting to an invalid URL', async () => {
+        client.close();
+        try {
+            const invalidMongoUri = '$#%@^!&';
+            MongoClient.connect(invalidMongoUri, {
+                useNewUrlParser: false,
+                useUnifiedTopology: false,
+            });
+        } catch (error) {
+            expect(error).to.not.be.undefined;
+        }
+    });
 
     it('should get all drawing from the database', async () => {
         let drawing = await databaseService.getAllDrawings();
@@ -59,7 +54,7 @@ describe('Database service', () => {
         expect(testDrawing).to.deep.equals(drawing[0]);
     });
 
-    it('should get all drawing from the database', async () => {
+    it('should throw error when can not get all drawing from the database', async () => {
         client.close();
         try {
             await databaseService.getAllDrawings();
@@ -73,24 +68,13 @@ describe('Database service', () => {
         expect(drawing).to.deep.equals(testDrawing);
     });
 
-    // it('should throw error when getting specific drawing with an invalid drawing id', async () => {
-    //     const invalidId: string = '6';
-    //     let drawing;
-    //     try {
-    //         drawing = await databaseService.getDrawing(invalidId).then(() => {
-    //             throw new Error('Erreur');
-    //         });
-    //     } catch (error) {
-    //         expect(drawing).to.deep.equal(null);
-    //         expect(error).to.not.be.undefined;
-    //     }
-    // });
-
-    it('should get specific drawing  with a valid drawing name', async () => {
-        const validName = 'nomTest';
-        let drawing = await databaseService.getDrawingByName(validName);
-        let allDrawing: DrawingToDatabase[] = [testDrawing];
-        expect(drawing).to.deep.equals(allDrawing);
+    it('should throw error when can not get specific drawing with valid drawing id', async () => {
+        client.close();
+        try {
+            await databaseService.getDrawing('1');
+        } catch (error) {
+            expect(error).to.not.be.undefined;
+        }
     });
 
     it('should get specific Drawing based on the name', async () => {
@@ -104,10 +88,13 @@ describe('Database service', () => {
         expect(drawings[0].tags).to.not.equals(testDrawing.tags);
     });
 
-    it('should get specific drawing  with a valid drawing tags', async () => {
-        let drawing = await databaseService.getDrawingByTags('tag1');
-        let allDrawing: DrawingToDatabase[] = [testDrawing];
-        expect(drawing).to.deep.equals(allDrawing);
+    it('should throw error when can not get specific Drawing based on the name', async () => {
+        client.close();
+        try {
+            await databaseService.getDrawingByName(testDrawing.name);
+        } catch (error) {
+            expect(error).to.not.be.undefined;
+        }
     });
 
     it('should get specific Drawing based on the tags', async () => {
@@ -117,6 +104,15 @@ describe('Database service', () => {
         expect(drawings.length).to.equals(1);
         expect(drawings[0].tags).to.deep.equals(secondDrawing.tags);
         expect(drawings[0].tags).to.not.equals(testDrawing.tags);
+    });
+
+    it('should throw error when can not get specific Drawing based on the tags', async () => {
+        client.close();
+        try {
+            await databaseService.getDrawingByTags('tag1');
+        } catch (error) {
+            expect(error).to.not.be.undefined;
+        }
     });
 
     it('should insert a new drawing', async () => {
@@ -162,15 +158,6 @@ describe('Database service', () => {
         }
     });
 
-    it('should modify an existing drawing data if a valid drawing id  is sent', async () => {
-        let modifiedDrawing: DrawingToDatabase = { _id: '1', name: 'nomtest2', tags: ['tag3', 'tag4'] };
-        await databaseService.updateDrawing('1', modifiedDrawing);
-        let drawings = await databaseService.collection.find({}).toArray();
-        expect(drawings.length).to.equal(1);
-        expect(drawings.find((x) => x._id === drawings[0]._id)?.name).to.deep.equals(modifiedDrawing.name);
-        expect(drawings.find((x) => x._id === drawings[0]._id)?.tags).to.deep.equals(modifiedDrawing.tags);
-    });
-
     it('should not modify an existing drawing data if no valid drawig id is passed', async () => {
         let modifiedDrawing: DrawingToDatabase = { _id: '5', name: 'nomTest2', tags: ['tag3', 'tag4'] };
         await databaseService.updateDrawing(modifiedDrawing._id, modifiedDrawing);
@@ -178,6 +165,24 @@ describe('Database service', () => {
         expect(drawings.length).to.equal(1);
         expect(drawings.find((x) => x._id === testDrawing._id)?.name).to.not.equals(modifiedDrawing.name);
         expect(drawings.find((x) => x._id === testDrawing._id)?.tags).to.not.equals(modifiedDrawing.tags);
+    });
+
+    it('should throw error if try modify an existing drawing data whith a different key', async () => {
+        let modifiedDrawing: DrawingToDatabase = { _id: '5', name: 'nomTest2', tags: ['tag3', 'tag4'] };
+        try {
+            await databaseService.updateDrawing('6', modifiedDrawing);
+        } catch (error) {
+            expect(error).to.not.be.undefined;
+        }
+    });
+
+    it('should throw error delete an not existing drawing data in the collection', async () => {
+        client.close();
+        try {
+            await databaseService.deleteDrawing('1');
+        } catch (error) {
+            expect(error).to.not.be.undefined;
+        }
     });
 
     it('should delete an existing drawing data if a valid id is sent', async () => {
@@ -276,5 +281,14 @@ describe('Database service', () => {
         const tags: string[] = ['ta@&%%$g2', 'b', 'c'];
         const drawing = new DrawingToDatabase('1', name, tags);
         expect((databaseService as any).validateDrawing(drawing)).to.be.false;
+    });
+
+    it('should modify an existing drawing data if a valid drawing id  is sent', async () => {
+        let modifiedDrawing: DrawingToDatabase = { _id: '1', name: 'nomtest2', tags: ['tag3', 'tag4'] };
+        await databaseService.updateDrawing('1', modifiedDrawing);
+        let drawings = await databaseService.collection.find({}).toArray();
+        expect(drawings.length).to.equal(1);
+        expect(drawings.find((x) => x._id === drawings[0]._id)?.name).to.deep.equals(modifiedDrawing.name);
+        expect(drawings.find((x) => x._id === drawings[0]._id)?.tags).to.deep.equals(modifiedDrawing.tags);
     });
 });
