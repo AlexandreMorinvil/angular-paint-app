@@ -59,23 +59,9 @@ export class DatabaseService {
             .catch((error: Error) => {
                 throw error;
             });
-        // try {
-        //     const drawings: DrawingToDatabase[] = await this.collection.find({}).toArray();
-        //     return drawings;
-        // } catch (error) {
-        //     throw new Error(this.ERROR_GET_ALL_DRAWING);
-        // }
     }
 
     async getDrawing(drawingID: string): Promise<DrawingToDatabase> {
-        // try {
-        //     const drawing: DrawingToDatabase | null = await this.collection.findOne({ _id: new ObjectID(drawingID) });
-        //     if (drawing == null) throw new Error('Erreur'); //this.ERROR_NO_DRAWING_FOUND);
-        //     return drawing;
-        // } catch (error) {
-        //     throw error;
-        // }
-
         return this.collection
             .findOne({ _id: drawingID })
             .then((drawing: DrawingToDatabase) => {
@@ -97,21 +83,9 @@ export class DatabaseService {
             .catch(() => {
                 throw new Error('No courses for that teacher');
             });
-        // try {
-        //     const drawings: DrawingToDatabase[] = await this.collection.find({ name: drawingName }).toArray();
-        //     return drawings;
-        // } catch (error) {
-        //     throw new Error(this.ERROR_GET_DRAWING_BY_NAME + drawingName);
-        // }
     }
 
     async getDrawingByTags(drawingTag: string): Promise<DrawingToDatabase[]> {
-        // try {
-        //     const drawings: DrawingToDatabase[] = await this.collection.find({ tags: drawingTag }).toArray();
-        //     return drawings;
-        // } catch (error) {
-        //     throw new Error(this.ERROR_GET_DRAWING_BY_TAG + drawingTag);
-        // }
         let filterQuery: FilterQuery<DrawingToDatabase> = { tags: drawingTag };
         return this.collection
             .find(filterQuery)
@@ -125,22 +99,6 @@ export class DatabaseService {
     }
 
     async addDrawing(drawing: DrawingToDatabase, imageSource: string): Promise<void> {
-        // try {
-        //     this.valideImageSource(imageSource);
-        //     this.validateDrawing(drawing);
-        //     this.drawId = (await this.collection.insertOne(drawing)).insertedId.toString();
-        //     return this.drawId;
-        // } catch (error) {
-        //     throw new Error(this.ERROR_ADD_DRAWING);
-        // }
-
-        // if (!this.validateImageSource(imageSource)) {
-        //     return;
-        // }
-
-        // if (!this.validateDrawing(drawing)) {
-        //     return;
-        // }
         if (this.validateImageSource(imageSource) && this.validateDrawing(drawing)) {
             this.collection
                 .insertOne(drawing)
@@ -156,22 +114,6 @@ export class DatabaseService {
     }
 
     async updateDrawing(drawingID: string, drawing: DrawingToDatabase): Promise<void> {
-        // try {
-        //     // Update
-        //     const filterQuery: FilterQuery<DrawingToDatabase> = { _id: new ObjectID(drawingID) };
-        //     const updateQuery: UpdateQuery<DrawingToDatabase> = {
-        //         $set: { name: drawing.name, tags: drawing.tags },
-        //     };
-        //     await this.collection.updateOne(filterQuery, updateQuery);
-
-        //     // Return updated value
-        //     const updatedDrawing: DrawingToDatabase | null = await this.collection.findOne({ _id: new ObjectID(drawingID) });
-        //     if (!updatedDrawing) throw new Error();
-        //     return updatedDrawing;
-        // } catch (error) {
-        //     throw new Error('error'); //this.ERROR_UPDATE_DRAWING);
-        // }
-
         let filterQuery: FilterQuery<DrawingToDatabase> = { _id: drawingID };
         let updateQuery: UpdateQuery<DrawingToDatabase> = {
             $set: { name: drawing.name, tags: drawing.tags },
@@ -186,15 +128,6 @@ export class DatabaseService {
     }
     // tslint:disable:no-any
     async deleteDrawing(drawingID: string): Promise<any> {
-        // return (
-        //     this.collection
-        //         // tslint:disable:no-empty
-        //         .findOneAndDelete({ _id: new ObjectID(drawingID) })
-        //         .then(() => {})
-        //         .catch((error: Error) => {
-        //             throw new Error(); //this.ERROR_DELETE_DRAWING);
-        //         })
-        // );
         return this.collection
             .findOneAndDelete({ _id: drawingID })
             .then(() => {})
