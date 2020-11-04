@@ -4,6 +4,7 @@ import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 // import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
+import { ToleranceService } from '@app/services/tool-modifier/tolerance/tolerance.service';
 import { PaintService } from './paint.service';
 
 describe('PaintService', () => {
@@ -11,6 +12,7 @@ describe('PaintService', () => {
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     let colorService: ColorService;
+    let toleranceService: ToleranceService;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let canvasStub: HTMLCanvasElement;
@@ -31,6 +33,8 @@ describe('PaintService', () => {
         });
         service = TestBed.inject(PaintService);
         colorService = TestBed.inject(ColorService);
+        toleranceService = TestBed.inject(ToleranceService);
+
         // tslint:disable:no-any
         sameColorFillSpy = spyOn<any>(service, 'sameColorFill').and.callThrough();
         floodFillSpy = spyOn<any>(service, 'floodFill').and.callThrough();
@@ -39,22 +43,24 @@ describe('PaintService', () => {
         const canvasWidth = 100;
         const canvasHeight = 100;
         colorService.setPrimaryColor('#050505');
+        toleranceService.setTolerance(0);
         (service as any).drawingService.baseCtx = baseCtxStub;
         (service as any).drawingService.previewCtx = previewCtxStub;
         (service as any).drawingService.canvas = canvasStub;
         (service as any).drawingService.canvas.width = canvasWidth;
         (service as any).drawingService.canvas.height = canvasHeight;
         (service as any).colorService = colorService;
+        (service as any).toleranceService = toleranceService;
         (service as any).drawingService.baseCtx.fillStyle = '#000000';
-        (service as any).drawingService.baseCtx.fillRect(0, 0, 1000, 800);
+        (service as any).drawingService.baseCtx.fillRect(0, 0, 100, 100);
         (service as any).drawingService.baseCtx.fillStyle = '#010101';
-        (service as any).drawingService.baseCtx.fillRect(200, 200, 25, 25);
+        (service as any).drawingService.baseCtx.fillRect(50, 50, 5, 5);
         (service as any).drawingService.baseCtx.fillStyle = '#000100';
-        (service as any).drawingService.baseCtx.fillRect(50, 50, 50, 50);
+        (service as any).drawingService.baseCtx.fillRect(1, 1, 50, 50);
 
         mouseEvent = {
-            offsetX: 25,
-            offsetY: 25,
+            offsetX: 60,
+            offsetY: 60,
             button: 0,
         } as MouseEvent;
     });
@@ -78,19 +84,18 @@ describe('PaintService', () => {
         expect(sameColorFillSpy).toHaveBeenCalled();
     });
 
-    // Doesn't work
-    /*it(' should make sure that matchStartColor verify correctly with fill rgb and target surface', () => {
+    it(' should make sure that matchStartColor verify correctly with fill rgb and target surface', () => {
         colorService.setPrimaryColor('#010102');
 
-        let mouseEvent2 = {
-            offsetX: 200,
-            offsetY: 200,
+        const mouseEvent2 = {
+            offsetX: 51,
+            offsetY: 51,
             button: 0,
         } as MouseEvent;
         service.onMouseDown(mouseEvent2);
 
         expect(floodFillSpy).toHaveBeenCalled();
-    });*/
+    });
 
     it(' should make sure that function are not called if mouseEvent is not in canvas', () => {
         const mouseEvent2 = {
@@ -125,7 +130,7 @@ describe('PaintService', () => {
             fillColorG: 255,
             fillColorB: 255,
         } as InteractionPaint;
-        service.execute(interactionPaint);
+        (service as any).execute(interactionPaint);
         expect(floodFillSpy).toHaveBeenCalled();
     });
 
@@ -140,7 +145,7 @@ describe('PaintService', () => {
             fillColorG: 255,
             fillColorB: 255,
         } as InteractionPaint;
-        service.execute(interactionPaint);
+        (service as any).execute(interactionPaint);
         expect(sameColorFillSpy).toHaveBeenCalled();
     });
 
@@ -155,7 +160,7 @@ describe('PaintService', () => {
             fillColorG: 255,
             fillColorB: 255,
         } as InteractionPaint;
-        service.execute(interactionPaint);
+        (service as any).execute(interactionPaint);
         expect(sameColorFillSpy).not.toHaveBeenCalled();
         expect(floodFillSpy).not.toHaveBeenCalled();
     });

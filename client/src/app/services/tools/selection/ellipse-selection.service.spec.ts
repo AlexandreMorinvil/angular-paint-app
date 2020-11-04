@@ -336,9 +336,8 @@ describe('EllipseSelectionService', () => {
         service.firstEllipseCoord = { x: 0, y: 20 };
         service.onArrowDown(keyboardEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-        expect(showSelectionSpy).toHaveBeenCalled(); 
+        expect(showSelectionSpy).toHaveBeenCalled();
     });
-
     it('should NOT enter any if in onArrowDown', () => {
         const keyboardEvent = {} as KeyboardEvent;
         (service as any).startDownCoord = { x: 14, y: 14 };
