@@ -3,7 +3,6 @@
 import { expect } from 'chai';
 import { StatusCodes } from 'http-status-codes';
 import { describe } from 'mocha';
-import * as sinon from 'sinon';
 import * as tests from 'supertest';
 import { Drawing } from '../../../common/communication/drawing';
 import { DrawingToDatabase } from '../../../common/communication/drawing-to-database';
@@ -35,9 +34,7 @@ describe('DatabaseController', () => {
     const ROUTING_DELETE: string = '/api/drawing/:drawingId';
 
     let application: Express.Application;
-    //let databaseController: DatabaseController;
     let databaseService: Stubbed<DatabaseService>;
-    let timer: sinon.SinonFakeTimers;
 
     const drawing0 = new Drawing('0', 'alex', new Array<string>('tag1', 'tag2'), 'imagsource');
     const drawing1 = new DrawingToDatabase('1', 'alex', new Array<string>('tag1', 'tag2'));
@@ -57,12 +54,6 @@ describe('DatabaseController', () => {
         });
         application = container.get<Application>(TYPES.Application).app;
         databaseService = container.get(TYPES.DatabaseService);
-        //databaseController = container.get<DatabaseController>(TYPES.DatabaseController);
-        timer = sinon.useFakeTimers();
-    });
-
-    afterEach(() => {
-        timer.restore();
     });
 
     it('should get all drawing from the database when routing is all drawing ', async () => {

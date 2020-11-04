@@ -78,7 +78,7 @@ export class DatabaseController {
             };
             this.databaseService
                 .addDrawing(drawingToDatabase, req.body.imageSrc)
-                .then(() => {
+                .then((id) => {
                     const imageSource: string = req.body.imageSrc;
                     this.saveDrawIntoImageFolder(imageSource, this.databaseService.drawId, this.PATH_SAVE_IMAGE_TO_SERVER);
                     res.status(StatusCodes.CREATED).send();
@@ -89,10 +89,18 @@ export class DatabaseController {
         });
 
         this.router.patch(this.ROUTING_PATCH, async (req: Request, res: Response, next: NextFunction) => {
+            // this.databaseService
+            //     .updateDrawing(req.params.drawingId, req.body)
+            //     .then((drawing: DrawingToDatabase) => {
+            //         res.json(drawing);
+            //     })
+            //     .catch((error: Error) => {
+            //         res.status(StatusCodes.NOT_FOUND).send(error.message);
+            //     });
             this.databaseService
                 .updateDrawing(req.params.drawingId, req.body)
-                .then((drawing: DrawingToDatabase) => {
-                    res.json(drawing);
+                .then(() => {
+                    res.sendStatus(StatusCodes.OK);
                 })
                 .catch((error: Error) => {
                     res.status(StatusCodes.NOT_FOUND).send(error.message);
