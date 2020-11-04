@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { InteractionStartEnd } from '@app/classes/action/interaction-start-end';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -286,5 +287,14 @@ describe('PolygonService', () => {
         tracingService.setHasContour(false);
         service.setAttribute(previewCtxStub);
         expect(ctxContourSpy).not.toHaveBeenCalled();
+    });
+    it('should execute and drawPolygon is called', () => {
+        const interaction = {
+            startPoint: { x: 100, y: 100 },
+            path: [{}],
+            shiftDown: false,
+        } as InteractionStartEnd;
+        service.execute(interaction);
+        expect(drawPolygonSpy).toHaveBeenCalled();
     });
 });
