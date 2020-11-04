@@ -3,7 +3,6 @@ import { injectable } from 'inversify';
 import { Collection, FilterQuery, MongoClient, MongoClientOptions, UpdateQuery } from 'mongodb';
 import 'reflect-metadata';
 
-// CHANGE the URL for your database information
 const DATABASE_URL = 'mongodb+srv://team106:secret106@cluster0.fspbf.azure.mongodb.net/integrator-project?retryWrites=true&w=majority';
 const DATABASE_NAME = 'integrator-project';
 const DATABASE_COLLECTION = 'drawing';
@@ -38,15 +37,15 @@ export class DatabaseService {
         useUnifiedTopology: true,
     };
 
-    constructor() {
-        MongoClient.connect(DATABASE_URL, this.options)
+    constructor(databaseUrl = DATABASE_URL, databaseName = DATABASE_NAME, databaseCollection = DATABASE_COLLECTION) {
+        MongoClient.connect(databaseUrl, this.options)
             .then((client: MongoClient) => {
                 this.client = client;
-                this.collection = client.db(DATABASE_NAME).collection(DATABASE_COLLECTION);
+                this.collection = client.db(databaseName).collection(databaseCollection);
             })
-            .catch(() => {
+            .catch((error) => {
                 console.error(this.CONNECTION_ERROR);
-                process.exit(1);
+                throw error;
             });
     }
 

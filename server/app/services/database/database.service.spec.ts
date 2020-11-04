@@ -35,23 +35,14 @@ describe('Database service', () => {
         client.close();
     });
 
-    // it('should get all drawing from the database', async () => {
-    //     client.close();
-    //     // mongoServer = new MongoMemoryServer();
-    //     // const mongoUri = await mongoServer.getUri();
-    //     client = await MongoClient.connect('', {
-    //         useNewUrlParser: false,
-    //         useUnifiedTopology: false,
-    //     });
-    //     // We use the local Mongo Instance and not the production database
-    //     db = client.db(await mongoServer.getDbName());
-    //     databaseService.collection = db.collection('test2');
-    //     try {
-    //         new DatabaseService();
-    //     } catch {
-    //         expect(client.connect).to.be.undefined;
-    //     }
-    // });
+    it('Database initialization failure should be caught and close the process', async () => {
+        // We use the local Mongo Instance and not the production database
+        try {
+            new DatabaseService("Wrong url", "Wrong name", "Wrong collection");
+        } catch (error) {
+            expect(error).to.not.be.undefined;
+        }
+    });
 
     it('should get all drawing from the database', async () => {
         let drawing = await databaseService.getAllDrawings();
