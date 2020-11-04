@@ -104,6 +104,9 @@ export class DrawingComponent implements AfterViewInit {
             if (this.drawingService.shortcutEnable) {
                 this.toolbox.getCurrentTool().onBackspaceDown(event);
             }
+            // tslint:disable:prefer-switch
+        } else if (event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+            this.toolbox.getCurrentTool().onArrowUp(event);
         } else {
             if (this.drawingService.shortcutEnable) {
                 for (const i in this.toolbox.getAvailableTools()) {
@@ -114,9 +117,12 @@ export class DrawingComponent implements AfterViewInit {
             }
         }
     }
-
+    // The disablement of the "cyclomatic-complexity" tslint rule is justified in this situation
+    // since it is required for the program to have a number of linearly independents paths that is high
+    // tslint:disable:cyclomatic-complexity
     @HostListener('window:keydown', ['$event'])
     onShiftDown(event: KeyboardEvent): void {
+<<<<<<< HEAD
         if (this.drawingService.shortcutEnable) {
             if (event.key === 'Shift') {
                 this.toolbox.getCurrentTool().onShiftDown(event);
@@ -136,6 +142,30 @@ export class DrawingComponent implements AfterViewInit {
                 event.preventDefault(); // to prevent key of windows
                 this.drawingStateTrackerService.onCtrlZDown(event);
             }
+=======
+        if (event.key === 'Shift') {
+            this.toolbox.getCurrentTool().onShiftDown(event);
+        } else if (event.key === 'Escape') {
+            this.toolbox.getCurrentTool().onEscapeDown(event);
+            this.hasBeenDrawnOnto = true;
+        } else if (event.ctrlKey && event.key.toLowerCase() === 's') {
+            event.preventDefault(); // to prevent key of windows
+            this.modalHandlerService.openSaveDialog();
+        } else if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'z') {
+            event.preventDefault(); // to prevent key of windows
+            this.drawingStateTrackerService.onCtrlShiftZDown();
+        } else if (event.ctrlKey && event.key.toLowerCase() === 'z') {
+            event.preventDefault(); // to prevent key of windows
+            this.drawingStateTrackerService.onCtrlZDown();
+        } else if (event.ctrlKey && event.key.toLowerCase() === 'e') {
+            event.preventDefault(); // to prevent key of windows
+            this.modalHandlerService.openExportDialog();
+        } else if (event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+            this.toolbox.getCurrentTool().onArrowDown(event);
+        } else if (event.ctrlKey && event.key.toLowerCase() === 'a') {
+            event.preventDefault(); // to prevent key of windows
+            this.toolbox.getCurrentTool().onCtrlADown();
+>>>>>>> integration/development
         }
     }
 

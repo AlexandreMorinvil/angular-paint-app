@@ -1,0 +1,28 @@
+<div class="container">
+    <h1 class="title">Exporter un dessin</h1>
+    <p>
+        <canvas id="export-preview-canvas"></canvas>
+        <mat-form-field class="name">
+            <mat-label>Nom du Dessin</mat-label>
+            <input matInput [formControl]="drawName" placeholder="Ex. dessin" />
+            <mat-error *ngIf="drawName.invalid"> Entrer un nom de dessin </mat-error>
+        </mat-form-field>
+    </p>
+    <mat-form-field appearance="outline" hintLabel="Filtre" class="export-input" id="export-filter-box">
+        <mat-select
+            [(ngModel)]="this.exportDrawingService.currentFilter"
+            ngDefaultControl
+            (ngModelChange)="applyFilter(this.exportDrawingService.currentFilter)"
+        >
+            <mat-option *ngFor="let filter of exportDrawingService.FILTERS" [value]="filter">
+                {{ filter }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <div mat-dialog-actions>
+        <button id="buttonCancel" mat-button mat-dialog-close>Annuler</button>
+        <button id="buttonExportPNG" (click)="exportToPNG()">Exporter en PNG</button>
+        <button id="buttonExportJPG" (click)="exportToJPG()">Exporter en JPG</button>
+    </div>
+</div>

@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
+import { InteractionResize } from '@app/classes/action/interaction-resize';
 import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzone-size.service';
 
 const minSurfaceSize = 10;
 
@@ -13,24 +14,17 @@ const minSurfaceSize = 10;
 export class CursorService extends Tool {
     mouseDownCoord: Vec2;
     mouseDown: boolean = false;
-    dotsize: number = 10;
-    clickOnAnchor: boolean = false;
-    anchorHit: number = 0;
-    // tslint:disable-next-line:no-any
-    imageData: any;
+    private dotsize: number = 10;
+    private clickOnAnchor: boolean = false;
+    private anchorHit: number = 0;
+    imageData: ImageData;
 
-    constructor(drawingService: DrawingService, private workzoneService: WorkzoneSizeService) {
+    constructor(drawingService: DrawingService, private drawingStateTrackingService: DrawingStateTrackerService) {
         super(drawingService, new Description('redimensionneur', 'y', 'crop-icon.png'));
     }
 
     onMouseDown(event: MouseEvent): void {
         this.drawingService.previewCtx.fillStyle = '#000000';
-        this.imageData = this.drawingService.baseCtx.getImageData(
-            0,
-            0,
-            this.drawingService.baseCtx.canvas.width,
-            this.drawingService.baseCtx.canvas.height,
-        );
         this.mouseDownCoord = this.getPositionFromMouse(event);
         this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
         this.checkHit(this.mouseDownCoord, this.drawingService.canvas);
@@ -40,15 +34,20 @@ export class CursorService extends Tool {
     onMouseUp(event: MouseEvent): void {
         this.clickOnAnchor = false;
         this.mouseDown = false;
-        this.drawingService.baseCtx.canvas.width = this.drawingService.previewCtx.canvas.width;
-        this.drawingService.baseCtx.canvas.height = this.drawingService.previewCtx.canvas.height;
+        if (
+            this.drawingService.baseCtx.canvas.width === this.drawingService.previewCtx.canvas.width &&
+            this.drawingService.baseCtx.canvas.height === this.drawingService.previewCtx.canvas.height
+        )
+            return;
         this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
-        this.drawingService.baseCtx.putImageData(this.imageData, 0, 0);
-
-        this.workzoneService.updateDrawingZoneDimension({
-            width: this.drawingService.previewCtx.canvas.width,
-            height: this.drawingService.previewCtx.canvas.height,
-        });
+        this.resizeDrawingZone(this.drawingService.previewCtx.canvas.width, this.drawingService.previewCtx.canvas.height);
+        this.drawingStateTrackingService.addAction(
+            this,
+            new InteractionResize({
+                x: this.drawingService.baseCtx.canvas.width,
+                y: this.drawingService.baseCtx.canvas.height,
+            }),
+        );
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -71,6 +70,10 @@ export class CursorService extends Tool {
                     break;
             }
         }
+    }
+
+    resizeDrawingZone(width: number, height: number): void {
+        this.drawingService.resize(width, height);
     }
 
     moveWidth(mouseDownCoordX: number): void {
@@ -131,5 +134,9 @@ export class CursorService extends Tool {
             this.clickOnAnchor = false;
             this.anchorHit = 0;
         }
+    }
+
+    execute(interaction: InteractionResize): void {
+        this.resizeDrawingZone(interaction.size.x, interaction.size.y);
     }
 }

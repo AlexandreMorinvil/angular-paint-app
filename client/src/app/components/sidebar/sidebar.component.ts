@@ -17,6 +17,7 @@ export class SidebarComponent {
     messageBack: string = 'Retour';
     messageSaveDialog: string = 'Sauvegarde\n(Raccourci: Ctr + S)';
     messageCarouselDialog: string = 'Carousel de dessins\n(Raccourci: Ctr + G)';
+    messageExportDialog: string = 'Exporter\n(Raccourci: Ctr + E)';
 
     constructor(
         private toolboxSevice: ToolboxService,
@@ -68,5 +69,8 @@ export class SidebarComponent {
 
     openCarouselDialog(): void {
         this.modalHandler.openDrawingCarouselDialog();
+    }
+    openExportDialog(): void {
+        this.modalHandler.openExportDialog();
     }
 }

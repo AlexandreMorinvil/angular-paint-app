@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -8,13 +9,27 @@ class ToolStub extends Tool {}
 describe('ToolboxService', () => {
     let service: ToolboxService;
     let toolStub: ToolStub;
-
+    let baseCtxStub: CanvasRenderingContext2D;
+    let previewCtxStub: CanvasRenderingContext2D;
+    let canvasStub: HTMLCanvasElement;
     beforeEach(() => {
+        baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+        previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        canvasStub = canvasTestHelper.canvas;
         TestBed.configureTestingModule({
             providers: [ToolboxService],
         });
         service = TestBed.inject(ToolboxService);
         toolStub = new ToolStub({} as DrawingService, {} as Description);
+
+        const canvasWidth = 1000;
+        const canvasHeight = 800;
+        // tslint:disable:no-string-literal
+        service['drawingService'].baseCtx = baseCtxStub;
+        service['drawingService'].previewCtx = previewCtxStub;
+        service['drawingService'].canvas = canvasStub;
+        service['drawingService'].canvas.width = canvasWidth;
+        service['drawingService'].canvas.height = canvasHeight;
     });
 
     it('should be created', () => {

@@ -42,16 +42,29 @@ export abstract class Tool {
 
     onCtrlZDown(event: KeyboardEvent): void {}
 
+    onArrowDown(event: KeyboardEvent): void {}
+
+    onArrowUp(event: KeyboardEvent): void {}
+
+    onCtrlADown(): void {}
+
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };
     }
 
-    execute(interaction: Interaction): void {
-        console.log('It executed');
-    }
+    execute(interaction: Interaction): void {}
 
     needsModifierManager(modifier: ToolModifier): boolean {
         return this.modifiers.includes(modifier);
+    }
+
+    isInCanvas(mousePosition: Vec2): boolean {
+        return (
+            mousePosition.x <= this.drawingService.previewCtx.canvas.width &&
+            mousePosition.x >= 0 &&
+            mousePosition.y <= this.drawingService.previewCtx.canvas.height &&
+            mousePosition.y >= 0
+        );
     }
 
     get name(): string {
