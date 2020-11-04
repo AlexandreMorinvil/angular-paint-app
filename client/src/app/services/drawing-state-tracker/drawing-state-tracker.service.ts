@@ -8,7 +8,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     providedIn: 'root',
 })
 export class DrawingStateTrackerService {
-    private intervalCanvasSave: number = 2;
+    private intervalCanvasSave: number = 10;
     private actions: Action[] = [];
     private canvases: ImageData[] = [];
     private actionsToRedo: Action[] = [];
@@ -16,16 +16,16 @@ export class DrawingStateTrackerService {
 
     constructor(private drawingService: DrawingService) {}
 
-    onCtrlZDown(event: KeyboardEvent): void {
+    onCtrlZDown(): void {
         this.undo();
     }
 
-    onCtrlShiftZDown(event: KeyboardEvent): void {
+    onCtrlShiftZDown(): void {
         this.redo();
     }
 
     addAction(tool: Tool, interaction: Interaction): void {
-        if (this.canvases.length === 0) this.canvases.push(new ImageData(this.drawingService.getWidth(), this.drawingService.getHeight()));
+        if (this.canvases.length === 0) this.canvases.push(new ImageData(this.drawingService.canvas.width, this.drawingService.canvas.height));
         this.actionsToRedo = [];
         this.canvasesToRedo = [];
 
@@ -40,8 +40,10 @@ export class DrawingStateTrackerService {
         this.actionsToRedo.push(actionUndone);
 
         if (this.actions.length % this.intervalCanvasSave === this.intervalCanvasSave - 1) {
-            const cavasUndone: ImageData | undefined = this.canvases.pop();
-            if (cavasUndone) this.canvasesToRedo.push(cavasUndone);
+            // Reduce line of code and reduce complexity of tests
+            // tslint:disable:no-non-null-assertion
+            const cavasUndone: ImageData = this.canvases.pop()!;
+            this.canvasesToRedo.push(cavasUndone);
         }
         this.reconstituteCanvas();
     }
@@ -53,8 +55,10 @@ export class DrawingStateTrackerService {
         this.actions.push(actionToRedo);
 
         if (this.actions.length % this.intervalCanvasSave === 0) {
-            const cavasToRedo: ImageData | undefined = this.canvasesToRedo.pop();
-            if (cavasToRedo) this.canvases.push(cavasToRedo);
+            // Reduce line of code and reduce complexity of tests
+            // tslint:disable:no-non-null-assertion
+            const cavasToRedo: ImageData = this.canvasesToRedo.pop()!;
+            this.canvases.push(cavasToRedo);
         }
         this.reconstituteCanvas();
     }
@@ -68,9 +72,12 @@ export class DrawingStateTrackerService {
     /********************************************************** */
     // tslint:disable:no-bitwise
     private reconstituteCanvas(): void {
+        // Bitwise operation is needed for functionality to work as intended
+        // tslint:disable:no-bitwise
         const indexCanvas = (this.actions.length / this.intervalCanvasSave) | 0;
         const actionsToCompute = this.actions.length % this.intervalCanvasSave;
 
+        this.drawingService.resize(this.canvases[indexCanvas].width, this.canvases[indexCanvas].height);
         this.drawingService.printCanvas(this.canvases[indexCanvas]);
         for (let i = 0; i < actionsToCompute; i++) {
             this.actions[indexCanvas * this.intervalCanvasSave + i].execute();

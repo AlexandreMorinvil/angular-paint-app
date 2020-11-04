@@ -144,7 +144,7 @@ export class PolygonService extends Tool {
             const spaceBetweenTwoSquare = Math.sqrt(Math.pow(this.widthService.getWidth(), 2) + Math.pow(this.widthService.getWidth(), 2));
             this.radius = this.radius - spaceBetweenTwoSquare / 2;
             this.radius = this.radius + spaceBetweenTwoSquare;
-        } else if (this.tracingService.getHasContour() === true && this.sidesService.getSide() === numberTriangleSide) {
+        } else {
             this.radius = this.radius - this.widthService.getWidth();
             const spaceBetweenTwoTriangle =
                 this.widthService.getWidth() / Math.sin(((halfCircleAngle / numberTriangleSide / 2) * Math.PI) / halfCircleAngle);
@@ -161,11 +161,6 @@ export class PolygonService extends Tool {
     private clearPath(): void {
         this.pathData = [];
     }
-
-    private isInCanvas(mousePosition: Vec2): boolean {
-        return mousePosition.x <= this.drawingService.baseCtx.canvas.width && mousePosition.y <= this.drawingService.baseCtx.canvas.height;
-    }
-
     private resetBorder(): void {
         this.drawingService.previewCtx.canvas.width = this.drawingService.baseCtx.canvas.width;
         this.drawingService.previewCtx.canvas.height = this.drawingService.baseCtx.canvas.height;

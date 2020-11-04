@@ -1,12 +1,18 @@
 import { TestBed } from '@angular/core/testing';
+import { JunctionModifierState } from './junction-state';
 import { JunctionService } from './junction.service';
 
 describe('WidthService', () => {
     let service: JunctionService;
+    // The disablement of the "any" tslint rule is justified in this situation as the prototype
+    // of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
+    // tslint:disable:no-any
+    let setStateSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(JunctionService);
+        setStateSpy = spyOn<any>(service, 'setState').and.callThrough();
     });
 
     it('should be created', () => {
@@ -48,5 +54,16 @@ describe('WidthService', () => {
         const value = true;
         service.setHasJunctionPoint(value);
         expect(service.getHasJunctionPoint()).toEqual(value);
+    });
+
+    it(' should call setState with the correct incoming argument and set diameter and hasJunction to true', () => {
+        const state = {
+            diameter: 10,
+            hasJunctionPoint: true,
+        } as JunctionModifierState;
+        service.setState(state);
+        expect(setStateSpy).toHaveBeenCalled();
+        expect(service.getDiameter()).toBe(state.diameter);
+        expect(service.getHasJunctionPoint()).toBeTrue();
     });
 });
