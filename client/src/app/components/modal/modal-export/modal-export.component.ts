@@ -24,7 +24,7 @@ export class ExportComponent implements AfterViewInit {
     ) {}
 
     ngAfterViewInit(): void {
-        this.exportDrawingService.applyFilter(this.exportDrawingService.currentFilter);
+        this.exportDrawingService.applyFilter('Aucun');
     }
 
     applyFilter(currentFilter: string): void {
