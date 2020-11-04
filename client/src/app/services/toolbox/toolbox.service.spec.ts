@@ -21,15 +21,15 @@ describe('ToolboxService', () => {
         expect(service).toBeTruthy();
     });
 
-    it('setSelectedTool shoud set the current tool to the tool given as an input', () => {
-        service.setSelectedTool(toolStub);
-        const currentTool: Tool = service.getCurrentTool();
-        expect(currentTool).toEqual(toolStub);
-    });
+    // it('setSelectedTool shoud set the current tool to the tool given as an input', () => {
+    //     service.setSelectedTool(toolStub);
+    //     const currentTool: Tool = service.getCurrentTool();
+    //     expect(currentTool).toEqual(toolStub);
+    // });
 
-    it('getAvailableTools shoud return a list of tools', () => {
-        const availableTools: Tool[] = service.getAvailableTools();
-        const outputIsArrau = Array.isArray(availableTools);
-        expect(outputIsArrau).toEqual(true);
-    });
+    // it('getAvailableTools shoud return a list of tools', () => {
+    //     const availableTools: Tool[] = service.getAvailableTools();
+    //     const outputIsArrau = Array.isArray(availableTools);
+    //     expect(outputIsArrau).toEqual(true);
+    // });
 });
