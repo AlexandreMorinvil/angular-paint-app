@@ -5,17 +5,17 @@ import { StatusCodes } from 'http-status-codes';
 import { describe } from 'mocha';
 import * as sinon from 'sinon';
 import * as tests from 'supertest';
+import { Drawing } from '../../../common/communication/drawing';
+import { DrawingToDatabase } from '../../../common/communication/drawing-to-database';
 import { Stubbed, testingContainer } from '../../test/test-utils';
 import { Application } from '../app';
 import { DatabaseService } from '../services/database/database.service';
-import { DrawingToDatabase } from '../../../common/communication/drawing-to-database';
-import { Drawing } from '../../../common/communication/drawing';
 import { TYPES } from '../types';
 
 const HTTP_STATUS_CODE_NOT_FOUND = StatusCodes.NOT_FOUND;
 const HTTPS_STATUS_CODE_OK = StatusCodes.OK;
 const HTTPS_STATUS_CODE_CREATED = StatusCodes.CREATED;
-//const HTTPS_STATUS_NO_CONTENT = StatusCodes.NO_CONTENT;
+const HTTPS_STATUS_NO_CONTENT = StatusCodes.NO_CONTENT;
 
 const ERROR_DELETE_DRAWING: string = 'Échec lors de la tentative de suppression du dessin';
 const ERROR_UPDATE_DRAWING: string = 'Échec lors de la tentative de mise à jour du dessin';
@@ -203,9 +203,9 @@ describe('DatabaseController', () => {
         databaseService.deleteDrawing.resolves('1');
         return tests(application)
             .delete(ROUTING_DELETE)
-            .expect(HTTP_STATUS_CODE_NOT_FOUND)
+            .expect(HTTPS_STATUS_NO_CONTENT)
             .then((res: any) => {
-                expect(res.status).to.equal(HTTP_STATUS_CODE_NOT_FOUND);
+                expect(res.status).to.equal(HTTPS_STATUS_NO_CONTENT);
             });
     });
 
