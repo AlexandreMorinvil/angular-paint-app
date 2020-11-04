@@ -116,14 +116,17 @@ export class DatabaseService {
             throw new Error(this.ERROR_UPDATE_DRAWING);
         }
     }
-
+    // tslint:disable:no-any
     async deleteDrawing(drawingID: string): Promise<any> {
-        return this.collection
-            .findOneAndDelete({ _id: new ObjectID(drawingID) })
-            .then(() => {})
-            .catch((error: Error) => {
-                throw new Error(this.ERROR_DELETE_DRAWING);
-            });
+        return (
+            this.collection
+                // tslint:disable:no-empty
+                .findOneAndDelete({ _id: new ObjectID(drawingID) })
+                .then(() => {})
+                .catch((error: Error) => {
+                    throw new Error(this.ERROR_DELETE_DRAWING);
+                })
+        );
     }
 
     private validateDrawing(drawing: DrawingToDatabase): void {

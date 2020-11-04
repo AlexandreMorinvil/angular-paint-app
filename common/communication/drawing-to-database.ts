@@ -5,4 +5,10 @@ export class DrawingToDatabase {
     _id: any;
     name: string;
     tags: string[];
+
+    constructor(id: any = null, name: string = '', tags: string[] = []) {
+        this._id = id;
+        this.name = name;
+        this.tags = tags;
+    }
 }
