@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
 import { Router } from '@angular/router';
@@ -17,19 +17,21 @@ describe('ModalExportComponent', () => {
     // tslint:disable-next-line: no-any
     const dialogRefSpy: jasmine.SpyObj<MatDialogRef<ExportComponent, any>> = jasmine.createSpyObj('MatDialogRef', ['close']);
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [ExportComponent],
-            providers: [
-                { provide: MAT_DIALOG_DATA, useValue: {} },
-                { provide: MatDialogRef, useValue: dialogRefSpy },
-                { provide: MatDialog, useValue: {} },
-                { provide: Router, useValue: {} },
-                { provide: MatTabsModule, useValue: {} },
-                { provide: ExportDrawingService, useValue: exportDrawingServiceStub },
-            ],
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                declarations: [ExportComponent],
+                providers: [
+                    { provide: MAT_DIALOG_DATA, useValue: {} },
+                    { provide: MatDialogRef, useValue: dialogRefSpy },
+                    { provide: MatDialog, useValue: {} },
+                    { provide: Router, useValue: {} },
+                    { provide: MatTabsModule, useValue: {} },
+                    { provide: ExportDrawingService, useValue: exportDrawingServiceStub },
+                ],
+            }).compileComponents();
+        }),
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(ExportComponent);

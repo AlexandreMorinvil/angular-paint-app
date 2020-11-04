@@ -70,6 +70,7 @@ export class SidebarComponent {
     openCarouselDialog(): void {
         this.modalHandler.openDrawingCarouselDialog();
     }
+
     openExportDialog(): void {
         this.modalHandler.openExportDialog();
     }
