@@ -1,4 +1,5 @@
 //import { DatabaseService } from '../services/database/database.service';
+//import { Drawing} from '@common/communication/drawingtodatabase';
 import { expect } from 'chai';
 import { StatusCodes } from 'http-status-codes';
 import { describe } from 'mocha';
@@ -10,11 +11,11 @@ import { DatabaseService } from '../services/database/database.service';
 import { DrawingToDatabase } from '../../../common/communication/drawing-to-database';
 import { Drawing } from '../../../common/communication/drawing';
 import { TYPES } from '../types';
-import { DatabaseController } from './database.controller';
 
 const HTTP_STATUS_CODE_NOT_FOUND = StatusCodes.NOT_FOUND;
 const HTTPS_STATUS_CODE_OK = StatusCodes.OK;
 const HTTPS_STATUS_CODE_CREATED = StatusCodes.CREATED;
+//const HTTPS_STATUS_NO_CONTENT = StatusCodes.NO_CONTENT;
 
 const ERROR_DELETE_DRAWING: string = 'Échec lors de la tentative de suppression du dessin';
 const ERROR_UPDATE_DRAWING: string = 'Échec lors de la tentative de mise à jour du dessin';
@@ -34,7 +35,7 @@ describe('DatabaseController', () => {
     const ROUTING_DELETE: string = '/api/drawing/:drawingId';
 
     let application: Express.Application;
-    let databaseController: DatabaseController;
+    //let databaseController: DatabaseController;
     let databaseService: Stubbed<DatabaseService>;
     let timer: sinon.SinonFakeTimers;
 
@@ -56,7 +57,7 @@ describe('DatabaseController', () => {
         });
         application = container.get<Application>(TYPES.Application).app;
         databaseService = container.get(TYPES.DatabaseService);
-        databaseController = container.get<DatabaseController>(TYPES.DatabaseController);
+        //databaseController = container.get<DatabaseController>(TYPES.DatabaseController);
         timer = sinon.useFakeTimers();
     });
 
@@ -167,7 +168,6 @@ describe('DatabaseController', () => {
                 expect(res.status).to.equal(HTTPS_STATUS_CODE_CREATED);
             });
     });
-    //je ne comprend pas pk on verifie pas l'image source
 
     it('should return status of created on database if the validate image source is empty', async () => {
         databaseService.addDrawing.resolves('4');
@@ -199,8 +199,8 @@ describe('DatabaseController', () => {
             });
     });
 
-    it('should return an error of not find if deleteDrawing is failed', async () => {
-        databaseService.deleteDrawing.resolves(null);
+    it('should return an error of not find if deleteDrawingLll is failed', async () => {
+        databaseService.deleteDrawing.resolves('1');
         return tests(application)
             .delete(ROUTING_DELETE)
             .expect(HTTP_STATUS_CODE_NOT_FOUND)
@@ -209,7 +209,7 @@ describe('DatabaseController', () => {
             });
     });
 
-    it('should return an error of not find if deleteDrawing is failed', async () => {
+    it('should return an error of not content if deleteDrawing is failed', async () => {
         databaseService.deleteDrawing.rejects(new Error(ERROR_DELETE_DRAWING));
         return tests(application)
             .delete(ROUTING_DELETE)
@@ -217,15 +217,5 @@ describe('DatabaseController', () => {
             .then((res: any) => {
                 expect(res.status).to.equal(HTTP_STATUS_CODE_NOT_FOUND);
             });
-    });
-
-    it('valideImageSource should return false if image source is empty', async () => {
-        const noImageSource: string = '';
-        expect(databaseController['valideImageSource'](noImageSource)).to.eq(false);
-    });
-
-    it('valideImageSource should return true if image source is valid', async () => {
-        const imageSource: string = 'KTERGHJU';
-        expect(databaseController['valideImageSource'](imageSource)).to.eq(true);
     });
 });

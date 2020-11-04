@@ -38,7 +38,6 @@ export class DatabaseController {
         });
 
         this.router.get(this.ROUTING_GET_DRAWING_ID, async (req: Request, res: Response, next: NextFunction) => {
-            console.log('passe par le get');
             this.databaseService
                 .getDrawing(req.params.drawingId)
                 .then((drawing: DrawingToDatabase) => {
@@ -73,17 +72,15 @@ export class DatabaseController {
 
         this.router.post(this.ROUTING_POST, async (req: Request, res: Response, next: NextFunction) => {
             const drawingToDatabase: DrawingToDatabase = {
-                _id: null, // laisser sa a null svp
+                _id: null,
                 name: req.body.name,
                 tags: req.body.tags,
             };
             this.databaseService
-                .addDrawing(drawingToDatabase)
+                .addDrawing(drawingToDatabase, req.body.imageSrc)
                 .then(() => {
                     const imageSource: string = req.body.imageSrc;
-                    if (this.valideImageSource(imageSource)) {
-                        this.saveDrawIntoImageFolder(imageSource, this.databaseService.drawId, this.PATH_SAVE_IMAGE_TO_SERVER);
-                    }
+                    this.saveDrawIntoImageFolder(imageSource, this.databaseService.drawId, this.PATH_SAVE_IMAGE_TO_SERVER);
                     res.status(StatusCodes.CREATED).send();
                 })
                 .catch((error: Error) => {
@@ -106,10 +103,9 @@ export class DatabaseController {
             this.databaseService
                 .deleteDrawing(req.params.drawingId)
                 .then(() => {
-                    // supprimer dans server
                     const id: string = req.params.drawingId;
-                    this.deleteDrawIntoImageFolder(id, this.PATH_SAVE_IMAGE_TO_SERVER);
-                    res.status(StatusCodes.NO_CONTENT).send();
+                    this.deleteDrawIntoImageFolder(id);
+                    res.sendStatus(StatusCodes.NO_CONTENT).send();
                 })
                 .catch((error: Error) => {
                     res.status(StatusCodes.NOT_FOUND).send(error.message);
@@ -126,13 +122,11 @@ export class DatabaseController {
         fs.writeFileSync(path + nameDirectory, img64, { encoding: 'base64' });
     }
 
-    private deleteDrawIntoImageFolder(id: string, path: string): void {
+    private deleteDrawIntoImageFolder(id: string): void {
         // tslint:disable:no-require-imports
         const fs = require('fs');
+        const path: string = this.PATH_SAVE_IMAGE_TO_SERVER;
         const pathToUnlink: string = path + '/' + id + '.png';
         fs.unlinkSync(pathToUnlink);
-    }
-    private valideImageSource(source: string): boolean {
-        return !(source === '');
     }
 }
