@@ -2,19 +2,8 @@ import { expect } from 'chai';
 import { describe } from 'mocha';
 import { Db, MongoClient } from 'mongodb';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-//import { DrawingToDatabase } from './communication/drawingtodatabase';
+import { DrawingToDatabase } from '../../../../common/communication/drawing-to-database';
 import { DatabaseService } from './database.service';
-
-export class DrawingToDatabase {
-    _id: any;
-    name: string;
-    tags: string[];
-    constructor(id: any, name: string, tags: string[]) {
-        this._id = id;
-        this.name = name;
-        this.tags = tags;
-    }
-}
 
 describe('Database service', () => {
     let databaseService: DatabaseService;

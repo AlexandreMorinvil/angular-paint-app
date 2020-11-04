@@ -7,25 +7,10 @@ import * as tests from 'supertest';
 import { Stubbed, testingContainer } from '../../test/test-utils';
 import { Application } from '../app';
 import { DatabaseService } from '../services/database/database.service';
-import { DrawingToDatabase } from '../services/database/database.service.spec';
+import { DrawingToDatabase } from '../../../common/communication/drawing-to-database';
+import { Drawing } from '../../../common/communication/drawing';
 import { TYPES } from '../types';
 import { DatabaseController } from './database.controller';
-
-export class Drawing {
-    // The id follows the format of MongoDB
-    // tslint:disable:variable-name
-    // tslint:disable:no-any
-    _id: any;
-    name: string;
-    tags: string[];
-    imageSrc: string | undefined;
-    constructor(id: any, name: string, tags: string[], imageSrc: string) {
-        this._id = id;
-        this.name = name;
-        this.tags = tags;
-        this.imageSrc = imageSrc;
-    }
-}
 
 const HTTP_STATUS_CODE_NOT_FOUND = StatusCodes.NOT_FOUND;
 const HTTPS_STATUS_CODE_OK = StatusCodes.OK;
