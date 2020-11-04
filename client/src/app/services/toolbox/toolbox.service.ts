@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { BrushService } from '@app/services/tools/brush/brush-service';
 import { ColorPickerService } from '@app/services/tools/color-picker/color-picker.service';
 import { CursorService } from '@app/services/tools/cursor/cursor.service';
@@ -10,7 +11,8 @@ import { PaintService } from '@app/services/tools/paint/paint.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
-import { SelectionToolService } from '@app/services/tools/selection/selection-tool.service';
+import { EllipseSelectionService } from '@app/services/tools/selection/ellipse-selection.service';
+import { RectangleSelectionService } from '@app/services/tools/selection/rectangle-selection.service';
 
 @Injectable({
     providedIn: 'root',
@@ -30,7 +32,9 @@ export class ToolboxService {
         polygonService: PolygonService,
         colorPickerService: ColorPickerService,
         paintService: PaintService,
-        selectioToolService: SelectionToolService,
+        rectangleSelectionService: RectangleSelectionService,
+        ellipseSelectionService: EllipseSelectionService,
+        private drawingService: DrawingService,
     ) {
         this.currentTool = cursorService;
         this.availableTools.push(cursorService);
@@ -43,7 +47,8 @@ export class ToolboxService {
         this.availableTools.push(polygonService);
         this.availableTools.push(colorPickerService);
         this.availableTools.push(paintService);
-        this.availableTools.push(selectioToolService);
+        this.availableTools.push(rectangleSelectionService);
+        this.availableTools.push(ellipseSelectionService);
     }
 
     getAvailableTools(): Tool[] {
@@ -56,5 +61,6 @@ export class ToolboxService {
 
     setSelectedTool(selectedTool: Tool): void {
         this.currentTool = selectedTool;
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 }

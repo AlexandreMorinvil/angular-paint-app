@@ -12,7 +12,12 @@
         <img src="assets/images/icon/question_mark.png" />
         <app-tooltip [text]="'Redo'" class="tooltip"></app-tooltip>
     </button>
-    <button (click)="openSaveDialog()" class="to-bottom has-tooltip">
+
+    <button (click)="openExportDialog()" class="to-bottom has-tooltip">
+        <img src="assets/images/icon/export_icon.png" />
+        <app-tooltip [text]="messageExportDialog" class="tooltip"></app-tooltip>
+    </button>
+    <button (click)="openSaveDialog()" class="has-tooltiP">
         <img src="assets/images/icon/save_icon.png" />
         <app-tooltip [text]="messageSaveDialog" class="tooltip"></app-tooltip>
     </button>

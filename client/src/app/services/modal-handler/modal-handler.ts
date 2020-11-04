@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DrawingCarouselComponent } from '@app/components/modal/modal-drawing-carousel/modal-drawing-carousel.component';
+import { ExportComponent } from '@app/components/modal/modal-export/modal-export.component';
 import { ModalSaveComponent } from '@app/components/modal/modal-save/modal-save.component';
 import { UserGuideModalComponent } from '@app/components/modal/modal-user-guide/modal-user-guide.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -28,6 +29,18 @@ export class ModalHandlerService {
         const dialogRef = this.dialog.open(ModalSaveComponent, {
             width: '600px',
             height: '500px',
+            data: {},
+        });
+        dialogRef.afterClosed().subscribe((value) => {
+            this.drawingService.shortcutEnable = true; // to enable other command on save dialog close
+        });
+    }
+
+    openExportDialog(): void {
+        this.drawingService.shortcutEnable = false; // to disable other command on export dialog open
+        const dialogRef = this.dialog.open(ExportComponent, {
+            width: '800px',
+            height: '800px',
             data: {},
         });
         dialogRef.afterClosed().subscribe((value) => {
