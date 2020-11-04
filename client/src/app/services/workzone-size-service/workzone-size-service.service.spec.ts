@@ -14,23 +14,6 @@ describe('Service: WorkzoneSizeService', () => {
         expect(service).toBeTruthy();
     }));
 
-    // Test doesn't work
-    /* it('should have workzone bigger than drawingzone when resize needed', inject([WorkzoneSizeService], (service: WorkzoneSizeService) => {
-        // tslint:disable-next-line: no-magic-numbers
-        service.workZoneHeight = 300;
-        // tslint:disable-next-line: no-magic-numbers
-        service.workZoneWidth = 300;
-        service.updateDrawingZoneDimension({ width: 800, height: 600 });
-        expect(service.drawingZoneHeight).toBeLessThan(service.workZoneHeight);
-    }));
-
-    it('should have workzone bigger than drawingzone when resize not needed', inject([WorkzoneSizeService], (service: WorkzoneSizeService) => {
-        // tslint:disable-next-line: no-magic-numbers
-        service.workZoneHeight = 700;
-        service.updateDrawingZoneDimension({ width: 800, height: 600 });
-        expect(service.drawingZoneHeight).toBeLessThan(service.workZoneHeight);
-    })); */
-
     it('should keep dimensions the same when drawingZone is bigger than window', inject([WorkzoneSizeService], (service: WorkzoneSizeService) => {
         const reallyBigDimension = 100000;
         service.drawingZoneHeight = reallyBigDimension;

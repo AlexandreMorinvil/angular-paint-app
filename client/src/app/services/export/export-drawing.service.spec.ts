@@ -20,10 +20,11 @@ describe('ExportDrawingService', () => {
             providers: [{ provide: MAT_DIALOG_DATA, useValue: {} }, { provide: MatDialog, useValue: {} }, DrawingService],
         });
         service = TestBed.inject(ExportDrawingService);
-        // tslint:disable:no-string-literal
+
         (service as any).drawingService.baseCtx = baseCtxStub;
         (service as any).drawingService.previewCtx = previewCtxStub;
         (service as any).drawingService.canvas = canvasStub;
+
         // tslint:disable:no-magic-numbers
         (service as any).drawingService.canvas.width = 1000;
         (service as any).drawingService.canvas.height = 800;
