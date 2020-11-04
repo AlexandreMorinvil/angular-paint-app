@@ -34,26 +34,23 @@ describe('PaintService', () => {
         // tslint:disable:no-any
         sameColorFillSpy = spyOn<any>(service, 'sameColorFill').and.callThrough();
         floodFillSpy = spyOn<any>(service, 'floodFill').and.callThrough();
-
-        const canvasWidth = 1000;
-        const canvasHeight = 800;
-        colorService.setPrimaryColor('#050505');
-        // tslint:disable:no-magic-numbers
-        // tslint:disable:no-string-literal
-        service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
-        service['drawingService'].previewCtx = previewCtxStub;
-        service['drawingService'].canvas = canvasStub;
-        service['drawingService'].canvas.width = canvasWidth;
-        service['drawingService'].canvas.height = canvasHeight;
-        service['colorService'] = colorService;
         // No need to justify numbers to create a mock rectangles
         // tslint:disable:no-magic-numbers
-        service['drawingService'].baseCtx.fillStyle = '#000000';
-        service['drawingService'].baseCtx.fillRect(0, 0, 1000, 800);
-        service['drawingService'].baseCtx.fillStyle = '#010101';
-        service['drawingService'].baseCtx.fillRect(200, 200, 25, 25);
-        service['drawingService'].baseCtx.fillStyle = '#000100';
-        service['drawingService'].baseCtx.fillRect(50, 50, 50, 50);
+        const canvasWidth = 100;
+        const canvasHeight = 100;
+        colorService.setPrimaryColor('#050505');
+        (service as any).drawingService.baseCtx = baseCtxStub;
+        (service as any).drawingService.previewCtx = previewCtxStub;
+        (service as any).drawingService.canvas = canvasStub;
+        (service as any).drawingService.canvas.width = canvasWidth;
+        (service as any).drawingService.canvas.height = canvasHeight;
+        (service as any).colorService = colorService;
+        (service as any).drawingService.baseCtx.fillStyle = '#000000';
+        (service as any).drawingService.baseCtx.fillRect(0, 0, 1000, 800);
+        (service as any).drawingService.baseCtx.fillStyle = '#010101';
+        (service as any).drawingService.baseCtx.fillRect(200, 200, 25, 25);
+        (service as any).drawingService.baseCtx.fillStyle = '#000100';
+        (service as any).drawingService.baseCtx.fillRect(50, 50, 50, 50);
 
         mouseEvent = {
             offsetX: 25,
@@ -82,7 +79,7 @@ describe('PaintService', () => {
     });
 
     // Doesn't work
-    /* it(' should make sure that matchStartColor verify correctly with fill rgb and target surface', () => {
+    /*it(' should make sure that matchStartColor verify correctly with fill rgb and target surface', () => {
         colorService.setPrimaryColor('#010102');
 
         let mouseEvent2 = {

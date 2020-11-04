@@ -9,7 +9,7 @@ import { EllipseService } from '@app/services/tools/ellipse/ellipse-service';
 import { EllipseSelectionService } from './ellipse-selection.service';
 
 // tslint:disable:max-file-line-count
-fdescribe('EllipseSelectionService', () => {
+describe('EllipseSelectionService', () => {
     // tslint:disable:no-any
     let service: EllipseSelectionService;
     let tracingService: TracingService;
@@ -80,17 +80,15 @@ fdescribe('EllipseSelectionService', () => {
         onArrowDownSpy = spyOn<any>(service, 'onArrowDown').and.callThrough();
         const canvasWidth = 1000;
         const canvasHeight = 800;
-        // tslint:disable:no-string-literal
-        service['tracingService'] = tracingService;
-        service['colorService'] = colorService;
-        service['widthService'] = widthService;
 
-        service['drawingService'].baseCtx = baseCtxStub;
-        service['drawingService'].previewCtx = previewCtxStub;
-        service['drawingService'].canvas = canvasStub;
-        service['drawingService'].canvas.width = canvasWidth;
-        service['drawingService'].canvas.height = canvasHeight;
-        service['tracingService'] = tracingService;
+        (service as any).tracingService = tracingService;
+        (service as any).colorService = colorService;
+        (service as any).widthService = widthService;
+        (service as any).drawingService.baseCtx = baseCtxStub;
+        (service as any).drawingService.previewCtx = previewCtxStub;
+        (service as any).drawingService.canvas = canvasStub;
+        (service as any).drawingService.canvas.width = canvasWidth;
+        (service as any).drawingService.canvas.height = canvasHeight;
 
         mouseEventNotInCanvas = {
             offsetX: 2000,
@@ -336,10 +334,9 @@ fdescribe('EllipseSelectionService', () => {
         (service as any).ellipseService.pathData = pathTest;
         (service as any).arrowPress = [true, false, false, false];
         service.firstEllipseCoord = { x: 0, y: 20 };
-
         service.onArrowDown(keyboardEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-        expect(showSelectionSpy).toHaveBeenCalled();
+        expect(showSelectionSpy).toHaveBeenCalled(); 
     });
 
     it('should NOT enter any if in onArrowDown', () => {
@@ -376,7 +373,6 @@ fdescribe('EllipseSelectionService', () => {
         service.onArrowDown(keyboardEvent);
         expect((service as any).arrowCoord).toEqual({ x: 24, y: 24 });
         expect((service as any).ellipseService.mouseDownCoord).toEqual({ x: 14, y: 14 });
-        expect(clearCanvasEllipseSpy).toHaveBeenCalled();
         expect(checkArrowHitSpy).toHaveBeenCalled();
         expect(showSelectionSpy).toHaveBeenCalled();
     });
