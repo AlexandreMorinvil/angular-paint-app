@@ -25,13 +25,9 @@ import { AttributesToleranceComponent } from './components/attributes-panel/attr
 import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorPageComponent } from './components/editor-page/editor-page.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
-<<<<<<< HEAD
 import { DrawingCarouselComponent } from './components/modal/modal-drawing-carousel/modal-drawing-carousel.component';
-import { ModalSaveComponent } from './components/modal/modal-save/modal-save.component';
-=======
 import { ExportComponent } from './components/modal/modal-export/modal-export.component';
-import { SaveComponent } from './components/modal/modal-save/modal-save.component';
->>>>>>> integration/development
+import { ModalSaveComponent } from './components/modal/modal-save/modal-save.component';
 import { UserGuideModalComponent } from './components/modal/modal-user-guide/modal-user-guide.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { TooltipComponent } from './components/tooltip/tooltip.component';
@@ -78,11 +74,7 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
         ReactiveFormsModule,
         MatTabsModule,
     ],
-<<<<<<< HEAD
-    entryComponents: [ModalSaveComponent],
-=======
-    entryComponents: [ExportComponent, SaveComponent],
->>>>>>> integration/development
+    entryComponents: [ExportComponent, ModalSaveComponent],
     providers: [{ provide: MAT_DIALOG_DATA, useValue: [] }],
     bootstrap: [AppComponent],
 })

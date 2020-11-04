@@ -30,15 +30,10 @@ export class ColorPickerService extends Tool {
 
         this.pickedSecondaryColorSource = new BehaviorSubject<string>(colorService.getSecondaryColor());
         this.currentPickedSecondaryColor = this.pickedSecondaryColorSource.asObservable();
-<<<<<<< HEAD
-        // tslint:disable:no-magic-numbers
-        this.previsualizationZoneSource = new BehaviorSubject<Uint8ClampedArray>(new Uint8ClampedArray(4 * this.SQUARE_DIM * this.SQUARE_DIM));
-=======
 
         this.previsualizationZoneSource = new BehaviorSubject<Uint8ClampedArray>(
             new Uint8ClampedArray(SQUARE_SIDE_SIZE * this.SQUARE_DIM * this.SQUARE_DIM),
         );
->>>>>>> integration/development
         this.currentPrevisualizationZoneSource = this.previsualizationZoneSource.asObservable();
 
         this.modifiers.push(this.colorPickerViewerService);
