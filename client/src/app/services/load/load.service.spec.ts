@@ -14,19 +14,24 @@ describe('LoadService', () => {
   let baseCtxStub: CanvasRenderingContext2D;
   let previewCtxStub: CanvasRenderingContext2D;
   let closeAllSpy: jasmine.Spy<any>;
-  let data: MatDialog;
+  let dataMock: jasmine.SpyObj<MatDialog>;
+  let imgStub: HTMLImageElement;
 
   beforeEach(() => {
     baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
     previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
     drawServiceStub = { baseCtx: baseCtxStub, previewCtx: previewCtxStub };
+    imgStub = new HTMLImageElement;
+    dataMock = jasmine.createSpyObj('MatDialog', {
+      closeAll: true,
+    })
 
     TestBed.configureTestingModule({
       imports: [MatDialogModule],
-      providers: [{ provide: MatDialog, useValue: data }, { provide: DrawingService, useValue: drawServiceStub }],
+      providers: [MatDialog, { provide: DrawingService, useValue: drawServiceStub }],
     });
     service = TestBed.inject(LoadService);
-    closeAllSpy = spyOn<any>(data, 'closeAll');
+    closeAllSpy = spyOn<any>(dataMock, 'closeAll').and.returnValue(true);
   });
 
   it('should be created', () => {
@@ -35,6 +40,10 @@ describe('LoadService', () => {
 
   it('should load image', () => {
     service.loadDraw("/example")
+    expect(closeAllSpy).toHaveBeenCalled();
+  });
+  it('should draw image', () => {
+    service.fillDraw(imgStub)
     expect(closeAllSpy).toHaveBeenCalled();
   });
 });
