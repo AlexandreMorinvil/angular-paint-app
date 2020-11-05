@@ -1,5 +1,3 @@
-//import { DatabaseService } from '../services/database/database.service';
-//import { Drawing} from '@common/communication/drawingtodatabase';
 import { expect } from 'chai';
 import { StatusCodes } from 'http-status-codes';
 import { describe } from 'mocha';
@@ -39,7 +37,7 @@ describe('DatabaseController', () => {
     const drawing0 = new Drawing('0', 'alex', new Array<string>('tag1', 'tag2'), 'imagsource');
     const drawing1 = new DrawingToDatabase('1', 'alex', new Array<string>('tag1', 'tag2'));
     const drawing2 = new DrawingToDatabase('2', 'luca', new Array<string>('tag3', 'tag4'));
-    const drawing4 = new Drawing('4', 'alex', new Array<string>('tag1', 'tag2'), '');
+    //const drawing4 = new Drawing('4', 'alex', new Array<string>('ta$$g1', 'tag2'), '');
 
     beforeEach(async () => {
         const [container, sandbox] = await testingContainer();
@@ -151,20 +149,10 @@ describe('DatabaseController', () => {
     });
 
     it('should return  status of created when adding a draw', async () => {
-        databaseService.addDrawing.resolves('0');
+        databaseService.addDrawing.resolves();
         return tests(application)
             .post(ROUTING_POST)
             .send(drawing0)
-            .then((res: any) => {
-                expect(res.status).to.equal(HTTPS_STATUS_CODE_CREATED);
-            });
-    });
-
-    it('should return status of created on database if the validate image source is empty', async () => {
-        databaseService.addDrawing.resolves('4');
-        return tests(application)
-            .post(ROUTING_POST)
-            .send(drawing4)
             .then((res: any) => {
                 expect(res.status).to.equal(HTTPS_STATUS_CODE_CREATED);
             });
