@@ -132,6 +132,7 @@ export class PolygonService extends Tool {
         const numberTriangleSide = 3;
         const halfCircleAngle = 180;
         const circleAngle = 360;
+        // Leave the calculation in full so as not to have a space due to calculation imprecision
         if (this.tracingService.getHasContour() === true && this.sidesService.getSide() >= numberMinSide) {
             this.radius = this.radius - this.widthService.getWidth() / 2;
             const spaceBetweenTwoPolygon =
