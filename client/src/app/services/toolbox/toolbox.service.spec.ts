@@ -5,6 +5,7 @@ import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolboxService } from './toolbox.service';
 class ToolStub extends Tool {}
+
 // tslint:disable:no-any
 describe('ToolboxService', () => {
     let service: ToolboxService;

@@ -16,6 +16,8 @@ export class DrawingService {
     resetDrawing(): void {
         this.clearCanvas(this.baseCtx);
         this.clearCanvas(this.previewCtx);
+        this.baseCtx.fillStyle = '#FFFFFF';
+        this.baseCtx.fillRect(0, 0, this.baseCtx.canvas.width, this.baseCtx.canvas.height);
         this.hasBeenDrawnOnto = false;
     }
 

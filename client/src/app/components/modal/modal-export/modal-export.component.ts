@@ -24,7 +24,7 @@ export class ExportComponent implements AfterViewInit {
     ) {}
 
     ngAfterViewInit(): void {
-        this.exportDrawingService.applyFilter(this.exportDrawingService.currentFilter);
+        this.exportDrawingService.applyFilter('Aucun');
     }
 
     applyFilter(currentFilter: string): void {
@@ -34,14 +34,14 @@ export class ExportComponent implements AfterViewInit {
     exportToPNG(): void {
         if (this.validateValue()) {
             const drawName = this.drawName.value;
-            const format = '.png';
+            const format = 'png';
             this.exportDrawingService.exportDraw(drawName, format);
         }
     }
     exportToJPG(): void {
         if (this.validateValue()) {
             const drawName = this.drawName.value;
-            const format = '.jpg';
+            const format = 'jpeg';
             this.exportDrawingService.exportDraw(drawName, format);
         }
     }

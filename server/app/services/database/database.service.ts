@@ -1,125 +1,149 @@
-import { Drawing, MAX_NAME_LENGTH } from '@common/schema/drawing';
+import { DrawingToDatabase } from '@common/communication/drawing-to-database';
 import { injectable } from 'inversify';
-import { Collection, FilterQuery, MongoClient, MongoClientOptions, ObjectID, UpdateQuery } from 'mongodb';
+import { Collection, FilterQuery, MongoClient, MongoClientOptions, UpdateQuery } from 'mongodb';
 import 'reflect-metadata';
 
-// CHANGE the URL for your database information
 const DATABASE_URL = 'mongodb+srv://team106:secret106@cluster0.fspbf.azure.mongodb.net/integrator-project?retryWrites=true&w=majority';
 const DATABASE_NAME = 'integrator-project';
 const DATABASE_COLLECTION = 'drawing';
 
 @injectable()
 export class DatabaseService {
-    collection: Collection<Drawing>;
+    isConnected: boolean = false;
+    collection: Collection<DrawingToDatabase>;
     client: MongoClient;
+    drawId: string;
+
+    private readonly MAX_NUMBER_OF_TAGS: number = 15;
+    private readonly MAX_LENGHT_DRAW_NAME: number = 50;
+    private readonly MAX_LENGHT_NAME_TAG: number = 25;
+
+    private readonly ERROR_NO_DRAWING_NAME: string = 'Les dessins doivent contenir un nom';
+    private readonly ERROR_NUMBER_TAG_GREATER_MAXIMUM: string = 'Le nombre détiquettes est supérieur à la limite de 15';
+    private readonly ERROR_NO_TAG: string = 'Les étiquettes assignées ne peuvent pas être vides';
+    private readonly ERROR_MAX_LENGTH_NAME_TAG: string = 'Les étiquettes des dessions doivent contenir un maximum de 25 caractères';
+    private readonly ERROR_MAX_LENGTH_NAME_DRAWING: string = 'Les noms des dessions doivent contenir un maximum de 50 caractères';
+    private readonly ERROR_DELETE_DRAWING: string = 'Échec lors de la tentative de suppression du dessin';
+    private readonly ERROR_UPDATE_DRAWING: string = 'Échec lors de la tentative de mise à jour du dessin';
+    private readonly ERROR_NO_DRAWING_FOUND: string = "Le dessin demandé n'a pas été trouvé";
+    private readonly ERROR_GET_ALL_DRAWING: string = 'Échec lors de la tentative de récupération de tous les dessins';
+    private readonly ERROR_GET_DRAWING_BY_TAG: string = "Échec lors de la tentative de récupération de tous les dessins ayant l'étiquettes";
+    private readonly ERROR_GET_DRAWING_BY_NAME: string = 'Échec lors de la tentative de récupération de tous les dessins nommés';
+    private readonly ERROR_NO_IMAGE_SOURCE: string = "Échec lors de la tentative d'ajout il n'y a pas d'image source";
+    private readonly CONNECTION_ERROR: string = 'CONNECTION ERROR. EXITING PROCESS';
 
     private options: MongoClientOptions = {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     };
 
-    start(): void {
-        MongoClient.connect(DATABASE_URL, this.options)
+    constructor(databaseUrl: string = DATABASE_URL, databaseName: string = DATABASE_NAME, databaseCollection: string = DATABASE_COLLECTION) {
+        MongoClient.connect(databaseUrl, this.options)
             .then((client: MongoClient) => {
+                this.isConnected = true;
                 this.client = client;
-                this.collection = client.db(DATABASE_NAME).collection(DATABASE_COLLECTION);
+                this.collection = client.db(databaseName).collection(databaseCollection);
             })
             .catch(() => {
-                console.error('CONNECTION ERROR. EXITING PROCESS');
+                this.isConnected = false;
+                console.error(this.CONNECTION_ERROR);
                 process.exit(1);
             });
     }
 
-    closeConnection(): void {
-        this.client.close();
-    }
-
-    async getAllDrawings(): Promise<Drawing[]> {
+    async getAllDrawings(): Promise<DrawingToDatabase[]> {
         try {
-            const drawings: Drawing[] = await this.collection.find({}).toArray();
-            return drawings;
+            return await this.collection.find({}).toArray();
         } catch (error) {
-            throw new Error('Échec lors de la tentative de récupération de tous les dessins');
+            throw new Error(this.ERROR_GET_ALL_DRAWING);
         }
     }
 
-    async getDrawing(drawingID: string): Promise<Drawing> {
+    async getDrawing(drawingID: string): Promise<DrawingToDatabase> {
         try {
-            const drawing: Drawing | null = await this.collection.findOne({ _id: new ObjectID(drawingID) });
-            if (!drawing) throw new Error("Le dessin demandé n'a pas été trouvé");
+            const drawing = await this.collection.findOne({ _id: drawingID });
+            if (!drawing) throw new Error(this.ERROR_NO_DRAWING_FOUND);
             return drawing;
         } catch (error) {
             throw error;
         }
     }
 
-    async getDrawingByName(drawingName: string): Promise<Drawing[]> {
+    async getDrawingByName(drawingName: string): Promise<DrawingToDatabase[]> {
         try {
-            const drawings: Drawing[] = await this.collection.find({ name: drawingName }).toArray();
-            return drawings;
+            return this.collection.find({ name: drawingName }).toArray();
         } catch (error) {
-            throw new Error(`Échec lors de la tentative de récupération de tous les dessins nommés ${drawingName}`);
+            throw new Error(this.ERROR_GET_DRAWING_BY_NAME);
         }
     }
 
-    async getDrawingByTags(drawingTag: string): Promise<Drawing[]> {
+    async getDrawingByTags(drawingTag: string): Promise<DrawingToDatabase[]> {
         try {
-            const drawings: Drawing[] = await this.collection.find({ tags: drawingTag }).toArray();
+            const drawings = await this.collection.find({ tags: drawingTag }).toArray();
+            if (!drawings) throw new Error();
             return drawings;
         } catch (error) {
-            throw new Error(`Échec lors de la tentative de récupération de tous les dessins ayant l'étiquettes ${drawingTag}`);
+            throw new Error(this.ERROR_GET_DRAWING_BY_TAG);
         }
     }
 
-    async addDrawing(drawing: Drawing): Promise<void> {
+    async addDrawing(drawing: DrawingToDatabase, imageSource: string): Promise<void> {
         try {
+            this.validateImageSource(imageSource);
             this.validateDrawing(drawing);
-            await this.collection.insertOne(drawing);
-            return;
+            const insertionResult = await this.collection.insertOne(drawing);
+            this.drawId = await insertionResult.insertedId.toString();
         } catch (error) {
             throw error;
         }
     }
 
-    async updateDrawing(drawingID: string, drawing: Drawing): Promise<Drawing> {
+    async updateDrawing(drawingID: string, drawing: DrawingToDatabase): Promise<void> {
+        const filterQuery: FilterQuery<DrawingToDatabase> = { _id: drawingID };
+        const updateQuery: UpdateQuery<DrawingToDatabase> = {
+            $set: { name: drawing.name, tags: drawing.tags },
+        };
         try {
-            // Update
-            const filterQuery: FilterQuery<Drawing> = { _id: new ObjectID(drawingID) };
-            const updateQuery: UpdateQuery<Drawing> = {
-                $set: { name: drawing.name, tags: drawing.tags },
-            };
             await this.collection.updateOne(filterQuery, updateQuery);
-
-            // Return updated value
-            const updatedDrawing: Drawing | null = await this.collection.findOne({ _id: new ObjectID(drawingID) });
-            if (!updatedDrawing) throw new Error();
-            return updatedDrawing;
-        } catch (error) {
-            throw new Error('Échec lors de la tentative de mise à jour du dessin');
+        } catch {
+            throw new Error(this.ERROR_UPDATE_DRAWING);
         }
     }
-
-    async deleteDrawing(drawingID: string): Promise<void> {
+    // tslint:disable:no-any
+    // tslint:disable:no-empty
+    async deleteDrawing(drawingID: string): Promise<any> {
         try {
-            this.collection.findOneAndDelete({ _id: new ObjectID(drawingID) });
-        } catch (error) {
-            throw new Error('Échec lors de la tentative de suppression du dessin');
+            return await this.collection.findOneAndDelete({ _id: drawingID });
+        } catch {
+            throw new Error(this.ERROR_DELETE_DRAWING);
         }
     }
 
-    private validateDrawing(drawing: Drawing): void {
+    private async validateDrawing(drawing: DrawingToDatabase): Promise<void> {
         this.validateName(drawing.name);
-        this.validateTag(drawing.tags);
+        this.validateAllTags(drawing.tags);
     }
-    private validateName(name: string): void {
-        if (!(name.length > 0)) throw new Error('Les dessins doivent contenir un nom');
-        if (!(name.length <= MAX_NAME_LENGTH)) throw new Error('Les noms des dessions doivent contenir moins un maximum de 50 caractères');
+
+    private async validateName(name: string): Promise<void> {
+        if (!(name !== '')) throw new Error(this.ERROR_NO_DRAWING_NAME);
+        if (!(name.length <= this.MAX_LENGHT_DRAW_NAME)) throw new Error(this.ERROR_MAX_LENGTH_NAME_DRAWING);
+        if (!/^[0-9a-zA-Z]*$/g.test(name)) throw new Error();
     }
-    private validateTag(tags: string[]): void {
-        if (tags.length === 0) return;
-        tags.forEach((tag) => {
-            if (!(tag.length > 0)) throw new Error('Les étiquettes assignées ne peuvent pas être vides');
-            if (!(tag.length <= MAX_NAME_LENGTH)) throw new Error('Les étiquettes des dessions doivent contenir moins un maximum de 50 caractères');
+
+    private async validateTag(tag: string): Promise<void> {
+        if (!(tag !== '')) throw new Error(this.ERROR_NO_TAG);
+        if (!(tag.length <= this.MAX_LENGHT_NAME_TAG)) throw new Error(this.ERROR_MAX_LENGTH_NAME_TAG);
+        if (!/^[0-9a-zA-Z]*$/g.test(tag)) throw new Error();
+    }
+
+    private async validateImageSource(imageSrc: string): Promise<void> {
+        if (!(imageSrc !== '')) throw new Error(this.ERROR_NO_IMAGE_SOURCE);
+    }
+
+    private async validateAllTags(tags: string[]): Promise<void> {
+        if (!(tags.length > this.MAX_NUMBER_OF_TAGS)) throw new Error(this.ERROR_NUMBER_TAG_GREATER_MAXIMUM);
+        tags.forEach(async (tag) => {
+            await this.validateTag(tag);
         });
     }
 }

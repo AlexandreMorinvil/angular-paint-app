@@ -13,7 +13,6 @@ const SQUARE_SIDE_SIZE = 4;
     providedIn: 'root',
 })
 export class ColorPickerService extends Tool {
-    // tslint:disable:no-empty
     private pickedPrimaryColorSource: BehaviorSubject<string>;
     currentPickedPrimaryColor: Observable<string>;
     private pickedSecondaryColorSource: BehaviorSubject<string>;
@@ -43,7 +42,11 @@ export class ColorPickerService extends Tool {
 
     private componentToHex(channel: number): string {
         const hex = channel.toString(16);
-        return hex.length === 1 ? '0' + hex : hex;
+        if (hex.length === 1) {
+            return '0' + hex;
+        } else {
+            return hex;
+        }
     }
 
     private rgbColorToHEXString(r: number, g: number, b: number): string {
@@ -51,22 +54,19 @@ export class ColorPickerService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        // get mouse position
         const mousePosition: Vec2 = this.getPositionFromMouse(event);
 
-        // get pixel data at currentMouse position
         const rgbColor: Uint8ClampedArray = this.drawingService.baseCtx.getImageData(mousePosition.x, mousePosition.y, 1, 1).data;
 
-        // get color HEX string from the pixel data
         const colorHEXString = this.rgbColorToHEXString(rgbColor[0], rgbColor[1], rgbColor[2]);
 
-        // set current color to the new color
-
+        // left click
         if (event.button === 0) {
             this.pickedPrimaryColorSource.next(colorHEXString);
             this.colorService.setPrimaryColor(colorHEXString);
         }
 
+        // right click
         if (event.button === 2) {
             this.pickedSecondaryColorSource.next(colorHEXString);
             this.colorService.setSecondaryColor(colorHEXString);

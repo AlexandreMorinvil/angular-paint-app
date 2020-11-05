@@ -127,16 +127,19 @@ export class DrawingComponent implements AfterViewInit {
         } else if (event.key === 'Escape') {
             this.toolbox.getCurrentTool().onEscapeDown(event);
             this.hasBeenDrawnOnto = true;
-        } else if (event.ctrlKey && event.key.toLowerCase() === 's') {
+        } else if (event.ctrlKey && event.key.toLowerCase() === 's' && this.drawingService.shortcutEnable) {
             event.preventDefault(); // to prevent key of windows
             this.modalHandlerService.openSaveDialog();
+        } else if (event.ctrlKey && event.key.toLowerCase() === 'g' && this.drawingService.shortcutEnable) {
+            event.preventDefault(); // to prevent key of windows
+            this.modalHandlerService.openDrawingCarouselDialog();
         } else if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'z') {
             event.preventDefault(); // to prevent key of windows
             this.drawingStateTrackerService.onCtrlShiftZDown();
         } else if (event.ctrlKey && event.key.toLowerCase() === 'z') {
             event.preventDefault(); // to prevent key of windows
             this.drawingStateTrackerService.onCtrlZDown();
-        } else if (event.ctrlKey && event.key.toLowerCase() === 'e') {
+        } else if (event.ctrlKey && event.key.toLowerCase() === 'e' && this.drawingService.shortcutEnable) {
             event.preventDefault(); // to prevent key of windows
             this.modalHandlerService.openExportDialog();
         } else if (event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown') {
