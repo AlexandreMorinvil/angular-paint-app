@@ -60,11 +60,13 @@ export class ColorPickerService extends Tool {
 
         const colorHEXString = this.rgbColorToHEXString(rgbColor[0], rgbColor[1], rgbColor[2]);
 
+        // left click
         if (event.button === 0) {
             this.pickedPrimaryColorSource.next(colorHEXString);
             this.colorService.setPrimaryColor(colorHEXString);
         }
 
+        // right click
         if (event.button === 2) {
             this.pickedSecondaryColorSource.next(colorHEXString);
             this.colorService.setSecondaryColor(colorHEXString);
