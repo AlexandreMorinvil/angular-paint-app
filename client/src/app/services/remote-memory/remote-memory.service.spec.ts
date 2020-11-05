@@ -5,18 +5,11 @@ import { DrawingToDatabase } from '@common/communication/drawing-to-database';
 import { of } from 'rxjs';
 import { RemoteMemoryService } from './remote-memory.service';
 
-
-
 describe('RemoteMemoryService', () => {
   let service: RemoteMemoryService;
-  const data: DrawingToDatabase[] = [{ _id: "1", name: "test1", tags: ['a'] }]
-
-
+  const data: DrawingToDatabase[] = [{ _id: '1', name: 'test1', tags: ['a'] }];
 
   beforeEach(() => {
-
-
-
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [ApiDrawingService],
@@ -29,7 +22,7 @@ describe('RemoteMemoryService', () => {
   });
 
   it('should call the database', (done) => {
-    let spy = spyOn(service.apiDrawingService, 'getAll').and.returnValue(of(data));
+    const spy = spyOn(service.apiDrawingService, 'getAll').and.returnValue(of(data));
     service.getAllFromDatabase().then(() => {
       expect(spy).toHaveBeenCalled();
       expect(service.getDrawingsFromDatabase()).toBeDefined();
@@ -38,7 +31,7 @@ describe('RemoteMemoryService', () => {
   });
 
   it('should save to the database', (done) => {
-    let spy = spyOn(service.apiDrawingService, 'save').and.returnValue(of(void 0));
+    const spy = spyOn(service.apiDrawingService, 'save').and.returnValue(of(void 0));
     service.saveToDatabase(data[0]).then(() => {
       expect(spy).toHaveBeenCalled();
       done();
@@ -46,11 +39,10 @@ describe('RemoteMemoryService', () => {
   });
 
   it('should delete from the database', (done) => {
-    let spy = spyOn(service.apiDrawingService, 'delete').and.returnValue(of('void 0'));
+    const spy = spyOn(service.apiDrawingService, 'delete').and.returnValue(of('void 0'));
     service.deleteFromDatabase(data[0]._id).then(() => {
       expect(spy).toHaveBeenCalled();
       done();
     });
   });
-
 });
