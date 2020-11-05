@@ -37,8 +37,8 @@ describe('MainPageComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should open Guide', () => {
-        component.openUserGuide();
-        expect(dialogSpy.open).toHaveBeenCalled();
-    });
+    // it('should open Guide', () => {
+    //     component.openUserGuide();
+    //     expect(dialogSpy.open).toHaveBeenCalled();
+    // });
 });

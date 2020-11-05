@@ -10,6 +10,6 @@ export class Description {
     }
 
     get iconDirectory(): string {
-        return 'assets/images/' + this.itemiconName;
+        return 'assets/images/icon/' + this.itemiconName;
     }
 }

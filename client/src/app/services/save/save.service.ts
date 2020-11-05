@@ -6,23 +6,24 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     providedIn: 'root',
 })
 export class SaveService {
+    imageSource: string;
     constructor(private drawingService: DrawingService, public dialog: MatDialog) {}
 
-    saveDrawToPNG(drawName: string): void {
+    saveDraw(): void {
         const contex = this.drawingService.baseCtx;
         contex.save();
-        contex.globalCompositeOperation = 'destination-over';
+        contex.globalCompositeOperation = 'source-over';
         contex.fillStyle = 'white';
         contex.fillRect(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
         contex.restore();
-        const img = new Image();
+        const image = new Image();
         const canvas = this.drawingService.canvas;
         const ctx = this.drawingService.baseCtx;
         const link = document.createElement('a');
-        ctx.drawImage(img, 0, 0);
-        img.style.display = 'none';
-        link.href = canvas.toDataURL();
-        link.download = drawName + '.png';
-        link.click();
+        ctx.drawImage(image, 0, 0);
+        image.style.display = 'none';
+        image.src = canvas.toDataURL();
+        link.download = 'image' + '.png';
+        this.imageSource = image.src;
     }
 }
