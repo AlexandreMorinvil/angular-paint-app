@@ -17,24 +17,8 @@ export class ApiDrawingService {
         return this.http.get<DrawingToDatabase[]>(BASE_URL).pipe(catchError(this.handleError<DrawingToDatabase[]>('getAll')));
     }
 
-    getById(id: string): Observable<DrawingToDatabase> {
-        return this.http.get<DrawingToDatabase>(BASE_URL + id).pipe(catchError(this.handleError<DrawingToDatabase>('getByID')));
-    }
-
-    getByName(name: string): Observable<DrawingToDatabase[]> {
-        return this.http.get<DrawingToDatabase[]>(BASE_URL + name).pipe(catchError(this.handleError<DrawingToDatabase[]>('getByName')));
-    }
-
-    getByTag(tag: string): Observable<DrawingToDatabase[]> {
-        return this.http.get<DrawingToDatabase[]>(BASE_URL + 'tag/' + tag).pipe(catchError(this.handleError<DrawingToDatabase[]>('getByTag')));
-    }
-
     save(drawingtodatabase: DrawingToDatabase): Observable<void> {
         return this.http.post<void>(BASE_URL, drawingtodatabase).pipe(catchError(this.handleError<void>('save')));
-    }
-
-    update(id: string, drawingtodatabase: DrawingToDatabase): Observable<DrawingToDatabase> {
-        return this.http.patch<DrawingToDatabase>(BASE_URL + id, drawingtodatabase).pipe(catchError(this.handleError<DrawingToDatabase>('update')));
     }
 
     delete(id: string): Observable<string> {
