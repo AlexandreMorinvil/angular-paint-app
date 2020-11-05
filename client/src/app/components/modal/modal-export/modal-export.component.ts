@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject } from '@angular/core';
+import { AfterViewInit, Component, HostListener, Inject } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -22,6 +22,13 @@ export class ExportComponent implements AfterViewInit {
         d: MatTabsModule,
         dialog: MatDialog,
     ) {}
+
+    @HostListener('window:keydown', ['$event'])
+    onShiftDown(event: KeyboardEvent): void {
+        if (event.ctrlKey && event.key.toLowerCase() === 'e') {
+            event.preventDefault(); // to prevent key of windows
+        }
+    }
 
     ngAfterViewInit(): void {
         this.exportDrawingService.applyFilter('Aucun');

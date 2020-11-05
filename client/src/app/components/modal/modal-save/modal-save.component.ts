@@ -1,5 +1,5 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component, Inject } from '@angular/core';
+import { Component, HostListener, Inject } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -36,6 +36,13 @@ export class ModalSaveComponent {
         public saveService: SaveService,
         private apiImageTransferService: ApiImageTransferService,
     ) {}
+
+    @HostListener('window:keydown', ['$event'])
+    onShiftDown(event: KeyboardEvent): void {
+        if (event.ctrlKey && event.key.toLowerCase() === 's') {
+            event.preventDefault(); // to prevent key of windows
+        }
+    }
 
     add(event: MatChipInputEvent): void {
         const input: HTMLInputElement = event.input;
