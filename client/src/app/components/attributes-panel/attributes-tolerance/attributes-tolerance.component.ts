@@ -4,7 +4,7 @@ import { ToleranceService } from '@app/services/tool-modifier/tolerance/toleranc
 @Component({
     selector: 'app-attributes-tolerance',
     templateUrl: './attributes-tolerance.component.html',
-    styleUrls: ['./attributes-tolerance.component.scss'],
+    styleUrls: ['./attributes-tolerance.component.scss', '../attributes-section.component.scss'],
 })
 export class AttributesToleranceComponent {
     tolerance: number;
