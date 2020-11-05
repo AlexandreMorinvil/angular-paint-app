@@ -59,6 +59,7 @@ export class ModalSaveComponent {
     }
 
     saveToServer(): void {
+        console.log(this.saveService.imageSource);
         if (this.validateValue(this.drawName.value, this.tags, this.saveService.imageSource)) {
             this.saveService.saveDraw();
             this.sendMessageToServer();
@@ -95,12 +96,7 @@ export class ModalSaveComponent {
     }
 
     sendMessageToServer(): void {
-        const newDrawingToSend: Drawing = {
-            _id: '',
-            name: this.drawName.value,
-            tags: this.tags,
-            imageSrc: this.saveService.imageSource,
-        };
+        const newDrawingToSend: Drawing = new Drawing('', this.drawName.value, this.tags, this.saveService.imageSource);
         this.apiImageTransferService.basicPost(newDrawingToSend).subscribe();
     }
 }

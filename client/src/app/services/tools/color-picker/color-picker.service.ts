@@ -7,11 +7,12 @@ import { ColorPickerViewerService } from '@app/services/tool-modifier/color-pick
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 
+const SQUARE_SIDE_SIZE = 4;
+
 @Injectable({
     providedIn: 'root',
 })
 export class ColorPickerService extends Tool {
-    // tslint:disable:no-empty
     private pickedPrimaryColorSource: BehaviorSubject<string>;
     currentPickedPrimaryColor: Observable<string>;
     private pickedSecondaryColorSource: BehaviorSubject<string>;
@@ -29,40 +30,43 @@ export class ColorPickerService extends Tool {
 
         this.pickedSecondaryColorSource = new BehaviorSubject<string>(colorService.getSecondaryColor());
         this.currentPickedSecondaryColor = this.pickedSecondaryColorSource.asObservable();
-        // tslint:disable:no-magic-numbers
-        this.previsualizationZoneSource = new BehaviorSubject<Uint8ClampedArray>(new Uint8ClampedArray(4 * this.SQUARE_DIM * this.SQUARE_DIM));
+
+        this.previsualizationZoneSource = new BehaviorSubject<Uint8ClampedArray>(
+            new Uint8ClampedArray(SQUARE_SIDE_SIZE * this.SQUARE_DIM * this.SQUARE_DIM),
+        );
         this.currentPrevisualizationZoneSource = this.previsualizationZoneSource.asObservable();
 
         this.modifiers.push(this.colorPickerViewerService);
         this.modifiers.push(this.colorService);
     }
 
-    componentToHex(channel: number): string {
+    private componentToHex(channel: number): string {
         const hex = channel.toString(16);
-        return hex.length === 1 ? '0' + hex : hex;
+        if (hex.length === 1) {
+            return '0' + hex;
+        } else {
+            return hex;
+        }
     }
 
-    rgbColorToHEXString(r: number, g: number, b: number): string {
+    private rgbColorToHEXString(r: number, g: number, b: number): string {
         return '#' + this.componentToHex(r) + this.componentToHex(g) + this.componentToHex(b);
     }
 
     onMouseDown(event: MouseEvent): void {
-        // get mouse position
         const mousePosition: Vec2 = this.getPositionFromMouse(event);
 
-        // get pixel data at currentMouse position
         const rgbColor: Uint8ClampedArray = this.drawingService.baseCtx.getImageData(mousePosition.x, mousePosition.y, 1, 1).data;
 
-        // get color HEX string from the pixel data
         const colorHEXString = this.rgbColorToHEXString(rgbColor[0], rgbColor[1], rgbColor[2]);
 
-        // set current color to the new color
-
+        // left click
         if (event.button === 0) {
             this.pickedPrimaryColorSource.next(colorHEXString);
             this.colorService.setPrimaryColor(colorHEXString);
         }
 
+        // right click
         if (event.button === 2) {
             this.pickedSecondaryColorSource.next(colorHEXString);
             this.colorService.setSecondaryColor(colorHEXString);

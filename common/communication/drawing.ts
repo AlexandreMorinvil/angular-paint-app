@@ -6,6 +6,13 @@ export class Drawing {
     name: string;
     tags: string[];
     imageSrc: string | undefined;
+
+    constructor(id: any, name: string, tags: string[], imageSrc: string) {
+        this._id = id;
+        this.name = name;
+        this.tags = tags;
+        this.imageSrc = imageSrc;
+    }
 }
 
 export const MAX_NAME_LENGTH = 50;
