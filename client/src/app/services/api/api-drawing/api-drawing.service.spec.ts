@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { DrawingToDatabase } from '@common/communication/drawing-to-database';
 import { ApiDrawingService, BASE_URL } from './api-drawing.service';
 
-fdescribe('ApiDrawingService', () => {
+describe('ApiDrawingService', () => {
     let httpMock: HttpTestingController;
     let service: ApiDrawingService;
     let baseUrl: string;

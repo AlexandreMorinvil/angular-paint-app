@@ -9,7 +9,7 @@ class DrawingServiceStub {
     previewCtx: CanvasRenderingContext2D;
 }
 
-describe('LoadService', () => {
+fdescribe('LoadService', () => {
     let service: LoadService;
     let drawServiceStub: DrawingServiceStub;
     let baseCtxStub: CanvasRenderingContext2D;
@@ -58,14 +58,13 @@ describe('LoadService', () => {
         service.loadDraw('assets/images/nothing.png');
         expect(dataMock.closeAll).not.toHaveBeenCalled();
     });
-    /*
-      it('should load given a white canvas', () => {
-          // tslint:disable:no-string-literal
-          service['drawingService'].baseCtx.fillStyle = '#FFFFFF';
-          service['drawingService'].baseCtx.fillRect(1, 1, drawServiceStub.baseCtx.canvas.width, drawServiceStub.baseCtx.canvas.height);
-          service.loadDraw('/example');
-          service.fillDraw(imgStub);
-          expect(dataMock.closeAll).not.toHaveBeenCalled();
-      });
-  */
+
+    it('should load given a white canvas', () => {
+        // tslint:disable:no-string-literal
+        drawServiceStub.baseCtx.fillStyle = '#FFFFFF';
+        drawServiceStub.baseCtx.fillRect(0, 0, drawServiceStub.baseCtx.canvas.width, drawServiceStub.baseCtx.canvas.height);
+        service.loadDraw('/example');
+        service.fillDraw(imgStub);
+        expect(dataMock.closeAll).toHaveBeenCalled();
+    });
 });
