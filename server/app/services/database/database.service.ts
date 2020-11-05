@@ -47,6 +47,7 @@ export class DatabaseService {
             .catch(() => {
                 this.isConnected = false;
                 console.error(this.CONNECTION_ERROR);
+                process.exit(1);
             });
     }
 
