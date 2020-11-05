@@ -21,6 +21,8 @@ export class DatabaseController {
         this.configureRouter();
     }
 
+    // test serveur qui plante
+
     private configureRouter(): void {
         this.router = Router();
 
@@ -76,10 +78,10 @@ export class DatabaseController {
             };
             this.databaseService
                 .addDrawing(drawingToDatabase, req.body.imageSrc)
-                .then((id) => {
+                .then(() => {
                     const imageSource: string = req.body.imageSrc;
-                    this.saveDrawIntoImageFolder(imageSource, this.databaseService.drawId, this.PATH_SAVE_IMAGE_TO_SERVER);
                     res.status(StatusCodes.CREATED).send();
+                    this.saveDrawIntoImageFolder(imageSource, this.databaseService.drawId, this.PATH_SAVE_IMAGE_TO_SERVER);
                 })
                 .catch((error: Error) => {
                     res.status(StatusCodes.NOT_FOUND).send(error.message);

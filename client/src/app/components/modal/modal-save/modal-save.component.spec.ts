@@ -5,7 +5,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { MatTabsModule } from '@angular/material/tabs';
 import { Router } from '@angular/router';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
-import { ApiImageTransferService } from '@app/services/api/image-transfer/api-image-transfer.service';
+import { ApiDrawingService } from '@app/services/api/api-drawing/api-drawing.service';
 import { SaveService } from '@app/services/save/save.service';
 import { ModalSaveComponent } from './modal-save.component';
 
@@ -42,7 +42,7 @@ describe('ModalSaveComponent', () => {
                     HttpClient,
                     HttpTestingController,
                     HttpHandler,
-                    ApiImageTransferService,
+                    ApiDrawingService,
                 ],
             }).compileComponents();
         }),
@@ -68,7 +68,7 @@ describe('ModalSaveComponent', () => {
         saveDrawSpy = spyOn<any>(component['saveService'], 'saveDraw').and.callThrough();
         sendMessageToServerSpy = spyOn<any>(component, 'sendMessageToServer').and.callThrough();
         component['saveService'].imageSource = 'IMAGESOURCE';
-        basicPostSpy = spyOn<any>(component['apiImageTransferService'], 'basicPost').and.callThrough();
+        basicPostSpy = spyOn<any>(component['apiDrawingService'], 'save').and.callThrough();
     });
 
     it('should create', () => {

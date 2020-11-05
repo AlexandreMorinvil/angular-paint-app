@@ -35,6 +35,15 @@ describe('Database service', () => {
         client.close();
     });
 
+    it('Database initialization failure should be caught and close the process', async () => {
+        // We use the local Mongo Instance and not the production database
+        try {
+            new DatabaseService('Wrong url', 'Wrong name', 'Wrong collection');
+        } catch (error) {
+            expect(error).to.not.be.undefined;
+        }
+    });
+
     it('should get all drawing from the database', async () => {
         let drawing = await databaseService.getAllDrawings();
         expect(drawing.length).to.equal(1);
@@ -51,19 +60,8 @@ describe('Database service', () => {
     });
 
     it('should get specific drawing with valid drawing id', async () => {
-        try {
-            await databaseService.getDrawing('1');
-        } catch (error) {
-            expect(error).to.not.be.undefined;
-        }
-    });
-
-    it('should not get a drawing if it is not in the database', async () => {
-        try {
-            await databaseService.getDrawing('119');
-        } catch (error) {
-            expect(error).to.not.be.undefined;
-        }
+        const drawing: DrawingToDatabase = await databaseService.getDrawing('1');
+        expect(drawing).to.deep.equals(testDrawing);
     });
 
     it('should throw error when can not get specific drawing with valid drawing id', async () => {
@@ -87,15 +85,15 @@ describe('Database service', () => {
     });
 
     it('should throw error when can not get specific Drawing based on the name', async () => {
+        client.close();
         try {
-            await client.close();
             await databaseService.getDrawingByName(testDrawing.name);
         } catch (error) {
             expect(error).to.not.be.undefined;
         }
     });
 
-    it('should get specific Drawing based on the tags', async () => {
+    it('should get specific drawing based on the tags', async () => {
         let secondDrawing: DrawingToDatabase = { _id: '2', name: 'nomTest2', tags: ['tag3', 'tag4'] };
         databaseService.collection.insertOne(secondDrawing);
         const drawings = await databaseService.getDrawingByTags('tag3');
@@ -105,8 +103,8 @@ describe('Database service', () => {
     });
 
     it('should throw error when can not get specific Drawing based on the tags', async () => {
+        client.close();
         try {
-            client.close();
             await databaseService.getDrawingByTags('tag1');
         } catch (error) {
             expect(error).to.not.be.undefined;
@@ -200,7 +198,7 @@ describe('Database service', () => {
         }
     });
 
-    it('validate all tags should return true if all tags are valid', () => {
+    it('validate all tags should return not throw error if all tags are valid', () => {
         const tags: string[] = ['a', 'b', 'c'];
         try {
             (databaseService as any).validateAllTags(tags);
@@ -209,7 +207,7 @@ describe('Database service', () => {
         }
     });
 
-    it('validate all tags should return false if the number og tags is bigger than max', () => {
+    it('validate all tags should  throw error if the number og tags is bigger than max', () => {
         const tags: string[] = ['al', 'bl', 'cl', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'z', 'w'];
         try {
             (databaseService as any).validateAllTags(tags);
@@ -218,7 +216,7 @@ describe('Database service', () => {
         }
     });
 
-    it('validate image source should return true if image source is valid', () => {
+    it('validate image source should not throw error if image source is valid', () => {
         const imageSource = 'KEJDHTERTGSU';
         try {
             (databaseService as any).validateImageSource(imageSource);
@@ -227,7 +225,7 @@ describe('Database service', () => {
         }
     });
 
-    it('validate image source should return false if image source is invalid', () => {
+    it('validate image source should throw error if image source is invalid', () => {
         const imageSource = '';
         try {
             (databaseService as any).validateImageSource(imageSource);
@@ -236,16 +234,16 @@ describe('Database service', () => {
         }
     });
 
-    it('validate  draw tag should return true if the tag is valid', () => {
+    it('validate  draw tag should not throw error if the tag is valid', () => {
         const tag = 'valid';
         try {
             (databaseService as any).validateTag(tag);
         } catch (error) {
-            expect(error).to.be.undefined;
+            expect(error).to.not.be.undefined;
         }
     });
 
-    it('validate  draw tag should return false if the tag is empty', () => {
+    it('validate  draw tag should throw error if the tag is empty', () => {
         const tag = '';
         try {
             (databaseService as any).validateTag(tag);
@@ -254,7 +252,7 @@ describe('Database service', () => {
         }
     });
 
-    it('validate  draw tag should return false if the tag lenght is bigger than max ', () => {
+    it('validate  draw tag should  throw errorif the tag lenght is bigger than max ', () => {
         const tag = 'alsoergdhtryejdklstegreddhud';
         try {
             (databaseService as any).validateTag(tag);
@@ -263,7 +261,7 @@ describe('Database service', () => {
         }
     });
 
-    it('validate  draw tag should return false if the tag has special character', () => {
+    it('validate  draw tag should throw error if the tag has special character', () => {
         const tag = '!@^ahs';
         try {
             (databaseService as any).validateTag(tag);
@@ -272,7 +270,7 @@ describe('Database service', () => {
         }
     });
 
-    it('validate  draw name should return true if the name is valid', () => {
+    it('validate  draw name should not throw error if the name is valid', () => {
         const name = 'valid';
         try {
             (databaseService as any).validateName(name);
@@ -281,7 +279,7 @@ describe('Database service', () => {
         }
     });
 
-    it('validate  draw name should return false if the name is empty', () => {
+    it('validate  draw name should throw error if the name is empty', () => {
         const name = '';
         try {
             (databaseService as any).validateName(name);
@@ -290,7 +288,7 @@ describe('Database service', () => {
         }
     });
 
-    it('validate  draw name should return false if the tag lenght is bigger than max', () => {
+    it('validate  draw name should throw error if the tag lenght is bigger than max', () => {
         const name = 'alsoergdhtryejdklstegreddhudalsoergdhtryejdklstegreddhudamskedjrh';
         try {
             (databaseService as any).validateName(name);
@@ -299,7 +297,7 @@ describe('Database service', () => {
         }
     });
 
-    it('validate  draw name should return false if the name has special character', () => {
+    it('validate  draw name should throw error  if the name has special character', () => {
         const name = 'a!!@^name';
         try {
             (databaseService as any).validateName(name);
@@ -308,7 +306,7 @@ describe('Database service', () => {
         }
     });
 
-    it('validate drawing should return true if the name, tags are  valid', () => {
+    it('validate drawing should not throw error  if the name, tags are  valid', () => {
         const name = 'dessin';
         const tags: string[] = ['tag2', 'b', 'c'];
         const drawing = new DrawingToDatabase('1', name, tags);
@@ -332,7 +330,7 @@ describe('Database service', () => {
 
     it('validate drawing should return false if the tags are invalid', () => {
         const name = 'valid';
-        const tags: string[] = ['ta@&%%$g2', 'b', 'c'];
+        const tags: string[] = ['réré%', 'b', 'c'];
         const drawing = new DrawingToDatabase('1', name, tags);
         try {
             (databaseService as any).validateDrawing(drawing);
@@ -348,11 +346,5 @@ describe('Database service', () => {
         expect(drawings.length).to.equal(1);
         expect(drawings.find((x) => x._id === drawings[0]._id)?.name).to.deep.equals(modifiedDrawing.name);
         expect(drawings.find((x) => x._id === drawings[0]._id)?.tags).to.deep.equals(modifiedDrawing.tags);
-    });
-
-    it('Database initialization should fail if the connection information is invalid', async () => {
-        // We use the local Mongo Instance and not the production database
-        const connection = new DatabaseService('Wrong url', 'Wrong name', 'Wrong collection');
-        expect(connection.isConnected).to.equal(false);
     });
 });

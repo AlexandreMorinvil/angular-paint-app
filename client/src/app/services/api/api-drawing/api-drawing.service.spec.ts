@@ -4,93 +4,112 @@ import { DrawingToDatabase } from '@common/communication/drawing-to-database';
 import { ApiDrawingService, BASE_URL } from './api-drawing.service';
 
 describe('ApiDrawingService', () => {
-    let httpMock: HttpTestingController;
-    let service: ApiDrawingService;
-    let baseUrl: string;
+  let httpMock: HttpTestingController;
+  let service: ApiDrawingService;
+  let baseUrl: string;
 
-    beforeEach(() => {
-        TestBed.configureTestingModule({
-            imports: [HttpClientTestingModule],
-        });
-        service = TestBed.inject(ApiDrawingService);
-        httpMock = TestBed.inject(HttpTestingController);
-        // BASE_URL is private so we need to access it with its name as a key
-        // Try to avoid this syntax which violates encapsulation
-        // tslint:disable: no-string-literal
-        baseUrl = BASE_URL;
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
     });
+    service = TestBed.inject(ApiDrawingService);
+    httpMock = TestBed.inject(HttpTestingController);
+    baseUrl = BASE_URL;
+  });
 
-    afterEach(() => {
-        httpMock.verify();
-    });
-    it('should be created', () => {
-        expect(service).toBeTruthy();
-    });
+  afterEach(() => {
+    httpMock.verify();
+  });
 
-    it('should return expected message (HttpClient called once)', () => {
-        console.log('allo');
-        const data: DrawingToDatabase[] = [{ _id: '1', name: 'test', tags: [] }];
-        // check the content of the mocked call
-        service.getAll().subscribe((drawings) => {
-            expect(drawings[0]._id).toBe(data[0]._id);
-        });
+  it('should perform a HTTP GET request to take all the drawings', () => {
+    const expectedDrawings: DrawingToDatabase[] = [new DrawingToDatabase(), new DrawingToDatabase()];
 
-        const req = httpMock.expectOne(baseUrl);
-        expect(req.request.method).toBe('GET');
-        // actually send the request
-        req.flush(data);
-    });
+    service.getAll().subscribe((response: DrawingToDatabase[]) => {
+      expect(Array.isArray(response)).toEqual(true);
+    }, fail);
+    const req = httpMock.expectOne(baseUrl);
+    expect(req.request.method).toBe('GET');
+    req.flush(expectedDrawings);
+  });
 
-    it('should post message (HttpClient called once)', () => {
-        console.log('allo');
-        const data: DrawingToDatabase[] = [{ _id: '1', name: 'test', tags: [] }];
-        service.save(data[0]).subscribe();
-        const req = httpMock.expectOne(baseUrl);
-        expect(req.request.method).toBe('POST');
-        // actually send the request
-        req.flush(data[0]);
-    });
+  it('should perform a HTTP GET request to get a drawing by its ID', () => {
+    const id = '1';
+    const expectedDrawing: DrawingToDatabase = new DrawingToDatabase(id, 'abc', ['a', 'b']);
 
-    it('should delete expected message (HttpClient called once)', () => {
-        console.log('allo');
-        const data: DrawingToDatabase[] = [{ _id: '1', name: 'test', tags: [] }];
-        // check the content of the mocked call
-        service.delete(data[0]._id).subscribe();
-        const req = httpMock.expectOne(baseUrl + data[0]._id);
-        expect(req.request.method).toBe('DELETE');
-        // actually send the request
-        req.flush(data);
-    });
+    service.getById(id).subscribe((response: DrawingToDatabase) => {
+      expect(response._id).toEqual(expectedDrawing._id);
+      expect(response.name).toEqual(expectedDrawing.name);
+    }, fail);
+    const req = httpMock.expectOne(baseUrl + id);
+    expect(req.request.method).toBe('GET');
+    req.flush(expectedDrawing);
+  });
 
-    it('should handle http error safely', () => {
-        service.getAll().subscribe((drawings) => {
-            expect(drawings).toBeUndefined();
-        });
+  it('should perform a HTTP GET request to get all drawings having a given name', () => {
+    const name = 'abc';
+    const expectedDrawings: DrawingToDatabase[] = [new DrawingToDatabase(), new DrawingToDatabase()];
 
-        const req = httpMock.expectOne(baseUrl);
-        expect(req.request.method).toBe('GET');
-        req.error(new ErrorEvent('Random error occured'));
-    });
+    service.getByName(name).subscribe((response: DrawingToDatabase[]) => {
+      expect(Array.isArray(response)).toEqual(true);
+    }, fail);
+    const req = httpMock.expectOne(baseUrl + 'name/' + name);
+    expect(req.request.method).toBe('GET');
+    req.flush(expectedDrawings);
+  });
+
+  it('should perform a HTTP GET request to get all drawings having a given tag', () => {
+    const tag = 'abc';
+    const expectedDrawings: DrawingToDatabase[] = [new DrawingToDatabase(), new DrawingToDatabase()];
+
+    service.getByTag(tag).subscribe((response: DrawingToDatabase[]) => {
+      expect(Array.isArray(response)).toEqual(true);
+    }, fail);
+    const req = httpMock.expectOne(baseUrl + 'tag/' + tag);
+    expect(req.request.method).toBe('GET');
+    req.flush(expectedDrawings);
+  });
+
+  it('should send an HTTP POST request to create a drawing', () => {
+    const sentDrawing: DrawingToDatabase = new DrawingToDatabase('1', 'abc', ['a', 'b']);
+    // subscribe to the mocked call
+    // tslint:disable-next-line: no-empty
+    service.save(sentDrawing).subscribe(() => { }, fail);
+
+    const req = httpMock.expectOne(baseUrl);
+    expect(req.request.method).toBe('POST');
+    req.flush(sentDrawing);
+  });
+
+  it('should send an HTTP PATCH request to update a drawing', () => {
+    const id = '2';
+    const sentDrawing: DrawingToDatabase = new DrawingToDatabase('1', 'abc', ['a', 'b']);
+    // subscribe to the mocked call
+    // tslint:disable-next-line: no-empty
+    service.update(id, sentDrawing).subscribe(() => { }, fail);
+
+    const req = httpMock.expectOne(baseUrl + id);
+    expect(req.request.method).toBe('PATCH');
+    req.flush(sentDrawing);
+  });
+
+  it('should send an HTTP DELETE request to update a drawing', () => {
+    const id = '2';
+    // subscribe to the mocked call
+    // tslint:disable-next-line: no-empty
+    service.delete(id).subscribe(() => { }, fail);
+
+    const req = httpMock.expectOne(baseUrl + id);
+    expect(req.request.method).toBe('DELETE');
+    req.flush({});
+  });
+
+  it('should handle http error safely', () => {
+    service.getAll().subscribe((response: DrawingToDatabase[]) => {
+      expect(response).toBeUndefined();
+    }, fail);
+
+    const req = httpMock.expectOne(baseUrl);
+    expect(req.request.method).toBe('GET');
+    req.error(new ErrorEvent('Random error occured'));
+  });
 });
-//     it('should not return any message when sending a POST request (HttpClient called once)', () => {
-//         const sentMessage: Message = { body: 'Hello', title: 'World' };
-//         // subscribe to the mocked call
-//         // tslint:disable-next-line: no-empty
-//         service.basicPost(sentMessage).subscribe(() => {}, fail);
-
-//         const req = httpMock.expectOne(baseUrl + '/send');
-//         expect(req.request.method).toBe('POST');
-//         // actually send the request
-//         req.flush(sentMessage);
-//     });
-
-//     it('should handle http error safely', () => {
-//         service.basicGet().subscribe((response: Message) => {
-//             expect(response).toBeUndefined();
-//         }, fail);
-
-//         const req = httpMock.expectOne(baseUrl);
-//         expect(req.request.method).toBe('GET');
-//         req.error(new ErrorEvent('Random error occured'));
-//     });
-// });
