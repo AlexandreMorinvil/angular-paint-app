@@ -35,13 +35,10 @@ describe('Database service', () => {
         client.close();
     });
 
-    it('Database initialization failure should be caught and close the process', async () => {
+    it('Database initialization should fail if the connection information is invalid', async () => {
         // We use the local Mongo Instance and not the production database
-        try {
-            new DatabaseService('Wrong url', 'Wrong name', 'Wrong collection');
-        } catch (error) {
-            expect(error).to.not.be.undefined;
-        }
+        const connection = new DatabaseService('Wrong url', 'Wrong name', 'Wrong collection');
+        expect(connection.isConnected).to.equal(false);
     });
 
     it('should get all drawing from the database', async () => {

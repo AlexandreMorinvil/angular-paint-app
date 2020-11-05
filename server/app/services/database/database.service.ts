@@ -9,6 +9,7 @@ const DATABASE_COLLECTION = 'drawing';
 
 @injectable()
 export class DatabaseService {
+    isConnected: boolean = false;
     collection: Collection<DrawingToDatabase>;
     client: MongoClient;
     drawId: string;
@@ -39,12 +40,13 @@ export class DatabaseService {
     constructor(databaseUrl: string = DATABASE_URL, databaseName: string = DATABASE_NAME, databaseCollection: string = DATABASE_COLLECTION) {
         MongoClient.connect(databaseUrl, this.options)
             .then((client: MongoClient) => {
+                this.isConnected = true;
                 this.client = client;
                 this.collection = client.db(databaseName).collection(databaseCollection);
             })
-            .catch((error) => {
+            .catch(() => {
+                this.isConnected = false;
                 console.error(this.CONNECTION_ERROR);
-                throw error;
             });
     }
 
