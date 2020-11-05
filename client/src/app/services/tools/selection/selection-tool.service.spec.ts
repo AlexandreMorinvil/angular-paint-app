@@ -215,18 +215,16 @@ describe('SelectionToolService', () => {
     });
 
     it('putImageData should put the imageData on canvas', () => {
-        // tslint:disable:no-string-literal
         const baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
-        service['drawingService'].baseCtx = baseCtxStub;
+        (service as any).drawingService.baseCtx = baseCtxStub;
         (service as any).imageData = new ImageData(1, 1);
         const position = { x: 50, y: 50 };
         (service as any).putImageData(position, baseCtxStub, (service as any).imageData);
     });
 
     it('drawImage should put the image on canvas', () => {
-        // tslint:disable:no-string-literal
         const baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
-        service['drawingService'].baseCtx = baseCtxStub;
+        (service as any).drawingService.baseCtx = baseCtxStub;
         (service as any).image = new Image(10, 10);
         const position = { x: 0, y: 0 };
         (service as any).imageData = new ImageData(10, 10);
@@ -235,9 +233,8 @@ describe('SelectionToolService', () => {
     });
 
     it('getOldImageData should return the good imageData', () => {
-        // tslint:disable:no-string-literal
         const baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
-        service['drawingService'].baseCtx = baseCtxStub;
+        (service as any).drawingService.baseCtx = baseCtxStub;
         const position = { x: 15, y: 15 };
         (service as any).startDownCoord = { x: 10, y: 10 };
         let result: ImageData = (service as any).getOldImageData(position);
@@ -251,17 +248,17 @@ describe('SelectionToolService', () => {
     });
 
     it('drawnAnchor should draw anchors in the corner of the imageData', () => {
-        // tslint:disable:no-string-literal
         const baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         const canvasStub = canvasTestHelper.canvas;
-        service['drawingService'].baseCtx = baseCtxStub;
-        service['drawingService'].canvas = canvasStub;
-        service['drawingService'].canvas.width = 1000;
-        service['drawingService'].canvas.height = 800;
+        (service as any).drawingService.baseCtx = baseCtxStub;
+        (service as any).drawingService.canvas = canvasStub;
+        (service as any).drawingService.canvas.width = 1000;
+        (service as any).drawingService.canvas.height = 800;
         (service as any).imageData = startCoord;
         (service as any).startDownCoord = startCoord;
-        (service as any).drawnAnchor(service['drawingService'].baseCtx, service['drawingService'].canvas);
-        const p = service['drawingService'].baseCtx.getImageData((service as any).startDownCoord.x, (service as any).startDownCoord.y, 1, 1).data;
+        (service as any).drawnAnchor((service as any).drawingService.baseCtx, (service as any).drawingService.canvas);
+        const p = (service as any).drawingService.baseCtx.getImageData((service as any).startDownCoord.x, (service as any).startDownCoord.y, 1, 1)
+            .data;
         // tslint:disable:no-bitwise
         const x = '#' + ((1 << 24) + (p[0] << 16) + (p[1] << 8) + p[2]).toString(16).slice(1);
         expect(x).toEqual('#000000');

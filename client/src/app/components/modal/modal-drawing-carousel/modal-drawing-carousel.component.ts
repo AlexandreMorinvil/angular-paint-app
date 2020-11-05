@@ -111,12 +111,7 @@ export class DrawingCarouselComponent {
 
     movePrevious(): void {
         // If we have below three drawings, dont do anything
-        if (
-            Object.keys(this.currentDrawings[0]).length === 0 ||
-            Object.keys(this.currentDrawings[1]).length === 0 ||
-            Object.keys(this.currentDrawings[2]).length === 0
-        )
-            return;
+        if (this.currentDrawings[0]._id === null || this.currentDrawings[1]._id === null || this.currentDrawings[2]._id === null) return;
 
         for (let i = 0; i < this.currentDrawings.length; i++) {
             if (this.currentActivesIndexes[i] - 1 < 0) {
@@ -132,12 +127,7 @@ export class DrawingCarouselComponent {
     moveNext(): void {
         // If we have below three drawings, dont do anything
 
-        if (
-            Object.keys(this.currentDrawings[0]).length === 0 ||
-            Object.keys(this.currentDrawings[1]).length === 0 ||
-            Object.keys(this.currentDrawings[2]).length === 0
-        )
-            return;
+        if (this.currentDrawings[0]._id === null || this.currentDrawings[1]._id === null || this.currentDrawings[2]._id === null) return;
 
         for (let i = 0; i < this.currentDrawings.length; i++) {
             if (this.currentActivesIndexes[i] + 1 > this.filteredDrawings.length - 1) {

@@ -1,5 +1,3 @@
-/* tslint:disable:no-unused-variable */
-
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { ColorPickerService } from './color-picker.service';
@@ -26,8 +24,6 @@ describe('Service: ColorPicker', () => {
         // tslint:disable:no-magic-numbers
         (service as any).drawingService.canvas.width = 1000;
         (service as any).drawingService.canvas.height = 800;
-
-        // imageDataSpy = spyOn<any>((service as any).drawingService.baseCtx, 'save').and.callThrough();
     });
 
     it('it should be created', () => {

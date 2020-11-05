@@ -33,10 +33,6 @@ export class ApiDrawingService {
         return this.http.post<void>(BASE_URL, drawingtodatabase).pipe(catchError(this.handleError<void>('save')));
     }
 
-    update(id: string, drawingtodatabase: DrawingToDatabase): Observable<DrawingToDatabase> {
-        return this.http.patch<DrawingToDatabase>(BASE_URL + id, drawingtodatabase).pipe(catchError(this.handleError<DrawingToDatabase>('update')));
-    }
-
     delete(id: string): Observable<string> {
         return this.http.delete<string>(BASE_URL + id).pipe(catchError(this.handleError<string>('delete')));
     }

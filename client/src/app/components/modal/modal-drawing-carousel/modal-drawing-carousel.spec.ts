@@ -132,12 +132,12 @@ describe('DrawingCarouselComponent', () => {
         expect(drawings[1]).toBe(component.getCurrentDrawings()[2]);
     });
 
-    // it('should not change currentDrawings when pressing the next button if theres an empty drawing space', () => {
-    //     component.setCurrentDrawings();
-    //     const currentDrawings: DrawingToDatabase[] = testData;
-    //     component.moveNext();
-    //     expect(currentDrawings[0]).toBe(component.getCurrentDrawings()[0]);
-    // });
+    it('should not change currentDrawings when pressing the next button if theres an empty drawing space', () => {
+        component.setCurrentDrawings();
+        const currentDrawings: DrawingToDatabase[] = testData;
+        component.moveNext();
+        expect(currentDrawings[0]).toBe(component.getCurrentDrawings()[0]);
+    });
 
     it('should change currentDrawings when pressing the next button ', () => {
         tagFilterServiceSpy.filterByTag.and.returnValue(testData2);

@@ -36,8 +36,6 @@ export class TagFilterService {
 
         // List is reinitialised and filters are applied
         for (const drawing of listToFilter) {
-            // Prevent errors
-            if (typeof drawing.tags === 'undefined') drawing.tags = [];
             for (const tag of this.activeTags) {
                 if (drawing.tags.includes(tag.tagName)) {
                     filteredDrawings.push(drawing);
