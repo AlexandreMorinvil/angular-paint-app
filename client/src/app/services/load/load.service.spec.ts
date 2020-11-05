@@ -4,10 +4,11 @@ import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { LoadService } from './load.service';
 
-export class DrawingServiceStub {
+class DrawingServiceStub {
   baseCtx: CanvasRenderingContext2D
   previewCtx: CanvasRenderingContext2D
 }
+
 describe('LoadService', () => {
   let service: LoadService;
   let drawServiceStub: DrawingServiceStub;
@@ -42,11 +43,12 @@ describe('LoadService', () => {
     expect(dataMock.closeAll).toHaveBeenCalled();
   });
 
-  it('should not load image', () => {
+  it('should not load image', (done) => {
     spyOn(window, 'confirm').and.returnValue(false);
     service.loadDraw("/example");
-    service.fillDraw(imgStub)
+    service.fillDraw(imgStub);
     expect(dataMock.closeAll).not.toHaveBeenCalled();
+    done();
   });
 
   it('should no load if the nothing image was given', () => {
@@ -55,7 +57,10 @@ describe('LoadService', () => {
   });
 
   it('should load given a white canvas', () => {
-    service.loadDraw("assets/images/nothing.png");
+    service['drawingService'].baseCtx.fillStyle = "#FFFFFF";
+    service['drawingService'].baseCtx.fillRect(1, 1, drawServiceStub.baseCtx.canvas.width, drawServiceStub.baseCtx.canvas.height);
+    service.loadDraw("/example");
+    service.fillDraw(imgStub);
     expect(dataMock.closeAll).not.toHaveBeenCalled();
   });
 });
