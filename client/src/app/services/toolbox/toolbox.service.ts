@@ -61,6 +61,7 @@ export class ToolboxService {
 
     setSelectedTool(selectedTool: Tool): void {
         this.currentTool = selectedTool;
+        this.currentTool.mouseDown = false;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 }

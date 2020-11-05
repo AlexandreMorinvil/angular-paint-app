@@ -121,6 +121,8 @@ describe('SidebarComponent', () => {
     });
 
     it('should set currentTool to right stubTool', () => {
+        toolStub = {} as PencilService;
+        toolStub.mouseDown = false;
         const canvasWidth = 1200;
         const canvasHeight = 1000;
         previewCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -130,8 +132,8 @@ describe('SidebarComponent', () => {
         (toolserviceMock as any).drawingService.canvas = canvasStub;
         (toolserviceMock as any).drawingService.canvas.width = canvasWidth;
         (toolserviceMock as any).drawingService.canvas.height = canvasHeight;
-        component.setCurrentTool({} as PencilService);
-        expect(component.getCurrentTool()).toEqual({} as PencilService);
+        component.setCurrentTool(toolStub);
+        expect(component.getCurrentTool()).toEqual(toolStub);
     });
 
     it('should navigate to main', () => {

@@ -37,6 +37,7 @@ export abstract class SelectionToolService extends Tool {
     protected arrowDown: boolean;
     protected arrowCoord: Vec2;
     protected hasDoneFirstTranslation: boolean;
+    protected localMouseDown: boolean = false;
     protected startSelectionPoint: Vec2;
 
     constructor(drawingService: DrawingService, private color: ColorService, description: Description) {
