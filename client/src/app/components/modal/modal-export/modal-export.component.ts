@@ -24,7 +24,7 @@ export class ExportComponent implements AfterViewInit {
     ) {}
 
     @HostListener('window:keydown', ['$event'])
-    onShiftDown(event: KeyboardEvent): void {
+    onKeyDown(event: KeyboardEvent): void {
         if (event.ctrlKey && event.key.toLowerCase() === 'e') {
             event.preventDefault(); // to prevent key of windows
         }

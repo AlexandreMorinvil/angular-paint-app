@@ -21,8 +21,6 @@ export class DatabaseController {
         this.configureRouter();
     }
 
-    // test serveur qui plante
-
     private configureRouter(): void {
         this.router = Router();
 

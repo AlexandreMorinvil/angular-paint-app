@@ -38,7 +38,7 @@ export class ModalSaveComponent {
     ) {}
 
     @HostListener('window:keydown', ['$event'])
-    onShiftDown(event: KeyboardEvent): void {
+    onKeyDown(event: KeyboardEvent): void {
         if (event.ctrlKey && event.key.toLowerCase() === 's') {
             event.preventDefault(); // to prevent key of windows
         }
@@ -66,7 +66,6 @@ export class ModalSaveComponent {
     }
 
     saveToServer(): void {
-        console.log(this.saveService.imageSource);
         if (this.validateValue(this.drawName.value, this.tags, this.saveService.imageSource)) {
             this.saveService.saveDraw();
             this.sendMessageToServer();
