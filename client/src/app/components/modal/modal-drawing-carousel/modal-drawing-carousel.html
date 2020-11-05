@@ -8,8 +8,8 @@
         <ng-container *ngFor="let drawing of getCurrentDrawings()">
             <button class="drawing-form grid-drawing-form" (click)="drawingClicked(drawing)">
                 <img [src]="getDrawingUrl(drawing)" (error)="onImgError($event, drawing)" />
-                <p>{{ drawing.name}}</p>
-                <p>{{ drawing.tags}}</p>
+                <p>{{ drawing.name }}</p>
+                <p>{{ drawing.tags }}</p>
             </button>
         </ng-container>
         <div class="area-front-button area-button">
