@@ -17,19 +17,19 @@ export class DatabaseService {
     private readonly MAX_LENGHT_DRAW_NAME: number = 50;
     private readonly MAX_LENGHT_NAME_TAG: number = 25;
 
-    //private readonly ERROR_NO_DRAWING_NAME: string = 'Les dessins doivent contenir un nom';
-    //private readonly ERROR_NUMBER_TAG_GREATER_MAXIMUM: string = 'Le nombre détiquettes est supérieur à la limite de 15';
-    //private readonly ERROR_NO_TAG: string = 'Les étiquettes assignées ne peuvent pas être vides';
-    //private readonly ERROR_MAX_LENGTH_NAME_TAG: string = 'Les étiquettes des dessions doivent contenir un maximum de 25 caractères';
-    //private readonly ERROR_MAX_LENGTH_NAME_DRAWING: string = 'Les noms des dessions doivent contenir un maximum de 50 caractères';
-    //private readonly ERROR_DELETE_DRAWING: string = 'Échec lors de la tentative de suppression du dessin';
-    //private readonly ERROR_UPDATE_DRAWING: string = 'Échec lors de la tentative de mise à jour du dessin';
-    //private readonly ERROR_NO_DRAWING_FOUND: string = "Le dessin demandé n'a pas été trouvé";
-    //private readonly ERROR_GET_ALL_DRAWING: string = 'Échec lors de la tentative de récupération de tous les dessins';
-    //private readonly ERROR_ADD_DRAWING: string = "Échec lors de l'ajout du dessin";
-    //private readonly ERROR_GET_DRAWING_BY_TAG: string = "Échec lors de la tentative de récupération de tous les dessins ayant l'étiquettes";
-    //private readonly ERROR_GET_DRAWING_BY_NAME: string = 'Échec lors de la tentative de récupération de tous les dessins nommés';
-    //private readonly ERROR_NO_IMAGE_SOURCE: string = "Échec lors de la tentative d'ajout il n'y a pas d'image source";
+    // private readonly ERROR_NO_DRAWING_NAME: string = 'Les dessins doivent contenir un nom';
+    // private readonly ERROR_NUMBER_TAG_GREATER_MAXIMUM: string = 'Le nombre détiquettes est supérieur à la limite de 15';
+    // private readonly ERROR_NO_TAG: string = 'Les étiquettes assignées ne peuvent pas être vides';
+    // private readonly ERROR_MAX_LENGTH_NAME_TAG: string = 'Les étiquettes des dessions doivent contenir un maximum de 25 caractères';
+    // private readonly ERROR_MAX_LENGTH_NAME_DRAWING: string = 'Les noms des dessions doivent contenir un maximum de 50 caractères';
+    // private readonly ERROR_DELETE_DRAWING: string = 'Échec lors de la tentative de suppression du dessin';
+    // private readonly ERROR_UPDATE_DRAWING: string = 'Échec lors de la tentative de mise à jour du dessin';
+    // private readonly ERROR_NO_DRAWING_FOUND: string = "Le dessin demandé n'a pas été trouvé";
+    // private readonly ERROR_GET_ALL_DRAWING: string = 'Échec lors de la tentative de récupération de tous les dessins';
+    // private readonly ERROR_ADD_DRAWING: string = "Échec lors de l'ajout du dessin";
+    // private readonly ERROR_GET_DRAWING_BY_TAG: string = "Échec lors de la tentative de récupération de tous les dessins ayant l'étiquettes";
+    // private readonly ERROR_GET_DRAWING_BY_NAME: string = 'Échec lors de la tentative de récupération de tous les dessins nommés';
+    // private readonly ERROR_NO_IMAGE_SOURCE: string = "Échec lors de la tentative d'ajout il n'y a pas d'image source";
     private readonly CONNECTION_ERROR: string = 'CONNECTION ERROR. EXITING PROCESS';
 
     private options: MongoClientOptions = {
@@ -37,7 +37,7 @@ export class DatabaseService {
         useUnifiedTopology: true,
     };
 
-    constructor(databaseUrl = DATABASE_URL, databaseName = DATABASE_NAME, databaseCollection = DATABASE_COLLECTION) {
+    constructor(databaseUrl: string = DATABASE_URL, databaseName: string = DATABASE_NAME, databaseCollection: string = DATABASE_COLLECTION) {
         MongoClient.connect(databaseUrl, this.options)
             .then((client: MongoClient) => {
                 this.client = client;
@@ -73,7 +73,7 @@ export class DatabaseService {
     }
 
     async getDrawingByName(drawingName: string): Promise<DrawingToDatabase[]> {
-        let filterQuery: FilterQuery<DrawingToDatabase> = { name: drawingName };
+        const filterQuery: FilterQuery<DrawingToDatabase> = { name: drawingName };
         return this.collection
             .find(filterQuery)
             .toArray()
@@ -86,7 +86,7 @@ export class DatabaseService {
     }
 
     async getDrawingByTags(drawingTag: string): Promise<DrawingToDatabase[]> {
-        let filterQuery: FilterQuery<DrawingToDatabase> = { tags: drawingTag };
+        const filterQuery: FilterQuery<DrawingToDatabase> = { tags: drawingTag };
         return this.collection
             .find(filterQuery)
             .toArray()
@@ -114,23 +114,22 @@ export class DatabaseService {
     }
 
     async updateDrawing(drawingID: string, drawing: DrawingToDatabase): Promise<void> {
-        let filterQuery: FilterQuery<DrawingToDatabase> = { _id: drawingID };
-        let updateQuery: UpdateQuery<DrawingToDatabase> = {
+        const filterQuery: FilterQuery<DrawingToDatabase> = { _id: drawingID };
+        const updateQuery: UpdateQuery<DrawingToDatabase> = {
             $set: { name: drawing.name, tags: drawing.tags },
         };
         // Can also use replaceOne if we want to replace the entire object
-        this.collection
-            .updateOne(filterQuery, updateQuery)
-            .then(() => {})
-            .catch(() => {
-                throw new Error('Failed to update document');
-            });
+        this.collection.updateOne(filterQuery, updateQuery).catch(() => {
+            throw new Error('Failed to update document');
+        });
     }
     // tslint:disable:no-any
     async deleteDrawing(drawingID: string): Promise<any> {
         return this.collection
             .findOneAndDelete({ _id: drawingID })
-            .then(() => {})
+            .then(() => {
+                return;
+            })
             .catch((error: Error) => {
                 throw new Error('Failed to delete drawing');
             });
