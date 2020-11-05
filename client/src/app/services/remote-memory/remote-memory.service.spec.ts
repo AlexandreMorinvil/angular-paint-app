@@ -1,30 +1,25 @@
-import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { async, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { ApiDrawingService } from '@app/services/api/api-drawing/api-drawing.service';
-import { DrawingToDatabase } from '@common/communication/drawingtodatabase';
+import { DrawingToDatabase } from '@common/communication/drawing-to-database';
 import { of } from 'rxjs';
 import { RemoteMemoryService } from './remote-memory.service';
 
 
 
-class ApiDrawingServiceMock extends ApiDrawingService { }
-
-
 describe('RemoteMemoryService', () => {
   let service: RemoteMemoryService;
-  let mockApi: ApiDrawingServiceMock;
-  const data: DrawingToDatabase[] = [{ _id: "1", name: "test1", tags: [] }]
+  const data: DrawingToDatabase[] = [{ _id: "1", name: "test1", tags: ['a'] }]
 
 
 
   beforeEach(() => {
-    mockApi = new ApiDrawingServiceMock({} as HttpClient);
+
 
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [{ provides: ApiDrawingService, useValue: mockApi }],
+      providers: [ApiDrawingService],
     });
     service = TestBed.inject(RemoteMemoryService);
   });
@@ -33,27 +28,29 @@ describe('RemoteMemoryService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should call the database', async(() => {
-    let spy = spyOn(mockApi, 'getAll').and.returnValue(of(data));
+  it('should call the database', (done) => {
+    let spy = spyOn(service.apiDrawingService, 'getAll').and.returnValue(of(data));
     service.getAllFromDatabase().then(() => {
       expect(spy).toHaveBeenCalled();
       expect(service.getDrawingsFromDatabase()).toBeDefined();
+      done();
     });
-  }));
+  });
 
-  it('should save to the database', async () => {
-    let spy = spyOn(mockApi, 'save').and.returnValue(of());
+  it('should save to the database', (done) => {
+    let spy = spyOn(service.apiDrawingService, 'save').and.returnValue(of(void 0));
     service.saveToDatabase(data[0]).then(() => {
       expect(spy).toHaveBeenCalled();
+      done();
     });
   });
 
-  it('should delete from the database', async () => {
-    let spy = spyOn(mockApi, 'delete').and.returnValue(of());
+  it('should delete from the database', (done) => {
+    let spy = spyOn(service.apiDrawingService, 'delete').and.returnValue(of('void 0'));
     service.deleteFromDatabase(data[0]._id).then(() => {
       expect(spy).toHaveBeenCalled();
+      done();
     });
   });
-
 
 });

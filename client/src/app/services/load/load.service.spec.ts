@@ -48,4 +48,14 @@ describe('LoadService', () => {
     service.fillDraw(imgStub)
     expect(dataMock.closeAll).not.toHaveBeenCalled();
   });
+
+  it('should no load if the nothing image was given', () => {
+    service.loadDraw("assets/images/nothing.png");
+    expect(dataMock.closeAll).not.toHaveBeenCalled();
+  });
+
+  it('should load given a white canvas', () => {
+    service.loadDraw("assets/images/nothing.png");
+    expect(dataMock.closeAll).not.toHaveBeenCalled();
+  });
 });
