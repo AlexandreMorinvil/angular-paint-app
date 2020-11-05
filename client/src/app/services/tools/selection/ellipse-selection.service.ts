@@ -28,7 +28,7 @@ export class EllipseSelectionService extends SelectionToolService {
         private colorService: ColorService,
         private widthService: WidthService,
     ) {
-        super(drawingService, colorService, new Description('selection ellipse', 's', 'question_mark.png'));
+        super(drawingService, colorService, new Description('selection ellipse', 's', 'ellipse-selection.png'));
         this.image = new Image();
         this.oldImage = new Image();
     }
