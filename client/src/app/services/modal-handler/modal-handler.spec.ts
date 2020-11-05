@@ -5,7 +5,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EMPTY, Subject } from 'rxjs';
 import { ModalHandlerService } from './modal-handler';
-fdescribe('ModalHandlerService', () => {
+// tslint:disable:no-any
+describe('ModalHandlerService', () => {
     let service: ModalHandlerService;
 
     beforeEach(() => {
