@@ -22,7 +22,7 @@ export class ApiDrawingService {
     }
 
     getByName(name: string): Observable<DrawingToDatabase[]> {
-        return this.http.get<DrawingToDatabase[]>(BASE_URL + name).pipe(catchError(this.handleError<DrawingToDatabase[]>('getByName')));
+        return this.http.get<DrawingToDatabase[]>(BASE_URL + 'name/' + name).pipe(catchError(this.handleError<DrawingToDatabase[]>('getByName')));
     }
 
     getByTag(tag: string): Observable<DrawingToDatabase[]> {
@@ -43,7 +43,7 @@ export class ApiDrawingService {
 
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
         return (error: Error): Observable<T> => {
-            alert(error);
+            alert(error.message);
             return of(result as T);
         };
     }
