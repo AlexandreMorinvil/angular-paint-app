@@ -38,7 +38,7 @@ describe('Database service', () => {
     it('Database initialization failure should be caught and close the process', async () => {
         // We use the local Mongo Instance and not the production database
         try {
-            new DatabaseService("Wrong url", "Wrong name", "Wrong collection");
+            new DatabaseService('Wrong url', 'Wrong name', 'Wrong collection');
         } catch (error) {
             expect(error).to.not.be.undefined;
         }
@@ -200,83 +200,143 @@ describe('Database service', () => {
 
     it('validate all tags should return true if all tags are valid', () => {
         const tags: string[] = ['a', 'b', 'c'];
-        expect((databaseService as any).validateAllTags(tags)).to.be.true;
+        try {
+            (databaseService as any).validateAllTags(tags);
+        } catch (error) {
+            expect(error).to.be.undefined;
+        }
     });
 
     it('validate all tags should return false if the number og tags is bigger than max', () => {
         const tags: string[] = ['al', 'bl', 'cl', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'z', 'w'];
-        expect((databaseService as any).validateAllTags(tags)).to.be.false;
+        try {
+            (databaseService as any).validateAllTags(tags);
+        } catch (error) {
+            expect(error).to.not.be.undefined;
+        }
     });
 
     it('validate image source should return true if image source is valid', () => {
         const imageSource = 'KEJDHTERTGSU';
-        expect((databaseService as any).validateImageSource(imageSource)).to.be.true;
+        try {
+            (databaseService as any).validateImageSource(imageSource);
+        } catch (error) {
+            expect(error).to.be.undefined;
+        }
     });
 
     it('validate image source should return false if image source is invalid', () => {
         const imageSource = '';
-        expect((databaseService as any).validateImageSource(imageSource)).to.be.false;
+        try {
+            (databaseService as any).validateImageSource(imageSource);
+        } catch (error) {
+            expect(error).to.not.be.undefined;
+        }
     });
 
     it('validate  draw tag should return true if the tag is valid', () => {
         const tag = 'valid';
-        expect((databaseService as any).validateTag(tag)).to.be.true;
+        try {
+            (databaseService as any).validateTag(tag);
+        } catch (error) {
+            expect(error).to.be.undefined;
+        }
     });
 
     it('validate  draw tag should return false if the tag is empty', () => {
         const tag = '';
-        expect((databaseService as any).validateTag(tag)).to.be.false;
+        try {
+            (databaseService as any).validateTag(tag);
+        } catch (error) {
+            expect(error).to.not.be.undefined;
+        }
     });
 
     it('validate  draw tag should return false if the tag lenght is bigger than max ', () => {
         const tag = 'alsoergdhtryejdklstegreddhud';
-        expect((databaseService as any).validateTag(tag)).to.be.false;
+        try {
+            (databaseService as any).validateTag(tag);
+        } catch (error) {
+            expect(error).to.not.be.undefined;
+        }
     });
 
     it('validate  draw tag should return false if the tag has special character', () => {
         const tag = '!@^ahs';
-        expect((databaseService as any).validateTag(tag)).to.be.false;
+        try {
+            (databaseService as any).validateTag(tag);
+        } catch (error) {
+            expect(error).to.not.be.undefined;
+        }
     });
 
     it('validate  draw name should return true if the name is valid', () => {
         const name = 'valid';
-        expect((databaseService as any).validateName(name)).to.be.true;
+        try {
+            (databaseService as any).validateName(name);
+        } catch (error) {
+            expect(error).to.be.undefined;
+        }
     });
 
     it('validate  draw name should return false if the name is empty', () => {
         const name = '';
-        expect((databaseService as any).validateName(name)).to.be.false;
+        try {
+            (databaseService as any).validateName(name);
+        } catch (error) {
+            expect(error).to.not.be.undefined;
+        }
     });
 
     it('validate  draw name should return false if the tag lenght is bigger than max', () => {
         const name = 'alsoergdhtryejdklstegreddhudalsoergdhtryejdklstegreddhudamskedjrh';
-        expect((databaseService as any).validateName(name)).to.be.false;
+        try {
+            (databaseService as any).validateName(name);
+        } catch (error) {
+            expect(error).to.not.be.undefined;
+        }
     });
 
     it('validate  draw name should return false if the name has special character', () => {
         const name = 'a!!@^name';
-        expect((databaseService as any).validateName(name)).to.be.false;
+        try {
+            (databaseService as any).validateName(name);
+        } catch (error) {
+            expect(error).to.not.be.undefined;
+        }
     });
 
     it('validate drawing should return true if the name, tags are  valid', () => {
         const name = 'dessin';
         const tags: string[] = ['tag2', 'b', 'c'];
         const drawing = new DrawingToDatabase('1', name, tags);
-        expect((databaseService as any).validateDrawing(drawing)).to.be.true;
+        try {
+            (databaseService as any).validateDrawing(drawing);
+        } catch (error) {
+            expect(error).to.be.undefined;
+        }
     });
 
     it('validate drawing should return false if the name is invalid', () => {
         const name = '';
         const tags: string[] = ['tag2', 'b', 'c'];
         const drawing = new DrawingToDatabase('1', name, tags);
-        expect((databaseService as any).validateDrawing(drawing)).to.be.false;
+        try {
+            (databaseService as any).validateDrawing(drawing);
+        } catch (error) {
+            expect(error).to.not.be.undefined;
+        }
     });
 
     it('validate drawing should return false if the tags are invalid', () => {
         const name = 'valid';
         const tags: string[] = ['ta@&%%$g2', 'b', 'c'];
         const drawing = new DrawingToDatabase('1', name, tags);
-        expect((databaseService as any).validateDrawing(drawing)).to.be.false;
+        try {
+            (databaseService as any).validateDrawing(drawing);
+        } catch (error) {
+            expect(error).to.not.be.undefined;
+        }
     });
 
     it('should modify an existing drawing data if a valid drawing id  is sent', async () => {

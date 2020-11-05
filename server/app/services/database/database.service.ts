@@ -50,66 +50,49 @@ export class DatabaseService {
     }
 
     async getAllDrawings(): Promise<DrawingToDatabase[]> {
-        return this.collection
-            .find({})
-            .toArray()
-            .then((drawings: DrawingToDatabase[]) => {
-                return drawings;
-            })
-            .catch((error: Error) => {
-                throw error;
-            });
+        try {
+            return await this.collection.find({}).toArray();
+        } catch (error) {
+            throw error;
+        }
     }
 
     async getDrawing(drawingID: string): Promise<DrawingToDatabase> {
-        return this.collection
-            .findOne({ _id: drawingID })
-            .then((drawing: DrawingToDatabase) => {
-                return drawing;
-            })
-            .catch((error: Error) => {
-                throw new Error('Erreur');
-            });
+        try {
+            const drawing = await this.collection.findOne({ _id: drawingID });
+            if (!drawing) throw new Error();
+            return drawing;
+        } catch (error) {
+            throw error;
+        }
     }
 
     async getDrawingByName(drawingName: string): Promise<DrawingToDatabase[]> {
-        const filterQuery: FilterQuery<DrawingToDatabase> = { name: drawingName };
-        return this.collection
-            .find(filterQuery)
-            .toArray()
-            .then((drawings: DrawingToDatabase[]) => {
-                return drawings;
-            })
-            .catch(() => {
-                throw new Error('No courses for that teacher');
-            });
+        try {
+            return this.collection.find({ name: drawingName }).toArray();
+        } catch (error) {
+            throw new Error('No courses for that teacher');
+        }
     }
 
     async getDrawingByTags(drawingTag: string): Promise<DrawingToDatabase[]> {
-        const filterQuery: FilterQuery<DrawingToDatabase> = { tags: drawingTag };
-        return this.collection
-            .find(filterQuery)
-            .toArray()
-            .then((drawing: DrawingToDatabase[]) => {
-                return drawing;
-            })
-            .catch(() => {
-                throw new Error('No courses for that teacher');
-            });
+        try {
+            const drawings = await this.collection.find({ tags: drawingTag }).toArray();
+            if (!drawings) throw new Error();
+            return drawings;
+        } catch (error) {
+            throw error;
+        }
     }
 
     async addDrawing(drawing: DrawingToDatabase, imageSource: string): Promise<void> {
-        if (this.validateImageSource(imageSource) && this.validateDrawing(drawing)) {
-            this.collection
-                .insertOne(drawing)
-                .then((returnValue) => {
-                    this.drawId = returnValue.insertedId.toString();
-                })
-                .catch((error: Error) => {
-                    throw error;
-                });
-        } else {
-            throw new Error('Erreur');
+        try {
+            this.validateImageSource(imageSource);
+            this.validateDrawing(drawing);
+            const insertionResult = await this.collection.insertOne(drawing);
+            this.drawId = await insertionResult.insertedId.toString();
+        } catch (error) {
+            throw error;
         }
     }
 
@@ -118,48 +101,46 @@ export class DatabaseService {
         const updateQuery: UpdateQuery<DrawingToDatabase> = {
             $set: { name: drawing.name, tags: drawing.tags },
         };
-        // Can also use replaceOne if we want to replace the entire object
-        this.collection.updateOne(filterQuery, updateQuery).catch(() => {
-            throw new Error('Failed to update document');
-        });
+        try {
+            await this.collection.updateOne(filterQuery, updateQuery);
+        } catch (error) {
+            throw error;
+        }
     }
     // tslint:disable:no-any
     async deleteDrawing(drawingID: string): Promise<any> {
-        return this.collection
-            .findOneAndDelete({ _id: drawingID })
-            .then(() => {
-                return;
-            })
-            .catch((error: Error) => {
-                throw new Error('Failed to delete drawing');
-            });
-    }
-
-    private validateDrawing(drawing: DrawingToDatabase): boolean {
-        return this.validateName(drawing.name) && this.validateAllTags(drawing.tags);
-    }
-
-    private validateName(name: string): boolean {
-        const noName = '';
-        return name !== noName && name.length <= this.MAX_LENGHT_DRAW_NAME && /^[0-9a-zA-Z]*$/g.test(name);
-    }
-
-    private validateTag(tag: string): boolean {
-        return tag !== '' && tag.length <= this.MAX_LENGHT_NAME_TAG && /^[0-9a-zA-Z]*$/g.test(tag);
-    }
-
-    private validateImageSource(imageSrc: string): boolean {
-        return imageSrc !== '';
-    }
-
-    private validateAllTags(tags: string[]): boolean {
-        let validTag = true;
-        if (tags.length > this.MAX_NUMBER_OF_TAGS) {
-            validTag = false;
+        try {
+            return await this.collection.findOneAndDelete({ _id: drawingID });
+        } catch (error) {
+            throw new Error();
         }
-        tags.forEach((tag) => {
-            validTag = validTag && this.validateTag(tag);
+    }
+
+    private async validateDrawing(drawing: DrawingToDatabase): Promise<void> {
+        this.validateName(drawing.name);
+        this.validateAllTags(drawing.tags);
+    }
+
+    private async validateName(name: string): Promise<void> {
+        if (!(name !== '')) throw new Error();
+        if (!(name.length <= this.MAX_LENGHT_DRAW_NAME)) throw new Error();
+        if (!/^[0-9a-zA-Z]*$/g.test(name)) throw new Error();
+    }
+
+    private async validateTag(tag: string): Promise<void> {
+        if (!(tag !== '')) throw new Error();
+        if (!(tag.length <= this.MAX_LENGHT_NAME_TAG)) throw new Error();
+        if (!/^[0-9a-zA-Z]*$/g.test(tag)) throw new Error();
+    }
+
+    private async validateImageSource(imageSrc: string): Promise<void> {
+        if (!(imageSrc !== '')) throw new Error();
+    }
+
+    private async validateAllTags(tags: string[]): Promise<void> {
+        if (!(tags.length > this.MAX_NUMBER_OF_TAGS)) throw new Error();
+        tags.forEach(async (tag) => {
+            await this.validateTag(tag);
         });
-        return validTag;
     }
 }
