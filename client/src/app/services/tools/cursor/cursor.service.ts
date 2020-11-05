@@ -17,7 +17,6 @@ export class CursorService extends Tool {
     private dotsize: number = 10;
     private clickOnAnchor: boolean = false;
     private anchorHit: number = 0;
-    imageData: ImageData;
 
     constructor(drawingService: DrawingService, private drawingStateTrackingService: DrawingStateTrackerService) {
         super(drawingService, new Description('redimensionneur', 'y', 'crop-icon.png'));
@@ -72,11 +71,11 @@ export class CursorService extends Tool {
         }
     }
 
-    resizeDrawingZone(width: number, height: number): void {
+    private resizeDrawingZone(width: number, height: number): void {
         this.drawingService.resize(width, height);
     }
 
-    moveWidth(mouseDownCoordX: number): void {
+    private moveWidth(mouseDownCoordX: number): void {
         if (mouseDownCoordX >= minSurfaceSize) {
             this.drawingService.previewCtx.canvas.width = mouseDownCoordX;
         } else {
@@ -84,7 +83,7 @@ export class CursorService extends Tool {
         }
     }
 
-    moveHeight(mouseDownCoordY: number): void {
+    private moveHeight(mouseDownCoordY: number): void {
         if (mouseDownCoordY >= minSurfaceSize) {
             this.drawingService.previewCtx.canvas.height = mouseDownCoordY;
         } else {
@@ -92,7 +91,7 @@ export class CursorService extends Tool {
         }
     }
 
-    drawnAnchor(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement): void {
+    private drawnAnchor(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement): void {
         ctx.beginPath();
         ctx.arc(canvas.width, canvas.height, this.dotsize, 0, Math.PI * 2, false);
         ctx.closePath();
@@ -103,7 +102,7 @@ export class CursorService extends Tool {
         ctx.fill();
     }
 
-    checkHit(mouse: Vec2, canvas: HTMLCanvasElement): void {
+    private checkHit(mouse: Vec2, canvas: HTMLCanvasElement): void {
         let x: number;
         let y: number;
         const dotSizeSquare: number = Math.pow(this.dotsize, 2);

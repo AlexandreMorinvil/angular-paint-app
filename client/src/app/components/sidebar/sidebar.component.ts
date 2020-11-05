@@ -19,6 +19,9 @@ export class SidebarComponent {
     messageCarouselDialog: string = 'Carousel de dessins\n(Raccourci: Ctr + G)';
     messageExportDialog: string = 'Exporter\n(Raccourci: Ctr + E)';
 
+    messageUndo: string = 'Annuler\n(Raccourci: Ctr + Z)';
+    messageRedo: string = 'Refaire\n(Raccourci: Ctr + Shift + Z)';
+
     constructor(
         private toolboxSevice: ToolboxService,
         private drawingService: DrawingService,

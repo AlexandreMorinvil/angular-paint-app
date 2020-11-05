@@ -6,11 +6,11 @@
 
     <button (click)="undo()" class="to-bottom has-tooltip">
         <img src="assets/images/undo.png" />
-        <app-tooltip [text]="'Undo'" class="tooltip"></app-tooltip>
+        <app-tooltip [text]="messageUndo" class="tooltip"></app-tooltip>
     </button>
     <button (click)="redo()" class="to-bottom has-tooltip">
         <img src="assets/images/redo.png" />
-        <app-tooltip [text]="'Redo'" class="tooltip"></app-tooltip>
+        <app-tooltip [text]="messageRedo" class="tooltip"></app-tooltip>
     </button>
     <button (click)="openExportDialog()" class="to-bottom has-tooltip">
         <img src="assets/images/icon/export_icon.png" />

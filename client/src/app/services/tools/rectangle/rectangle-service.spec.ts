@@ -13,8 +13,9 @@ describe('RectangleService', () => {
     // tslint:disable:max-file-line-count
     let service: RectangleService;
     let tracingService: TracingService;
-    let mouseEvent: MouseEvent;
     let colorService: ColorService;
+    let mouseEvent: MouseEvent;
+
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let canvasStub: HTMLCanvasElement;
@@ -45,17 +46,15 @@ describe('RectangleService', () => {
 
         const canvasWidth = 1000;
         const canvasHeight = 800;
-        // tslint:disable:no-string-literal
-        service['drawingService'].baseCtx = baseCtxStub;
-        service['drawingService'].previewCtx = previewCtxStub;
-        service['drawingService'].canvas = canvasStub;
-        service['drawingService'].canvas.width = canvasWidth;
-        service['drawingService'].canvas.height = canvasHeight;
+        (service as any).drawingService.baseCtx = baseCtxStub;
+        (service as any).drawingService.previewCtx = previewCtxStub;
+        (service as any).drawingService.canvas = canvasStub;
+        (service as any).drawingService.canvas.width = canvasWidth;
+        (service as any).drawingService.canvas.height = canvasHeight;
+        (service as any).tracingService = tracingService;
 
-        service['tracingService'] = tracingService;
-
-        ctxFillSpy = spyOn<any>(service['drawingService'].previewCtx, 'fill').and.callThrough();
-        ctxContourSpy = spyOn<any>(service['drawingService'].previewCtx, 'stroke').and.callThrough();
+        ctxFillSpy = spyOn<any>((service as any).drawingService.previewCtx, 'fill').and.callThrough();
+        ctxContourSpy = spyOn<any>((service as any).drawingService.previewCtx, 'stroke').and.callThrough();
 
         mouseEvent = {
             offsetX: 25,
