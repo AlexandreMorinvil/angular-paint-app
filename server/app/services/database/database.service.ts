@@ -120,19 +120,18 @@ export class DatabaseService {
         };
         // tslint:disable:no-empty
         // Can also use replaceOne if we want to replace the entire object
-        this.collection
-            .updateOne(filterQuery, updateQuery)
-            .then(() => {})
-            .catch(() => {
-                throw new Error('Failed to update document');
-            });
+        this.collection.updateOne(filterQuery, updateQuery).catch(() => {
+            throw new Error('Failed to update document');
+        });
     }
     // tslint:disable:no-any
     // tslint:disable:no-empty
     async deleteDrawing(drawingID: string): Promise<any> {
         return this.collection
             .findOneAndDelete({ _id: drawingID })
-            .then(() => {})
+            .then(() => {
+                return;
+            })
             .catch((error: Error) => {
                 throw new Error('Failed to delete drawing');
             });
