@@ -69,8 +69,7 @@ describe('AttributesPanelComponent', () => {
     });
 
     it('if the current tool possesses a junction modifier there should be a need for a junction atrribute modifier', () => {
-        // tslint:disable-next-line:no-string-literal
-        toolStub['modifiers'] = [junctionService];
+        (toolStub as any).modifiers = [junctionService];
         toolBoxService.setSelectedTool(toolStub);
         const expectedOutput = true;
         const ouput = component.needsJunctionAttribute();
@@ -78,8 +77,7 @@ describe('AttributesPanelComponent', () => {
     });
 
     it('if the current tool does not possess a junction modifier there should be a need for a junction atrribute modifier', () => {
-        // tslint:disable-next-line:no-string-literal
-        toolStub['modifiers'] = [];
+        (toolStub as any).modifiers = [];
         toolBoxService.setSelectedTool(toolStub);
         const expectedOutput = false;
         const ouput = component.needsJunctionAttribute();
@@ -87,8 +85,7 @@ describe('AttributesPanelComponent', () => {
     });
 
     it('if the current tool possesses a texture modifier there should be a need for a texture atrribute modifier', () => {
-        // tslint:disable-next-line:no-string-literal
-        toolStub['modifiers'] = [textureService];
+        (toolStub as any).modifiers = [textureService];
         toolBoxService.setSelectedTool(toolStub);
         const expectedOutput = true;
         const ouput = component.needsTextureAttribute();
@@ -96,8 +93,7 @@ describe('AttributesPanelComponent', () => {
     });
 
     it('if the current tool does not possesses a texture modifier there should be a need for a texture atrribute modifier', () => {
-        // tslint:disable-next-line:no-string-literal
-        toolStub['modifiers'] = [];
+        (toolStub as any).modifiers = [];
         toolBoxService.setSelectedTool(toolStub);
         const expectedOutput = false;
         const ouput = component.needsTextureAttribute();
@@ -105,8 +101,7 @@ describe('AttributesPanelComponent', () => {
     });
 
     it('if the current tool possesses a tracing modifier there should be a need for a tracing atrribute modifier', () => {
-        // tslint:disable-next-line:no-string-literal
-        toolStub['modifiers'] = [tracingService];
+        (toolStub as any).modifiers = [tracingService];
         toolBoxService.setSelectedTool(toolStub);
         const expectedOutput = true;
         const ouput = component.needsTracingAttribute();
@@ -114,8 +109,7 @@ describe('AttributesPanelComponent', () => {
     });
 
     it('if the current tool does not possess a tracing modifier there should be a need for a tracing atrribute modifier', () => {
-        // tslint:disable-next-line:no-string-literal
-        toolStub['modifiers'] = [];
+        (toolStub as any).modifiers = [];
         toolBoxService.setSelectedTool(toolStub);
         const expectedOutput = false;
         const ouput = component.needsTracingAttribute();
@@ -123,8 +117,7 @@ describe('AttributesPanelComponent', () => {
     });
 
     it('if the current tool possesses a width modifier there should be a need for a width atrribute modifier', () => {
-        // tslint:disable-next-line:no-string-literal
-        toolStub['modifiers'] = [widthService];
+        (toolStub as any).modifiers = [widthService];
         toolBoxService.setSelectedTool(toolStub);
         const expectedOutput = true;
         const ouput = component.needsWidthAttribute();
@@ -132,8 +125,7 @@ describe('AttributesPanelComponent', () => {
     });
 
     it('if the current tool does not possesses a width modifier there should be a need for a width atrribute modifier', () => {
-        // tslint:disable-next-line:no-string-literal
-        toolStub['modifiers'] = [];
+        (toolStub as any).modifiers = [];
         toolBoxService.setSelectedTool(toolStub);
         const expectedOutput = false;
         const ouput = component.needsWidthAttribute();

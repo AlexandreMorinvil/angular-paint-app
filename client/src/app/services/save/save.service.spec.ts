@@ -23,17 +23,16 @@ describe('SaveService', () => {
             providers: [MatDialog],
         });
         service = TestBed.inject(SaveService);
-        // tslint:disable:no-string-literal
-        service['drawingService'].baseCtx = baseCtxStub;
-        service['drawingService'].previewCtx = previewCtxStub;
-        service['drawingService'].canvas = canvasStub;
+        (service as any).drawingService.baseCtx = baseCtxStub;
+        (service as any).drawingService.previewCtx = previewCtxStub;
+        (service as any).drawingService.canvas = canvasStub;
         // tslint:disable:no-magic-numbers
-        service['drawingService'].canvas.width = 1000;
-        service['drawingService'].canvas.height = 800;
+        (service as any).drawingService.canvas.width = 1000;
+        (service as any).drawingService.canvas.height = 800;
 
-        saveSpy = spyOn<any>(service['drawingService'].baseCtx, 'save').and.callThrough();
-        restoreSpy = spyOn<any>(service['drawingService'].baseCtx, 'restore').and.callThrough();
-        drawImageSpy = spyOn<any>(service['drawingService'].baseCtx, 'drawImage').and.callThrough();
+        saveSpy = spyOn<any>((service as any).drawingService.baseCtx, 'save').and.callThrough();
+        restoreSpy = spyOn<any>((service as any).drawingService.baseCtx, 'restore').and.callThrough();
+        drawImageSpy = spyOn<any>((service as any).drawingService.baseCtx, 'drawImage').and.callThrough();
     });
 
     it('should be created', () => {

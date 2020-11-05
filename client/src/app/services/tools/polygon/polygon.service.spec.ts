@@ -43,7 +43,6 @@ describe('PolygonService', () => {
         setAttributeSpy = spyOn<any>(service, 'setAttribute').and.callThrough();
         const canvasWidth = 1000;
         const canvasHeight = 800;
-        // tslint:disable:no-string-literal
         (service as any).drawingService.baseCtx = baseCtxStub;
         (service as any).drawingService.previewCtx = previewCtxStub;
         (service as any).drawingService.canvas = canvasStub;
@@ -51,8 +50,8 @@ describe('PolygonService', () => {
         (service as any).drawingService.canvas.height = canvasHeight;
         (service as any).tracingService = tracingService;
 
-        ctxFillSpy = spyOn<any>(service['drawingService'].previewCtx, 'fill').and.callThrough();
-        ctxContourSpy = spyOn<any>(service['drawingService'].previewCtx, 'stroke').and.callThrough();
+        ctxFillSpy = spyOn<any>((service as any).drawingService.previewCtx, 'fill').and.callThrough();
+        ctxContourSpy = spyOn<any>((service as any).drawingService.previewCtx, 'stroke').and.callThrough();
 
         mouseEvent = {
             offsetX: 25,

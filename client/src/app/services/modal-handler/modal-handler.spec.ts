@@ -6,6 +6,7 @@ import { MainPageComponent } from '@app/components/main-page/main-page.component
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { Observable } from 'rxjs';
 import { ModalHandlerService } from './modal-handler';
+// tslint:disable:no-any
 describe('ModalHandlerService', () => {
     let service: ModalHandlerService;
     const dialogSpy: jasmine.SpyObj<MatDialog> = jasmine.createSpyObj('MatDialog', ['open', 'afterClosed', 'closeAll']);

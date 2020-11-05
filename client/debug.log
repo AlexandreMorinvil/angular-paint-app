@@ -821,3 +821,4 @@
 [1105/150738.513:ERROR:process_reader_win.cc(151)] SuspendThread: Accès refusé. (0x5)
 >>>>>>> 666e6c621a4e5d5b9e765d7ffb030312cdf88e33
 [1105/164216.286:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
+[1105/180150.532:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
