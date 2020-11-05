@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzone-size.service';
 
 @Component({
@@ -6,16 +6,14 @@ import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzon
     templateUrl: './workspace.component.html',
     styleUrls: ['./workspace.component.scss'],
 })
-export class WorkspaceComponent implements OnInit {
+export class WorkspaceComponent implements AfterViewInit {
+    @ViewChild('workzonecontainer', { static: false }) workzoneContainer: ElementRef<HTMLDivElement>;
     constructor(public workZoneSizeService: WorkzoneSizeService) {}
 
-    ngOnInit(): void {
+    ngAfterViewInit(): void {
         this.workZoneSizeService.currentWorkzoneDimension.subscribe((dimension) => {
-            const elem = document.getElementById('workzone-container');
-            if (elem) {
-                elem.style.width = dimension.width.toString() + 'px';
-                elem.style.height = dimension.height.toString() + 'px';
-            }
+            this.workzoneContainer.nativeElement.style.width = dimension.width.toString() + 'px';
+            this.workzoneContainer.nativeElement.style.height = dimension.height.toString() + 'px';
         });
     }
 }
