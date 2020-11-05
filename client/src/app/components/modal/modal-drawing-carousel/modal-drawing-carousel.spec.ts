@@ -7,7 +7,7 @@ import { Tag, TagFilterService } from '@app/services/tag-filter/tag-filter.servi
 import { DrawingToDatabase } from '@common/communication/drawing-to-database';
 import { DrawingCarouselComponent } from './modal-drawing-carousel.component';
 
-fdescribe('DrawingCarouselComponent', () => {
+describe('DrawingCarouselComponent', () => {
     let component: DrawingCarouselComponent;
     let fixture: ComponentFixture<DrawingCarouselComponent>;
     let memoryServiceSpy: jasmine.SpyObj<RemoteMemoryService>;

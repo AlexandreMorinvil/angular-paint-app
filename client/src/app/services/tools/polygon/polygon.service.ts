@@ -32,8 +32,8 @@ export class PolygonService extends Tool {
         private drawingStateTrackingService: DrawingStateTrackerService,
         private colorService: ColorService,
         private tracingService: TracingService,
-        public widthService: WidthService,
-        public sidesService: SidesService,
+        private widthService: WidthService,
+        private sidesService: SidesService,
     ) {
         super(drawingService, new Description('polygone', '3', 'polygon_icon.png'));
         this.modifiers.push(this.colorService);

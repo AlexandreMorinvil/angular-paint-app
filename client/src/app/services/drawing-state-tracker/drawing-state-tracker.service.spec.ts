@@ -34,7 +34,7 @@ describe('DrawingStateTrackerService', () => {
         redoSpy = spyOn<any>(service, 'redo').and.callThrough();
         saveCanvasSpy = spyOn<any>(service, 'saveCanvas').and.callThrough();
         reconstituteCanvasSpy = spyOn<any>(service, 'reconstituteCanvas').and.callThrough();
-        // Configuration od spy service
+        // Configuration of spy service
         const canvasWidth = 1000;
         const canvasHeight = 800;
         // tslint:disable:no-string-literal

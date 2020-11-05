@@ -69,7 +69,6 @@ export class DrawingStateTrackerService {
         this.actionsToRedo = [];
         this.canvasesToRedo = [];
     }
-    /********************************************************** */
     // tslint:disable:no-bitwise
     private reconstituteCanvas(): void {
         // Bitwise operation is needed for functionality to work as intended

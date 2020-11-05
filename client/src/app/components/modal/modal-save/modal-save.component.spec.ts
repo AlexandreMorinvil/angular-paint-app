@@ -200,7 +200,7 @@ describe('ModalSaveComponent', () => {
     it('remove tag should  call tags.splice if the tag and index are valid', () => {
         component.tags = ['tag1', 'tag2', 'tag3'];
         spyOn(component, 'remove').and.callThrough();
-        let spy = spyOn(component.tags, 'splice');
+        const spy = spyOn(component.tags, 'splice');
         component.remove('tag2');
         expect(spy).toHaveBeenCalled();
     });
@@ -208,7 +208,7 @@ describe('ModalSaveComponent', () => {
     it('remove tag should  call tags.splice if the tag and index are invalid', () => {
         component.tags = ['tag1', 'tag2', 'tag3'];
         spyOn(component, 'remove').and.callThrough();
-        let spy = spyOn(component.tags, 'splice');
+        const spy = spyOn(component.tags, 'splice');
         component.remove('tag5');
         expect(spy).not.toHaveBeenCalled();
     });
