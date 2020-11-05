@@ -22,15 +22,18 @@ export class RectangleSelectionService extends SelectionToolService {
         private colorService: ColorService,
         private widthService: WidthService,
     ) {
-        super(drawingService, colorService, new Description('selection rectangle', 'r', 'question_mark.png'));
+        super(drawingService, colorService, new Description('selection rectangle', 'r', 'rectangle-selection.png'));
     }
 
     onMouseDown(event: MouseEvent): void {
+        if (!this.mouseDown) {
+            this.selectionCreated = false;
+        }
         this.arrowPress = [false, false, false, false];
         this.arrowDown = false;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.mouseDownCoord = this.getPositionFromMouse(event);
-        this.mouseDown = event.button === MouseButton.Left;
+        this.localMouseDown = event.button === MouseButton.Left;
         this.resetTransform();
         // translate
         if (this.selectionCreated && this.hitSelection(this.mouseDownCoord.x, this.mouseDownCoord.y)) {
@@ -45,6 +48,7 @@ export class RectangleSelectionService extends SelectionToolService {
                 this.drawingService.baseCtx.clearRect(this.startDownCoord.x, this.startDownCoord.y, this.imageData.width, this.imageData.height);
             }
             this.draggingImage = true;
+            this.mouseDown = true;
             this.putImageData(this.evenImageStartCoord(this.mouseDownCoord), this.drawingService.previewCtx, this.imageData);
             // creation
         } else {
@@ -53,18 +57,19 @@ export class RectangleSelectionService extends SelectionToolService {
             this.rectangleService.onMouseDown(event);
             this.pathData.push(this.startDownCoord);
             this.startSelectionPoint = this.getPositionFromMouse(event);
+            this.mouseDown = true;
         }
     }
 
     onMouseMove(event: MouseEvent): void {
         const mousePosition = this.getPositionFromMouse(event);
         // translate
-        if (this.draggingImage && this.mouseDown) {
+        if (this.draggingImage && this.localMouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.startDownCoord = this.evenImageStartCoord(mousePosition);
             this.putImageData(this.evenImageStartCoord(mousePosition), this.drawingService.previewCtx, this.imageData);
             // creation
-        } else if (this.isInCanvas(mousePosition) && this.mouseDown) {
+        } else if (this.isInCanvas(mousePosition) && this.localMouseDown) {
             this.rectangleService.onMouseMove(event);
             if (this.startDownCoord.x !== mousePosition.x && this.startDownCoord.y !== mousePosition.y && this.rectangleService.shiftDown) {
                 const square = this.getSquaredSize(mousePosition);
@@ -107,7 +112,7 @@ export class RectangleSelectionService extends SelectionToolService {
             this.draggingImage = false;
             this.hasDoneFirstTranslation = true;
             // creation
-        } else if (this.mouseDown) {
+        } else if (this.localMouseDown) {
             if (this.rectangleService.shiftDown) {
                 const square = this.getSquaredSize(mousePosition);
                 const endPoint = { x: square.x + this.startDownCoord.x, y: square.y + this.startDownCoord.y };
@@ -131,7 +136,7 @@ export class RectangleSelectionService extends SelectionToolService {
             this.pathLastCoord = this.pathData[this.pathData.length - 1];
             this.hasDoneFirstTranslation = false;
         }
-        this.mouseDown = false;
+        this.localMouseDown = false;
         this.clearPath();
     }
 
@@ -206,7 +211,7 @@ export class RectangleSelectionService extends SelectionToolService {
     }
 
     onCtrlADown(): void {
-        this.mouseDown = true;
+        this.localMouseDown = true;
         this.startDownCoord = { x: 0, y: 0 };
         this.rectangleService.mouseDownCoord = { x: 0, y: 0 };
         const mouseEvent = {
@@ -224,7 +229,7 @@ export class RectangleSelectionService extends SelectionToolService {
     }
 
     private createOnMouseMoveEvent(): void {
-        if (this.mouseDown) {
+        if (this.localMouseDown) {
             const mouseEvent = {
                 offsetX: this.pathData[this.pathData.length - 1].x,
                 offsetY: this.pathData[this.pathData.length - 1].y,

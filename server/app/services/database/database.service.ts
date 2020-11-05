@@ -104,6 +104,7 @@ export class DatabaseService {
         };
         try {
             await this.collection.updateOne(filterQuery, updateQuery);
+            return;
         } catch {
             throw new Error(this.ERROR_UPDATE_DRAWING);
         }
@@ -124,23 +125,23 @@ export class DatabaseService {
     }
 
     private async validateName(name: string): Promise<void> {
-        if (!(name !== '')) throw new Error(this.ERROR_NO_DRAWING_NAME);
-        if (!(name.length <= this.MAX_LENGHT_DRAW_NAME)) throw new Error(this.ERROR_MAX_LENGTH_NAME_DRAWING);
+        if (name === '') throw new Error(this.ERROR_NO_DRAWING_NAME);
+        if (name.length > this.MAX_LENGHT_DRAW_NAME) throw new Error(this.ERROR_MAX_LENGTH_NAME_DRAWING);
         if (!/^[0-9a-zA-Z]*$/g.test(name)) throw new Error();
     }
 
     private async validateTag(tag: string): Promise<void> {
-        if (!(tag !== '')) throw new Error(this.ERROR_NO_TAG);
-        if (!(tag.length <= this.MAX_LENGHT_NAME_TAG)) throw new Error(this.ERROR_MAX_LENGTH_NAME_TAG);
+        if (tag === '') throw new Error(this.ERROR_NO_TAG);
+        if (tag.length > this.MAX_LENGHT_NAME_TAG) throw new Error(this.ERROR_MAX_LENGTH_NAME_TAG);
         if (!/^[0-9a-zA-Z]*$/g.test(tag)) throw new Error();
     }
 
     private async validateImageSource(imageSrc: string): Promise<void> {
-        if (!(imageSrc !== '')) throw new Error(this.ERROR_NO_IMAGE_SOURCE);
+        if (imageSrc === '') throw new Error(this.ERROR_NO_IMAGE_SOURCE);
     }
 
     private async validateAllTags(tags: string[]): Promise<void> {
-        if (!(tags.length > this.MAX_NUMBER_OF_TAGS)) throw new Error(this.ERROR_NUMBER_TAG_GREATER_MAXIMUM);
+        if (tags.length > this.MAX_NUMBER_OF_TAGS) throw new Error(this.ERROR_NUMBER_TAG_GREATER_MAXIMUM);
         tags.forEach(async (tag) => {
             await this.validateTag(tag);
         });

@@ -77,90 +77,106 @@ describe('ModalSaveComponent', () => {
 
     it('validate all tags should return true if all tags are valid', () => {
         const tags: string[] = ['a', 'b', 'c'];
-        expect((component as any).validateAllTags(tags)).toBeTruthy();
+        const result = (component as any).validateAllTags(tags);
+        expect(result).toBeTruthy();
     });
 
     it('validate all tags should return false if the number og tags is bigger than max', () => {
         const tags: string[] = ['al', 'bl', 'cl', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'z', 'w'];
-        expect((component as any).validateAllTags(tags)).toBeFalse();
+        const result = (component as any).validateAllTags(tags);
+        expect(result).toBeFalse();
     });
 
     it('validate image source should return true if image source is valid', () => {
         const imageSource = 'KEJDHTERTGSU';
-        expect((component as any).validateImageSRC(imageSource)).toBeTruthy();
+        const result = (component as any).validateImageSRC(imageSource);
+        expect(result).toBeTruthy();
     });
 
     it('validate image source should return false if image source is invalid', () => {
         const imageSource = '';
-        expect((component as any).validateImageSRC(imageSource)).toBeFalse();
+        const result = (component as any).validateImageSRC(imageSource);
+        expect(result).toBeFalse();
     });
 
     it('validate  a tag should return true if the tag is valid', () => {
         const tag = 'valid';
-        expect((component as any).validateTag(tag)).toBeTruthy();
+        const result = (component as any).validateTag(tag);
+        expect(result).toBeTruthy();
     });
 
     it('validate  a tag should return false if the tag is empty', () => {
         const tag = '';
-        expect((component as any).validateTag(tag)).toBeFalse();
+        const result = (component as any).validateTag(tag);
+        expect(result).toBeFalse();
     });
 
     it('validate  a tag should return false if the tag lenght is bigger than max ', () => {
         const tag = 'alsoergdhtryejdklstegreddhud';
-        expect((component as any).validateTag(tag)).toBeFalse();
+        const result = (component as any).validateTag(tag);
+        expect(result).toBeFalse();
     });
 
     it('validate  a tag should return false if the tag has special character', () => {
         const tag = '!@^ahs';
-        expect((component as any).validateTag(tag)).toBeFalse();
+        const result = (component as any).validateTag(tag);
+        expect(result).toBeFalse();
     });
 
     it('validate  a name should return true if the name is valid', () => {
         const name = 'valid';
-        expect((component as any).validateDrawName(name)).toBeTruthy();
+        const result = (component as any).validateDrawName(name);
+        expect(result).toBeTruthy();
     });
 
     it('validate  a name should return false if the name is empty', () => {
         const name = '';
-        expect((component as any).validateDrawName(name)).toBeFalse();
+        const result = (component as any).validateDrawName(name);
+        expect(result).toBeFalse();
     });
 
     it('validate  a tag should return false if the tag lenght is bigger than max', () => {
         const name = 'alsoergdhtryejdklstegreddhudalsoergdhtryejdklstegreddhudamskedjrh';
-        expect((component as any).validateDrawName(name)).toBeFalse();
+        const result = (component as any).validateDrawName(name);
+        expect(result).toBeFalse();
     });
 
     it('validate  a name should return false if the name has special character', () => {
         const name = 'a!!@^name';
-        expect((component as any).validateDrawName(name)).toBeFalse();
+        const result = (component as any).validateDrawName(name);
+        expect(result).toBeFalse();
     });
 
     it('validate value should return true if the name, tags and image source is valid', () => {
         const name = 'dessin';
         const imageSource = 'KEJDHTERTGSU';
         const tags: string[] = ['tag2', 'b', 'c'];
-        expect((component as any).validateValue(name, tags, imageSource)).toBeTruthy();
+        const result = (component as any).validateValue(name, tags, imageSource);
+        expect(result).toBeTruthy();
     });
 
     it('validate value should return false if the name is invalid', () => {
         const name = '';
         const imageSource = 'KEJDHTERTGSU';
         const tags: string[] = ['$$$$', 'b', 'c'];
-        expect((component as any).validateValue(name, tags, imageSource)).toBeFalse();
+        const result = (component as any).validateValue(name, tags, imageSource);
+        expect(result).toBeFalse();
     });
 
     it('validate value should return false if the tags is invalid', () => {
         const name = 'valid';
         const imageSource = 'KEJDHTERTGSU';
         const tags: string[] = ['@a1!', '!!ml'];
-        expect((component as any).validateValue(name, tags, imageSource)).toBeFalse();
+        const result = (component as any).validateValue(name, tags, imageSource);
+        expect(result).toBeFalse();
     });
 
     it('validate value should return false if the image source is invalid', () => {
         const name = 'valid';
         const imageSource = '';
         const tags: string[] = ['a', 'b', 'c'];
-        expect((component as any).validateValue(name, tags, imageSource)).toBeFalse();
+        const result = (component as any).validateValue(name, tags, imageSource);
+        expect(result).toBeFalse();
     });
 
     it('add should call not tags.push if the value is not empty ', () => {
@@ -181,21 +197,21 @@ describe('ModalSaveComponent', () => {
         expect(pushSpy).not.toHaveBeenCalled();
     });
 
-    // it('remove tag should  call tags.splice if the tag and index are valid', () => {
-    //     component.tags = ['tag1', 'tag2', 'tag3'];
-    //     spyOn(component, 'remove').and.callThrough();
-    //     let spy = spyOn<any>(component.tags, 'splice');
-    //     component.remove('tag2');
-    //     expect(spy).toHaveBeenCalledWith(1, 1);
-    // });
+    it('remove tag should  call tags.splice if the tag and index are valid', () => {
+        component.tags = ['tag1', 'tag2', 'tag3'];
+        spyOn(component, 'remove').and.callThrough();
+        let spy = spyOn(component.tags, 'splice');
+        component.remove('tag2');
+        expect(spy).toHaveBeenCalled();
+    });
 
-    // it('remove tag should  call tags.splice if the tag and index are invalid', () => {
-    //     component.tags = ['tag1', 'tag2', 'tag3'];
-    //     spyOn(component, 'remove').and.callThrough();
-    //     let spy = spyOn<any>(component.tags, 'splice');
-    //     component.remove('tag5');
-    //     expect(spy).not.toHaveBeenCalled();
-    // });
+    it('remove tag should  call tags.splice if the tag and index are invalid', () => {
+        component.tags = ['tag1', 'tag2', 'tag3'];
+        spyOn(component, 'remove').and.callThrough();
+        let spy = spyOn(component.tags, 'splice');
+        component.remove('tag5');
+        expect(spy).not.toHaveBeenCalled();
+    });
 
     it('send message to server should call basic post', () => {
         (component as any).drawName.value = 'name';
@@ -203,6 +219,20 @@ describe('ModalSaveComponent', () => {
         component.saveService.saveDraw();
         component.sendMessageToServer();
         expect(basicPostSpy).toHaveBeenCalled();
+    });
+
+    it('should prevent defaut key on Ctrl+S pressed', () => {
+        const event = new KeyboardEvent('keydown', { ctrlKey: true, key: 's' });
+        const spy = spyOn(event, 'preventDefault');
+        component.onKeyDown(event);
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('should not prevent defaut key on other key  pressed', () => {
+        const event = new KeyboardEvent('keydown', { ctrlKey: true, key: 'g' });
+        const spy = spyOn(event, 'preventDefault');
+        component.onKeyDown(event);
+        expect(spy).not.toHaveBeenCalled();
     });
 
     it('should save message to server when validate value is true', () => {
