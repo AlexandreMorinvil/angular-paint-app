@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-// import { InteractionPath } from '@app/classes/action/interaction-path';
+import { InteractionPath } from '@app/classes/action/interaction-path';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -44,13 +44,11 @@ describe('BrushService', () => {
         const canvasWidth = 1000;
         const canvasHeight = 800;
 
-        // Configuration du spy du service
-        // tslint:disable:no-string-literal
-        service['drawingService'].baseCtx = baseCtxStub;
-        service['drawingService'].previewCtx = previewCtxStub;
-        service['drawingService'].canvas = canvasStub;
-        service['drawingService'].canvas.width = canvasWidth;
-        service['drawingService'].canvas.height = canvasHeight;
+        (service as any).drawingService.baseCtx = baseCtxStub;
+        (service as any).drawingService.previewCtx = previewCtxStub;
+        (service as any).drawingService.canvas = canvasStub;
+        (service as any).drawingService.canvas.width = canvasWidth;
+        (service as any).drawingService.canvas.height = canvasHeight;
 
         mouseEvent = {
             offsetX: 25,
@@ -156,5 +154,16 @@ describe('BrushService', () => {
         service.mouseDown = true;
         service.onMouseUp(mouseEvent);
         expect(zigzagTextureSpy).toHaveBeenCalled();
+    });
+
+    it('should execute and drawLine is called', () => {
+        const interaction = {
+            path: [
+                { x: 0, y: 0 },
+                { x: 1, y: 1 },
+            ],
+        } as InteractionPath;
+        service.execute(interaction);
+        expect(drawLineSpy).toHaveBeenCalled();
     });
 });

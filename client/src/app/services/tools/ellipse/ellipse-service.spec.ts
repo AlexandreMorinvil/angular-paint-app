@@ -49,15 +49,14 @@ describe('EllipseService', () => {
 
         const canvasWidth = 1000;
         const canvasHeight = 800;
-        // tslint:disable:no-string-literal
-        service['drawingService'].baseCtx = baseCtxStub;
-        service['drawingService'].previewCtx = previewCtxStub;
-        service['drawingService'].canvas = canvasStub;
-        service['drawingService'].canvas.width = canvasWidth;
-        service['drawingService'].canvas.height = canvasHeight;
+        (service as any).drawingService.baseCtx = baseCtxStub;
+        (service as any).drawingService.previewCtx = previewCtxStub;
+        (service as any).drawingService.canvas = canvasStub;
+        (service as any).drawingService.canvas.width = canvasWidth;
+        (service as any).drawingService.canvas.height = canvasHeight;
 
-        ctxFillSpy = spyOn<any>(service['drawingService'].previewCtx, 'fill').and.callThrough();
-        ctxContourSpy = spyOn<any>(service['drawingService'].previewCtx, 'stroke').and.callThrough();
+        ctxFillSpy = spyOn<any>((service as any).drawingService.previewCtx, 'fill').and.callThrough();
+        ctxContourSpy = spyOn<any>((service as any).drawingService.previewCtx, 'stroke').and.callThrough();
         getWidthSpy = spyOn<any>(widthService, 'getWidth').and.callThrough();
 
         mouseEvent = {
@@ -130,6 +129,7 @@ describe('EllipseService', () => {
         service.shiftDown = true;
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
+        service.shiftDown = true;
         mouseEvent = { shiftKey: true } as MouseEvent;
 
         service.onMouseMove(mouseEvent);
@@ -139,6 +139,7 @@ describe('EllipseService', () => {
     it(' onMouseUp should call drawCircle if mouse down and shift is pressed down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
+        service.shiftDown = true;
         mouseEvent = { shiftKey: true } as MouseEvent;
         service.shiftDown = true;
 
@@ -148,7 +149,6 @@ describe('EllipseService', () => {
     });
 
     it(' onMouseMove should call drawCircle if mouse down and shift is pressed down ', () => {
-        // bottom right
         service.shiftDown = true;
         mouseEvent = { offsetX: 10, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseDown(mouseEvent);
@@ -160,9 +160,8 @@ describe('EllipseService', () => {
     });
 
     it(' onMouseMove should call drawCircle if mouse down and shift is pressed down ', () => {
-        // top right
         service.shiftDown = true;
-        mouseEvent = { offsetX: 10, offsetY: 10, button: 0 } as MouseEvent;
+        mouseEvent = { offsetX: 10, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 9, offsetY: 9, button: 0 } as MouseEvent;
         service.onMouseMove(mouseEvent);
@@ -172,7 +171,7 @@ describe('EllipseService', () => {
 
     it(' onMouseMove should call drawCircle if mouse down and shift is pressed down ', () => {
         service.shiftDown = true;
-        mouseEvent = { offsetX: 20, offsetY: 9, button: 0 } as MouseEvent;
+        mouseEvent = { offsetX: 20, offsetY: 9, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 50, offsetY: 10, button: 0 } as MouseEvent;
         service.onMouseMove(mouseEvent);
@@ -182,7 +181,6 @@ describe('EllipseService', () => {
     });
 
     it(' onMouseMove should call drawCircle if mouse down and shift is pressed down  ', () => {
-        // top right
         service.shiftDown = true;
         mouseEvent = { offsetX: 10, offsetY: 10, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseDown(mouseEvent);

@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { InteractionStartEnd } from '@app/classes/action/interaction-start-end';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -43,12 +44,12 @@ describe('PolygonService', () => {
         const canvasWidth = 1000;
         const canvasHeight = 800;
         // tslint:disable:no-string-literal
-        service['drawingService'].baseCtx = baseCtxStub;
-        service['drawingService'].previewCtx = previewCtxStub;
-        service['drawingService'].canvas = canvasStub;
-        service['drawingService'].canvas.width = canvasWidth;
-        service['drawingService'].canvas.height = canvasHeight;
-        service['tracingService'] = tracingService;
+        (service as any).drawingService.baseCtx = baseCtxStub;
+        (service as any).drawingService.previewCtx = previewCtxStub;
+        (service as any).drawingService.canvas = canvasStub;
+        (service as any).drawingService.canvas.width = canvasWidth;
+        (service as any).drawingService.canvas.height = canvasHeight;
+        (service as any).tracingService = tracingService;
 
         ctxFillSpy = spyOn<any>(service['drawingService'].previewCtx, 'fill').and.callThrough();
         ctxContourSpy = spyOn<any>(service['drawingService'].previewCtx, 'stroke').and.callThrough();
@@ -81,12 +82,12 @@ describe('PolygonService', () => {
         expect(service.mouseDown).toEqual(false);
     });
 
-    // it(' onMouseUp should call drawPolygon if mouse was already down', () => {
-    //     service.mouseDownCoord = { x: 25, y: 12 };
-    //     service.mouseDown = true;
-    //     service.onMouseUp(mouseEvent);
-    //     expect(drawPolygonSpy).toHaveBeenCalled();
-    // });
+    it(' onMouseUp should call drawPolygon if mouse was already down', () => {
+        service.mouseDownCoord = { x: 25, y: 12 };
+        service.mouseDown = true;
+        service.onMouseUp(mouseEvent);
+        expect(drawPolygonSpy).toHaveBeenCalled();
+    });
 
     it(' onMouseUp should not call drawPolygon if mouse was not already down', () => {
         service.mouseDown = false;
@@ -121,7 +122,7 @@ describe('PolygonService', () => {
 
     it(' should draw polygone when number of side is 6 with contour', () => {
         const numberSides = 6;
-        service.sidesService.setSide(numberSides);
+        (service as any).sidesService.setSide(numberSides);
         tracingService.setHasContour(true);
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
@@ -135,7 +136,7 @@ describe('PolygonService', () => {
 
     it(' should draw square when number of side is 6 with contour', () => {
         const numberSides = 4;
-        service.sidesService.setSide(numberSides);
+        (service as any).sidesService.setSide(numberSides);
         tracingService.setHasContour(true);
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
@@ -149,7 +150,7 @@ describe('PolygonService', () => {
 
     it('should draw a triangle when number of side is 6 with contour', () => {
         const numberSides = 3;
-        service.sidesService.setSide(numberSides);
+        (service as any).sidesService.setSide(numberSides);
         tracingService.setHasContour(true);
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
@@ -286,5 +287,14 @@ describe('PolygonService', () => {
         tracingService.setHasContour(false);
         service.setAttribute(previewCtxStub);
         expect(ctxContourSpy).not.toHaveBeenCalled();
+    });
+    it('should execute and drawPolygon is called', () => {
+        const interaction = {
+            startPoint: { x: 100, y: 100 },
+            path: [{}],
+            shiftDown: false,
+        } as InteractionStartEnd;
+        service.execute(interaction);
+        expect(drawPolygonSpy).toHaveBeenCalled();
     });
 });

@@ -1,4 +1,3 @@
-// import { variable } from '@angular/compiler/src/output/output_ast';
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -143,6 +142,7 @@ export class DrawingComponent implements AfterViewInit {
             event.preventDefault(); // to prevent key of windows
             this.modalHandlerService.openExportDialog();
         } else if (event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+            event.preventDefault(); // to prevent key of windows
             this.toolbox.getCurrentTool().onArrowDown(event);
         } else if (event.ctrlKey && event.key.toLowerCase() === 'a') {
             event.preventDefault(); // to prevent key of windows

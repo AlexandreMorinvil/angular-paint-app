@@ -38,12 +38,11 @@ describe('CursorService', () => {
 
         const canvasWidth = 1200;
         const canvasHeight = 1000;
-        // tslint:disable:no-string-literal
-        service['drawingService'].baseCtx = baseCtxStub;
-        service['drawingService'].previewCtx = previewCtxStub;
-        service['drawingService'].canvas = canvasStub;
-        service['drawingService'].canvas.width = canvasWidth;
-        service['drawingService'].canvas.height = canvasHeight;
+        (service as any).drawingService.baseCtx = baseCtxStub;
+        (service as any).drawingService.previewCtx = previewCtxStub;
+        (service as any).drawingService.canvas = canvasStub;
+        (service as any).drawingService.canvas.width = canvasWidth;
+        (service as any).drawingService.canvas.height = canvasHeight;
 
         mouseEvent25 = {
             offsetX: 25,
@@ -144,57 +143,53 @@ describe('CursorService', () => {
 
     it(' mouseUp should set values to false, set up new height and width on basectx, redraw anchor and image', () => {
         // tslint:disable:no-magic-numbers
-        // tslint:disable:no-string-literal
         service.mouseDownCoord = { x: 600, y: 700 };
         service.mouseDown = true;
         (service as any).clickOnAnchor = true;
-        service['drawingService'].previewCtx.canvas.height = 1000;
-        service['drawingService'].previewCtx.canvas.width = 1200;
+        (service as any).drawingService.previewCtx.canvas.height = 1000;
+        (service as any).drawingService.previewCtx.canvas.width = 1200;
 
-        service.onMouseDown(mouseEvent500); // needed to create ImageData
+        service.onMouseDown(mouseEvent500);
         service.onMouseUp(mouseEvent500);
         expect((service as any).clickOnAnchor).toEqual(false);
         expect(service.mouseDown).toEqual(false);
         expect(drawnAnchorSpy).toHaveBeenCalled();
-        expect(service['drawingService'].baseCtx.canvas.height).toEqual(service['drawingService'].previewCtx.canvas.height);
-        expect(service['drawingService'].baseCtx.canvas.width).toEqual(service['drawingService'].previewCtx.canvas.width);
+        expect((service as any).drawingService.baseCtx.canvas.height).toEqual((service as any).drawingService.previewCtx.canvas.height);
+        expect((service as any).drawingService.baseCtx.canvas.width).toEqual((service as any).drawingService.previewCtx.canvas.width);
     });
 
     it(' checkHit should set anchorHit to 1', () => {
         // tslint:disable:no-magic-numbers
-        // tslint:disable:no-string-literal
         service.mouseDownCoord = { x: 1000, y: 800 };
         (service as any).dotsize = 10;
-        service['drawingService'].canvas.width = 1000;
-        service['drawingService'].canvas.height = 800;
+        (service as any).drawingService.canvas.width = 1000;
+        (service as any).drawingService.canvas.height = 800;
 
-        (service as any).checkHit(service.mouseDownCoord, service['drawingService'].canvas);
+        (service as any).checkHit(service.mouseDownCoord, (service as any).drawingService.canvas);
         expect((service as any).anchorHit).toEqual(1);
         expect((service as any).clickOnAnchor).toEqual(true);
     });
 
     it(' checkHit should set anchorHit to 2', () => {
         // tslint:disable:no-magic-numbers
-        // tslint:disable:no-string-literal
         service.mouseDownCoord = { x: 1000, y: 400 };
         (service as any).dotsize = 10;
-        service['drawingService'].canvas.width = 1000;
-        service['drawingService'].canvas.height = 800;
+        (service as any).drawingService.canvas.width = 1000;
+        (service as any).drawingService.canvas.height = 800;
 
-        (service as any).checkHit(service.mouseDownCoord, service['drawingService'].canvas);
+        (service as any).checkHit(service.mouseDownCoord, (service as any).drawingService.canvas);
         expect((service as any).anchorHit).toEqual(2);
         expect((service as any).clickOnAnchor).toEqual(true);
     });
 
     it(' checkHit should set anchorHit to 3', () => {
         // tslint:disable:no-magic-numbers
-        // tslint:disable:no-string-literal
         service.mouseDownCoord = { x: 500, y: 800 };
         (service as any).dotsize = 10;
-        service['drawingService'].canvas.width = 1000;
-        service['drawingService'].canvas.height = 800;
+        (service as any).drawingService.canvas.width = 1000;
+        (service as any).drawingService.canvas.height = 800;
 
-        (service as any).checkHit(service.mouseDownCoord, service['drawingService'].canvas);
+        (service as any).checkHit(service.mouseDownCoord, (service as any).drawingService.canvas);
         expect((service as any).anchorHit).toEqual(3);
         expect((service as any).clickOnAnchor).toEqual(true);
     });
@@ -210,10 +205,10 @@ describe('CursorService', () => {
     it('should onMouseUp call drawAnchor and resizeDrawingZone', () => {
         (service as any).clickOnAnchor = false;
         service.mouseDown = false;
-        service['drawingService'].baseCtx.canvas.width = 100;
-        service['drawingService'].baseCtx.canvas.width = 100;
-        service['drawingService'].previewCtx.canvas.width = 101;
-        service['drawingService'].previewCtx.canvas.width = 101;
+        (service as any).drawingService.baseCtx.canvas.width = 100;
+        (service as any).drawingService.baseCtx.canvas.width = 100;
+        (service as any).drawingService.previewCtx.canvas.width = 101;
+        (service as any).drawingService.previewCtx.canvas.width = 101;
 
         service.onMouseUp(mouseEvent25);
 
@@ -226,18 +221,18 @@ describe('CursorService', () => {
         (service as any).clickOnAnchor = true;
         service.mouseDown = true;
         service.mouseDownCoord = { x: 0, y: 0 };
-        const minSurfaceSize = 10;
+        const minSurfaceSize = 250;
 
         const mouseEvent = {
             offsetX: 0,
             offsetY: 0,
             button: 0,
         } as MouseEvent;
-        service['drawingService'].previewCtx.canvas.width = 100;
-        service['drawingService'].previewCtx.canvas.height = 101;
+        (service as any).drawingService.previewCtx.canvas.width = 100;
+        (service as any).drawingService.previewCtx.canvas.height = 101;
 
         service.onMouseMove(mouseEvent);
-        expect(service['drawingService'].previewCtx.canvas.width).toBe(minSurfaceSize);
-        expect(service['drawingService'].previewCtx.canvas.height).toBe(minSurfaceSize);
+        expect((service as any).drawingService.previewCtx.canvas.width).toBe(minSurfaceSize);
+        expect((service as any).drawingService.previewCtx.canvas.height).toBe(minSurfaceSize);
     });
 });

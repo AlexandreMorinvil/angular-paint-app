@@ -37,6 +37,7 @@ export abstract class SelectionToolService extends Tool {
     protected arrowDown: boolean;
     protected arrowCoord: Vec2;
     protected hasDoneFirstTranslation: boolean;
+    protected localMouseDown: boolean = false;
     protected startSelectionPoint: Vec2;
 
     constructor(drawingService: DrawingService, private color: ColorService, description: Description) {
@@ -50,7 +51,7 @@ export abstract class SelectionToolService extends Tool {
         this.hasDoneFirstTranslation = false;
     }
 
-    onEscapeDown(event: KeyboardEvent): void {
+    onEscapeDown(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.selectionCreated = false;
         this.arrowDown = true;
@@ -174,6 +175,7 @@ export abstract class SelectionToolService extends Tool {
                 this.arrowPress[3] = true;
                 break;
             default:
+                this.arrowDown = false;
                 break;
         }
 

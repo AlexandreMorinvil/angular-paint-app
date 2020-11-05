@@ -90,6 +90,20 @@ describe('ModalExportComponent', () => {
         expect(val).toBeTrue();
     });
 
+    it('should prevent defaut key on Ctrl+E pressed', () => {
+        const event = new KeyboardEvent('keydown', { ctrlKey: true, key: 'e' });
+        const spy = spyOn(event, 'preventDefault');
+        component.onKeyDown(event);
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('should not prevent defaut key on other key  pressed', () => {
+        const event = new KeyboardEvent('keydown', { ctrlKey: true, key: 's' });
+        const spy = spyOn(event, 'preventDefault');
+        component.onKeyDown(event);
+        expect(spy).not.toHaveBeenCalled();
+    });
+
     it('should not have a valid value', () => {
         component.drawName.setValue('');
         // tslint:disable-next-line: no-any

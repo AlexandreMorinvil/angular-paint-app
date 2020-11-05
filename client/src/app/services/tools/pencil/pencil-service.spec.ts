@@ -32,15 +32,14 @@ describe('PencilService', () => {
         service = TestBed.inject(PencilService);
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
 
-        // Configuration od spy service
+        // Configuration of spy service
         const canvasWidth = 1000;
         const canvasHeight = 800;
-        // tslint:disable:no-string-literal
-        service['drawingService'].baseCtx = baseCtxStub;
-        service['drawingService'].previewCtx = previewCtxStub;
-        service['drawingService'].canvas = canvasStub;
-        service['drawingService'].canvas.width = canvasWidth;
-        service['drawingService'].canvas.height = canvasHeight;
+        (service as any).drawingService.baseCtx = baseCtxStub;
+        (service as any).drawingService.previewCtx = previewCtxStub;
+        (service as any).drawingService.canvas = canvasStub;
+        (service as any).drawingService.canvas.width = canvasWidth;
+        (service as any).drawingService.canvas.height = canvasHeight;
 
         mouseEvent = {
             offsetX: 25,
@@ -130,13 +129,12 @@ describe('PencilService', () => {
         mouseEvent = { offsetX: 1, offsetY: 0, button: 0 } as MouseEvent;
         service.onMouseUp(mouseEvent);
 
-        // First pixel only
         const imageData: ImageData = baseCtxStub.getImageData(0, 0, 1, 1);
-        expect(imageData.data[0]).toEqual(0); // R
-        expect(imageData.data[1]).toEqual(0); // G
-        expect(imageData.data[2]).toEqual(0); // B
+        expect(imageData.data[0]).toEqual(0);
+        expect(imageData.data[1]).toEqual(0);
+        expect(imageData.data[2]).toEqual(0);
         // tslint:disable-next-line:no-magic-numbers
-        expect(imageData.data[3]).not.toEqual(0); // A
+        expect(imageData.data[3]).not.toEqual(0);
     });
 
     it(' onMouseMove should not call drawLine if mouse is not on canvas', () => {
@@ -164,14 +162,12 @@ describe('PencilService', () => {
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 1, offsetY: 0, button: 0 } as MouseEvent;
         service.onMouseUp(mouseEvent);
-
-        // First pixel only
         const imageData: ImageData = baseCtxStub.getImageData(0, 0, 1, 1);
-        expect(imageData.data[0]).toEqual(0); // R
-        expect(imageData.data[1]).toEqual(0); // G
-        expect(imageData.data[2]).toEqual(0); // B
+        expect(imageData.data[0]).toEqual(0);
+        expect(imageData.data[1]).toEqual(0);
+        expect(imageData.data[2]).toEqual(0);
         // tslint:disable-next-line:no-magic-numbers
-        expect(imageData.data[3]).not.toEqual(0); // A
+        expect(imageData.data[3]).not.toEqual(0);
     });
 
     it(' onMouseMove should not call drawLine if mouse is not on canvas', () => {
