@@ -44,12 +44,12 @@ describe('PolygonService', () => {
         const canvasWidth = 1000;
         const canvasHeight = 800;
         // tslint:disable:no-string-literal
-        service['drawingService'].baseCtx = baseCtxStub;
-        service['drawingService'].previewCtx = previewCtxStub;
-        service['drawingService'].canvas = canvasStub;
-        service['drawingService'].canvas.width = canvasWidth;
-        service['drawingService'].canvas.height = canvasHeight;
-        service['tracingService'] = tracingService;
+        (service as any).drawingService.baseCtx = baseCtxStub;
+        (service as any).drawingService.previewCtx = previewCtxStub;
+        (service as any).drawingService.canvas = canvasStub;
+        (service as any).drawingService.canvas.width = canvasWidth;
+        (service as any).drawingService.canvas.height = canvasHeight;
+        (service as any).tracingService = tracingService;
 
         ctxFillSpy = spyOn<any>(service['drawingService'].previewCtx, 'fill').and.callThrough();
         ctxContourSpy = spyOn<any>(service['drawingService'].previewCtx, 'stroke').and.callThrough();
@@ -122,7 +122,7 @@ describe('PolygonService', () => {
 
     it(' should draw polygone when number of side is 6 with contour', () => {
         const numberSides = 6;
-        service.sidesService.setSide(numberSides);
+        (service as any).sidesService.setSide(numberSides);
         tracingService.setHasContour(true);
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
@@ -136,7 +136,7 @@ describe('PolygonService', () => {
 
     it(' should draw square when number of side is 6 with contour', () => {
         const numberSides = 4;
-        service.sidesService.setSide(numberSides);
+        (service as any).sidesService.setSide(numberSides);
         tracingService.setHasContour(true);
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
@@ -150,7 +150,7 @@ describe('PolygonService', () => {
 
     it('should draw a triangle when number of side is 6 with contour', () => {
         const numberSides = 3;
-        service.sidesService.setSide(numberSides);
+        (service as any).sidesService.setSide(numberSides);
         tracingService.setHasContour(true);
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;

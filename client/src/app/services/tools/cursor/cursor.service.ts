@@ -6,7 +6,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
-const minSurfaceSize = 10;
+const minSurfaceSize = 250;
 
 @Injectable({
     providedIn: 'root',

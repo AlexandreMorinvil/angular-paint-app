@@ -92,6 +92,20 @@ describe('DrawingCarouselComponent', () => {
         expect(tagFilterServiceSpy.removeTag).toHaveBeenCalled();
     });
 
+    it('should prevent defaut key on Ctrl+G pressed', () => {
+        const event = new KeyboardEvent('keydown', { ctrlKey: true, key: 'g' });
+        const spy = spyOn(event, 'preventDefault');
+        component.onKeyDown(event);
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('should not prevent defaut key on other key  pressed', () => {
+        const event = new KeyboardEvent('keydown', { ctrlKey: true, key: 's' });
+        const spy = spyOn(event, 'preventDefault');
+        component.onKeyDown(event);
+        expect(spy).not.toHaveBeenCalled();
+    });
+
     // it('should not change currentDrawings when pressing the previous button if theres an empty drawing space', () => {
     //     component.setCurrentDrawings();
     //     const currentDrawings: DrawingToDatabase[] = testData;
@@ -114,7 +128,7 @@ describe('DrawingCarouselComponent', () => {
         const event = new KeyboardEvent('keydown', {
             key: 'ArrowLeft',
         });
-        component.onShiftDown(event);
+        component.onKeyDown(event);
         expect(drawings[1]).toBe(component.getCurrentDrawings()[2]);
     });
 
@@ -140,7 +154,7 @@ describe('DrawingCarouselComponent', () => {
         const event = new KeyboardEvent('keydown', {
             key: 'ArrowRight',
         });
-        component.onShiftDown(event);
+        component.onKeyDown(event);
         expect(drawings[1]).toBe(component.getCurrentDrawings()[0]);
     });
 
@@ -172,7 +186,7 @@ describe('DrawingCarouselComponent', () => {
         const event = new KeyboardEvent('keydown', {
             key: 'ArrowUp',
         });
-        component.onShiftDown(event);
+        component.onKeyDown(event);
         expect(drawings[1]).toBe(component.getCurrentDrawings()[1]);
     });
 });

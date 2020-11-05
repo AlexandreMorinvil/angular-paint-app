@@ -90,6 +90,7 @@ describe('RectangleSelectionService', () => {
         (service as any).selectionCreated = false;
         (service as any).draggingImage = false;
         (service as any).mouseDown = false;
+        (service as any).localMouseDown = false;
         (service as any).hasDoneFirstTranslation = false;
         (service as any).startDownCoord = { x: 0, y: 0 };
         (service as any).pathLastCoord = { x: 1, y: 1 };
@@ -133,6 +134,7 @@ describe('RectangleSelectionService', () => {
     });
     it('should set attribute correctly and translate a selection on mouse down if selection created and hit selection return true', () => {
         (service as any).mouseDown = true;
+        (service as any).localMouseDown = true;
         (service as any).selectionCreated = true;
         (service as any).hasDoneFirstTranslation = true;
         (service as any).startDownCoord = { x: 0, y: 0 };
@@ -151,6 +153,7 @@ describe('RectangleSelectionService', () => {
 
     it('should set attribute correctly and translate a selection on mouse down if not first translation', () => {
         (service as any).mouseDown = true;
+        (service as any).localMouseDown = true;
         (service as any).selectionCreated = true;
         (service as any).hasDoneFirstTranslation = false;
         (service as any).startDownCoord = { x: 0, y: 0 };
@@ -170,6 +173,7 @@ describe('RectangleSelectionService', () => {
     it('should set attribute and translate a selection on mouse move if mouseDown and draggingImage are true on mouse move', () => {
         (service as any).draggingImage = true;
         (service as any).mouseDown = true;
+        (service as any).localMouseDown = true;
 
         service.onMouseMove(mouseEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
@@ -180,6 +184,7 @@ describe('RectangleSelectionService', () => {
     it('should set attribute and translate a selection on mouse move if mouseDown is true and draggingImage is false with shift down', () => {
         (service as any).draggingImage = false;
         (service as any).mouseDown = true;
+        (service as any).localMouseDown = true;
         (service as any).rectangleService.shiftDown = true;
         (service as any).startDownCoord = { x: 0, y: 0 };
 
@@ -190,6 +195,7 @@ describe('RectangleSelectionService', () => {
     it('should set attribute and translate a selection on mouse move if mouseDown is true and draggingImage is false with no shift', () => {
         (service as any).draggingImage = false;
         (service as any).mouseDown = true;
+        (service as any).localMouseDown = true;
         (service as any).rectangleService.shiftDown = false;
         (service as any).startDownCoord = { x: 0, y: 0 };
 
@@ -200,6 +206,7 @@ describe('RectangleSelectionService', () => {
     it('should  do nothing if mouse move is not in canvas', () => {
         (service as any).draggingImage = false;
         (service as any).mouseDown = false;
+        (service as any).localMouseDown = false;
         (service as any).rectangleService.shiftDown = false;
         (service as any).startDownCoord = { x: 0, y: 0 };
 
@@ -210,6 +217,7 @@ describe('RectangleSelectionService', () => {
     it('should set attribute and translate a selection on mouse up', () => {
         (service as any).draggingImage = true;
         (service as any).mouseDown = false;
+        (service as any).localMouseDown = false;
         (service as any).startSelectionPoint = { x: 15, y: 15 };
         (service as any).startDownCoord = { x: 14, y: 14 };
         service.mouseDownCoord = { x: 1, y: 1 };
@@ -227,6 +235,7 @@ describe('RectangleSelectionService', () => {
     it('should set attribute and translate a selection on mouse up if mouse down is true and dragginImage is set to false', () => {
         (service as any).draggingImage = false;
         (service as any).mouseDown = true;
+        (service as any).localMouseDown = true;
         (service as any).rectangleService.shiftDown = true;
         (service as any).startSelectionPoint = { x: 15, y: 15 };
         (service as any).startDownCoord = { x: 14, y: 14 };
@@ -247,6 +256,7 @@ describe('RectangleSelectionService', () => {
     it('should set attribute and translate a selection on mouse up if mouse down is false and dragginImage is set to false', () => {
         (service as any).draggingImage = false;
         (service as any).mouseDown = false;
+        (service as any).localMouseDown = false;
         (service as any).startSelectionPoint = { x: 15, y: 15 };
         (service as any).startDownCoord = { x: 14, y: 14 };
         service.mouseDownCoord = { x: 1, y: 1 };
@@ -326,6 +336,7 @@ describe('RectangleSelectionService', () => {
         (service as any).imageData = new ImageData(10, 10);
         (service as any).selectionCreated = true;
         (service as any).mouseDown = true;
+        (service as any).localMouseDown = true;
         (service as any).pathData = pathTest;
         service.onArrowUp(keyboardEvent);
         expect((service as any).draggingImage).toBeFalse();
@@ -350,6 +361,7 @@ describe('RectangleSelectionService', () => {
         (service as any).selectionCreated = false;
         (service as any).arrowDown = true;
         (service as any).mouseDown = true;
+        (service as any).localMouseDown = true;
         (service as any).pathData = pathTest;
         service.onArrowUp(keyboardEvent);
         expect((service as any).arrowDown).not.toBeFalse();
@@ -371,6 +383,7 @@ describe('RectangleSelectionService', () => {
         (service as any).selectionCreated = true;
         (service as any).arrowDown = true;
         (service as any).mouseDown = true;
+        (service as any).localMouseDown = true;
         (service as any).pathData = pathTest;
         service.onArrowUp(keyboardEvent);
         expect(onArrowDownSpy).toHaveBeenCalled();
@@ -385,6 +398,7 @@ describe('RectangleSelectionService', () => {
 
     it('should on call on mouse move event if mouseDown is set to true for createOnMouseMoveEvent', () => {
         service.mouseDown = true;
+        (service as any).localMouseDown = true;
         (service as any).startDownCoord = { x: 14, y: 14 };
         (service as any).rectangleService.shiftDown = true;
         (service as any).pathData = pathTest;
@@ -393,6 +407,7 @@ describe('RectangleSelectionService', () => {
     });
     it('should not call on mouse move event if mouseDown is set to false for createOnMouseMoveEvent', () => {
         service.mouseDown = false;
+        (service as any).localMouseDown = false;
         (service as any).pathData = pathTest;
 
         (service as any).createOnMouseMoveEvent();

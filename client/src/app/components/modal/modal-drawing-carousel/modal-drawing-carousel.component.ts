@@ -151,7 +151,7 @@ export class DrawingCarouselComponent {
     }
 
     @HostListener('window:keydown', ['$event'])
-    onShiftDown(event: KeyboardEvent): void {
+    onKeyDown(event: KeyboardEvent): void {
         if (event.ctrlKey && event.key.toLowerCase() === 'g') {
             event.preventDefault(); // to prevent key of windows
         } else if (event.key === 'ArrowRight') {

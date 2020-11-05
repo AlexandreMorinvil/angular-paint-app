@@ -43,8 +43,7 @@ export class DrawingService {
         this.baseCtx.canvas.height = height;
         this.previewCtx.canvas.width = width;
         this.previewCtx.canvas.height = height;
-        this.resetDrawing();
-        this.baseCtx.putImageData(imageData, 0, 0);
+        this.printCanvas(imageData);
         this.workzoneSizeService.updateDrawingZoneDimension({ width, height });
     }
 

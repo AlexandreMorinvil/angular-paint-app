@@ -149,7 +149,7 @@ describe('CursorService', () => {
         (service as any).drawingService.previewCtx.canvas.height = 1000;
         (service as any).drawingService.previewCtx.canvas.width = 1200;
 
-        service.onMouseDown(mouseEvent500); // needed to create ImageData
+        service.onMouseDown(mouseEvent500);
         service.onMouseUp(mouseEvent500);
         expect((service as any).clickOnAnchor).toEqual(false);
         expect(service.mouseDown).toEqual(false);
@@ -221,7 +221,7 @@ describe('CursorService', () => {
         (service as any).clickOnAnchor = true;
         service.mouseDown = true;
         service.mouseDownCoord = { x: 0, y: 0 };
-        const minSurfaceSize = 10;
+        const minSurfaceSize = 250;
 
         const mouseEvent = {
             offsetX: 0,
