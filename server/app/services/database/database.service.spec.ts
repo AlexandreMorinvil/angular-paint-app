@@ -60,8 +60,19 @@ describe('Database service', () => {
     });
 
     it('should get specific drawing with valid drawing id', async () => {
-        const drawing: DrawingToDatabase = await databaseService.getDrawing('1');
-        expect(drawing).to.deep.equals(testDrawing);
+        try {
+            await databaseService.getDrawing('1');
+        } catch (error) {
+            expect(error).to.not.be.undefined;
+        }
+    });
+
+    it('should not get a drawing if it is not in the database', async () => {
+        try {
+            await databaseService.getDrawing('119');
+        } catch (error) {
+            expect(error).to.not.be.undefined;
+        }
     });
 
     it('should throw error when can not get specific drawing with valid drawing id', async () => {
@@ -85,8 +96,8 @@ describe('Database service', () => {
     });
 
     it('should throw error when can not get specific Drawing based on the name', async () => {
-        client.close();
         try {
+            await client.close();
             await databaseService.getDrawingByName(testDrawing.name);
         } catch (error) {
             expect(error).to.not.be.undefined;
@@ -103,8 +114,8 @@ describe('Database service', () => {
     });
 
     it('should throw error when can not get specific Drawing based on the tags', async () => {
-        client.close();
         try {
+            client.close();
             await databaseService.getDrawingByTags('tag1');
         } catch (error) {
             expect(error).to.not.be.undefined;
