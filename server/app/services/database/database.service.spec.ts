@@ -350,9 +350,9 @@ describe('Database service', () => {
         expect(drawings.find((x) => x._id === drawings[0]._id)?.tags).to.deep.equals(modifiedDrawing.tags);
     });
 
-    // it('Database initialization should fail if the connection information is invalid', async () => {
-    //     // We use the local Mongo Instance and not the production database
-    //     const connection = new DatabaseService('Wrong url', 'Wrong name', 'Wrong collection');
-    //     expect(connection.isConnected).to.equal(false);
-    // });
+    it('Database initialization should fail if the connection information is invalid', async () => {
+        // We use the local Mongo Instance and not the production database
+        const connection = new DatabaseService('Wrong url', 'Wrong name', 'Wrong collection');
+        expect(connection.isConnected).to.equal(false);
+    });
 });
