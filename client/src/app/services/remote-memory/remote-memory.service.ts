@@ -25,8 +25,12 @@ export class RemoteMemoryService {
   }
 
 
-  saveToDatabase(drawing: DrawingToDatabase): void {
-    this.apiDrawingService.save(drawing).subscribe();
+  async saveToDatabase(drawing: DrawingToDatabase): Promise<void> {
+    return new Promise<void>((resolve) => {
+      this.apiDrawingService.save(drawing).subscribe(() => {
+        resolve();
+      });
+    });
   }
 
   async deleteFromDatabase(id: string): Promise<void> {
