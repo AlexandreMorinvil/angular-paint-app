@@ -80,18 +80,6 @@ describe('ApiDrawingService', () => {
     req.flush(sentDrawing);
   });
 
-  it('should send an HTTP PATCH request to update a drawing', () => {
-    const id = '2';
-    const sentDrawing: DrawingToDatabase = new DrawingToDatabase('1', 'abc', ['a', 'b']);
-    // subscribe to the mocked call
-    // tslint:disable-next-line: no-empty
-    service.update(id, sentDrawing).subscribe(() => { }, fail);
-
-    const req = httpMock.expectOne(baseUrl + id);
-    expect(req.request.method).toBe('PATCH');
-    req.flush(sentDrawing);
-  });
-
   it('should send an HTTP DELETE request to update a drawing', () => {
     const id = '2';
     // subscribe to the mocked call
