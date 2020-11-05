@@ -68,7 +68,7 @@ describe('ModalSaveComponent', () => {
         saveDrawSpy = spyOn<any>(component['saveService'], 'saveDraw').and.callThrough();
         sendMessageToServerSpy = spyOn<any>(component, 'sendMessageToServer').and.callThrough();
         component['saveService'].imageSource = 'IMAGESOURCE';
-        basicPostSpy = spyOn<any>(component['apiImageTransferService'], 'basicPost').and.callThrough();
+        basicPostSpy = spyOn<any>(component['apiDrawingService'], 'save').and.callThrough();
     });
 
     it('should create', () => {

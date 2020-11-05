@@ -5,7 +5,7 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
 import { DialogData } from '@app/classes/dialog-data';
-import { ApiImageTransferService } from '@app/services/api/image-transfer/api-image-transfer.service';
+import { ApiDrawingService } from '@app/services/api/api-drawing/api-drawing.service';
 import { SaveService } from '@app/services/save/save.service';
 import { Drawing } from '@common/communication/drawing';
 
@@ -34,7 +34,7 @@ export class ModalSaveComponent {
         d: MatTabsModule,
         dialog: MatDialog,
         public saveService: SaveService,
-        private apiImageTransferService: ApiImageTransferService,
+        private apiDrawingService: ApiDrawingService,
     ) {}
 
     @HostListener('window:keydown', ['$event'])
@@ -104,6 +104,6 @@ export class ModalSaveComponent {
 
     sendMessageToServer(): void {
         const newDrawingToSend: Drawing = new Drawing('', this.drawName.value, this.tags, this.saveService.imageSource);
-        this.apiImageTransferService.basicPost(newDrawingToSend).subscribe();
+        this.apiDrawingService.save(newDrawingToSend).subscribe();
     }
 }

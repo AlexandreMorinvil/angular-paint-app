@@ -32,7 +32,7 @@ describe('ApiDrawingService', () => {
         req.flush(expectedDrawings);
     });
 
-    fit('should perform a HTTP GET request to get a drawing by its ID', () => {
+    it('should perform a HTTP GET request to get a drawing by its ID', () => {
         const id = '1';
         const expectedDrawing: DrawingToDatabase = new DrawingToDatabase(id, 'abc', ['a', 'b']);
 
@@ -45,7 +45,7 @@ describe('ApiDrawingService', () => {
         req.flush(expectedDrawing);
     });
 
-    fit('should perform a HTTP GET request to get all drawings having a given name', () => {
+    it('should perform a HTTP GET request to get all drawings having a given name', () => {
         const name = 'abc';
         const expectedDrawings: DrawingToDatabase[] = [new DrawingToDatabase(), new DrawingToDatabase()];
 
@@ -57,7 +57,7 @@ describe('ApiDrawingService', () => {
         req.flush(expectedDrawings);
     });
 
-    fit('should perform a HTTP GET request to get all drawings having a given tag', () => {
+    it('should perform a HTTP GET request to get all drawings having a given tag', () => {
         const tag = 'abc';
         const expectedDrawings: DrawingToDatabase[] = [new DrawingToDatabase(), new DrawingToDatabase()];
 
@@ -69,7 +69,7 @@ describe('ApiDrawingService', () => {
         req.flush(expectedDrawings);
     });
 
-    fit('should send an HTTP POST request to create a drawing', () => {
+    it('should send an HTTP POST request to create a drawing', () => {
         const sentDrawing: DrawingToDatabase = new DrawingToDatabase('1', 'abc', ['a', 'b']);
         // subscribe to the mocked call
         // tslint:disable-next-line: no-empty
@@ -80,7 +80,7 @@ describe('ApiDrawingService', () => {
         req.flush(sentDrawing);
     });
 
-    fit('should send an HTTP PATCH request to update a drawing', () => {
+    it('should send an HTTP PATCH request to update a drawing', () => {
         const id = '2';
         const sentDrawing: DrawingToDatabase = new DrawingToDatabase('1', 'abc', ['a', 'b']);
         // subscribe to the mocked call
@@ -92,7 +92,7 @@ describe('ApiDrawingService', () => {
         req.flush(sentDrawing);
     });
 
-    fit('should send an HTTP DELETE request to update a drawing', () => {
+    it('should send an HTTP DELETE request to update a drawing', () => {
         const id = '2';
         // subscribe to the mocked call
         // tslint:disable-next-line: no-empty
@@ -103,7 +103,7 @@ describe('ApiDrawingService', () => {
         req.flush({});
     });
 
-    fit('should handle http error safely', () => {
+    it('should handle http error safely', () => {
         service.getAll().subscribe((response: DrawingToDatabase[]) => {
             expect(response).toBeUndefined();
         }, fail);

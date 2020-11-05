@@ -43,7 +43,7 @@ export class ApiDrawingService {
 
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
         return (error: Error): Observable<T> => {
-            alert(error);
+            alert(error.message);
             return of(result as T);
         };
     }
