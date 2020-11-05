@@ -142,10 +142,6 @@ export class LineService extends Tool {
         this.clearPathSaved();
     }
 
-    isInCanvas(mousePosition: Vec2): boolean {
-        return mousePosition.x <= this.drawingService.previewCtx.canvas.width && mousePosition.y <= this.drawingService.previewCtx.canvas.height;
-    }
-
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         const firstPath = path[0];

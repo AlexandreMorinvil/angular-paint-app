@@ -50,7 +50,7 @@ export abstract class SelectionToolService extends Tool {
         this.hasDoneFirstTranslation = false;
     }
 
-    onEscapeDown(event: KeyboardEvent): void {
+    onEscapeDown(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.selectionCreated = false;
         this.arrowDown = true;
@@ -174,6 +174,7 @@ export abstract class SelectionToolService extends Tool {
                 this.arrowPress[3] = true;
                 break;
             default:
+                this.arrowDown = false;
                 break;
         }
 

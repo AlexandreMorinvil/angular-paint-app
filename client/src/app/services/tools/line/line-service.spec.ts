@@ -55,16 +55,13 @@ describe('LineService', () => {
 
         const canvasWidth = 1000;
         const canvasHeight = 800;
+        (service as any).drawingService.baseCtx = baseCtxStub;
+        (service as any).drawingService.previewCtx = previewCtxStub;
+        (service as any).drawingService.canvas = canvasStub;
+        (service as any).drawingService.canvas.width = canvasWidth;
+        (service as any).drawingService.canvas.height = canvasHeight;
 
-        // Configuration of service spy
-        // tslint:disable:no-string-literal
-        service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
-        service['drawingService'].previewCtx = previewCtxStub;
-        service['drawingService'].canvas = canvasStub;
-        service['drawingService'].canvas.width = canvasWidth;
-        service['drawingService'].canvas.height = canvasHeight;
-
-        ctxStroke = spyOn<any>(service['drawingService'].previewCtx, 'stroke').and.callThrough();
+        ctxStroke = spyOn<any>((service as any).drawingService.previewCtx, 'stroke').and.callThrough();
 
         mouseEvent = {
             offsetX: 25,

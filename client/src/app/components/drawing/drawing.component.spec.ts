@@ -76,10 +76,9 @@ describe('DrawingComponent', () => {
         toolboxService = TestBed.inject(ToolboxService);
         component = fixture.componentInstance;
         // tslint:disable:no-any
-        // tslint:disable:no-string-literal
         clearCanvasSpy = spyOn<any>(drawingStub, 'clearCanvas').and.callThrough();
         resetDrawingSpy = spyOn<any>(drawingStub, 'resetDrawing').and.callThrough();
-        onResizeSpy = spyOn<any>(component['workzoneSizeService'], 'onResize');
+        onResizeSpy = spyOn<any>((component as any).workzoneSizeService, 'onResize');
         fixture.detectChanges();
     });
 
