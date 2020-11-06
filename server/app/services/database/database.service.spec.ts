@@ -113,7 +113,7 @@ describe('Database service', () => {
 
     it('should insert a new drawing', async () => {
         const imageSource = 'imageSource';
-        let secondDrawing: DrawingToDatabase = { _id: '', name: 'nomtest', tags: ['tag3', 'tag4'] };
+        let secondDrawing: DrawingToDatabase = { _id: null, name: 'nomtest', tags: ['tag3', 'tag4'] };
         await databaseService.addDrawing(secondDrawing, imageSource);
         let drawings = await databaseService.collection.find({}).toArray();
         expect(drawings.length).to.equal(2);
@@ -122,7 +122,7 @@ describe('Database service', () => {
 
     it('should insert a new drawing', async () => {
         const imageSource = 'imageSource';
-        let secondDrawing: DrawingToDatabase = { _id: '2', name: 'nomtest', tags: ['tag3', 'tag4'] };
+        let secondDrawing: DrawingToDatabase = { _id: null, name: 'nomtest', tags: ['tag3', 'tag4'] };
         try {
             await databaseService.addDrawing(secondDrawing, imageSource);
         } catch (error) {
@@ -134,7 +134,7 @@ describe('Database service', () => {
 
     it('should not insert a new drawing if it has an invalid name', async () => {
         const imageSource = 'imageSource';
-        let secondDrawing: DrawingToDatabase = { _id: '2', name: '', tags: ['tag3', 'tag4'] };
+        let secondDrawing: DrawingToDatabase = { _id: null, name: '', tags: ['tag3', 'tag4'] };
         try {
             await databaseService.addDrawing(secondDrawing, imageSource);
         } catch {
@@ -145,7 +145,7 @@ describe('Database service', () => {
 
     it('should not insert a new drawing if it has an invalid tags', async () => {
         const imageSource = 'imageSource';
-        let secondDrawing: DrawingToDatabase = { _id: '2', name: 'nomTest2', tags: ['Bad$$$Tag!!', 'tag4'] };
+        let secondDrawing: DrawingToDatabase = { _id: null, name: 'nomTest2', tags: ['Bad$$$Tag!!', 'tag4'] };
         try {
             await databaseService.addDrawing(secondDrawing, imageSource);
         } catch {
@@ -167,6 +167,17 @@ describe('Database service', () => {
         let modifiedDrawing: DrawingToDatabase = { _id: '5', name: 'nomTest2', tags: ['tag3', 'tag4'] };
         try {
             await databaseService.updateDrawing('6', modifiedDrawing);
+        } catch (error) {
+            expect(error).to.not.be.undefined;
+        }
+    });
+
+    it('should throw error if can not existing drawing data in the collection', async () => {
+        client.close();
+        const imageSource = 'imageSource';
+        let secondDrawing: DrawingToDatabase = { _id: null, name: 'nom', tags: ['tag3', 'tag4'] };
+        try {
+            await databaseService.addDrawing(secondDrawing, imageSource);
         } catch (error) {
             expect(error).to.not.be.undefined;
         }
