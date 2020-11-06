@@ -26,6 +26,7 @@ import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzon
 import { SidebarComponent } from './sidebar.component';
 class ToolStub extends Tool {}
 // tslint:disable:no-any
+// tslint:disable:no-string-literal
 describe('SidebarComponent', () => {
     let component: SidebarComponent;
     let fixture: ComponentFixture<SidebarComponent>;
@@ -92,7 +93,6 @@ describe('SidebarComponent', () => {
     );
 
     beforeEach(() => {
-        // tslint:disable:no-string-literal
         fixture = TestBed.createComponent(SidebarComponent);
         modalHandlerService = TestBed.inject(ModalHandlerService);
         component = fixture.componentInstance;

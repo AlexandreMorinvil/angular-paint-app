@@ -17,7 +17,7 @@ import { RectangleService } from '@app/services/tools/rectangle/rectangle-servic
 import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzone-size.service';
 import { DrawingComponent } from './drawing.component';
 class ToolStub extends Tool {}
-
+// tslint:disable:no-any
 describe('DrawingComponent', () => {
     let component: DrawingComponent;
     let fixture: ComponentFixture<DrawingComponent>;
@@ -33,7 +33,6 @@ describe('DrawingComponent', () => {
     let rectangle: RectangleService;
     let ellipse: EllipseService;
     let line: LineService;
-    // tslint:disable:no-any
     let clearCanvasSpy: jasmine.Spy<any>;
     let resetDrawingSpy: jasmine.Spy<any>;
     let onShiftDownSpy: jasmine.Spy<any>;
@@ -91,7 +90,6 @@ describe('DrawingComponent', () => {
         modalHandlerService = TestBed.inject(ModalHandlerService);
         tracker = TestBed.inject(DrawingStateTrackerService);
         component = fixture.componentInstance;
-        // tslint:disable:no-any
         clearCanvasSpy = spyOn<any>(drawingStub, 'clearCanvas').and.callThrough();
         resetDrawingSpy = spyOn<any>(drawingStub, 'resetDrawing').and.callThrough();
         onResizeSpy = spyOn<any>((component as any).workzoneSizeService, 'onResize');

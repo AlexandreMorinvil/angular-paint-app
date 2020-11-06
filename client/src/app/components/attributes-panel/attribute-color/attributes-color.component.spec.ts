@@ -1,15 +1,14 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { AttributeColorComponent } from './attributes-color.component';
-
+// The disablement of the "any" tslint rule is justified in this situation as the prototype
+// of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
+// tslint:disable:no-any
 describe('AttributeColorComponent', () => {
     let component: AttributeColorComponent;
     let fixture: ComponentFixture<AttributeColorComponent>;
     let colorService: ColorService;
 
-    // The disablement of the "any" tslint rule is justified in this situation as the prototype
-    // of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
-    // tslint:disable:no-any
     let validateColorSpy: jasmine.Spy<any>;
     let validateOpacitySpy: jasmine.Spy<any>;
 
@@ -52,8 +51,6 @@ describe('AttributeColorComponent', () => {
         expect(componentPrimaryOpacity).toEqual(servicePrimaryOpacity);
         expect(componentSecondaryOpacity).toEqual(serviceSecondaryOpacity);
     });
-
-    // Color tests
 
     it('color input for primary and secondary color should accept numbers between 0 and 0xffffff as the rgb color number upon confirmation of the color choice', () => {
         const newColor = '#aabbcc';
