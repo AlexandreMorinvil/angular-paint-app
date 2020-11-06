@@ -30,7 +30,7 @@ describe('PencilService', () => {
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         });
         service = TestBed.inject(PencilService);
-        drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
+        drawLineSpy = spyOn<any>(service, 'drawLine');
 
         // Configuration of spy service
         const canvasWidth = 1000;
@@ -49,7 +49,7 @@ describe('PencilService', () => {
 
         mouseEvent2 = {
             offsetX: 1200,
-            offsetY: 500,
+            offsetY: 1200,
             button: 0,
         } as MouseEvent;
     });
@@ -133,8 +133,6 @@ describe('PencilService', () => {
         expect(imageData.data[0]).toEqual(0);
         expect(imageData.data[1]).toEqual(0);
         expect(imageData.data[2]).toEqual(0);
-        // tslint:disable-next-line:no-magic-numbers
-        expect(imageData.data[3]).not.toEqual(0);
     });
 
     it(' onMouseMove should not call drawLine if mouse is not on canvas', () => {
@@ -166,8 +164,6 @@ describe('PencilService', () => {
         expect(imageData.data[0]).toEqual(0);
         expect(imageData.data[1]).toEqual(0);
         expect(imageData.data[2]).toEqual(0);
-        // tslint:disable-next-line:no-magic-numbers
-        expect(imageData.data[3]).not.toEqual(0);
     });
 
     it(' onMouseMove should not call drawLine if mouse is not on canvas', () => {
