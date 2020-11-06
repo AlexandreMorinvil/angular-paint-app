@@ -2,13 +2,13 @@ import { TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { SaveService } from './save.service';
-
+// tslint:disable:no-any
 describe('SaveService', () => {
     let service: SaveService;
     let canvasStub: HTMLCanvasElement;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
-    // tslint:disable:no-any
+
     let saveSpy: jasmine.Spy<any>;
     let restoreSpy: jasmine.Spy<any>;
     let drawImageSpy: jasmine.Spy<any>;

@@ -8,6 +8,7 @@ import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ModalHandlerService } from '@app/services/modal-handler/modal-handler';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
 import { BrushService } from '@app/services/tools/brush/brush-service';
 import { ColorPickerService } from '@app/services/tools/color-picker/color-picker.service';
@@ -24,17 +25,17 @@ import { RectangleSelectionService } from '@app/services/tools/selection/rectang
 import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzone-size.service';
 import { SidebarComponent } from './sidebar.component';
 class ToolStub extends Tool {}
-
+// tslint:disable:no-any
+// tslint:disable:no-string-literal
 describe('SidebarComponent', () => {
     let component: SidebarComponent;
     let fixture: ComponentFixture<SidebarComponent>;
     let toolStub: ToolStub;
     let drawingStub: DrawingService;
     let drawingStateStub: DrawingStateTrackerService;
+    let modalHandlerService: ModalHandlerService;
     let toolserviceMock: ToolboxService;
-    // tslint:disable:no-any
-    let toolboxSpy: any;
-
+    let toolboxSpy: jasmine.SpyObj<any>;
     let routerSpy: jasmine.Spy<any>;
     let undoSpy: jasmine.Spy<any>;
     let redoSpy: jasmine.Spy<any>;
@@ -42,7 +43,7 @@ describe('SidebarComponent', () => {
     let openGuideSpy: jasmine.Spy<any>;
     let previewCtxStub: CanvasRenderingContext2D;
     let canvasStub: HTMLCanvasElement;
-    // let openSaveDialogSpy: jasmine.Spy<any>;
+    let modalHandlerServiceSpy: jasmine.Spy<any>;
 
     beforeEach(
         waitForAsync(() => {
@@ -85,20 +86,20 @@ describe('SidebarComponent', () => {
                     { provide: MAT_DIALOG_DATA, useValue: {} },
                     { provide: MatDialogRef, useValue: {} },
                     { provide: MatDialog, useValue: {} },
+                    ModalHandlerService,
                 ],
             }).compileComponents();
         }),
     );
 
     beforeEach(() => {
-        // tslint:disable:no-string-literal
         fixture = TestBed.createComponent(SidebarComponent);
+        modalHandlerService = TestBed.inject(ModalHandlerService);
         component = fixture.componentInstance;
         (component as any).toolboxSevice = toolserviceMock;
         routerSpy = spyOn<any>((component as any).router, 'navigate').and.callThrough();
         resetDrawingWithWarningSpy = spyOn<any>((component as any).drawingService, 'resetDrawingWithWarning');
         openGuideSpy = spyOn<any>((component as any).modalHandler, 'openUserGuide');
-        // openSaveDialogSpy = spyOn<any>((component as any).modalHandler, 'openSaveDialog');
 
         undoSpy = spyOn<any>((component as any).drawingStateTracker, 'undo');
         redoSpy = spyOn<any>((component as any).drawingStateTracker, 'redo');
@@ -151,10 +152,23 @@ describe('SidebarComponent', () => {
         expect(openGuideSpy).toHaveBeenCalled();
     });
 
-    // it('should call saveDialog', () => {
-    //     component.saveDialog();
-    //     expect(openSaveDialogSpy).toHaveBeenCalled();
-    // });
+    it('should call openSaveDialog', () => {
+        modalHandlerServiceSpy = spyOn<any>(modalHandlerService, 'openSaveDialog');
+        component.openSaveDialog();
+        expect(modalHandlerServiceSpy).toHaveBeenCalled();
+    });
+
+    it('should call openCarouselDialog', () => {
+        modalHandlerServiceSpy = spyOn<any>(modalHandlerService, 'openDrawingCarouselDialog');
+        component.openCarouselDialog();
+        expect(modalHandlerServiceSpy).toHaveBeenCalled();
+    });
+
+    it('should call openExportDialog', () => {
+        modalHandlerServiceSpy = spyOn<any>(modalHandlerService, 'openExportDialog');
+        component.openExportDialog();
+        expect(modalHandlerServiceSpy).toHaveBeenCalled();
+    });
 
     it('should call undo', () => {
         component.undo();

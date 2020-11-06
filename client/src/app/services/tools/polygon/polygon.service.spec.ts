@@ -6,10 +6,10 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { PolygonService } from './polygon.service';
-
+// It would be illogical to split a test file for a unique service
+// tslint:disable:max-file-line-count
+// tslint:disable:no-any
 describe('PolygonService', () => {
-    // It would be illogical to split a test file for a unique service
-    // tslint:disable:max-file-line-count
     let service: PolygonService;
     let tracingService: TracingService;
     let mouseEvent: MouseEvent;
@@ -18,7 +18,7 @@ describe('PolygonService', () => {
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let canvasStub: HTMLCanvasElement;
-    // tslint:disable:no-any
+
     let drawPolygonSpy: jasmine.Spy<any>;
     let drawPreviewCircleSpy: jasmine.Spy<any>;
     let setAttributeSpy: jasmine.Spy<any>;
@@ -26,7 +26,6 @@ describe('PolygonService', () => {
     let ctxContourSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
-        // tslint: disable: no-any;
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         canvasStub = canvasTestHelper.canvas;
@@ -37,7 +36,6 @@ describe('PolygonService', () => {
         service = TestBed.inject(PolygonService);
         tracingService = TestBed.inject(TracingService);
         colorService = TestBed.inject(ColorService);
-        // tslint:disable:no-any
         drawPolygonSpy = spyOn<any>(service, 'drawPolygon').and.callThrough();
         drawPreviewCircleSpy = spyOn<any>(service, 'drawPreviewCircle').and.callThrough();
         setAttributeSpy = spyOn<any>(service, 'setAttribute').and.callThrough();

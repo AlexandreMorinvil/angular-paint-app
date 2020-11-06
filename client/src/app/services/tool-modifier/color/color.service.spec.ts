@@ -1,13 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { ColorModifierState } from './color-state';
 import { ColorService } from './color.service';
-
+// The disablement of the "any" tslint rule is justified in this situation as the prototype
+// of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
+// tslint:disable:no-any
 describe('ColorService', () => {
     let colorService: ColorService;
 
-    // The disablement of the "any" tslint rule is justified in this situation as the prototype
-    // of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
-    // tslint:disable:no-any
     let validateColorSpy: jasmine.Spy<any>;
     let validateOpacitySpy: jasmine.Spy<any>;
     let setStateSpy: jasmine.Spy<any>;

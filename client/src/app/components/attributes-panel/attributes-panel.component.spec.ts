@@ -21,7 +21,6 @@ describe('AttributesPanelComponent', () => {
     const canvasWidth = 1200;
     const canvasHeight = 1000;
 
-    // Service
     let toolBoxService: ToolboxService;
     let junctionService: JunctionService;
     let textureService: TextureService;

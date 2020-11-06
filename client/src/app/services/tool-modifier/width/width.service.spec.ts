@@ -1,13 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { WidthModifierState } from './width-state';
 import { WidthService } from './width.service';
-
+// The disablement of the "any" tslint rule is justified in this situation as the prototype
+// of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
+// tslint:disable:no-any
 describe('WidthService', () => {
     let service: WidthService;
 
-    // The disablement of the "any" tslint rule is justified in this situation as the prototype
-    // of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
-    // tslint:disable:no-any
     let setWidthSpy: jasmine.Spy<any>;
     let getWidthSpy: jasmine.Spy<any>;
     let setStateSpy: jasmine.Spy<any>;
@@ -15,7 +14,6 @@ describe('WidthService', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(WidthService);
-        // tslint:disable:no-any
         setWidthSpy = spyOn<any>(service, 'setWidth').and.callThrough();
         getWidthSpy = spyOn<any>(service, 'getWidth').and.callThrough();
         setStateSpy = spyOn<any>(service, 'setState').and.callThrough();

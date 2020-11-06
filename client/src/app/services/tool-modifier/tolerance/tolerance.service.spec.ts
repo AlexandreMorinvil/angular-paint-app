@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { ToleranceModifierState } from './tolerance-state';
 import { ToleranceService } from './tolerance.service';
-
+// The disablement of the "any" tslint rule is justified in this situation as the prototype
+// of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
+// tslint:disable:no-any
 describe('ToleranceService', () => {
     let service: ToleranceService;
-    // The disablement of the "any" tslint rule is justified in this situation as the prototype
-    // of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
-    // tslint:disable:no-any
+
     let setToleranceSpy: jasmine.Spy<any>;
     let getPixelToleranceSpy: jasmine.Spy<any>;
     let getPercentToleranceSpy: jasmine.Spy<any>;
@@ -15,7 +15,6 @@ describe('ToleranceService', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(ToleranceService);
-        // tslint:disable:no-any
         setToleranceSpy = spyOn<any>(service, 'setTolerance').and.callThrough();
         getPixelToleranceSpy = spyOn<any>(service, 'getPixelTolerance').and.callThrough();
         getPercentToleranceSpy = spyOn<any>(service, 'getPercentTolerance').and.callThrough();

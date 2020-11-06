@@ -8,10 +8,10 @@ import { TracingService } from '@app/services/tool-modifier/tracing/tracing.serv
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse-service';
 import { EllipseSelectionService } from './ellipse-selection.service';
-
+// Illogical to seperate test in different file for the same service
 // tslint:disable:max-file-line-count
+// tslint:disable:no-any
 describe('EllipseSelectionService', () => {
-    // tslint:disable:no-any
     let service: EllipseSelectionService;
     let tracingService: TracingService;
     let colorService: ColorService;

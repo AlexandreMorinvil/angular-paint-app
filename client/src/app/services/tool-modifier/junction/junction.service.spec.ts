@@ -1,12 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { JunctionModifierState } from './junction-state';
 import { JunctionService } from './junction.service';
-
+// The disablement of the "any" tslint rule is justified in this situation as the prototype
+// of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
+// tslint:disable:no-any
 describe('WidthService', () => {
     let service: JunctionService;
-    // The disablement of the "any" tslint rule is justified in this situation as the prototype
-    // of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
-    // tslint:disable:no-any
     let setStateSpy: jasmine.Spy<any>;
 
     beforeEach(() => {

@@ -1,12 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 import { InteractionPaint } from '@app/classes/action/interaction-paint';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
-// import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { ToleranceService } from '@app/services/tool-modifier/tolerance/tolerance.service';
 import { PaintService } from './paint.service';
-
+// The disablement of the "any" tslint rule is justified in this situation as the prototype
+// of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
+// tslint:disable:no-any
 describe('PaintService', () => {
     let service: PaintService;
     let mouseEvent: MouseEvent;
@@ -17,9 +18,6 @@ describe('PaintService', () => {
     let previewCtxStub: CanvasRenderingContext2D;
     let canvasStub: HTMLCanvasElement;
 
-    // The disablement of the "any" tslint rule is justified in this situation as the prototype
-    // of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
-    // tslint:disable:no-any
     let sameColorFillSpy: jasmine.Spy<any>;
     let floodFillSpy: jasmine.Spy<any>;
 
@@ -35,7 +33,6 @@ describe('PaintService', () => {
         colorService = TestBed.inject(ColorService);
         toleranceService = TestBed.inject(ToleranceService);
 
-        // tslint:disable:no-any
         sameColorFillSpy = spyOn<any>(service, 'sameColorFill').and.callThrough();
         floodFillSpy = spyOn<any>(service, 'floodFill').and.callThrough();
         // No need to justify numbers to create a mock rectangles

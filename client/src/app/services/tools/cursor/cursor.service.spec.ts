@@ -4,12 +4,12 @@ import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { CursorService } from './cursor.service';
-
+// tslint:disable:no-any
 describe('CursorService', () => {
     let service: CursorService;
     let mouseEvent25: MouseEvent;
     let mouseEvent500: MouseEvent;
-    // tslint:disable:no-any
+
     let drawnAnchorSpy: jasmine.Spy<any>;
     let checkHitSpy: jasmine.Spy<any>;
     let moveHeightSpy: jasmine.Spy<any>;
@@ -29,7 +29,6 @@ describe('CursorService', () => {
             providers: [{ provide: DrawingService, useValue: jasmine.createSpyObj('DrawingService', ['resize']) }],
         });
         service = TestBed.inject(CursorService);
-        // tslint:disable:no-any
         drawnAnchorSpy = spyOn<any>(service, 'drawnAnchor').and.callThrough();
         checkHitSpy = spyOn<any>(service, 'checkHit').and.callThrough();
         moveHeightSpy = spyOn<any>(service, 'moveHeight').and.callThrough();

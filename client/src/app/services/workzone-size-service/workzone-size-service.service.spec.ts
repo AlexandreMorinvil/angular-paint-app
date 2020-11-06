@@ -1,5 +1,3 @@
-/* tslint:disable:no-unused-variable */
-
 import { inject, TestBed } from '@angular/core/testing';
 import { WorkzoneSizeService } from './workzone-size.service';
 
@@ -54,18 +52,18 @@ describe('Service: WorkzoneSizeService', () => {
     it('should never be smaller than drawing zone minimal size ', inject([WorkzoneSizeService], (service: WorkzoneSizeService) => {
         const min = service.DRAWINGZONE_MINIMAL_SIZE;
         const smallerThanMin = service.DRAWINGZONE_MINIMAL_SIZE / 2;
-        service.drawingZoneWidth = smallerThanMin;
+        service.drawingZoneHeight = smallerThanMin;
         service.drawingZoneWidth = smallerThanMin;
 
         service.resizeDrawingZone();
-        expect(service.drawingZoneWidth).toEqual(min);
+        expect(service.drawingZoneHeight).toEqual(min);
         expect(service.drawingZoneWidth).toEqual(min);
     }));
 
     it('should never be smaller than working zone minimal size ', inject([WorkzoneSizeService], (service: WorkzoneSizeService) => {
         const min = service.WORKZONE_MINIMAL_SIZE;
         const smallerThanMin = service.WORKZONE_MINIMAL_SIZE / 2;
-        service.workZoneWidth = smallerThanMin;
+        service.drawingZoneHeight = smallerThanMin;
         service.workZoneWidth = smallerThanMin;
 
         spyOnProperty(window, 'innerWidth').and.returnValue(smallerThanMin);
