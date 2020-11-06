@@ -18,8 +18,9 @@ export class ModalSaveComponent {
     private readonly MAX_NUMBER_OF_TAGS: number = 15;
     private readonly MAX_LENGHT_DRAW_NAME: number = 50;
     private readonly MAX_LENGHT_NAME_TAG: number = 25;
-    // private readonly ERROR_NO_DRAWING_NAME = 'Les dessins doivent contenir un nom';
-    // private readonly ERROR_NUMBER_TAG_GREATER_MAXIMUM = 'Le nombre détiquettes est supérieur à la limite de 15';
+    private readonly ERROR_NO_DRAWING_NAME = 'Les dessins doivent contenir un nom';
+    private readonly ERROR_NUMBER_TAG_GREATER_MAXIMUM = 'Le nombre détiquettes est supérieur à la limite de 15';
+    private readonly ERROR_NAME_SPECIAL_CHARACTERS = 'Le nom des dessins ne peut pas contenir de caractères spéciaux';
     // private readonly ERROR_NO_TAG_NAME = 'Les étiquettes assignées ne peuvent pas être vides';
     // private readonly ERROR_MAX_LENGTH_NAME_TAG = 'Les étiquettes des dessions doivent contenir un maximum de 25 caractères';
     // private readonly ERROR_NO_IMAGE_SOURCE = 'Le dessin a pas une image source';
@@ -78,8 +79,19 @@ export class ModalSaveComponent {
     }
 
     private validateDrawName(name: string): boolean {
-        const noName = '';
-        return name !== noName && name.length <= this.MAX_LENGHT_DRAW_NAME && /^[0-9a-zA-Z]*$/g.test(name);
+        if (name === '') {
+            alert(this.ERROR_NO_DRAWING_NAME);
+            return false;
+        }
+        if (name.length > this.MAX_LENGHT_DRAW_NAME) {
+            alert(this.ERROR_NUMBER_TAG_GREATER_MAXIMUM);
+            return false;
+        }
+        if (!/^[0-9a-zA-Z]*$/g.test(name)) {
+            alert(this.ERROR_NAME_SPECIAL_CHARACTERS);
+            return false;
+        }
+        return true;
     }
 
     private validateTag(tag: string): boolean {

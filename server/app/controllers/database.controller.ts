@@ -21,8 +21,6 @@ export class DatabaseController {
         this.configureRouter();
     }
 
-    // test serveur qui plante
-
     private configureRouter(): void {
         this.router = Router();
 
@@ -89,14 +87,6 @@ export class DatabaseController {
         });
 
         this.router.patch(this.ROUTING_PATCH, async (req: Request, res: Response, next: NextFunction) => {
-            // this.databaseService
-            //     .updateDrawing(req.params.drawingId, req.body)
-            //     .then((drawing: DrawingToDatabase) => {
-            //         res.json(drawing);
-            //     })
-            //     .catch((error: Error) => {
-            //         res.status(StatusCodes.NOT_FOUND).send(error.message);
-            //     });
             this.databaseService
                 .updateDrawing(req.params.drawingId, req.body)
                 .then(() => {

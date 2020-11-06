@@ -340,7 +340,7 @@ describe('Database service', () => {
     });
 
     it('should modify an existing drawing data if a valid drawing id  is sent', async () => {
-        let modifiedDrawing: DrawingToDatabase = { _id: '1', name: 'nomtest2', tags: ['tag3', 'tag4'] };
+        let modifiedDrawing: DrawingToDatabase = { _id: '1', name: 'nomtestABC', tags: ['tag3', 'tag4'] };
         await databaseService.updateDrawing('1', modifiedDrawing);
         let drawings = await databaseService.collection.find({}).toArray();
         expect(drawings.length).to.equal(1);

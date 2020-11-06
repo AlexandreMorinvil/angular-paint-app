@@ -104,7 +104,7 @@ export class DatabaseService {
         try {
             this.validateImageSource(imageSource);
             this.validateDrawing(drawing);
-            this.collection
+            return this.collection
                 .insertOne(drawing)
                 .then((returnValue) => {
                     this.drawId = returnValue.insertedId.toString();
