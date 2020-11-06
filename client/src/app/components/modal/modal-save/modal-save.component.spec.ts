@@ -53,7 +53,6 @@ describe('ModalSaveComponent', () => {
         fixture = TestBed.createComponent(ModalSaveComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
-        // tslint:disable:no-string-literal
         (component as any).saveService.drawingService.baseCtx = baseCtxStub;
         (component as any).saveService.drawingService.previewCtx = previewCtxStub;
         (component as any).saveService.drawingService.canvas = canvasStub;
