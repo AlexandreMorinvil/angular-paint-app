@@ -1,0 +1,48 @@
+<div class="container">
+    <h1 class="title">Choisir un Dessin</h1>
+
+    <div id="carouselExampleControls" class="grid-carousel">
+        <div class="area-back-button area-button">
+            <button id="back-button" (click)="movePrevious()">Précédent</button>
+        </div>
+        <ng-container *ngFor="let drawing of getCurrentDrawings()">
+            <button class="drawing-form grid-drawing-form" (click)="drawingClicked(drawing)">
+                <img [src]="getDrawingUrl(drawing)" (error)="onImgError($event, drawing)" />
+                <p>{{ drawing.name }}</p>
+                <p>{{ drawing.tags }}</p>
+            </button>
+        </ng-container>
+        <div class="area-front-button area-button">
+            <button (click)="moveNext()">Suivant</button>
+        </div>
+    </div>
+
+    <div>
+        <mat-form-field class="tags">
+            <mat-chip-list #chipList aria-label="tag selection">
+                <mat-label>Filtrage par Étiquettes</mat-label>
+                <mat-chip *ngFor="let tag of getActiveTags()" (removed)="removeTag(tag)">
+                    {{ tag.tagName }}
+                    <mat-icon matChipRemove>x</mat-icon>
+                </mat-chip>
+                <input
+                    placeholder="Ex:étiquette"
+                    [matChipInputFor]="chipList"
+                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                    (matChipInputTokenEnd)="addTag($event)"
+                />
+            </mat-chip-list>
+        </mat-form-field>
+        <ng-container *ngIf="getFilteredDrawings().length === 0">
+            <p id="NoResults">Aucun dessin ne corresponds à votre recherche</p>
+        </ng-container>
+    </div>
+
+    <div mat-dialog-actions>
+        <mat-label>
+            Pour effacer un dessin, appuyer sur le bouton Effacer puis sélectionner le dessin. Pour annuler la sélection, appuyer de de nouveau sur le
+            bouton.
+        </mat-label>
+        <button (click)="deleteDrawingButtonSelected()">Effacer</button>
+    </div>
+</div>

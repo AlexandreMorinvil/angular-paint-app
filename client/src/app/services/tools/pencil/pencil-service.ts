@@ -1,18 +1,13 @@
 import { Injectable } from '@angular/core';
+import { InteractionPath } from '@app/classes/action/interaction-path';
 import { Description } from '@app/classes/description';
+import { MouseButton } from '@app/classes/mouse';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
-
-export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
-}
 
 @Injectable({
     providedIn: 'root',
@@ -20,7 +15,12 @@ export enum MouseButton {
 export class PencilService extends Tool {
     private pathData: Vec2[];
 
-    constructor(drawingService: DrawingService, private colorService: ColorService, private widthService: WidthService) {
+    constructor(
+        drawingService: DrawingService,
+        private drawingStateTrackingService: DrawingStateTrackerService,
+        private colorService: ColorService,
+        private widthService: WidthService,
+    ) {
         super(drawingService, new Description('crayon', 'c', 'pencil_icon.png'));
         this.modifiers.push(this.colorService);
         this.modifiers.push(this.widthService);
@@ -28,6 +28,8 @@ export class PencilService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
+        this.drawingService.previewCtx.setLineDash([0]);
+        this.drawingService.baseCtx.setLineDash([0]);
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.clearPath();
@@ -41,6 +43,7 @@ export class PencilService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.drawLine(this.drawingService.baseCtx, this.pathData);
+            this.drawingStateTrackingService.addAction(this, new InteractionPath(this.pathData));
         }
         this.mouseDown = false;
         this.clearPath();
@@ -62,7 +65,7 @@ export class PencilService extends Tool {
         }
     }
 
-    drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
         ctx.lineWidth = this.widthService.getWidth(); // width ajustment
@@ -83,11 +86,11 @@ export class PencilService extends Tool {
         ctx.stroke();
     }
 
-    private isInCanvas(mousePosition: Vec2): boolean {
-        return mousePosition.x <= this.drawingService.previewCtx.canvas.width && mousePosition.y <= this.drawingService.previewCtx.canvas.height;
-    }
-
     private clearPath(): void {
         this.pathData = [];
+    }
+
+    execute(interaction: InteractionPath): void {
+        this.drawLine(this.drawingService.baseCtx, interaction.path);
     }
 }

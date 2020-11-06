@@ -1,15 +1,15 @@
 import { TestBed } from '@angular/core/testing';
-
+import { ColorModifierState } from './color-state';
 import { ColorService } from './color.service';
-
+// The disablement of the "any" tslint rule is justified in this situation as the prototype
+// of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
+// tslint:disable:no-any
 describe('ColorService', () => {
     let colorService: ColorService;
 
-    // The disablement of the "any" tslint rule is justified in this situation as the prototype
-    // of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
-    // tslint:disable:no-any
     let validateColorSpy: jasmine.Spy<any>;
     let validateOpacitySpy: jasmine.Spy<any>;
+    let setStateSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -19,6 +19,7 @@ describe('ColorService', () => {
 
         validateColorSpy = spyOn<any>(colorService, 'validateColor').and.callThrough();
         validateOpacitySpy = spyOn<any>(colorService, 'validateOpacity').and.callThrough();
+        setStateSpy = spyOn<any>(colorService, 'setState').and.callThrough();
     });
 
     it('should be created', () => {
@@ -273,5 +274,20 @@ describe('ColorService', () => {
         const repetitiveColorOccurences = previousColorList.reduce((a, v) => (v === repetitiveColor ? a + 1 : a), 0);
 
         expect(repetitiveColorOccurences).toEqual(1);
+    });
+
+    it(' should call setState to the correct incoming argument ', () => {
+        const state = {
+            primaryColor: '#ffffff',
+            primaryColorOpacity: 1,
+            secondaryColor: '#000000',
+            secondaryColorOpacity: 1,
+        } as ColorModifierState;
+        colorService.setState(state);
+        expect(setStateSpy).toHaveBeenCalled();
+        expect(colorService.getPrimaryColor()).toBe(state.primaryColor);
+        expect(colorService.getPrimaryColorOpacity()).toBe(state.primaryColorOpacity);
+        expect(colorService.getSecondaryColor()).toBe(state.secondaryColor);
+        expect(colorService.getSecondaryColorOpacity()).toBe(state.secondaryColorOpacity);
     });
 });

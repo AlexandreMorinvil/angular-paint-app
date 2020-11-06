@@ -1,38 +1,42 @@
 import { HttpClientModule } from '@angular/common/http';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
-import { UserGuideModalComponent } from '@app/components/user-guide-modal/user-guide-modal.component';
-import { IndexService } from '@app/services/index/index.service';
-import { UserGuideModalService } from '@app/services/user-guide-modal/user-guide-modal.service';
+import { UserGuideModalComponent } from '@app/components/modal/modal-user-guide/modal-user-guide.component';
+import { ModalHandlerService } from '@app/services/modal-handler/modal-handler';
 import { MainPageComponent } from './main-page.component';
 
+// tslint:disable: no-any
 describe('MainPageComponent', () => {
     let component: MainPageComponent;
     let fixture: ComponentFixture<MainPageComponent>;
+    let modalHandlerService: ModalHandlerService;
+    let openGuideSpy: jasmine.Spy<any>;
+    let modalHandlerServiceSpy: jasmine.Spy<any>;
     const dialogSpy: jasmine.SpyObj<MatDialog> = jasmine.createSpyObj('MatDialog', ['open']);
-    // tslint:disable-next-line: no-any
     const dialogRefSpy: jasmine.SpyObj<MatDialogRef<MainPageComponent, any>> = jasmine.createSpyObj('MatDialogRef', ['afterClosed']);
     dialogSpy.open.and.returnValue(dialogRefSpy);
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            imports: [RouterTestingModule, HttpClientModule],
-            declarations: [MainPageComponent, UserGuideModalComponent],
-            providers: [
-                { provide: IndexService },
-                { provide: UserGuideModalService },
-                { provide: MAT_DIALOG_DATA, useValue: {} },
-                { provide: MatDialogRef, useValue: {} },
-                { provide: MatDialog, useValue: dialogSpy },
-                { provide: UserGuideModalService },
-            ],
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                imports: [RouterTestingModule, HttpClientModule],
+                declarations: [MainPageComponent, UserGuideModalComponent],
+                providers: [
+                    { provide: MAT_DIALOG_DATA, useValue: {} },
+                    { provide: MatDialogRef, useValue: {} },
+                    { provide: MatDialog, useValue: dialogSpy },
+                    ModalHandlerService,
+                ],
+            }).compileComponents();
+        }),
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(MainPageComponent);
+        modalHandlerService = TestBed.inject(ModalHandlerService);
         component = fixture.componentInstance;
+        openGuideSpy = spyOn<any>((component as any).modalHandler, 'openUserGuide');
         fixture.detectChanges();
     });
 
@@ -40,8 +44,14 @@ describe('MainPageComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should open Guide', () => {
+    it('should call openCarouselDialog', () => {
+        modalHandlerServiceSpy = spyOn<any>(modalHandlerService, 'openDrawingCarouselDialog');
+        component.openDrawingCarousel();
+        expect(modalHandlerServiceSpy).toHaveBeenCalled();
+    });
+
+    it('should call openUserGuide', () => {
         component.openUserGuide();
-        expect(dialogSpy.open).toHaveBeenCalled();
+        expect(openGuideSpy).toHaveBeenCalled();
     });
 });

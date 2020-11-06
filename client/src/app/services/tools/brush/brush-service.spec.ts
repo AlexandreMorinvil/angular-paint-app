@@ -1,9 +1,11 @@
 import { TestBed } from '@angular/core/testing';
+import { InteractionPath } from '@app/classes/action/interaction-path';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { TextureEnum, TextureService } from '@app/services/tool-modifier/texture/texture.service';
 import { BrushService } from './brush-service';
+
 // The disablement of the "any" tslint rule is justified in this situation as the prototype
 // of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
 // tslint:disable:no-any
@@ -13,6 +15,7 @@ describe('BrushService', () => {
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     let baseCtxStub: CanvasRenderingContext2D;
+    let canvasStub: HTMLCanvasElement;
     let previewCtxStub: CanvasRenderingContext2D;
     let drawLineSpy: jasmine.Spy<any>;
     let shadowTextureSpy: jasmine.Spy<any>;
@@ -24,8 +27,8 @@ describe('BrushService', () => {
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        canvasStub = canvasTestHelper.canvas;
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
-
         TestBed.configureTestingModule({
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         });
@@ -37,10 +40,15 @@ describe('BrushService', () => {
         squareTextureSpy = spyOn<any>(service, 'squareTexture').and.callThrough();
         dashTextureSpy = spyOn<any>(service, 'dashTexture').and.callThrough();
         zigzagTextureSpy = spyOn<any>(service, 'zigzagTexture').and.callThrough();
-        // Configuration du spy du service
-        // tslint:disable:no-string-literal
-        service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
-        service['drawingService'].previewCtx = previewCtxStub;
+
+        const canvasWidth = 1000;
+        const canvasHeight = 800;
+
+        (service as any).drawingService.baseCtx = baseCtxStub;
+        (service as any).drawingService.previewCtx = previewCtxStub;
+        (service as any).drawingService.canvas = canvasStub;
+        (service as any).drawingService.canvas.width = canvasWidth;
+        (service as any).drawingService.canvas.height = canvasHeight;
 
         mouseEvent = {
             offsetX: 25,
@@ -146,5 +154,16 @@ describe('BrushService', () => {
         service.mouseDown = true;
         service.onMouseUp(mouseEvent);
         expect(zigzagTextureSpy).toHaveBeenCalled();
+    });
+
+    it('should execute and drawLine is called', () => {
+        const interaction = {
+            path: [
+                { x: 0, y: 0 },
+                { x: 1, y: 1 },
+            ],
+        } as InteractionPath;
+        service.execute(interaction);
+        expect(drawLineSpy).toHaveBeenCalled();
     });
 });

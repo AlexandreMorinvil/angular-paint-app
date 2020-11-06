@@ -12,6 +12,6 @@ describe('ToolboxService', () => {
         object = new Description();
         expect(object.name).toEqual('nom inconnu');
         expect(object.shortcut).toEqual('');
-        expect(object.iconDirectory).toEqual('assets/images/question_mark.png');
+        expect(object.iconDirectory).toEqual('assets/images/icon/question_mark.png');
     });
 });

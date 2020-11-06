@@ -1,6 +1,7 @@
-// import { variable } from '@angular/compiler/src/output/output_ast';
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ModalHandlerService } from '@app/services/modal-handler/modal-handler';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
 import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzone-size.service';
 
@@ -21,10 +22,15 @@ export class DrawingComponent implements AfterViewInit {
     private previewCtx: CanvasRenderingContext2D;
     private editCtx: CanvasRenderingContext2D;
     private TOOL_BOX_WIDTH: number = 313;
-
     hasBeenDrawnOnto: boolean;
 
-    constructor(private drawingService: DrawingService, public toolbox: ToolboxService, private workzoneSizeService: WorkzoneSizeService) {}
+    constructor(
+        public modalHandlerService: ModalHandlerService,
+        private drawingService: DrawingService,
+        public toolbox: ToolboxService,
+        private workzoneSizeService: WorkzoneSizeService,
+        private drawingStateTrackerService: DrawingStateTrackerService,
+    ) {}
 
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -36,6 +42,9 @@ export class DrawingComponent implements AfterViewInit {
         this.editCtx.canvas.width = window.innerWidth - this.TOOL_BOX_WIDTH;
         this.editCtx.canvas.height = window.innerHeight;
         this.drawingService.hasBeenDrawnOnto = false;
+        // Fills the canvas with white
+        this.baseCtx.fillStyle = '#FFFFFF';
+        this.baseCtx.fillRect(0, 0, this.baseCtx.canvas.width, this.baseCtx.canvas.height);
     }
 
     resetDrawing(): void {
@@ -84,21 +93,32 @@ export class DrawingComponent implements AfterViewInit {
     @HostListener('window:keyup', ['$event'])
     keyEventUp(event: KeyboardEvent): void {
         if (event.key === 'Shift') {
-            this.toolbox.getCurrentTool().onShiftUp(event);
+            if (this.drawingService.shortcutEnable) {
+                this.toolbox.getCurrentTool().onShiftUp(event);
+            }
             // The deprecation warning is justified in this case because some operating systems
             // do recognize the keycodes while others will prefere the 'Backspace' reference
             // tslint:disable-next-line:deprecation
         } else if (event.key === 'Backspace' || event.keyCode === this.BACKSPACE_KEYCODE) {
-            this.toolbox.getCurrentTool().onBackspaceDown(event);
+            if (this.drawingService.shortcutEnable) {
+                this.toolbox.getCurrentTool().onBackspaceDown(event);
+            }
+            // tslint:disable:prefer-switch
+        } else if (event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+            this.toolbox.getCurrentTool().onArrowUp(event);
         } else {
-            for (const i in this.toolbox.getAvailableTools()) {
-                if (this.toolbox.getAvailableTools()[i].shortcut === event.key.toLowerCase()) {
-                    this.toolbox.setSelectedTool(this.toolbox.getAvailableTools()[i]);
+            if (this.drawingService.shortcutEnable) {
+                for (const i in this.toolbox.getAvailableTools()) {
+                    if (this.toolbox.getAvailableTools()[i].shortcut === event.key.toLowerCase()) {
+                        this.toolbox.setSelectedTool(this.toolbox.getAvailableTools()[i]);
+                    }
                 }
             }
         }
     }
-
+    // The disablement of the "cyclomatic-complexity" tslint rule is justified in this situation
+    // since it is required for the program to have a number of linearly independents paths that is high
+    // tslint:disable:cyclomatic-complexity
     @HostListener('window:keydown', ['$event'])
     onShiftDown(event: KeyboardEvent): void {
         if (event.key === 'Shift') {
@@ -106,6 +126,27 @@ export class DrawingComponent implements AfterViewInit {
         } else if (event.key === 'Escape') {
             this.toolbox.getCurrentTool().onEscapeDown(event);
             this.hasBeenDrawnOnto = true;
+        } else if (event.ctrlKey && event.key.toLowerCase() === 's' && this.drawingService.shortcutEnable) {
+            event.preventDefault(); // to prevent key of windows
+            this.modalHandlerService.openSaveDialog();
+        } else if (event.ctrlKey && event.key.toLowerCase() === 'g' && this.drawingService.shortcutEnable) {
+            event.preventDefault(); // to prevent key of windows
+            this.modalHandlerService.openDrawingCarouselDialog();
+        } else if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'z') {
+            event.preventDefault(); // to prevent key of windows
+            this.drawingStateTrackerService.onCtrlShiftZDown();
+        } else if (event.ctrlKey && event.key.toLowerCase() === 'z') {
+            event.preventDefault(); // to prevent key of windows
+            this.drawingStateTrackerService.onCtrlZDown();
+        } else if (event.ctrlKey && event.key.toLowerCase() === 'e' && this.drawingService.shortcutEnable) {
+            event.preventDefault(); // to prevent key of windows
+            this.modalHandlerService.openExportDialog();
+        } else if (event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+            event.preventDefault(); // to prevent key of windows
+            this.toolbox.getCurrentTool().onArrowDown(event);
+        } else if (event.ctrlKey && event.key.toLowerCase() === 'a') {
+            event.preventDefault(); // to prevent key of windows
+            this.toolbox.getCurrentTool().onCtrlADown();
         }
     }
 

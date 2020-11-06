@@ -1,17 +1,12 @@
 import { Injectable } from '@angular/core';
+import { InteractionPath } from '@app/classes/action/interaction-path';
 import { Description } from '@app/classes/description';
+import { MouseButton } from '@app/classes/mouse';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
-
-export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
-}
 
 @Injectable({
     providedIn: 'root',
@@ -20,8 +15,8 @@ export class EraserService extends Tool {
     private pathData: Vec2[];
     private eraserColor: string = '#FFFFFF';
     minWidth: number = 5;
-
-    constructor(drawingService: DrawingService, private widthService: WidthService) {
+    // tslint:disable:prettier
+    constructor(drawingService: DrawingService, private drawingStateTrackingService: DrawingStateTrackerService, private widthService: WidthService) {
         super(drawingService, new Description('efface', 'e', 'erase_icon.png'));
         this.modifiers.push(this.widthService);
         this.clearPath();
@@ -41,6 +36,7 @@ export class EraserService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.drawLine(this.drawingService.baseCtx, this.pathData);
+            this.drawingStateTrackingService.addAction(this, new InteractionPath(this.pathData));
         }
         this.mouseDown = false;
         this.clearPath();
@@ -50,7 +46,6 @@ export class EraserService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawLine(this.drawingService.baseCtx, this.pathData);
         }
@@ -76,20 +71,37 @@ export class EraserService extends Tool {
     }
 
     private eraserVisual(event: MouseEvent): void {
-        const borderColor = '#000000';
-        const borderWidth = 1;
-        const squareWidth: number = Math.max(this.widthService.getWidth(), this.minWidth);
+        const mousePosition: Vec2 = { x: event.offsetX, y: event.offsetY };
+        if (this.isInCanvas(mousePosition)) {
+            const borderColor = '#000000';
+            const borderWidth = 1;
+            const squareWidth: number = Math.max(this.widthService.getWidth(), this.minWidth);
 
-        this.drawingService.previewCtx.strokeStyle = borderColor;
-        this.drawingService.previewCtx.fillStyle = this.eraserColor;
-        this.drawingService.previewCtx.lineWidth = borderWidth;
+            this.drawingService.previewCtx.strokeStyle = borderColor;
+            this.drawingService.previewCtx.fillStyle = this.eraserColor;
+            this.drawingService.previewCtx.lineWidth = borderWidth;
 
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.drawingService.previewCtx.strokeRect(event.offsetX - squareWidth / 2, event.offsetY - squareWidth / 2, squareWidth + 1, squareWidth + 1);
-        this.drawingService.previewCtx.fillRect(event.offsetX - squareWidth / 2, event.offsetY - squareWidth / 2, squareWidth + 1, squareWidth + 1);
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawingService.previewCtx.strokeRect(
+                event.offsetX - squareWidth / 2,
+                event.offsetY - squareWidth / 2,
+                squareWidth + 1,
+                squareWidth + 1,
+            );
+            this.drawingService.previewCtx.fillRect(
+                event.offsetX - squareWidth / 2,
+                event.offsetY - squareWidth / 2,
+                squareWidth + 1,
+                squareWidth + 1,
+            );
+        } else this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 
     private clearPath(): void {
         this.pathData = [];
+    }
+
+    execute(interaction: InteractionPath): void {
+        this.drawLine(this.drawingService.baseCtx, interaction.path);
     }
 }

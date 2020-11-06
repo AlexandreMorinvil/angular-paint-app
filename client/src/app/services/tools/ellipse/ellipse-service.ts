@@ -1,28 +1,24 @@
 import { Injectable } from '@angular/core';
+import { InteractionStartEnd } from '@app/classes/action/interaction-start-end';
 import { Description } from '@app/classes/description';
+import { MouseButton } from '@app/classes/mouse';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
 
-export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
-}
-
 @Injectable({
     providedIn: 'root',
 })
 export class EllipseService extends Tool {
-    pathData: Vec2[];
+    private pathData: Vec2[];
 
     constructor(
         drawingService: DrawingService,
+        private drawingStateTrackingService: DrawingStateTrackerService,
         private colorService: ColorService,
         private tracingService: TracingService,
         private widthService: WidthService,
@@ -46,17 +42,18 @@ export class EllipseService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         this.resetBorder();
-        if (event.shiftKey) {
+        if (this.shiftDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.drawCircle(this.drawingService.baseCtx, this.pathData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        } else if (this.mouseDown && !event.shiftKey) {
+        } else if (this.mouseDown && !this.shiftDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.drawEllipse(this.drawingService.baseCtx, this.pathData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
+        this.drawingStateTrackingService.addAction(this, new InteractionStartEnd(this.mouseDownCoord, this.pathData, this.shiftDown));
 
         this.mouseDown = false;
         this.clearPath();
@@ -74,7 +71,7 @@ export class EllipseService extends Tool {
         } else {
             this.resetBorder();
         }
-        if (event.shiftKey && this.mouseDown) {
+        if (this.shiftDown && this.mouseDown) {
             this.pathData.push(mousePosition);
             // We draw on the preview canvas and erase it each time the mouse is moved
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -127,18 +124,20 @@ export class EllipseService extends Tool {
     }
 
     onShiftDown(): void {
+        this.shiftDown = true;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
         this.drawCircle(this.drawingService.previewCtx, this.pathData);
     }
 
     onShiftUp(): void {
+        this.shiftDown = false;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
         this.drawEllipse(this.drawingService.previewCtx, this.pathData);
     }
 
-    drawCircle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    private drawCircle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
 
         const mouseMoveCoord = path[path.length - 1];
@@ -167,7 +166,7 @@ export class EllipseService extends Tool {
         this.applyTrace(ctx);
     }
 
-    applyTrace(ctx: CanvasRenderingContext2D): void {
+    private applyTrace(ctx: CanvasRenderingContext2D): void {
         ctx.lineWidth = this.widthService.getWidth();
         ctx.fillStyle = this.colorService.getPrimaryColor();
         ctx.strokeStyle = this.colorService.getSecondaryColor();
@@ -181,16 +180,18 @@ export class EllipseService extends Tool {
         }
     }
 
-    clearPath(): void {
+    private clearPath(): void {
         this.pathData = [];
-    }
-
-    private isInCanvas(mousePosition: Vec2): boolean {
-        return mousePosition.x <= this.drawingService.baseCtx.canvas.width && mousePosition.y <= this.drawingService.baseCtx.canvas.height;
     }
 
     private resetBorder(): void {
         this.drawingService.previewCtx.canvas.width = this.drawingService.baseCtx.canvas.width;
         this.drawingService.previewCtx.canvas.height = this.drawingService.baseCtx.canvas.height;
+    }
+
+    execute(interaction: InteractionStartEnd): void {
+        this.mouseDownCoord = interaction.startPoint;
+        if (interaction.shiftDown) this.drawCircle(this.drawingService.baseCtx, interaction.path);
+        else this.drawEllipse(this.drawingService.baseCtx, interaction.path);
     }
 }

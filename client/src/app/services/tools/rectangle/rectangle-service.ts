@@ -1,19 +1,14 @@
 import { Injectable } from '@angular/core';
+import { InteractionStartEnd } from '@app/classes/action/interaction-start-end';
 import { Description } from '@app/classes/description';
+import { MouseButton } from '@app/classes/mouse';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
-
-export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
-}
 
 @Injectable({
     providedIn: 'root',
@@ -22,10 +17,11 @@ export class RectangleService extends Tool {
     private pathData: Vec2[];
 
     constructor(
-        drawingService: DrawingService,
+        public drawingService: DrawingService,
+        private drawingStateTrackingService: DrawingStateTrackerService,
         private colorService: ColorService,
         private tracingService: TracingService,
-        public widthService: WidthService,
+        private widthService: WidthService,
     ) {
         super(drawingService, new Description('rectangle', '1', 'rectangle_icon.png'));
         this.modifiers.push(this.colorService);
@@ -49,6 +45,7 @@ export class RectangleService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.drawRectangle(this.drawingService.baseCtx, this.pathData);
+            this.drawingStateTrackingService.addAction(this, new InteractionStartEnd(this.mouseDownCoord, this.pathData, this.shiftDown));
         }
         this.mouseDown = false;
         this.clearPath();
@@ -117,7 +114,7 @@ export class RectangleService extends Tool {
         this.setAttribute(ctx);
     }
 
-    setAttribute(ctx: CanvasRenderingContext2D): void {
+    private setAttribute(ctx: CanvasRenderingContext2D): void {
         ctx.lineWidth = this.widthService.getWidth();
         ctx.fillStyle = this.colorService.getPrimaryColor();
         ctx.strokeStyle = this.colorService.getSecondaryColor();
@@ -131,7 +128,7 @@ export class RectangleService extends Tool {
         }
     }
 
-    drawPreviewRect(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    private drawPreviewRect(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         const mouseMoveCoord = path[path.length - 1];
         let width = mouseMoveCoord.x - this.mouseDownCoord.x;
@@ -192,12 +189,14 @@ export class RectangleService extends Tool {
         this.pathData = [];
     }
 
-    private isInCanvas(mousePosition: Vec2): boolean {
-        return mousePosition.x <= this.drawingService.baseCtx.canvas.width && mousePosition.y <= this.drawingService.baseCtx.canvas.height;
-    }
-
     private resetBorder(): void {
         this.drawingService.previewCtx.canvas.width = this.drawingService.baseCtx.canvas.width;
         this.drawingService.previewCtx.canvas.height = this.drawingService.baseCtx.canvas.height;
+    }
+
+    execute(interaction: InteractionStartEnd): void {
+        this.mouseDownCoord = interaction.startPoint;
+        this.shiftDown = interaction.shiftDown;
+        this.drawRectangle(this.drawingService.baseCtx, interaction.path);
     }
 }

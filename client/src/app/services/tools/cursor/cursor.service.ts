@@ -1,17 +1,10 @@
 import { Injectable } from '@angular/core';
+import { InteractionResize } from '@app/classes/action/interaction-resize';
 import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzone-size.service';
-
-export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
-}
 
 const minSurfaceSize = 250;
 
@@ -21,24 +14,16 @@ const minSurfaceSize = 250;
 export class CursorService extends Tool {
     mouseDownCoord: Vec2;
     mouseDown: boolean = false;
-    dotsize: number = 10;
-    clickOnAnchor: boolean = false;
-    anchorHit: number = 0;
-    // tslint:disable-next-line:no-any
-    imageData: any;
+    private dotsize: number = 10;
+    private clickOnAnchor: boolean = false;
+    private anchorHit: number = 0;
 
-    constructor(drawingService: DrawingService, private workzoneService: WorkzoneSizeService) {
+    constructor(drawingService: DrawingService, private drawingStateTrackingService: DrawingStateTrackerService) {
         super(drawingService, new Description('redimensionneur', 'y', 'crop-icon.png'));
     }
 
     onMouseDown(event: MouseEvent): void {
         this.drawingService.previewCtx.fillStyle = '#000000';
-        this.imageData = this.drawingService.baseCtx.getImageData(
-            0,
-            0,
-            this.drawingService.baseCtx.canvas.width,
-            this.drawingService.baseCtx.canvas.height,
-        );
         this.mouseDownCoord = this.getPositionFromMouse(event);
         this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
         this.checkHit(this.mouseDownCoord, this.drawingService.canvas);
@@ -48,15 +33,20 @@ export class CursorService extends Tool {
     onMouseUp(event: MouseEvent): void {
         this.clickOnAnchor = false;
         this.mouseDown = false;
-        this.drawingService.baseCtx.canvas.width = this.drawingService.previewCtx.canvas.width;
-        this.drawingService.baseCtx.canvas.height = this.drawingService.previewCtx.canvas.height;
+        if (
+            this.drawingService.baseCtx.canvas.width === this.drawingService.previewCtx.canvas.width &&
+            this.drawingService.baseCtx.canvas.height === this.drawingService.previewCtx.canvas.height
+        )
+            return;
         this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
-        this.drawingService.baseCtx.putImageData(this.imageData, 0, 0);
-
-        this.workzoneService.updateDrawingZoneDimension({
-            width: this.drawingService.previewCtx.canvas.width,
-            height: this.drawingService.previewCtx.canvas.height,
-        });
+        this.resizeDrawingZone(this.drawingService.previewCtx.canvas.width, this.drawingService.previewCtx.canvas.height);
+        this.drawingStateTrackingService.addAction(
+            this,
+            new InteractionResize({
+                x: this.drawingService.baseCtx.canvas.width,
+                y: this.drawingService.baseCtx.canvas.height,
+            }),
+        );
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -81,7 +71,11 @@ export class CursorService extends Tool {
         }
     }
 
-    moveWidth(mouseDownCoordX: number): void {
+    private resizeDrawingZone(width: number, height: number): void {
+        this.drawingService.resize(width, height);
+    }
+
+    private moveWidth(mouseDownCoordX: number): void {
         if (mouseDownCoordX >= minSurfaceSize) {
             this.drawingService.previewCtx.canvas.width = mouseDownCoordX;
         } else {
@@ -89,7 +83,7 @@ export class CursorService extends Tool {
         }
     }
 
-    moveHeight(mouseDownCoordY: number): void {
+    private moveHeight(mouseDownCoordY: number): void {
         if (mouseDownCoordY >= minSurfaceSize) {
             this.drawingService.previewCtx.canvas.height = mouseDownCoordY;
         } else {
@@ -97,7 +91,7 @@ export class CursorService extends Tool {
         }
     }
 
-    drawnAnchor(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement): void {
+    private drawnAnchor(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement): void {
         ctx.beginPath();
         ctx.arc(canvas.width, canvas.height, this.dotsize, 0, Math.PI * 2, false);
         ctx.closePath();
@@ -108,7 +102,7 @@ export class CursorService extends Tool {
         ctx.fill();
     }
 
-    checkHit(mouse: Vec2, canvas: HTMLCanvasElement): void {
+    private checkHit(mouse: Vec2, canvas: HTMLCanvasElement): void {
         let x: number;
         let y: number;
         const dotSizeSquare: number = Math.pow(this.dotsize, 2);
@@ -139,5 +133,9 @@ export class CursorService extends Tool {
             this.clickOnAnchor = false;
             this.anchorHit = 0;
         }
+    }
+
+    execute(interaction: InteractionResize): void {
+        this.resizeDrawingZone(interaction.size.x, interaction.size.y);
     }
 }

@@ -1,19 +1,14 @@
 import { Injectable } from '@angular/core';
+import { InteractionPath } from '@app/classes/action/interaction-path';
 import { Description } from '@app/classes/description';
+import { MouseButton } from '@app/classes/mouse';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TextureEnum, TextureService } from '@app/services/tool-modifier/texture/texture.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
-
-export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
-}
 
 @Injectable({
     providedIn: 'root',
@@ -23,6 +18,7 @@ export class BrushService extends Tool {
 
     constructor(
         drawingService: DrawingService,
+        private drawingStateTrackingService: DrawingStateTrackerService,
         private colorService: ColorService,
         private textureService: TextureService,
         private widthService: WidthService,
@@ -48,6 +44,7 @@ export class BrushService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.drawLine(this.drawingService.baseCtx, this.pathData);
+            this.drawingStateTrackingService.addAction(this, new InteractionPath(this.pathData));
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
         this.mouseDown = false;
@@ -218,5 +215,9 @@ export class BrushService extends Tool {
             );
         }
         ctx.stroke();
+    }
+
+    execute(interaction: InteractionPath): void {
+        this.drawLine(this.drawingService.baseCtx, interaction.path);
     }
 }

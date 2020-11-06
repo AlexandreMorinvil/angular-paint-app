@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { InteractionPath } from '@app/classes/action/interaction-path';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -9,13 +10,17 @@ describe('EraserService', () => {
     let service: EraserService;
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
+
+    let canvasStub: HTMLCanvasElement;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
+
     let drawLineSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        canvasStub = canvasTestHelper.canvas;
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
 
         TestBed.configureTestingModule({
@@ -24,10 +29,13 @@ describe('EraserService', () => {
         service = TestBed.inject(EraserService);
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
 
-        // Configuration du spy du service
-        // tslint:disable:no-string-literal
-        service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
-        service['drawingService'].previewCtx = previewCtxStub;
+        const canvasWidth = 1000;
+        const canvasHeight = 800;
+        (service as any).drawingService.baseCtx = baseCtxStub;
+        (service as any).drawingService.previewCtx = previewCtxStub;
+        (service as any).drawingService.canvas = canvasStub;
+        (service as any).drawingService.canvas.width = canvasWidth;
+        (service as any).drawingService.canvas.height = canvasHeight;
 
         mouseEvent = {
             offsetX: 25,
@@ -51,10 +59,19 @@ describe('EraserService', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
-            button: 1, // TODO: Avoir ceci dans un enum accessible
+            button: 1,
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);
+    });
+
+    it(' Preview canvas should be empty if the mouse moves out of the canvas', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = false;
+        const mouseEvent2 = { offsetX: -5, offsetY: 0, button: 0 } as MouseEvent;
+
+        service.onMouseMove(mouseEvent2);
+        expect(drawLineSpy).not.toHaveBeenCalled();
     });
 
     it(' onMouseUp should call drawLine if mouse was already down', () => {
@@ -88,5 +105,16 @@ describe('EraserService', () => {
 
         service.onMouseMove(mouseEvent);
         expect(drawLineSpy).not.toHaveBeenCalled();
+    });
+
+    it('should execute and drawLine is called', () => {
+        const interaction = {
+            path: [
+                { x: 0, y: 0 },
+                { x: 1, y: 1 },
+            ],
+        } as InteractionPath;
+        service.execute(interaction);
+        expect(drawLineSpy).toHaveBeenCalled();
     });
 });

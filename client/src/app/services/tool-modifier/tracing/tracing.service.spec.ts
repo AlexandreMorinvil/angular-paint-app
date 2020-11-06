@@ -1,13 +1,17 @@
 import { TestBed } from '@angular/core/testing';
-
+import { TracingModifierState } from './tracing-state';
 import { TracingService } from './tracing.service';
-
+// The disablement of the "any" tslint rule is justified in this situation as the prototype
+// of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
+// tslint:disable:no-any
 describe('TracingService', () => {
     let service: TracingService;
 
+    let setStateSpy: jasmine.Spy<any>;
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(TracingService);
+        setStateSpy = spyOn<any>(service, 'setState').and.callThrough();
     });
 
     it('should be created', () => {
@@ -35,5 +39,16 @@ describe('TracingService', () => {
         const value = true;
         service.setHasContour(value);
         expect(service.getHasContour()).toEqual(value);
+    });
+
+    it(' should call setState with the correct incoming argument and set hasContour and hasFill to true', () => {
+        const state = {
+            hasContour: true,
+            hasFill: true,
+        } as TracingModifierState;
+        service.setState(state);
+        expect(setStateSpy).toHaveBeenCalled();
+        expect(service.getHasContour()).toBeTrue();
+        expect(service.getHasFill()).toBeTrue();
     });
 });

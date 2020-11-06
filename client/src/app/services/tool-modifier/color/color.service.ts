@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ToolModifier } from '@app/classes/tool-modifier';
+import { ColorModifierState } from './color-state';
 
 const COLOR_WHITE = '#ffffff';
 const COLOR_BLACK = '#000000';
@@ -15,6 +16,7 @@ export class ColorService extends ToolModifier {
     readonly DEFAULT_PRIMARY_COLOR: string = COLOR_BLACK;
     readonly DEFAULT_SECONDARY_COLOR: string = COLOR_WHITE;
     readonly DEFAULT_OPACITY: number = 1;
+    readonly previousColorCount: number = 10;
 
     // Attributes
     private primaryColor: string = this.DEFAULT_PRIMARY_COLOR;
@@ -22,7 +24,6 @@ export class ColorService extends ToolModifier {
     private secondaryColor: string = this.DEFAULT_SECONDARY_COLOR;
     private secondaryColorOpacity: number = this.DEFAULT_OPACITY;
     private previousColors: string[] = [];
-    private previousColorCount: number = 10;
 
     constructor() {
         super();
@@ -85,6 +86,17 @@ export class ColorService extends ToolModifier {
         return this.previousColors;
     }
 
+    getState(): ColorModifierState {
+        return new ColorModifierState(this.primaryColor, this.primaryColorOpacity, this.secondaryColor, this.secondaryColorOpacity);
+    }
+
+    setState(state: ColorModifierState): void {
+        this.primaryColor = state.primaryColor;
+        this.primaryColorOpacity = state.primaryColorOpacity;
+        this.secondaryColor = state.secondaryColor;
+        this.secondaryColorOpacity = state.secondaryColorOpacity;
+    }
+
     private updatePreviousColors(newColor: string): void {
         // Verify if the color is already present in the list of previous colors
         let oldIndexOfNewColor = this.previousColors.length - 1;
@@ -101,29 +113,17 @@ export class ColorService extends ToolModifier {
     }
 
     private validateColor(input: string): boolean {
-        // Validate that the input starts with "#"
         if (!(input.charAt(0) === '#')) return false;
-
-        // Validate that the rest of the string is a number
         const inputNumberPart = input.substring(1);
         const inputHexadecimalNumber = parseInt(inputNumberPart, 16);
         if (isNaN(inputHexadecimalNumber)) return false;
-
-        // Validate that the string is in the range 0x000000 and 0xffffff
-
         if (!(inputHexadecimalNumber >= MINIMUM_COLOR_NUMBER)) return false;
         if (!(inputHexadecimalNumber <= MAXIMUM_COLOR_NUMBER)) return false;
-
-        // Confirm the validity
         return true;
     }
 
     private validateOpacity(input: number): boolean {
-        // Validate that the number is in the range 0 and 1
-        if (!(input >= 0)) return false;
-        if (!(input <= 1)) return false;
-
-        // Confirm the validity
+        if (input < 0 || input > 1) return false;
         return true;
     }
 }
