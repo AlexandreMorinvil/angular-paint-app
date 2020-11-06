@@ -4,7 +4,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { Router } from '@angular/router';
 import { ExportDrawingService } from '@app/services/export/export-drawing.service';
 import { ExportComponent } from './modal-export.component';
-
+// tslint:disable:no-any
 describe('ModalExportComponent', () => {
     let component: ExportComponent;
     let fixture: ComponentFixture<ExportComponent>;
@@ -14,7 +14,6 @@ describe('ModalExportComponent', () => {
         ['exportDraw'],
     ]);
 
-    // tslint:disable-next-line: no-any
     const dialogRefSpy: jasmine.SpyObj<MatDialogRef<ExportComponent, any>> = jasmine.createSpyObj('MatDialogRef', ['close']);
 
     beforeEach(
@@ -46,21 +45,18 @@ describe('ModalExportComponent', () => {
     });
 
     it('export to PNG should call exportDraw', () => {
-        // tslint:disable-next-line: no-any
         (component as any).validateValue = () => true;
         component.exportToPNG();
         expect(exportDrawingServiceStub.exportDraw).toHaveBeenCalled();
     });
 
     it('export to JPG should call exportDraw', () => {
-        // tslint:disable-next-line: no-any
         (component as any).validateValue = () => true;
         component.exportToJPG();
         expect(exportDrawingServiceStub.exportDraw).toHaveBeenCalled();
     });
 
     it('applyFilter should call service', () => {
-        // tslint:disable-next-line: no-any
         (component as any).validateValue = () => true;
         component.applyFilter('Aucun');
         expect(exportDrawingServiceStub.applyFilter).toHaveBeenCalled();
@@ -68,8 +64,6 @@ describe('ModalExportComponent', () => {
 
     it('export to JPG should not call exportDraw', () => {
         exportDrawingServiceStub.exportDraw.calls.reset();
-
-        // tslint:disable-next-line: no-any
         (component as any).validateValue = () => false;
         component.exportToJPG();
         expect(exportDrawingServiceStub.exportDraw).not.toHaveBeenCalled();
@@ -77,7 +71,6 @@ describe('ModalExportComponent', () => {
 
     it('export to PNG should not call exportDraw', () => {
         exportDrawingServiceStub.exportDraw.calls.reset();
-        // tslint:disable-next-line: no-any
         (component as any).validateValue = () => false;
         component.exportToPNG();
         expect(exportDrawingServiceStub.exportDraw).not.toHaveBeenCalled();
@@ -85,7 +78,6 @@ describe('ModalExportComponent', () => {
 
     it('should have a valid value', () => {
         component.drawName.setValue('dessin');
-        // tslint:disable-next-line: no-any
         const val = (component as any).validateValue();
         expect(val).toBeTrue();
     });
@@ -106,7 +98,6 @@ describe('ModalExportComponent', () => {
 
     it('should not have a valid value', () => {
         component.drawName.setValue('');
-        // tslint:disable-next-line: no-any
         const val = (component as any).validateValue();
         expect(val).toBeFalse();
     });

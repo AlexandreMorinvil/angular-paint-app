@@ -6,14 +6,13 @@ import { RemoteMemoryService } from '@app/services/remote-memory/remote-memory.s
 import { Tag, TagFilterService } from '@app/services/tag-filter/tag-filter.service';
 import { DrawingToDatabase } from '@common/communication/drawing-to-database';
 import { DrawingCarouselComponent } from './modal-drawing-carousel.component';
-
+// tslint:disable:prefer-const
 describe('DrawingCarouselComponent', () => {
     let component: DrawingCarouselComponent;
     let fixture: ComponentFixture<DrawingCarouselComponent>;
     let memoryServiceSpy: jasmine.SpyObj<RemoteMemoryService>;
     let tagFilterServiceSpy: jasmine.SpyObj<TagFilterService>;
     let loadServiceSpy: jasmine.SpyObj<LoadService>;
-    // tslint:disable:prefer-const
     let data: MatDialog;
     let testData: DrawingToDatabase[];
     let testData2: DrawingToDatabase[];
@@ -105,13 +104,6 @@ describe('DrawingCarouselComponent', () => {
         component.onKeyDown(event);
         expect(spy).not.toHaveBeenCalled();
     });
-
-    // it('should not change currentDrawings when pressing the previous button if theres an empty drawing space', () => {
-    //     component.setCurrentDrawings();
-    //     const currentDrawings: DrawingToDatabase[] = testData;
-    //     component.movePrevious();
-    //     expect(currentDrawings[0]).toBe(component.getCurrentDrawings()[0]);
-    // });
 
     it('should change currentDrawings when pressing the previous button ', () => {
         tagFilterServiceSpy.filterByTag.and.returnValue(testData2);

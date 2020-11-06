@@ -12,18 +12,16 @@ import { ModalSaveComponent } from './modal-save.component';
 class HTMLInputElement {
     input: string;
 }
-
+// tslint:disable:no-any
 describe('ModalSaveComponent', () => {
     let component: ModalSaveComponent;
     let fixture: ComponentFixture<ModalSaveComponent>;
     let canvasStub: HTMLCanvasElement;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
-    // tslint:disable:no-any
     let basicPostSpy: jasmine.Spy<any>;
     let sendMessageToServerSpy: jasmine.Spy<any>;
     let saveDrawSpy: jasmine.Spy<any>;
-    // let spliceSpy: jasmine.Spy<any>;
     let pushSpy: jasmine.Spy<any>;
     const dialogRefSpy: jasmine.SpyObj<MatDialogRef<ModalSaveComponent, any>> = jasmine.createSpyObj('MatDialogRef', ['close']);
 
@@ -56,19 +54,18 @@ describe('ModalSaveComponent', () => {
         component = fixture.componentInstance;
         fixture.detectChanges();
         // tslint:disable:no-string-literal
-        component['saveService']['drawingService'].baseCtx = baseCtxStub;
-        component['saveService']['drawingService'].previewCtx = previewCtxStub;
-        component['saveService']['drawingService'].canvas = canvasStub;
+        (component as any).saveService.drawingService.baseCtx = baseCtxStub;
+        (component as any).saveService.drawingService.previewCtx = previewCtxStub;
+        (component as any).saveService.drawingService.canvas = canvasStub;
         // tslint:disable:no-magic-numbers
-        component['saveService']['drawingService'].canvas.width = 1000;
-        component['saveService']['drawingService'].canvas.height = 800;
+        (component as any).saveService.drawingService.canvas.width = 1000;
+        (component as any).saveService.drawingService.canvas.height = 800;
 
         pushSpy = spyOn(component.tags, 'push').and.callThrough();
-        // spliceSpy = spyOn(component.tags, 'splice');
-        saveDrawSpy = spyOn<any>(component['saveService'], 'saveDraw').and.callThrough();
+        saveDrawSpy = spyOn<any>((component as any).saveService, 'saveDraw').and.callThrough();
         sendMessageToServerSpy = spyOn<any>(component, 'sendMessageToServer').and.callThrough();
-        component['saveService'].imageSource = 'IMAGESOURCE';
-        basicPostSpy = spyOn<any>(component['apiDrawingService'], 'save').and.callThrough();
+        (component as any).saveService.imageSource = 'IMAGESOURCE';
+        basicPostSpy = spyOn<any>((component as any).apiDrawingService, 'save').and.callThrough();
     });
 
     it('should create', () => {

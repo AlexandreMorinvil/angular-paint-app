@@ -1,15 +1,12 @@
-/* tslint:disable:no-unused-variable */
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
 import { Router } from '@angular/router';
 import { UserGuideModalComponent } from './modal-user-guide.component';
-
+// tslint:disable: no-any
 describe('UserGuideModalComponent', () => {
     let component: UserGuideModalComponent;
     let fixture: ComponentFixture<UserGuideModalComponent>;
-
-    // tslint:disable-next-line: no-any
     const dialogRefSpy: jasmine.SpyObj<MatDialogRef<UserGuideModalComponent, any>> = jasmine.createSpyObj('MatDialogRef', ['close']);
 
     beforeEach(
