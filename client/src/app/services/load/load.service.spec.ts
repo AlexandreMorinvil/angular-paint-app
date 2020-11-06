@@ -5,7 +5,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { LoadService } from './load.service';
-
+// tslint:disable:no-any
 describe('LoadService', () => {
     let service: LoadService;
     let colorService: ColorService;
@@ -13,14 +13,12 @@ describe('LoadService', () => {
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
-    // let closeAllSpy: jasmine.Spy<any>;
     let dataMock: jasmine.SpyObj<MatDialog>;
     let imgStub: HTMLImageElement;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     let canvasStub: HTMLCanvasElement;
 
     beforeEach(() => {
-        // tslint:disable:no-any
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         canvasStub = canvasTestHelper.canvas;
@@ -74,7 +72,6 @@ describe('LoadService', () => {
     });
 
     it('should load given a white canvas', () => {
-        // tslint:disable:no-string-literal
         (service as any).drawingService.baseCtx.fillStyle = '#FFFFFF';
         (service as any).drawingService.baseCtx.fillRect(
             0,

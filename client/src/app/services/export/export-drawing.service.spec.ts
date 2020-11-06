@@ -3,13 +3,12 @@ import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ExportDrawingService } from '@app/services/export/export-drawing.service';
-
+// tslint:disable:no-any
 describe('ExportDrawingService', () => {
     let service: ExportDrawingService;
     let canvasStub: HTMLCanvasElement;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
-    // tslint:disable:no-any
     let saveSpy: jasmine.Spy<any>;
 
     beforeEach(() => {

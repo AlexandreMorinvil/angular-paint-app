@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { ColorPickerService } from './color-picker.service';
-
+// tslint:disable: no-any
 describe('Service: ColorPicker', () => {
     let service: ColorPickerService;
     let canvasStub: HTMLCanvasElement;
@@ -16,7 +16,6 @@ describe('Service: ColorPicker', () => {
         });
         service = TestBed.inject(ColorPickerService);
 
-        // tslint:disable: no-any
         (service as any).drawingService.baseCtx = baseCtxStub;
         (service as any).drawingService.previewCtx = previewCtxStub;
         (service as any).drawingService.canvas = canvasStub;
@@ -31,20 +30,17 @@ describe('Service: ColorPicker', () => {
     });
 
     it('it should convert component to HEX with length 1', () => {
-        // tslint:disable-next-line: no-any
         const val = (service as any).componentToHex(1);
         expect(val).toEqual('01');
     });
 
     it('it should convert component to HEX with length 2', () => {
         const input = 200;
-        // tslint:disable-next-line: no-any
         const val = (service as any).componentToHex(input);
         expect(val).toEqual('c8');
     });
 
     it('it should convert white to hex string', () => {
-        // tslint:disable-next-line: no-any
         const val = (service as any).rgbColorToHEXString(0, 0, 0);
         expect(val).toEqual('#000000');
     });
@@ -53,7 +49,6 @@ describe('Service: ColorPicker', () => {
         const r = 85;
         const g = 123;
         const b = 205;
-        // tslint:disable-next-line: no-any
         const val = (service as any).rgbColorToHEXString(r, g, b);
         expect(val).toEqual('#557bcd');
     });

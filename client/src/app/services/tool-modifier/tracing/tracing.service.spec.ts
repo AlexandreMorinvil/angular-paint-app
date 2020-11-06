@@ -1,17 +1,16 @@
 import { TestBed } from '@angular/core/testing';
 import { TracingModifierState } from './tracing-state';
 import { TracingService } from './tracing.service';
-
+// The disablement of the "any" tslint rule is justified in this situation as the prototype
+// of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
+// tslint:disable:no-any
 describe('TracingService', () => {
     let service: TracingService;
-    // The disablement of the "any" tslint rule is justified in this situation as the prototype
-    // of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
-    // tslint:disable:no-any
+
     let setStateSpy: jasmine.Spy<any>;
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(TracingService);
-        // tslint:disable:no-any
         setStateSpy = spyOn<any>(service, 'setState').and.callThrough();
     });
 

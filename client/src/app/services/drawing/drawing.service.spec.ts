@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { DrawingService } from './drawing.service';
-
+// tslint:disable:no-any
 describe('DrawingService', () => {
     let service: DrawingService;
-    // tslint:disable:no-any
+
     let resetDrawingSpy: jasmine.Spy<any>;
     beforeEach(() => {
         TestBed.configureTestingModule({});

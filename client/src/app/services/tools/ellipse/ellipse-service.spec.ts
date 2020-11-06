@@ -7,9 +7,12 @@ import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
 import { EllipseService } from './ellipse-service';
+// The disablement of the "any" tslint rule is justified in this situation as the prototype
+// of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
+// tslint:disable:no-any
+// Illogical to split file for the same service
+// tslint:disable:max-file-line-count
 describe('EllipseService', () => {
-    // Illogical to split file for the same service
-    // tslint:disable:max-file-line-count
     let service: EllipseService;
     let tracingService: TracingService;
     let colorService: ColorService;
@@ -19,9 +22,7 @@ describe('EllipseService', () => {
     let canvasStub: HTMLCanvasElement;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
-    // The disablement of the "any" tslint rule is justified in this situation as the prototype
-    // of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
-    // tslint:disable:no-any
+
     let drawEllipseSpy: jasmine.Spy<any>;
     let drawCircleSpy: jasmine.Spy<any>;
     let applyTraceSpy: jasmine.Spy<any>;
@@ -42,7 +43,6 @@ describe('EllipseService', () => {
         tracingService = TestBed.inject(TracingService);
         colorService = TestBed.inject(ColorService);
         widthService = TestBed.inject(WidthService);
-        // tslint:disable:no-any
         drawEllipseSpy = spyOn<any>(service, 'drawEllipse').and.callThrough();
         drawCircleSpy = spyOn<any>(service, 'drawCircle').and.callThrough();
         applyTraceSpy = spyOn<any>(service, 'applyTrace').and.callThrough();

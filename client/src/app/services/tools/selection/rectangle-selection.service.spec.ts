@@ -10,8 +10,8 @@ import { RectangleService } from '@app/services/tools/rectangle/rectangle-servic
 import { RectangleSelectionService } from './rectangle-selection.service';
 // Illogical to seperate test in different file for the same service
 // tslint:disable:max-file-line-count
+// tslint:disable:no-any
 describe('RectangleSelectionService', () => {
-    // tslint:disable:no-any
     let service: RectangleSelectionService;
     let tracingService: TracingService;
     let colorService: ColorService;

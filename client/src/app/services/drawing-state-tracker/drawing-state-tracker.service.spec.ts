@@ -2,11 +2,10 @@ import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { DrawingStateTrackerService } from './drawing-state-tracker.service';
-
+// The disablement of the "any" tslint rule is justified in this situation as the prototype
+// of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
+// tslint:disable:no-any
 describe('DrawingStateTrackerService', () => {
-    // The disablement of the "any" tslint rule is justified in this situation as the prototype
-    // of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
-    // tslint:disable:no-any
     let service: DrawingStateTrackerService;
     let servicePencil: PencilService;
     let onCtrlZDownSpy: jasmine.Spy<any>;

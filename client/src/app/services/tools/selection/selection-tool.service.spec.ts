@@ -4,10 +4,9 @@ import { Description } from '@app/classes/description';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SelectionToolService } from './selection-tool.service';
-
+// tslint:disable:no-any
+// tslint:disable:no-magic-numbers
 describe('SelectionToolService', () => {
-    // tslint:disable:no-any
-    // tslint:disable:no-magic-numbers
     let service: SelectionToolService;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     // tslint:disable-next-line:prefer-const

@@ -4,12 +4,10 @@ import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { LineService } from './line-service';
-
+// tslint:disable:no-any
+// It would be illogical to split a test file for a unique service
+// tslint:disable:max-file-line-count
 describe('LineService', () => {
-    // Configuration of service spy
-    // tslint:disable:no-any
-    // It would be illogical to split a test file for a unique service
-    // tslint:disable:max-file-line-count
     let service: LineService;
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
@@ -38,10 +36,6 @@ describe('LineService', () => {
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         });
         service = TestBed.inject(LineService);
-        // The disablement of the "any" tslint rule is justified in this situation as the prototype
-        // of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
-        // Configuration of service spy
-        // tslint:disable:no-any
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
         findAlignmentAngleSpy = spyOn<any>(service, 'findAlignmentAngle').and.callThrough();
         drawJunctionSpy = spyOn<any>(service, 'drawJunction').and.callThrough();

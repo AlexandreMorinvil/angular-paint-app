@@ -1,5 +1,3 @@
-/* tslint:disable:no-unused-variable */
-
 import { inject, TestBed } from '@angular/core/testing';
 import { WorkzoneSizeService } from './workzone-size.service';
 

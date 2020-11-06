@@ -8,9 +8,10 @@ import { TracingService } from '@app/services/tool-modifier/tracing/tracing.serv
 import { RectangleService } from './rectangle-service';
 // The disablement of the "any" tslint rule is justified in this situation as the prototype
 // of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
+// tslint:disable:no-any
+// It would be illogical to split a test file for a unique service
+// tslint:disable:max-file-line-count
 describe('RectangleService', () => {
-    // It would be illogical to split a test file for a unique service
-    // tslint:disable:max-file-line-count
     let service: RectangleService;
     let tracingService: TracingService;
     let colorService: ColorService;
@@ -19,7 +20,7 @@ describe('RectangleService', () => {
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let canvasStub: HTMLCanvasElement;
-    // tslint:disable:no-any
+
     let drawRectangleSpy: jasmine.Spy<any>;
     let drawPreviewRectSpy: jasmine.Spy<any>;
     let setAttributeSpy: jasmine.Spy<any>;
@@ -28,7 +29,6 @@ describe('RectangleService', () => {
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
     beforeEach(() => {
-        // tslint: disable: no-any;
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         canvasStub = canvasTestHelper.canvas;
@@ -39,7 +39,6 @@ describe('RectangleService', () => {
         service = TestBed.inject(RectangleService);
         tracingService = TestBed.inject(TracingService);
         colorService = TestBed.inject(ColorService);
-        // tslint:disable:no-any
         drawRectangleSpy = spyOn<any>(service, 'drawRectangle').and.callThrough();
         drawPreviewRectSpy = spyOn<any>(service, 'drawPreviewRect').and.callThrough();
         setAttributeSpy = spyOn<any>(service, 'setAttribute').and.callThrough();
