@@ -14,7 +14,6 @@ export class LoadService {
             alert("Il n'y a pas de dessin ! Veuillez en choisir un autre");
             return;
         }
-        console.log(imageSrc);
         const img = new Image();
         img.src = imageSrc;
         img.crossOrigin = 'Anonymous';
