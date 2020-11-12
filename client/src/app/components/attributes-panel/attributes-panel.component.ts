@@ -2,7 +2,10 @@ import { Component } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { ColorPickerViewerService } from '@app/services/tool-modifier/color-picker-viewer/color-picker-viewer.service';
 import { JunctionService } from '@app/services/tool-modifier/junction/junction.service';
+import { NumberSprayTransmissionService } from '@app/services/tool-modifier/numberspraytransmission/numberspraytransmission.service';
 import { SidesService } from '@app/services/tool-modifier/sides/sides.service';
+import { SprayDiameterService } from '@app/services/tool-modifier/spraydiameter/spray-diameter.service';
+import { SprayDropletDiameterService } from '@app/services/tool-modifier/spraydropletdiameter/spraydropletdiameter.service';
 import { TextureService } from '@app/services/tool-modifier/texture/texture.service';
 import { ToleranceService } from '@app/services/tool-modifier/tolerance/tolerance.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
@@ -20,6 +23,9 @@ export class AttributesPanelComponent {
         private widthService: WidthService,
         private junctionService: JunctionService,
         private sideService: SidesService,
+        private sprayService: SprayDiameterService,
+        private sprayDropletService: SprayDropletDiameterService,
+        private numberSprayTransmissionService: NumberSprayTransmissionService,
         private textureService: TextureService,
         private tracingService: TracingService,
         private colorPickerViewerService: ColorPickerViewerService,
@@ -51,6 +57,15 @@ export class AttributesPanelComponent {
     }
     needsSidesAttribute(): boolean {
         return this.currentTool.needsModifierManager(this.sideService);
+    }
+    needsSprayDiameterAttribute(): boolean {
+        return this.currentTool.needsModifierManager(this.sprayService);
+    }
+    needsSprayDropletDiameterAttribute(): boolean {
+        return this.currentTool.needsModifierManager(this.sprayDropletService);
+    }
+    needsNumberSprayTransmissionAttribute(): boolean {
+        return this.currentTool.needsModifierManager(this.numberSprayTransmissionService);
     }
 
     needsColorPickerViewerAttribute(): boolean {

@@ -6,7 +6,7 @@ import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { LoadService } from './load.service';
 // tslint:disable:no-any
-describe('LoadService', () => {
+fdescribe('LoadService', () => {
     let service: LoadService;
     let colorService: ColorService;
     let tracingService: TracingService;

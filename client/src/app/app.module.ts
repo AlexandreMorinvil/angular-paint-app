@@ -32,6 +32,9 @@ import { UserGuideModalComponent } from './components/modal/modal-user-guide/mod
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { TooltipComponent } from './components/tooltip/tooltip.component';
 import { WorkspaceComponent } from './components/workspace/workspace.component';
+import { AttributeSprayDiameterComponent } from './components/attributes-panel/attribute-spray-diameter/attribute-spray-diameter.component';
+import { AttributeSprayDropletDiameterComponent } from './components/attributes-panel/attribute-spray-droplet-diameter/attribute-spray-droplet-diameter.component';
+import { AttributeNumberSprayTransmissionComponent } from './components/attributes-panel/attribute-number-spray-transmission/attribute-number-spray-transmission.component';
 
 @NgModule({
     declarations: [
@@ -56,6 +59,9 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
         AttributeColorPickerViewerComponent,
         AttributesToleranceComponent,
         AttributeSelectionComponent,
+        AttributeSprayDiameterComponent,
+        AttributeSprayDropletDiameterComponent,
+        AttributeNumberSprayTransmissionComponent,
     ],
 
     exports: [MatChipsModule],
