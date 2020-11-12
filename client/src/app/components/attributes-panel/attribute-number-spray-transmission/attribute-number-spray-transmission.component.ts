@@ -4,7 +4,7 @@ import { NumberSprayTransmissionService } from '@app/services/tool-modifier/numb
 @Component({
     selector: 'app-attribute-number-spray-transmission',
     templateUrl: './attribute-number-spray-transmission.component.html',
-    styleUrls: ['./attribute-number-spray-transmission.component.scss'],
+    styleUrls: ['./attribute-number-spray-transmission.component.scss', '../attributes-section.component.scss'],
 })
 export class AttributeNumberSprayTransmissionComponent {
     numberSprayTransmission: number;

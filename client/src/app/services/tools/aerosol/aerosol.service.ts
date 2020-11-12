@@ -25,10 +25,10 @@ export class AerosolService extends Tool {
         private numberSprayTransmissionService: NumberSprayTransmissionService,
     ) {
         super(drawingService, new Description('aerosol', 'a', 'aerosol_icon.png'));
-        this.modifiers.push(this.colorService);
         this.modifiers.push(this.sprayService);
         this.modifiers.push(this.sprayDropletService);
         this.modifiers.push(this.numberSprayTransmissionService);
+        this.modifiers.push(this.colorService);
 
         this.clearPath();
     }
@@ -90,11 +90,12 @@ export class AerosolService extends Tool {
     }
 
     private setAttribute(ctx: CanvasRenderingContext2D): void {
-        ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
-        ctx.strokeStyle = this.colorService.getPrimaryColor();
         ctx.fillStyle = this.colorService.getPrimaryColor();
+        ctx.strokeStyle = this.colorService.getSecondaryColor();
+        ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
+        ctx.globalAlpha = this.colorService.getSecondaryColorOpacity();
     }
 
     private clearPath(): void {

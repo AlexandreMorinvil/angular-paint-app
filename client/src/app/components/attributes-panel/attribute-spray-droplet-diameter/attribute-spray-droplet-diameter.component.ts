@@ -4,7 +4,7 @@ import { SprayDropletDiameterService } from '@app/services/tool-modifier/spraydr
 @Component({
     selector: 'app-attribute-spray-droplet-diameter',
     templateUrl: './attribute-spray-droplet-diameter.component.html',
-    styleUrls: ['./attribute-spray-droplet-diameter.component.scss'],
+    styleUrls: ['./attribute-spray-droplet-diameter.component.scss', '../attributes-section.component.scss'],
 })
 export class AttributeSprayDropletDiameterComponent {
     sprayDropletDiameter: number;

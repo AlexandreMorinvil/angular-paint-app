@@ -1,11 +1,11 @@
 <div class="container">
-    <h2>Nombre d'émission par seconde</h2>
+    <h2>Émission par seconde</h2>
     <div class="grid-input-value">
         <div class="centered">
             <label for="width" style="display: none">Taille</label>
             <input type="range" [min]="getMinValue()" [max]="getMaxValue()" [value]="numberSprayTransmission" [(ngModel)]="numberSprayTransmission" />
         </div>
-        <p class="centered">{{ numberSprayTransmission }} émission par seconde</p>
+        <p class="centered">{{ numberSprayTransmission }} /seconde</p>
     </div>
     <div class="grid-confirmation" *ngIf="needConfirmation()">
         <button class="confirmation-button cancel" (click)="revert()">Annuler</button>
