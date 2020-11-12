@@ -15,9 +15,6 @@ import { SprayDropletDiameterService } from '@app/services/tool-modifier/spraydr
 export class AerosolService extends Tool {
     private readonly NUMBER_MILLISECONDS_IN_SECOND: number = 1000;
     private pathData: Vec2[];
-    private sprayDiameter: number;
-    private sprayDropletDiameter: number;
-    private numberTransmissionPerSecond: number;
     private sprayIntervalId: number;
 
     constructor(
@@ -33,12 +30,6 @@ export class AerosolService extends Tool {
         this.modifiers.push(this.sprayDropletService);
         this.modifiers.push(this.numberSprayTransmissionService);
 
-        this.sprayDiameter = 100;
-        //this.sprayService.getSprayDiameter();
-        this.sprayDropletDiameter = 1;
-        this.numberTransmissionPerSecond = 50;
-        //this.sprayService.getSprayDiameter();
-        //this.numberSprayTransmissionService.getNumberSprayTransmission();
         this.clearPath();
     }
 
@@ -80,15 +71,20 @@ export class AerosolService extends Tool {
         let xposition = (mouseMoveCoord.x + this.mouseDownCoord.x) / 2;
         let yposition = (mouseMoveCoord.y + this.mouseDownCoord.y) / 2;
 
-        for (let i = 0; i < this.numberTransmissionPerSecond; i++) {
-            const sprayRadius = this.sprayDiameter / 2;
+        for (let i = 0; i < this.numberSprayTransmissionService.getNumberSprayTransmission(); i++) {
+            const sprayRadius = this.sprayService.getSprayDiameter() / 2;
             let randomAngle = Math.random() * (2 * Math.PI);
             let randomRadius = Math.random() * sprayRadius;
             let xvalueOffset = Math.cos(randomAngle) * randomRadius;
             let yvalueOffset = Math.sin(randomAngle) * randomRadius;
             xposition = xposition + xvalueOffset;
             yposition = yposition + yvalueOffset;
-            ctx.fillRect(xposition, yposition, this.sprayDropletDiameter, this.sprayDropletDiameter);
+            ctx.fillRect(
+                xposition,
+                yposition,
+                this.sprayDropletService.getSprayDropletDiameter(),
+                this.sprayDropletService.getSprayDropletDiameter(),
+            );
             ctx.stroke();
         }
     }
