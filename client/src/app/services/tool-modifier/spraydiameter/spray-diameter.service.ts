@@ -6,8 +6,8 @@ import { SprayDiameterModifierState } from '@app/services/tool-modifier/spraydia
     providedIn: 'root',
 })
 export class SprayDiameterService extends ToolModifier {
-    readonly DEFAULT_SPRAY_DIAMETER: number = 20;
-    readonly MAX_SPRAY_DIAMETER: number = 100;
+    readonly DEFAULT_SPRAY_DIAMETER: number = 100;
+    readonly MAX_SPRAY_DIAMETER: number = 200;
     readonly MIN_SPRAY_DIAMETER: number = 10;
     private sprayDiameter: number = this.DEFAULT_SPRAY_DIAMETER;
 

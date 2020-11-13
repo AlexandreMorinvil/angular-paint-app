@@ -7,8 +7,8 @@ import { NumberSprayTransmissionModifierState } from '@app/services/tool-modifie
 })
 export class NumberSprayTransmissionService extends ToolModifier {
     readonly DEFAULT_NUMBER_SPRAY_TRANSMISSION: number = 50;
-    readonly MAX_NUMBER_SPRAY_TRANSMISSION: number = 150;
-    readonly MIN_NUMBER_SPRAY_TRANSMISSION: number = 40;
+    readonly MAX_NUMBER_SPRAY_TRANSMISSION: number = 200;
+    readonly MIN_NUMBER_SPRAY_TRANSMISSION: number = 10;
     private numberSprayTransmission: number = this.DEFAULT_NUMBER_SPRAY_TRANSMISSION;
 
     constructor() {

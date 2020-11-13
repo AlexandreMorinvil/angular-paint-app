@@ -14,6 +14,7 @@ import { SprayDropletDiameterService } from '@app/services/tool-modifier/spraydr
 })
 export class AerosolService extends Tool {
     private readonly NUMBER_MILLISECONDS_IN_SECOND: number = 1000;
+    private readonly factorTimeIntervalBeetweenSpray: number = 100;
     private pathData: Vec2[];
     private sprayIntervalId: number;
 
@@ -41,14 +42,22 @@ export class AerosolService extends Tool {
             this.clearPath();
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
+            this.sprayPaint(this.drawingService.previewCtx, this.pathData);
+            this.sprayIntervalId = setInterval(
+                () => this.wrapperSprayPaint(),
+                this.NUMBER_MILLISECONDS_IN_SECOND / this.factorTimeIntervalBeetweenSpray,
+            );
         }
+    }
+
+    wrapperSprayPaint(): void {
+        this.sprayPaint(this.drawingService.previewCtx, this.pathData);
     }
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-            this.sprayPaint(this.drawingService.baseCtx, this.pathData);
         }
         clearInterval(this.sprayIntervalId);
         this.mouseDown = false;
@@ -59,41 +68,35 @@ export class AerosolService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-            this.sprayPaint(this.drawingService.previewCtx, this.pathData);
-            this.sprayIntervalId = setInterval(this.sprayPaint.bind(this), this.NUMBER_MILLISECONDS_IN_SECOND);
         }
     }
 
     private sprayPaint(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        //ctx.beginPath();
         this.setAttribute(ctx);
         const mouseMoveCoord = path[path.length - 1];
-        let xposition = (mouseMoveCoord.x + this.mouseDownCoord.x) / 2;
-        let yposition = (mouseMoveCoord.y + this.mouseDownCoord.y) / 2;
+        let xposition = mouseMoveCoord.x;
+        let yposition = mouseMoveCoord.y;
 
-        for (let i = 0; i < this.numberSprayTransmissionService.getNumberSprayTransmission(); i++) {
-            ctx.beginPath();
-            const sprayRadius = this.sprayService.getSprayDiameter() / 2;
-            let randomAngle = Math.random() * (2 * Math.PI);
-            let randomRadius = Math.random() * sprayRadius;
-            let xvalueOffset = Math.cos(randomAngle) * randomRadius;
-            let yvalueOffset = Math.sin(randomAngle) * randomRadius;
-            xposition = xposition + xvalueOffset;
-            yposition = yposition + yvalueOffset;
-            // ctx.fillRect(
-            //     xposition,
-            //     yposition,
-            //     this.sprayDropletService.getSprayDropletDiameter(),
-            //     this.sprayDropletService.getSprayDropletDiameter(),
-            // );
-            ctx.arc(xposition, yposition, this.sprayDropletService.getSprayDropletDiameter() / 2, 0, 2 * Math.PI, false);
-            ctx.fill();
+        if (this.isInCanvas(mouseMoveCoord)) {
+            for (let i = 0; i < this.numberSprayTransmissionService.getNumberSprayTransmission() / this.factorTimeIntervalBeetweenSpray; i++) {
+                ctx.beginPath();
+                const sprayRadius = this.sprayService.getSprayDiameter() / 2;
+                let randomAngle = Math.random() * (2 * Math.PI);
+                let randomRadius = Math.random() * sprayRadius;
+                let xvalueOffset = Math.cos(randomAngle) * randomRadius;
+                let yvalueOffset = Math.sin(randomAngle) * randomRadius;
+                const x = xposition + xvalueOffset;
+                const y = yposition + yvalueOffset;
+                ctx.arc(x, y, this.sprayDropletService.getSprayDropletDiameter() / 2, 0, 2 * Math.PI, false);
+                ctx.fill();
+            }
         }
     }
 
     private setAttribute(ctx: CanvasRenderingContext2D): void {
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
+        ctx.lineWidth = 5;
         ctx.fillStyle = this.colorService.getPrimaryColor();
         ctx.strokeStyle = this.colorService.getSecondaryColor();
         ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();

@@ -900,3 +900,4 @@
 [1105/201146.970:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
 [1105/202259.204:ERROR:filesystem_win.cc(129)] GetFileAttributes C:\Users\sofia\AppData\Local\Temp\karma-88441827\Crashpad\attachments\fee06574-16cf-41b5-a588-7857a8d2e52d: Le chemin d’accès spécifié est introuvable. (0x3)
 [1105/202259.836:ERROR:process_reader_win.cc(151)] SuspendThread: Accès refusé. (0x5)
+[1113/124803.056:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)

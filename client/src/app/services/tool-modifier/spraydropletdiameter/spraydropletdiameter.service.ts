@@ -6,8 +6,8 @@ import { SprayDropletDiameterModifierState } from '@app/services/tool-modifier/s
     providedIn: 'root',
 })
 export class SprayDropletDiameterService extends ToolModifier {
-    readonly DEFAULT_SPRAY_DROPLET_DIAMETER: number = 1;
-    readonly MAX_SPRAY_DROPLET_DIAMETER: number = 10;
+    readonly DEFAULT_SPRAY_DROPLET_DIAMETER: number = 2;
+    readonly MAX_SPRAY_DROPLET_DIAMETER: number = 15;
     readonly MIN_SPRAY_DROPLET_DIAMETER: number = 1;
     private sprayDropletDiameter: number = this.DEFAULT_SPRAY_DROPLET_DIAMETER;
 
