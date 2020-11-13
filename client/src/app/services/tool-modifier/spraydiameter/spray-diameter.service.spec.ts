@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { SprayDiameterService } from '../spray-diameter/spray-diameter.service';
+import { SprayDiameterService } from './spray-diameter.service';
 
 describe('SprayDiameterService', () => {
     let service: SprayDiameterService;
