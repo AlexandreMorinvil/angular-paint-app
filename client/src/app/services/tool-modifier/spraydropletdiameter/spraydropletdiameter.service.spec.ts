@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { SprayDropletDiameterService } from '../spraydropletdiameter/spraydropletdiameter.service';
+import { SprayDropletDiameterService } from '@app/services/tool-modifier/spraydropletdiameter/spraydropletdiameter.service';
 
 describe('SpraydropletdiameterService', () => {
     let service: SprayDropletDiameterService;

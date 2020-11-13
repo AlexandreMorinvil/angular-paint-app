@@ -16,7 +16,7 @@ export class AerosolService extends Tool {
     private readonly NUMBER_MILLISECONDS_IN_SECOND: number = 1000;
     private readonly factorTimeIntervalBeetweenSpray: number = 100;
     private pathData: Vec2[];
-    private sprayIntervalId: number;
+    private sprayIntervalId: any;
 
     constructor(
         drawingService: DrawingService,
@@ -35,8 +35,6 @@ export class AerosolService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.drawingService.previewCtx.setLineDash([0]);
-        this.drawingService.baseCtx.setLineDash([0]);
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.clearPath();
@@ -74,20 +72,22 @@ export class AerosolService extends Tool {
     private sprayPaint(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         this.setAttribute(ctx);
         const mouseMoveCoord = path[path.length - 1];
-        let xposition = mouseMoveCoord.x;
-        let yposition = mouseMoveCoord.y;
+        const xposition = mouseMoveCoord.x;
+        const yposition = mouseMoveCoord.y;
 
         if (this.isInCanvas(mouseMoveCoord)) {
-            for (let i = 0; i < this.numberSprayTransmissionService.getNumberSprayTransmission() / this.factorTimeIntervalBeetweenSpray; i++) {
+            const numberSprayTransmission = this.numberSprayTransmissionService.getNumberSprayTransmission() / this.factorTimeIntervalBeetweenSpray;
+            for (let i = 0; i < numberSprayTransmission; i++) {
                 ctx.beginPath();
                 const sprayRadius = this.sprayService.getSprayDiameter() / 2;
-                let randomAngle = Math.random() * (2 * Math.PI);
-                let randomRadius = Math.random() * sprayRadius;
-                let xvalueOffset = Math.cos(randomAngle) * randomRadius;
-                let yvalueOffset = Math.sin(randomAngle) * randomRadius;
-                const x = xposition + xvalueOffset;
-                const y = yposition + yvalueOffset;
-                ctx.arc(x, y, this.sprayDropletService.getSprayDropletDiameter() / 2, 0, 2 * Math.PI, false);
+                const randomAngle = Math.random() * (2 * Math.PI);
+                const randomRadius = Math.random() * sprayRadius;
+                const xvalueOffset = Math.cos(randomAngle) * randomRadius;
+                const yvalueOffset = Math.sin(randomAngle) * randomRadius;
+                const xValue = xposition + xvalueOffset;
+                const yValue = yposition + yvalueOffset;
+                const dropletDiameter = this.sprayDropletService.getSprayDropletDiameter() / 2;
+                ctx.arc(xValue, yValue, dropletDiameter, 0, 2 * Math.PI, false);
                 ctx.fill();
             }
         }
@@ -96,6 +96,7 @@ export class AerosolService extends Tool {
     private setAttribute(ctx: CanvasRenderingContext2D): void {
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
+        // tslint:disable:no-magic-numbers
         ctx.lineWidth = 5;
         ctx.fillStyle = this.colorService.getPrimaryColor();
         ctx.strokeStyle = this.colorService.getSecondaryColor();

@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { NumberSprayTransmissionService } from '../numberspraytransmission/numberspraytransmission.service';
+import { NumberSprayTransmissionService } from '@app/services/tool-modifier/numberspraytransmission/numberspraytransmission.service';
 
 describe('NumberspraytransmissionService', () => {
     let service: NumberSprayTransmissionService;

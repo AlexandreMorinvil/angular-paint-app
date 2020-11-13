@@ -1,25 +1,25 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { AttributeNumberSprayTransmissionComponent } from './attribute-number-spray-transmission.component';
 
 describe('AttributeNumberSprayTransmissionComponent', () => {
-  let component: AttributeNumberSprayTransmissionComponent;
-  let fixture: ComponentFixture<AttributeNumberSprayTransmissionComponent>;
+    let component: AttributeNumberSprayTransmissionComponent;
+    let fixture: ComponentFixture<AttributeNumberSprayTransmissionComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ AttributeNumberSprayTransmissionComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                declarations: [AttributeNumberSprayTransmissionComponent],
+            }).compileComponents();
+        }),
+    );
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(AttributeNumberSprayTransmissionComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(AttributeNumberSprayTransmissionComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });
