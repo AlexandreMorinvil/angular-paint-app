@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
+import { InteractionPath } from '@app/classes/action/interaction-path';
 import { Description } from '@app/classes/description';
 import { MouseButton } from '@app/classes/mouse';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { NumberSprayTransmissionService } from '@app/services/tool-modifier/numberspraytransmission/numberspraytransmission.service';
@@ -17,6 +19,7 @@ export class AerosolService extends Tool {
     private readonly factorTimeIntervalBeetweenSpray: number = 100;
     private pathData: Vec2[];
     private sprayIntervalId: any;
+    private savedPathData: Vec2[];
 
     constructor(
         drawingService: DrawingService,
@@ -24,6 +27,7 @@ export class AerosolService extends Tool {
         private sprayService: SprayDiameterService,
         private sprayDropletService: SprayDropletDiameterService,
         private numberSprayTransmissionService: NumberSprayTransmissionService,
+        private drawingStateTrackingService: DrawingStateTrackerService,
     ) {
         super(drawingService, new Description('aerosol', 'a', 'aerosol_icon.png'));
         this.modifiers.push(this.sprayService);
@@ -56,6 +60,7 @@ export class AerosolService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
+            this.drawingStateTrackingService.addAction(this, new InteractionPath(this.savedPathData));
         }
         clearInterval(this.sprayIntervalId);
         this.mouseDown = false;
@@ -87,6 +92,8 @@ export class AerosolService extends Tool {
                 const xValue = xposition + xvalueOffset;
                 const yValue = yposition + yvalueOffset;
                 const dropletDiameter = this.sprayDropletService.getSprayDropletDiameter() / 2;
+                const savedData: Vec2 = { x: xValue, y: yValue }; //pour undo redo
+                this.savedPathData.push(savedData); //pour undo redo
                 ctx.arc(xValue, yValue, dropletDiameter, 0, 2 * Math.PI, false);
                 ctx.fill();
             }
@@ -106,5 +113,10 @@ export class AerosolService extends Tool {
 
     private clearPath(): void {
         this.pathData = [];
+        this.savedPathData = [];
+    }
+
+    execute(interaction: InteractionPath): void {
+        this.sprayPaint(this.drawingService.baseCtx, interaction.path);
     }
 }
