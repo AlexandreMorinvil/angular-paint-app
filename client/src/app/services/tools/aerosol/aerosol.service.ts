@@ -60,9 +60,9 @@ export class AerosolService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-            this.drawingStateTrackingService.addAction(this, new InteractionPath(this.savedPathData));
         }
         clearInterval(this.sprayIntervalId);
+        this.drawingStateTrackingService.addAction(this, new InteractionPath(this.savedPathData));
         this.mouseDown = false;
         this.clearPath();
     }
@@ -79,7 +79,8 @@ export class AerosolService extends Tool {
         const mouseMoveCoord = path[path.length - 1];
         const xposition = mouseMoveCoord.x;
         const yposition = mouseMoveCoord.y;
-
+        const savedData: Vec2 = { x: xposition, y: yposition }; //pour undo redo
+        this.savedPathData.push(savedData); //pour undo redo
         if (this.isInCanvas(mouseMoveCoord)) {
             const numberSprayTransmission = this.numberSprayTransmissionService.getNumberSprayTransmission() / this.factorTimeIntervalBeetweenSpray;
             for (let i = 0; i < numberSprayTransmission; i++) {
@@ -92,8 +93,6 @@ export class AerosolService extends Tool {
                 const xValue = xposition + xvalueOffset;
                 const yValue = yposition + yvalueOffset;
                 const dropletDiameter = this.sprayDropletService.getSprayDropletDiameter() / 2;
-                const savedData: Vec2 = { x: xValue, y: yValue }; //pour undo redo
-                this.savedPathData.push(savedData); //pour undo redo
                 ctx.arc(xValue, yValue, dropletDiameter, 0, 2 * Math.PI, false);
                 ctx.fill();
             }
@@ -111,12 +110,19 @@ export class AerosolService extends Tool {
         ctx.globalAlpha = this.colorService.getSecondaryColorOpacity();
     }
 
+    // private redoSprayPaint(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    //     for (let i = 0; i < path.length; i++) {
+    //         ctx.arc(path[i].x, path[i].y, 1, 0, 2 * Math.PI, false);
+    //         ctx.fill();
+    //     }
+    // }
+
     private clearPath(): void {
         this.pathData = [];
         this.savedPathData = [];
     }
 
-    execute(interaction: InteractionPath): void {
-        this.sprayPaint(this.drawingService.baseCtx, interaction.path);
-    }
+    // execute(interaction: InteractionPath): void {
+    //     this.redoSprayPaint(this.drawingService.baseCtx, interaction.path);
+    // }
 }
