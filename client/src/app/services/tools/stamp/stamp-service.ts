@@ -14,6 +14,8 @@ import { WidthService } from '@app/services/tool-modifier/width/width.service';
 export class StampService extends Tool {
     private pathData: Vec2[];
     //private mouseWheelDown: boolean;
+    private angleInRadian: number;
+    private isAltDown: boolean;
 
     constructor(
         public drawingService: DrawingService,
@@ -24,6 +26,15 @@ export class StampService extends Tool {
         this.modifiers.push(this.stampPickerService);
         this.modifiers.push(this.widthService);
         this.clearPath();
+        this.angleInRadian = 0; //angle du debut
+        this.isAltDown = false;
+    }
+
+    onAltDown(event: KeyboardEvent): void {
+        this.isAltDown = true;
+    }
+    onAltUp(event: KeyboardEvent): void {
+        this.isAltDown = false;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -33,6 +44,17 @@ export class StampService extends Tool {
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
             this.previewStamp(this.drawingService.previewCtx, this.pathData);
+        }
+    }
+
+    onMouseScroll(event: MouseEvent): void {
+        if (this.angleInRadian == 360) {
+            this.angleInRadian = 0; // pour le ramener a 0
+        }
+        if (this.isAltDown) {
+            this.angleInRadian = this.angleInRadian + 1;
+        } else {
+            this.angleInRadian = this.angleInRadian + 15;
         }
     }
 
@@ -74,37 +96,7 @@ export class StampService extends Tool {
             }
         }
     }
-    //Pas bien implente
-    /* private rotateStamp(degrees: number, path: Vec2[]): void {
-        const image = new Image();
-        image.src = '/assets/images/approved.png';
-        const angleInRadians = (degrees * Math.PI) / 180;
-        image.onload = () => {
-            this.drawingService.baseCtx.drawImage(
-                image,
-                path[path.length - 1].x - this.widthService.getWidth() / 2,
-                path[path.length - 1].y - this.widthService.getWidth() / 2,
-                this.widthService.getWidth(),
-                this.widthService.getWidth(),
-            );
-            this.drawingService.baseCtx.translate(
-                path[path.length - 1].x - this.widthService.getWidth(),
-                path[path.length - 1].y - this.widthService.getWidth(),
-            );
-            this.drawingService.baseCtx.rotate(angleInRadians);
-            this.drawingService.baseCtx.translate(
-                -path[path.length - 1].x - this.widthService.getWidth(),
-                -path[path.length - 1].y - this.widthService.getWidth(),
-            );
-            this.drawingService.baseCtx.drawImage(
-                image,
-                this.drawingService.baseCtx.canvas.width,
-                this.drawingService.baseCtx.canvas.height,
-                this.widthService.getWidth(),
-                this.widthService.getWidth(),
-            );
-        };
-    } */
+
     private applyStamp(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         switch (this.stampPickerService.getStamp()) {
             case StampEnum.stamp1: {
@@ -141,12 +133,11 @@ export class StampService extends Tool {
         const lastPostion: Vec2 = path[path.length - 1];
         const xPosition: number = lastPostion.x;
         const yPosition: number = lastPostion.y;
-        const angleInDegree: number = 90;
 
         image.onload = () => {
             ctx.save();
             ctx.translate(xPosition, yPosition);
-            ctx.rotate(this.convertDegreeToRad(angleInDegree));
+            ctx.rotate(this.convertDegreeToRad(this.angleInRadian));
             ctx.translate(-xPosition, -yPosition);
             ctx.drawImage(
                 image,
