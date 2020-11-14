@@ -13,7 +13,7 @@ import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
 import { EllipseSelectionService } from '@app/services/tools/selection/ellipse-selection.service';
 import { RectangleSelectionService } from '@app/services/tools/selection/rectangle-selection.service';
-
+import { StampService } from '@app/services/tools/stamp/stamp-service';
 @Injectable({
     providedIn: 'root',
 })
@@ -32,6 +32,7 @@ export class ToolboxService {
         polygonService: PolygonService,
         colorPickerService: ColorPickerService,
         paintService: PaintService,
+        stampService: StampService,
         rectangleSelectionService: RectangleSelectionService,
         ellipseSelectionService: EllipseSelectionService,
         private drawingService: DrawingService,
@@ -49,6 +50,7 @@ export class ToolboxService {
         this.availableTools.push(paintService);
         this.availableTools.push(rectangleSelectionService);
         this.availableTools.push(ellipseSelectionService);
+        this.availableTools.push(stampService);
     }
 
     getAvailableTools(): Tool[] {
