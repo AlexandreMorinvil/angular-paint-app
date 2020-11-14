@@ -22,6 +22,7 @@ import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
 import { EllipseSelectionService } from '@app/services/tools/selection/ellipse-selection.service';
 import { RectangleSelectionService } from '@app/services/tools/selection/rectangle-selection.service';
+import { StampService } from '@app/services/tools/stamp/stamp-service';
 import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzone-size.service';
 import { SidebarComponent } from './sidebar.component';
 class ToolStub extends Tool {}
@@ -63,6 +64,7 @@ describe('SidebarComponent', () => {
                 {} as PolygonService,
                 {} as ColorPickerService,
                 {} as PaintService,
+                {} as StampService,
                 {} as RectangleSelectionService,
                 {} as EllipseSelectionService,
                 {} as DrawingService,

@@ -3,6 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { ColorPickerViewerService } from '@app/services/tool-modifier/color-picker-viewer/color-picker-viewer.service';
 import { JunctionService } from '@app/services/tool-modifier/junction/junction.service';
 import { SidesService } from '@app/services/tool-modifier/sides/sides.service';
+import { StampPickerService } from '@app/services/tool-modifier/stamp-picker/stamp-picker.service';
 import { TextureService } from '@app/services/tool-modifier/texture/texture.service';
 import { ToleranceService } from '@app/services/tool-modifier/tolerance/tolerance.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
@@ -24,6 +25,7 @@ export class AttributesPanelComponent {
         private tracingService: TracingService,
         private colorPickerViewerService: ColorPickerViewerService,
         private toleranceService: ToleranceService,
+        private stampPickerService: StampPickerService,
     ) {}
 
     get currentTool(): Tool {
@@ -59,6 +61,9 @@ export class AttributesPanelComponent {
 
     needsToleranceAttribute(): boolean {
         return this.currentTool.needsModifierManager(this.toleranceService);
+    }
+    needsStampPickerAttribute(): boolean {
+        return this.currentTool.needsModifierManager(this.stampPickerService);
     }
 
     needsSelectionAttribute(): boolean {
