@@ -48,6 +48,8 @@ export class StampService extends Tool {
     }
 
     onMouseScroll(event: MouseEvent): void {
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.previewStamp(this.drawingService.previewCtx, this.pathData);
         if (this.angleInRadian == 360) {
             this.angleInRadian = 0; // pour le ramener a 0
         }
