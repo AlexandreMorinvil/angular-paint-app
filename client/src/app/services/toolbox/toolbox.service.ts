@@ -12,6 +12,7 @@ import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
 import { EllipseSelectionService } from '@app/services/tools/selection/ellipse-selection.service';
+import { MagicWandService } from '@app/services/tools/selection/magic-wand.service';
 import { RectangleSelectionService } from '@app/services/tools/selection/rectangle-selection.service';
 
 @Injectable({
@@ -34,6 +35,7 @@ export class ToolboxService {
         paintService: PaintService,
         rectangleSelectionService: RectangleSelectionService,
         ellipseSelectionService: EllipseSelectionService,
+        magicWandService: MagicWandService,
         private drawingService: DrawingService,
     ) {
         this.currentTool = cursorService;
@@ -49,6 +51,7 @@ export class ToolboxService {
         this.availableTools.push(paintService);
         this.availableTools.push(rectangleSelectionService);
         this.availableTools.push(ellipseSelectionService);
+        this.availableTools.push(magicWandService);
     }
 
     getAvailableTools(): Tool[] {
