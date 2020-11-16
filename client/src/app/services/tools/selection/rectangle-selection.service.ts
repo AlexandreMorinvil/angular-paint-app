@@ -124,7 +124,19 @@ export class RectangleSelectionService extends SelectionToolService {
             this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
             // resizing
         } else if (this.clickOnAnchor) {
+            const savedOldImageData = this.oldImageData;
+            this.oldImageData = this.getOldImageData(mousePosition);
             this.getAnchorHit(this.drawingService.baseCtx, mousePosition, 2);
+            this.drawingStateTrackingService.addAction(
+                this,
+                new InteractionSelection(
+                    this.hasDoneFirstTranslation,
+                    this.startSelectionPoint,
+                    this.startDownCoord,
+                    this.imageData,
+                    savedOldImageData,
+                ),
+            );
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clickOnAnchor = false;
             this.selectionCreated = false;

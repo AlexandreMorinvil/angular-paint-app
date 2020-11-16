@@ -98,6 +98,7 @@ export class EllipseSelectionService extends SelectionToolService {
             );
             this.startDownCoord = this.evenImageStartCoord(mousePosition);
             this.pathLastCoord = { x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y + this.imageData.height };
+            // resizing
         } else if (this.clickOnAnchor && this.mouseDown) {
             this.pathData.push({ x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y + this.imageData.height });
             this.clearCanvasEllipse();
@@ -146,6 +147,8 @@ export class EllipseSelectionService extends SelectionToolService {
             // resizing
         } else if (this.clickOnAnchor) {
             this.getAnchorHit(this.drawingService.baseCtx, mousePosition, 1);
+            this.imageData = this.getOldImageData(this.evenImageStartCoord(mousePosition));
+            this.addActionTracking();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clickOnAnchor = false;
             this.selectionCreated = false;

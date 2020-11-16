@@ -236,11 +236,18 @@ export abstract class SelectionToolService extends Tool {
                 break;
             case Anchors.BottomRight:
                 adjustOffsetCoords = { x: mousePosition.x - this.startDownCoord.x, y: mousePosition.y - this.startDownCoord.y };
-
                 break;
             default:
                 break;
         }
+        // mirror effect
+        // tslint:disable:no-magic-numbers
+        const scaleX = adjustOffsetCoords.x < 0 ? -1 : 1;
+        const scaleY = adjustOffsetCoords.y < 0 ? -1 : 1;
+        canvas.scale(scaleX, scaleY);
+        adjustStartCoords = { x: scaleX * adjustStartCoords.x, y: scaleY * adjustStartCoords.y };
+        adjustOffsetCoords = { x: scaleX * adjustOffsetCoords.x, y: scaleY * adjustOffsetCoords.y };
+        mousePosition = { x: scaleX * mousePosition.x, y: scaleY * mousePosition.y };
         if (caller === 1) {
             // ellipse is calling
             this.showSelectionResize(canvas, size, adjustStartCoords, adjustOffsetCoords, mousePosition);
@@ -248,6 +255,8 @@ export abstract class SelectionToolService extends Tool {
             // rectangle is calling
             this.drawImage(canvas, adjustStartCoords, this.startDownCoord, adjustOffsetCoords, this.image, size);
         }
+        // reset canvas transform after mirror effect
+        canvas.setTransform(1, 0, 0, 1, 0, 0);
     }
 
     protected putImageData(startCoord: Vec2, canvas: CanvasRenderingContext2D, image: ImageData): void {
