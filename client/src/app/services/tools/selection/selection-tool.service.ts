@@ -198,52 +198,65 @@ export abstract class SelectionToolService extends Tool {
         canvas.drawImage(image, imageStart.x, imageStart.y, size.x, size.y, startCoord.x, startCoord.y, offset.x, offset.y);
     }
 
+    // tslint:disable:cyclomatic-complexity
     // resizing
     protected getAnchorHit(canvas: CanvasRenderingContext2D, mousePosition: Vec2, caller: number): void {
         let adjustStartCoords: Vec2 = this.startDownCoord;
         let adjustOffsetCoords: Vec2 = { x: mousePosition.x - adjustStartCoords.x, y: mousePosition.y - adjustStartCoords.y };
         const size = { x: this.imageData.width, y: this.imageData.height };
+        let scaleX = 1;
+        let scaleY = 1;
+        // tslint:disable:no-magic-numbers
         switch (this.anchorHit) {
             case Anchors.TopLeft:
                 adjustStartCoords = { x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y + this.imageData.height };
                 adjustOffsetCoords = { x: mousePosition.x - adjustStartCoords.x, y: mousePosition.y - adjustStartCoords.y };
+                scaleX = adjustOffsetCoords.x > 0 ? -1 : 1;
+                scaleY = adjustOffsetCoords.y > 0 ? -1 : 1;
                 break;
             case Anchors.TopMiddle:
                 adjustStartCoords = { x: this.startDownCoord.x, y: this.startDownCoord.y + this.imageData.height };
                 adjustOffsetCoords = { x: this.imageData.width, y: mousePosition.y - adjustStartCoords.y };
                 mousePosition = { x: this.startDownCoord.x + this.imageData.width, y: mousePosition.y };
+                scaleY = adjustOffsetCoords.y > 0 ? -1 : 1;
                 break;
             case Anchors.TopRight:
                 adjustStartCoords = { x: this.startDownCoord.x, y: this.startDownCoord.y + this.imageData.height };
                 adjustOffsetCoords = { x: mousePosition.x - adjustStartCoords.x, y: mousePosition.y - adjustStartCoords.y };
+                scaleX = adjustOffsetCoords.x < 0 ? -1 : 1;
+                scaleY = adjustOffsetCoords.y > 0 ? -1 : 1;
                 break;
             case Anchors.MiddleLeft:
                 adjustStartCoords = { x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y };
                 adjustOffsetCoords = { x: mousePosition.x - adjustStartCoords.x, y: this.imageData.height };
                 mousePosition = { x: mousePosition.x, y: this.startDownCoord.y + this.imageData.height };
+                scaleX = adjustOffsetCoords.x > 0 ? -1 : 1;
                 break;
             case Anchors.MiddleRight:
                 adjustOffsetCoords = { x: mousePosition.x - adjustStartCoords.x, y: this.imageData.height };
                 mousePosition = { x: mousePosition.x, y: this.startDownCoord.y + this.imageData.height };
+                scaleX = adjustOffsetCoords.x < 0 ? -1 : 1;
                 break;
             case Anchors.BottomLeft:
                 adjustStartCoords = { x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y };
                 adjustOffsetCoords = { x: mousePosition.x - adjustStartCoords.x, y: mousePosition.y - adjustStartCoords.y };
+                scaleX = adjustOffsetCoords.x > 0 ? -1 : 1;
+                scaleY = adjustOffsetCoords.y < 0 ? -1 : 1;
                 break;
             case Anchors.BottomMiddle:
                 adjustOffsetCoords = { x: this.imageData.width, y: mousePosition.y - adjustStartCoords.y };
                 mousePosition = { x: this.startDownCoord.x + this.imageData.width, y: mousePosition.y };
+                scaleY = adjustOffsetCoords.y < 0 ? -1 : 1;
                 break;
             case Anchors.BottomRight:
                 adjustOffsetCoords = { x: mousePosition.x - this.startDownCoord.x, y: mousePosition.y - this.startDownCoord.y };
+                scaleX = adjustOffsetCoords.x < 0 ? -1 : 1;
+                scaleY = adjustOffsetCoords.y < 0 ? -1 : 1;
                 break;
             default:
                 break;
         }
         // mirror effect
-        // tslint:disable:no-magic-numbers
-        const scaleX = adjustOffsetCoords.x < 0 ? -1 : 1;
-        const scaleY = adjustOffsetCoords.y < 0 ? -1 : 1;
         canvas.scale(scaleX, scaleY);
         adjustStartCoords = { x: scaleX * adjustStartCoords.x, y: scaleY * adjustStartCoords.y };
         adjustOffsetCoords = { x: scaleX * adjustOffsetCoords.x, y: scaleY * adjustOffsetCoords.y };
