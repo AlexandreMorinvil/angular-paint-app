@@ -15,7 +15,6 @@ import { SelectionToolService } from '@app/services/tools/selection/selection-to
     providedIn: 'root',
 })
 export class EllipseSelectionService extends SelectionToolService {
-    protected image: HTMLImageElement;
     protected oldImage: HTMLImageElement;
     pathLastCoord: Vec2;
     firstEllipseCoord: Vec2;
@@ -43,8 +42,12 @@ export class EllipseSelectionService extends SelectionToolService {
         this.mouseDownCoord = this.getPositionFromMouse(event);
         this.localMouseDown = event.button === MouseButton.Left;
         this.resetTransform();
-        // translate
-        if (this.selectionCreated && this.hitSelection(this.mouseDownCoord.x, this.mouseDownCoord.y)) {
+        // resizing
+        if (this.selectionCreated && this.checkHit(this.mouseDownCoord)) {
+            this.getAnchorHit(this.drawingService.previewCtx, this.mouseDownCoord, 1);
+            this.pathLastCoord = this.mouseDownCoord;
+            // translate
+        } else if (this.selectionCreated && this.hitSelection(this.mouseDownCoord.x, this.mouseDownCoord.y)) {
             this.pathData.push(this.pathLastCoord);
             if (this.hasDoneFirstTranslation) {
                 this.startSelectionPoint = this.startDownCoord;
@@ -95,6 +98,11 @@ export class EllipseSelectionService extends SelectionToolService {
             );
             this.startDownCoord = this.evenImageStartCoord(mousePosition);
             this.pathLastCoord = { x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y + this.imageData.height };
+        } else if (this.clickOnAnchor && this.mouseDown) {
+            this.pathData.push({ x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y + this.imageData.height });
+            this.clearCanvasEllipse();
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.getAnchorHit(this.drawingService.previewCtx, mousePosition, 1);
             // creation
         } else if (this.isInCanvas(mousePosition) && this.localMouseDown) {
             this.ellipseService.onMouseMove(event);
@@ -135,6 +143,12 @@ export class EllipseSelectionService extends SelectionToolService {
             this.firstEllipseCoord = this.startDownCoord;
             this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
             this.hasDoneFirstTranslation = true;
+            // resizing
+        } else if (this.clickOnAnchor) {
+            this.getAnchorHit(this.drawingService.baseCtx, mousePosition, 1);
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.clickOnAnchor = false;
+            this.selectionCreated = false;
             // creation
         } else if (this.mouseDown) {
             if (this.ellipseService.shiftDown) {
@@ -296,7 +310,7 @@ export class EllipseSelectionService extends SelectionToolService {
 
     private showSelection(canvas: CanvasRenderingContext2D, image: HTMLImageElement, size: Vec2, imageStart: Vec2, offset: number = 0): void {
         canvas.save();
-        const ellipsePath = this.getPath(offset);
+        const ellipsePath = this.getPath(offset, this.startDownCoord);
         canvas.clip(ellipsePath);
         this.drawImage(
             canvas,
@@ -310,21 +324,6 @@ export class EllipseSelectionService extends SelectionToolService {
             size,
         );
         canvas.restore();
-    }
-
-    private getPath(offset: number): Path2D {
-        const ellipsePath = new Path2D();
-        const mouseMoveCoord = this.pathLastCoord;
-        const centerX = (mouseMoveCoord.x + this.startDownCoord.x) / 2;
-        const centerY = (mouseMoveCoord.y + this.startDownCoord.y) / 2;
-
-        const radiusX = Math.abs(mouseMoveCoord.x - this.startDownCoord.x) / 2;
-        const radiusY = Math.abs(mouseMoveCoord.y - this.startDownCoord.y) / 2;
-
-        const contourRadiusX = Math.abs(radiusX - this.widthService.getWidth() / 2);
-        const contourRadiusY = Math.abs(radiusY - this.widthService.getWidth() / 2);
-        ellipsePath.ellipse(centerX, centerY, contourRadiusX + offset, contourRadiusY + offset, 0, 0, Math.PI * 2, false);
-        return ellipsePath;
     }
 
     private clearCanvasEllipse(): void {

@@ -44,7 +44,7 @@ describe('PencilService', () => {
         mouseEvent = {
             offsetX: 25,
             offsetY: 25,
-            button: 0, 
+            button: 0,
         } as MouseEvent;
 
         mouseEvent2 = {
