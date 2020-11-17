@@ -49,8 +49,8 @@ export class EllipseSelectionService extends SelectionToolService {
             // translate
         } else if (this.selectionCreated && this.hitSelection(this.mouseDownCoord.x, this.mouseDownCoord.y)) {
             this.pathData.push(this.pathLastCoord);
+            this.startSelectionPoint = this.startDownCoord;
             if (this.hasDoneFirstTranslation) {
-                this.startSelectionPoint = this.startDownCoord;
                 this.clearCanvasEllipse();
                 this.showSelection(
                     this.drawingService.baseCtx,
@@ -89,7 +89,7 @@ export class EllipseSelectionService extends SelectionToolService {
         // translate
         if (this.draggingImage && this.localMouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.offsetAnchors(this.firstEllipseCoord);
+            this.firstEllipseCoord = this.offsetAnchors(this.firstEllipseCoord);
             this.showSelection(
                 this.drawingService.previewCtx,
                 this.image,
@@ -164,7 +164,7 @@ export class EllipseSelectionService extends SelectionToolService {
             }
             this.oldImage.src = this.drawingService.baseCtx.canvas.toDataURL();
             this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.pathData);
-            this.offsetAnchors(this.startDownCoord);
+            this.startDownCoord = this.offsetAnchors(this.startDownCoord);
             this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
             this.selectionCreated = true;
             this.pathLastCoord = this.pathData[this.pathData.length - 1];
