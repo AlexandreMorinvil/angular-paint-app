@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { SprayDropletDiameterService } from '@app/services/tool-modifier/spraydropletdiameter/spraydropletdiameter.service';
 import { SprayDropletDiameterModifierState } from './spray-droplet-diameter-state';
 
-fdescribe('SpraydropletdiameterService', () => {
+describe('SpraydropletdiameterService', () => {
     let service: SprayDropletDiameterService;
     let setSprayDropletDiameterSpy: jasmine.Spy<any>;
     let getSprayDropletDiameterSpy: jasmine.Spy<any>;
