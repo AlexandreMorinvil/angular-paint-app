@@ -27,6 +27,14 @@ export class FeatherService extends Tool {
         this.modifiers.push(this.colorService);
         this.modifiers.push(this.widthService);
         this.clearPath();
+        this.angleInRadian = 0; //angle du debut
+        this.isAltDown = false;
+    }
+    onAltDown(event: KeyboardEvent): void {
+        this.isAltDown = true;
+    }
+    onAltUp(event: KeyboardEvent): void {
+        this.isAltDown = false;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -68,7 +76,6 @@ export class FeatherService extends Tool {
     }
 
     onMouseScroll(event: MouseEvent): void {
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
         if (this.angleInRadian == 360) {
             this.angleInRadian = 0; // pour le ramener a 0
         }
@@ -80,7 +87,7 @@ export class FeatherService extends Tool {
     }
 
     private featherDraw(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        const image = new Image();
+        /* const image = new Image();
         image.src = 'http://www.tricedesigns.com/wp-content/uploads/2012/01/brush2.png';
         const lastPostion: Vec2 = path[path.length - 2];
         const currentPostion: Vec2 = path[path.length - 1];
@@ -105,9 +112,18 @@ export class FeatherService extends Tool {
                 );
             }
             ctx.restore();
-        };
+        }; */
+        ctx.beginPath();
+        ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
+        ctx.lineWidth = this.widthService.getWidth(); // width ajustment
+        ctx.strokeStyle = this.colorService.getPrimaryColor(); // color of the line
+        ctx.fillStyle = this.colorService.getPrimaryColor(); // color of the starting point
+        for (const point of path) {
+            ctx.lineTo(point.x, point.y);
+        }
+        ctx.stroke();
     }
-    private angleBetween(lastPath: Vec2, currentPath: Vec2): number {
+    /*  private angleBetween(lastPath: Vec2, currentPath: Vec2): number {
         return Math.atan2(currentPath.x - lastPath.x, currentPath.y - lastPath.y);
     }
 
@@ -116,7 +132,7 @@ export class FeatherService extends Tool {
     }
     private convertDegreeToRad(angleDegre: number): number {
         return (angleDegre * Math.PI) / 180;
-    }
+    } */
 
     private clearPath(): void {
         this.pathData = [];

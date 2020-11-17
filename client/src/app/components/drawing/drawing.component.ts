@@ -63,6 +63,10 @@ export class DrawingComponent implements AfterViewInit {
         event.preventDefault();
         this.resetDrawing();
     }
+    @HostListener('wheel', ['$event'])
+    onMouseScroll(event: MouseEvent): void {
+        this.toolbox.getCurrentTool().onMouseScroll(event);
+    }
 
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
@@ -106,6 +110,9 @@ export class DrawingComponent implements AfterViewInit {
             // tslint:disable:prefer-switch
         } else if (event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown') {
             this.toolbox.getCurrentTool().onArrowUp(event);
+        } else if (event.key == 'Alt') {
+            event.preventDefault(); // to prevent key of windows
+            this.toolbox.getCurrentTool().onAltUp(event);
         } else {
             if (this.drawingService.shortcutEnable) {
                 for (const i in this.toolbox.getAvailableTools()) {
@@ -126,6 +133,9 @@ export class DrawingComponent implements AfterViewInit {
         } else if (event.key === 'Escape') {
             this.toolbox.getCurrentTool().onEscapeDown(event);
             this.hasBeenDrawnOnto = true;
+        } else if (event.key === 'Alt') {
+            event.preventDefault(); // to prevent key of windows
+            this.toolbox.getCurrentTool().onAltDown(event);
         } else if (event.ctrlKey && event.key.toLowerCase() === 's' && this.drawingService.shortcutEnable) {
             event.preventDefault(); // to prevent key of windows
             this.modalHandlerService.openSaveDialog();

@@ -46,6 +46,12 @@ export abstract class Tool {
 
     onArrowUp(event: KeyboardEvent): void {}
 
+    onMouseScroll(event: MouseEvent): void {}
+
+    onAltDown(event: KeyboardEvent): void {}
+
+    onAltUp(event: KeyboardEvent): void {}
+
     onCtrlADown(): void {}
 
     getPositionFromMouse(event: MouseEvent): Vec2 {
