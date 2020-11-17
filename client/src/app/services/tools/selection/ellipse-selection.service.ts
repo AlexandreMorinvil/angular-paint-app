@@ -18,7 +18,6 @@ export class EllipseSelectionService extends SelectionToolService {
     protected oldImage: HTMLImageElement;
     pathLastCoord: Vec2;
     firstEllipseCoord: Vec2;
-
     constructor(
         drawingService: DrawingService,
         private drawingStateTrackingService: DrawingStateTrackerService,
@@ -181,13 +180,19 @@ export class EllipseSelectionService extends SelectionToolService {
     }
 
     onShiftDown(event: KeyboardEvent): void {
-        this.ellipseService.shiftDown = true;
-        this.createOnMouseMoveEvent();
+        this.shiftDown = true;
+        if (!this.clickOnAnchor) {
+            this.ellipseService.shiftDown = true;
+            this.createOnMouseMoveEvent();
+        }
     }
 
     onShiftUp(event: KeyboardEvent): void {
-        this.ellipseService.shiftDown = false;
-        this.createOnMouseMoveEvent();
+        this.shiftDown = false;
+        if (!this.clickOnAnchor) {
+            this.ellipseService.shiftDown = false;
+            this.createOnMouseMoveEvent();
+        }
     }
 
     onArrowDown(event: KeyboardEvent): void {
@@ -287,7 +292,6 @@ export class EllipseSelectionService extends SelectionToolService {
             imageDataEnd.x - imageDataStart.x,
             imageDataEnd.y - imageDataStart.y,
         );
-
         this.drawingStateTrackingService.addAction(
             this,
             new InteractionSelectionEllipse({ x: imageDataStart.x, y: imageDataStart.y }, imageDataSelection),
@@ -330,7 +334,6 @@ export class EllipseSelectionService extends SelectionToolService {
         );
         canvas.restore();
     }
-
     private clearCanvasEllipse(): void {
         this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.pathData);
         this.colorService.setPrimaryColor('#FFFFFF');
@@ -339,7 +342,6 @@ export class EllipseSelectionService extends SelectionToolService {
         this.ellipseService.drawEllipse(this.drawingService.baseCtx, this.pathData);
         this.resetTransform();
     }
-
     execute(interaction: InteractionSelectionEllipse): void {
         this.putImageData(interaction.startSelectionPoint, this.drawingService.baseCtx, interaction.selection);
         this.drawingService.clearCanvas(this.drawingService.previewCtx);

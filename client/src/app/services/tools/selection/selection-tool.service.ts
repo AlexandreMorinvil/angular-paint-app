@@ -40,6 +40,7 @@ export abstract class SelectionToolService extends Tool {
     protected localMouseDown: boolean = false;
     protected startSelectionPoint: Vec2;
     protected image: HTMLImageElement;
+    protected ratio: number;
 
     constructor(drawingService: DrawingService, private color: ColorService, description: Description) {
         super(drawingService, description);
@@ -256,6 +257,33 @@ export abstract class SelectionToolService extends Tool {
             default:
                 break;
         }
+        // Resizing while keeping the aspect ratio
+        if (this.shiftDown) {
+            const ratioW = this.imageData.width / this.ratio;
+            const ratioH = this.imageData.height / this.ratio;
+            let value = adjustOffsetCoords.x % ratioW;
+            let value1 = adjustOffsetCoords.y % ratioH;
+            if ((adjustOffsetCoords.x - value) / ratioW > (adjustOffsetCoords.y - value1) / ratioH) {
+                adjustOffsetCoords.y -= value1;
+                const val = Math.floor((adjustOffsetCoords.x - value) / ratioW - (adjustOffsetCoords.y - value1) / ratioH);
+                for (let i = 0; i < val; i++) {
+                    adjustOffsetCoords.x -= value + 1;
+                    value = adjustOffsetCoords.x % ratioW;
+                    adjustOffsetCoords.x -= value;
+                }
+            } else if ((adjustOffsetCoords.x - value) / ratioW < (adjustOffsetCoords.y - value1) / ratioH) {
+                adjustOffsetCoords.x -= value;
+                const val = Math.floor((adjustOffsetCoords.y - value1) / ratioH - (adjustOffsetCoords.x - value) / ratioW);
+                for (let i = 0; i < val; i++) {
+                    adjustOffsetCoords.y -= value1 + 1;
+                    value1 = adjustOffsetCoords.y % ratioH;
+                    adjustOffsetCoords.y -= value1;
+                }
+            } else {
+                adjustOffsetCoords.y -= value1;
+                adjustOffsetCoords.x -= value;
+            }
+        }
         // mirror effect
         canvas.scale(scaleX, scaleY);
         adjustStartCoords = { x: scaleX * adjustStartCoords.x, y: scaleY * adjustStartCoords.y };
@@ -270,6 +298,9 @@ export abstract class SelectionToolService extends Tool {
         }
         // reset canvas transform after mirror effect
         canvas.setTransform(1, 0, 0, 1, 0, 0);
+    }
+    protected getRatio(w: number, h: number): number {
+        return h === 0 ? w : this.getRatio(h, w % h);
     }
 
     protected putImageData(startCoord: Vec2, canvas: CanvasRenderingContext2D, image: ImageData): void {

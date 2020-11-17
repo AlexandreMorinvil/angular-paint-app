@@ -170,13 +170,20 @@ export class RectangleSelectionService extends SelectionToolService {
     }
 
     onShiftDown(event: KeyboardEvent): void {
-        this.rectangleService.shiftDown = true;
-        this.createOnMouseMoveEvent();
+        this.shiftDown = true;
+        this.ratio = this.getRatio(this.imageData.width, this.imageData.height);
+        if (!this.clickOnAnchor) {
+            this.rectangleService.shiftDown = true;
+            this.createOnMouseMoveEvent();
+        }
     }
 
     onShiftUp(event: KeyboardEvent): void {
-        this.rectangleService.shiftDown = false;
-        this.createOnMouseMoveEvent();
+        this.shiftDown = false;
+        if (!this.clickOnAnchor) {
+            this.rectangleService.shiftDown = false;
+            this.createOnMouseMoveEvent();
+        }
     }
 
     onArrowDown(event: KeyboardEvent): void {
