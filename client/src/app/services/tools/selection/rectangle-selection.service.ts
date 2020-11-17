@@ -39,6 +39,7 @@ export class RectangleSelectionService extends SelectionToolService {
         // resizing
         if (this.selectionCreated && this.checkHit(this.mouseDownCoord)) {
             this.getAnchorHit(this.drawingService.previewCtx, this.mouseDownCoord, 2);
+            this.startSelectionPoint = this.startDownCoord;
             // translate
         } else if (this.selectionCreated && this.hitSelection(this.mouseDownCoord.x, this.mouseDownCoord.y)) {
             this.pathData.push(this.pathLastCoord);
@@ -124,19 +125,25 @@ export class RectangleSelectionService extends SelectionToolService {
             this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
             // resizing
         } else if (this.clickOnAnchor) {
-            const savedOldImageData = this.oldImageData;
-            this.oldImageData = this.getOldImageData(mousePosition);
             this.getAnchorHit(this.drawingService.baseCtx, mousePosition, 2);
+            const trackingInfo = this.getActionTrackingInfo(mousePosition);
+            const imageDataSelection = this.drawingService.baseCtx.getImageData(
+                trackingInfo[0].x,
+                trackingInfo[0].y,
+                trackingInfo[1].x - trackingInfo[0].x,
+                trackingInfo[1].y - trackingInfo[0].y,
+            );
             this.drawingStateTrackingService.addAction(
                 this,
                 new InteractionSelection(
                     this.hasDoneFirstTranslation,
                     this.startSelectionPoint,
-                    this.startDownCoord,
-                    this.imageData,
-                    savedOldImageData,
+                    trackingInfo[0],
+                    imageDataSelection,
+                    this.oldImageData,
                 ),
             );
+            this.oldImageData = imageDataSelection;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clickOnAnchor = false;
             this.selectionCreated = false;
@@ -156,7 +163,6 @@ export class RectangleSelectionService extends SelectionToolService {
                 this.imageData.width,
                 this.imageData.height,
             );
-            // this.getOldImageData(mousePosition);
             this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.pathData);
             this.offsetAnchors(this.startDownCoord);
             this.drawingService.previewCtx.putImageData(this.imageData, this.startDownCoord.x, this.startDownCoord.y);
@@ -170,19 +176,23 @@ export class RectangleSelectionService extends SelectionToolService {
     }
 
     onShiftDown(event: KeyboardEvent): void {
-        this.shiftDown = true;
-        this.ratio = this.getRatio(this.imageData.width, this.imageData.height);
-        if (!this.clickOnAnchor) {
-            this.rectangleService.shiftDown = true;
-            this.createOnMouseMoveEvent();
+        if (!event.ctrlKey) {
+            this.shiftDown = true;
+            this.ratio = this.getRatio(this.imageData.width, this.imageData.height);
+            if (!this.clickOnAnchor) {
+                this.rectangleService.shiftDown = true;
+                this.createOnMouseMoveEvent();
+            }
         }
     }
 
     onShiftUp(event: KeyboardEvent): void {
-        this.shiftDown = false;
-        if (!this.clickOnAnchor) {
-            this.rectangleService.shiftDown = false;
-            this.createOnMouseMoveEvent();
+        if (!event.ctrlKey) {
+            this.shiftDown = false;
+            if (!this.clickOnAnchor) {
+                this.rectangleService.shiftDown = false;
+                this.createOnMouseMoveEvent();
+            }
         }
     }
 

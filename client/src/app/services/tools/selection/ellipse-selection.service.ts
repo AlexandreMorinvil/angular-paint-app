@@ -136,7 +136,8 @@ export class EllipseSelectionService extends SelectionToolService {
                 { x: this.imageData.width, y: this.imageData.height },
                 this.firstEllipseCoord,
             );
-            this.addActionTracking();
+            const trackingInfo = this.getActionTrackingInfo(this.startDownCoord);
+            this.addActionTracking(trackingInfo);
             this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.pathData);
             this.ellipseService.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
             this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
@@ -151,8 +152,8 @@ export class EllipseSelectionService extends SelectionToolService {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clickOnAnchor = false;
             this.selectionCreated = false;
-            this.startDownCoord = mousePosition;
-            this.addActionTracking();
+            const trackingInfo = this.getActionTrackingInfo(mousePosition);
+            this.addActionTracking(trackingInfo);
             // creation
         } else if (this.mouseDown) {
             if (this.ellipseService.shiftDown) {
@@ -180,18 +181,22 @@ export class EllipseSelectionService extends SelectionToolService {
     }
 
     onShiftDown(event: KeyboardEvent): void {
-        this.shiftDown = true;
-        if (!this.clickOnAnchor) {
-            this.ellipseService.shiftDown = true;
-            this.createOnMouseMoveEvent();
+        if (!event.ctrlKey) {
+            this.shiftDown = true;
+            if (!this.clickOnAnchor) {
+                this.ellipseService.shiftDown = true;
+                this.createOnMouseMoveEvent();
+            }
         }
     }
 
     onShiftUp(event: KeyboardEvent): void {
-        this.shiftDown = false;
-        if (!this.clickOnAnchor) {
-            this.ellipseService.shiftDown = false;
-            this.createOnMouseMoveEvent();
+        if (!event.ctrlKey) {
+            this.shiftDown = false;
+            if (!this.clickOnAnchor) {
+                this.ellipseService.shiftDown = false;
+                this.createOnMouseMoveEvent();
+            }
         }
     }
 
@@ -272,29 +277,16 @@ export class EllipseSelectionService extends SelectionToolService {
         this.onMouseUp(mouseEvent);
     }
 
-    private addActionTracking(): void {
-        const imageDataStart: Vec2 = { x: 0, y: 0 };
-        const imageDataEnd: Vec2 = { x: 0, y: 0 };
-        imageDataStart.x = this.startSelectionPoint.x < this.startDownCoord.x ? this.startSelectionPoint.x : this.startDownCoord.x;
-        imageDataStart.y = this.startSelectionPoint.y < this.startDownCoord.y ? this.startSelectionPoint.y : this.startDownCoord.y;
-        imageDataEnd.x =
-            this.startSelectionPoint.x > this.startDownCoord.x
-                ? this.startSelectionPoint.x + this.imageData.width
-                : this.startDownCoord.x + this.imageData.width;
-        imageDataEnd.y =
-            this.startSelectionPoint.y > this.startDownCoord.y
-                ? this.startSelectionPoint.y + this.imageData.height
-                : this.startDownCoord.y + this.imageData.height;
-
-        const imageDataSelection: ImageData = this.drawingService.baseCtx.getImageData(
-            imageDataStart.x,
-            imageDataStart.y,
-            imageDataEnd.x - imageDataStart.x,
-            imageDataEnd.y - imageDataStart.y,
+    private addActionTracking(trackingInfo: Vec2[]): void {
+        const imageDataSelection = this.drawingService.baseCtx.getImageData(
+            trackingInfo[0].x,
+            trackingInfo[0].y,
+            trackingInfo[1].x - trackingInfo[0].x,
+            trackingInfo[1].y - trackingInfo[0].y,
         );
         this.drawingStateTrackingService.addAction(
             this,
-            new InteractionSelectionEllipse({ x: imageDataStart.x, y: imageDataStart.y }, imageDataSelection),
+            new InteractionSelectionEllipse({ x: trackingInfo[0].x, y: trackingInfo[0].y }, imageDataSelection),
         );
     }
 

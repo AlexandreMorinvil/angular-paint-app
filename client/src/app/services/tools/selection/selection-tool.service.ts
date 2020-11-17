@@ -449,4 +449,18 @@ export abstract class SelectionToolService extends Tool {
         ellipsePath.ellipse(centerX, centerY, contourRadiusX + offset, contourRadiusY + offset, 0, 0, Math.PI * 2, false);
         return ellipsePath;
     }
+
+    protected getActionTrackingInfo(mousePosition: Vec2): Vec2[] {
+        const imageDataStart = { x: 0, y: 0 };
+        const imageDataEnd = { x: 0, y: 0 };
+        imageDataStart.x = this.startSelectionPoint.x < mousePosition.x ? this.startSelectionPoint.x : mousePosition.x;
+        imageDataStart.y = this.startSelectionPoint.y < mousePosition.y ? this.startSelectionPoint.y : mousePosition.y;
+        imageDataEnd.x =
+            this.startSelectionPoint.x > mousePosition.x ? this.startSelectionPoint.x + this.imageData.width : mousePosition.x + this.imageData.width;
+        imageDataEnd.y =
+            this.startSelectionPoint.y > mousePosition.y
+                ? this.startSelectionPoint.y + this.imageData.height
+                : mousePosition.y + this.imageData.height;
+        return [imageDataStart, imageDataEnd];
+    }
 }
