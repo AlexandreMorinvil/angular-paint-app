@@ -3,7 +3,8 @@
         <img [src]="currentTool.iconDirectory" [alt]="currentTool.name" />
         <h1>{{ capitalizeFirstLetter(currentTool.name) }}</h1>
     </div>
-
+    
+    <app-attributes-spacing class="section" *ngIf="needsSpacingAttribute()"></app-attributes-spacing>
     <app-attributes-width class="section" *ngIf="needsWidthAttribute()"> </app-attributes-width>
     <app-attributes-junction class="section" *ngIf="needsJunctionAttribute()"> </app-attributes-junction>
     <app-attributes-texture class="section" *ngIf="needsTextureAttribute()"></app-attributes-texture>

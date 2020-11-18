@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@
 import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ModalHandlerService } from '@app/services/modal-handler/modal-handler';
+import { GridService } from '@app/services/tools/grid/grid.service';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
 import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzone-size.service';
 
@@ -16,11 +17,13 @@ export class DrawingComponent implements AfterViewInit {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('editCanvas', { static: false }) editCanvas: ElementRef<HTMLCanvasElement>;
+    @ViewChild('gridCanvas', { static: false }) gridCanvas: ElementRef<HTMLCanvasElement>;
 
     readonly BACKSPACE_KEYCODE: number = 32;
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private editCtx: CanvasRenderingContext2D;
+    private gridCtx: CanvasRenderingContext2D;
     private TOOL_BOX_WIDTH: number = 313;
     hasBeenDrawnOnto: boolean;
 
@@ -30,21 +33,26 @@ export class DrawingComponent implements AfterViewInit {
         public toolbox: ToolboxService,
         private workzoneSizeService: WorkzoneSizeService,
         private drawingStateTrackerService: DrawingStateTrackerService,
+        private gridService: GridService,
     ) {}
 
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.editCtx = this.editCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.gridCtx = this.gridCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
         this.editCtx.canvas.width = window.innerWidth - this.TOOL_BOX_WIDTH;
         this.editCtx.canvas.height = window.innerHeight;
         this.drawingService.hasBeenDrawnOnto = false;
+        this.gridService.gridCtx = this.gridCtx;
+        this.gridService.gridCanvas = this.gridCanvas.nativeElement;
         // Fills the canvas with white
         this.baseCtx.fillStyle = '#FFFFFF';
         this.baseCtx.fillRect(0, 0, this.baseCtx.canvas.width, this.baseCtx.canvas.height);
+        this.gridService.resetGrid();
     }
 
     resetDrawing(): void {

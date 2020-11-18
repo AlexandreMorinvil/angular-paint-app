@@ -13,6 +13,7 @@ import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
 import { EllipseSelectionService } from '@app/services/tools/selection/ellipse-selection.service';
 import { RectangleSelectionService } from '@app/services/tools/selection/rectangle-selection.service';
+import { GridService } from '../tools/grid/grid.service';
 
 @Injectable({
     providedIn: 'root',
@@ -23,6 +24,7 @@ export class ToolboxService {
 
     constructor(
         cursorService: CursorService,
+        gridService: GridService,
         pencilService: PencilService,
         brushService: BrushService,
         eraserService: EraserService,
@@ -38,6 +40,7 @@ export class ToolboxService {
     ) {
         this.currentTool = cursorService;
         this.availableTools.push(cursorService);
+        this.availableTools.push(gridService);
         this.availableTools.push(pencilService);
         this.availableTools.push(brushService);
         this.availableTools.push(eraserService);
