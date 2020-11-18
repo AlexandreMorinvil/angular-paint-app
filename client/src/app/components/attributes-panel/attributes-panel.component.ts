@@ -76,4 +76,8 @@ export class AttributesPanelComponent {
     needsSelectionAttribute(): boolean {
         return this.currentTool.name === 'selection rectangle' || this.currentTool.name === 'selection ellipse';
     }
+
+    needsGridDisplayAttribute(): boolean {
+        return this.currentTool.name === 'grille';
+    }
 }

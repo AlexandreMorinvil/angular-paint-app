@@ -20,6 +20,15 @@ export class GridService extends Tool {
         this.modifiers.push(this.gridOpacityService);
     }
 
+    isGridActivated(): boolean {
+        return this.isGridOn;
+    }
+
+    toogleGrid(): void {
+        this.isGridOn = !this.isGridOn;
+        this.resetGrid();
+    }
+
     resetGrid(): void {
         this.gridCtx.clearRect(0, 0, this.gridCanvas.width, this.gridCanvas.height);
         if (this.isGridOn) this.drawGrid();
