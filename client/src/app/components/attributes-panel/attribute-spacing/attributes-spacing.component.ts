@@ -1,18 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { SpacingService } from '@app/services/tool-modifier/spacing/spacing.service';
 import { GridService } from '@app/services/tools/grid/grid.service';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-attributes-spacing',
     templateUrl: './attributes-spacing.component.html',
     styleUrls: ['./attributes-spacing.component.scss', '../attributes-section.component.scss'],
 })
-export class AttributeSpacingComponent {
+export class AttributeSpacingComponent implements OnDestroy {
     private spacing: number;
+    private subscription: Subscription;
 
-    constructor(private spacingService: SpacingService,
-        private gridService: GridService) {
+    constructor(private spacingService: SpacingService, private gridService: GridService) {
         this.spacing = this.spacingService.getSpacing();
+        this.subscription = spacingService.spacingChange.subscribe((value) => {
+            this.spacing = value;
+        });
     }
 
     set spacingDisplayed(value: number) {
@@ -46,5 +50,9 @@ export class AttributeSpacingComponent {
 
     needConfirmation(): boolean {
         return this.spacing !== this.spacingService.getSpacing();
+    }
+
+    ngOnDestroy() {
+        this.subscription.unsubscribe();
     }
 }

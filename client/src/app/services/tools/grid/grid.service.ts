@@ -20,6 +20,16 @@ export class GridService extends Tool {
         this.modifiers.push(this.gridOpacityService);
     }
 
+    incrementSpacing(): void {
+        this.spacingService.stepUp();
+        this.resetGrid();
+    }
+
+    decrementSpacing(): void {
+        this.spacingService.stepDown();
+        this.resetGrid();
+    }
+
     isGridActivated(): boolean {
         return this.isGridOn;
     }

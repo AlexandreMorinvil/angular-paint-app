@@ -155,6 +155,12 @@ export class DrawingComponent implements AfterViewInit {
         } else if (event.ctrlKey && event.key.toLowerCase() === 'a') {
             event.preventDefault(); // to prevent key of windows
             this.toolbox.getCurrentTool().onCtrlADown();
+        } else if (event.key.toLowerCase() === 'g' && this.drawingService.shortcutEnable) {
+            this.gridService.toogleGrid();
+        } else if (event.key.toLowerCase() === '+' && this.drawingService.shortcutEnable) {
+            this.gridService.incrementSpacing();
+        } else if (event.key.toLowerCase() === '-' && this.drawingService.shortcutEnable) {
+            this.gridService.decrementSpacing();
         }
     }
 
