@@ -9,7 +9,7 @@ export class SpacingService extends ToolModifier {
     readonly MAX_ATTRIBUTE_SPACING: number = 50;
     readonly MIN_ATTRIBUTE_SPACING: number = 5;
     readonly STEP_SIZE: number = 5;
-    private spacing: number = this.MIN_ATTRIBUTE_SPACING;
+    private spacing: number = 20;
 
     constructor() {
         super();

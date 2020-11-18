@@ -1,21 +1,21 @@
 import { TestBed } from '@angular/core/testing';
-import { WidthModifierState } from './width-state';
-import { WidthService } from './width.service';
+import { SpacingModifierState } from './spacing-state';
+import { SpacingService } from './spacing.service';
 // The disablement of the "any" tslint rule is justified in this situation as the prototype
 // of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
 // tslint:disable:no-any
-describe('WidthService', () => {
-    let service: WidthService;
+describe('SpacingService', () => {
+    let service: SpacingService;
 
-    let setWidthSpy: jasmine.Spy<any>;
-    let getWidthSpy: jasmine.Spy<any>;
+    let setSpacingSpy: jasmine.Spy<any>;
+    let getSpacingSpy: jasmine.Spy<any>;
     let setStateSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
-        service = TestBed.inject(WidthService);
-        setWidthSpy = spyOn<any>(service, 'setWidth').and.callThrough();
-        getWidthSpy = spyOn<any>(service, 'getWidth').and.callThrough();
+        service = TestBed.inject(SpacingService);
+        setSpacingSpy = spyOn<any>(service, 'setSpacing').and.callThrough();
+        getSpacingSpy = spyOn<any>(service, 'getSpacing').and.callThrough();
         setStateSpy = spyOn<any>(service, 'setState').and.callThrough();
     });
 
@@ -23,38 +23,38 @@ describe('WidthService', () => {
         expect(service).toBeTruthy();
     });
 
-    it(' setWidth should set width to the incoming argument and getWidth should return the right number', () => {
-        const width = 25;
-        service.setWidth(width);
-        expect(setWidthSpy).toHaveBeenCalled();
-        expect(service.getWidth()).toEqual(width);
-        expect(getWidthSpy).toHaveBeenCalled();
+    it(' setSpacing should set spacing to the incoming argument and getSpacing should return the right number', () => {
+        const spacing = 25;
+        service.setSpacing(spacing);
+        expect(setSpacingSpy).toHaveBeenCalled();
+        expect(service.getSpacing()).toEqual(spacing);
+        expect(getSpacingSpy).toHaveBeenCalled();
     });
 
-    it(' setWidth should set width to the 50 if input is above 50', () => {
-        const width = 75;
-        const maxWidth = service.MAX_ATTRIBUTE_WIDTH;
-        service.setWidth(width);
-        expect(setWidthSpy).toHaveBeenCalled();
-        expect(service.getWidth()).toEqual(maxWidth);
-        expect(getWidthSpy).toHaveBeenCalled();
+    it(' setSpacing should set spacing to the 50 if input is above 50', () => {
+        const spacing = 75;
+        const maxSpacing = service.MAX_ATTRIBUTE_SPACING;
+        service.setSpacing(spacing);
+        expect(setSpacingSpy).toHaveBeenCalled();
+        expect(service.getSpacing()).toEqual(maxSpacing);
+        expect(getSpacingSpy).toHaveBeenCalled();
     });
 
-    it(' setWidth should set width to 1 if input is below 1', () => {
-        const width = 0;
-        const minWidth = service.MIN_ATTRIBUTE_WIDTH;
-        service.setWidth(width);
-        expect(setWidthSpy).toHaveBeenCalled();
-        expect(service.getWidth()).toEqual(minWidth);
-        expect(getWidthSpy).toHaveBeenCalled();
+    it(' setSpacing should set spacing to 1 if input is below 1', () => {
+        const spacing = 0;
+        const minSpacing = service.MIN_ATTRIBUTE_SPACING;
+        service.setSpacing(spacing);
+        expect(setSpacingSpy).toHaveBeenCalled();
+        expect(service.getSpacing()).toEqual(minSpacing);
+        expect(getSpacingSpy).toHaveBeenCalled();
     });
 
-    it(' should call setState to the incoming argument and getWidth should return the right number', () => {
+    it(' should call setState to the incoming argument and getSpacing should return the right number', () => {
         const state = {
-            width: 100,
-        } as WidthModifierState;
+            spacing: 100,
+        } as SpacingModifierState;
         service.setState(state);
         expect(setStateSpy).toHaveBeenCalled();
-        expect(service.getWidth()).toEqual(state.width);
+        expect(service.getSpacing()).toEqual(state.spacing);
     });
 });
