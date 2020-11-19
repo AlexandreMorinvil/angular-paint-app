@@ -347,7 +347,7 @@ export class MagicWandService extends SelectionToolService {
     }
     private showSelection(canvas: CanvasRenderingContext2D, image: HTMLImageElement, size: Vec2, imageStart: Vec2): void {
         canvas.save();
-        const path = this.getPath();
+        const path = this.getPathToClip();
         canvas.clip(path);
 
         this.drawImage(
@@ -365,13 +365,13 @@ export class MagicWandService extends SelectionToolService {
     }
     private deleteUnderSelection(canvas: CanvasRenderingContext2D): void {
         canvas.save();
-        const path = this.getPath();
+        const path = this.getPathToClip();
         canvas.clip(path);
         canvas.fillStyle = '#FFFFFF';
         canvas.fillRect(this.startDownCoord.x, this.startDownCoord.y, this.imageData.width, this.imageData.height);
         canvas.restore();
     }
-    private getPath(): Path2D {
+    private getPathToClip(): Path2D {
         const magicWandPath = new Path2D();
         // magicWandPath.moveTo(this.edgePixels[0].x, this.edgePixels[0].y)
         if (!(this.pathStartCoordReference === this.startDownCoord)) {
