@@ -1,3 +1,4 @@
+// tslint:disable: no-relative-imports
 import { Vec2 } from '../vec2';
 
 export class InteractionAerosol {

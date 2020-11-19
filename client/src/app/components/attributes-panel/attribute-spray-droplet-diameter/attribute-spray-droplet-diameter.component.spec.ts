@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { SprayDropletDiameterService } from '@app/services/tool-modifier/spraydropletdiameter/spraydropletdiameter.service';
 import { AttributeSprayDropletDiameterComponent } from './attribute-spray-droplet-diameter.component';
-
+// tslint:disable: max-line-length
 describe('AttributeSprayDropletDiameterComponent', () => {
     let component: AttributeSprayDropletDiameterComponent;
     let fixture: ComponentFixture<AttributeSprayDropletDiameterComponent>;

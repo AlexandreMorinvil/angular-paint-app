@@ -105,6 +105,7 @@ fdescribe('AerosolService', () => {
         expect(sprayPaintSpy).not.toHaveBeenCalled();
     });
 
+    // tslint:disable:no-magic-numbers
     it(' should call set attribute on spray paint', () => {
         const path: Vec2[] = [
             { x: 25, y: 25 },

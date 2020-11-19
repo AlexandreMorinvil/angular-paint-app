@@ -18,7 +18,7 @@ export class AerosolService extends Tool {
     private readonly NUMBER_MILLISECONDS_IN_SECOND: number = 1000;
     private readonly factorTimeIntervalBeetweenSpray: number = 100;
     private pathData: Vec2[];
-    private sprayIntervalId: any;
+    private sprayIntervalId: number;
     private savedPathData: Vec2[];
     private sprayDropletDiameter: number;
 
@@ -81,6 +81,7 @@ export class AerosolService extends Tool {
         if (this.isInCanvas(mouseMoveCoord)) {
             const xposition = mouseMoveCoord.x;
             const yposition = mouseMoveCoord.y;
+            // tslint:disable:prefer-for-of
             const numberSprayTransmission = this.numberSprayTransmissionService.getNumberSprayTransmission() / this.factorTimeIntervalBeetweenSpray;
             for (let i = 0; i < numberSprayTransmission; i++) {
                 ctx.beginPath();
@@ -93,8 +94,8 @@ export class AerosolService extends Tool {
                 const yValue = yposition + yvalueOffset;
                 this.sprayDropletDiameter = this.sprayDropletService.getSprayDropletDiameter();
                 const dropletRadius = this.sprayDropletDiameter / 2;
-                const savedData: Vec2 = { x: xValue, y: yValue }; //pour undo redo
-                this.savedPathData.push(savedData); //pour undo redo
+                const savedData: Vec2 = { x: xValue, y: yValue }; // pour undo redo
+                this.savedPathData.push(savedData); // pour undo redo
                 ctx.arc(xValue, yValue, dropletRadius, 0, 2 * Math.PI, false);
                 ctx.fill();
             }
@@ -118,6 +119,7 @@ export class AerosolService extends Tool {
 
     private redoSprayPaint(ctx: CanvasRenderingContext2D, interaction: InteractionAerosol): void {
         this.setAttribute(this.drawingService.baseCtx);
+        // tslint:disable:prefer-for-of
         for (let i = 0; i < interaction.path.length; i++) {
             this.drawingService.baseCtx.beginPath();
             const sprayDropletRadius = interaction.sprayDropletDiameter / 2;

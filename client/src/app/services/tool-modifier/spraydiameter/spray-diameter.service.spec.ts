@@ -2,6 +2,9 @@ import { TestBed } from '@angular/core/testing';
 import { SprayDiameterService } from '@app/services/tool-modifier/spraydiameter/spray-diameter.service';
 import { SprayDiameterModifierState } from './spray-diameter-state';
 
+// The disablement of the "any" tslint rule is justified in this situation as the prototype
+// of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
+// tslint:disable:no-any
 describe('SprayDiameterService', () => {
     let service: SprayDiameterService;
     let setSprayDiameterSpy: jasmine.Spy<any>;
