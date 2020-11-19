@@ -14,7 +14,6 @@ import { WidthService } from '@app/services/tool-modifier/width/width.service';
 })
 export class StampService extends Tool {
     private pathData: Vec2[];
-    //private mouseWheelDown: boolean;
     private angleInRadian: number;
     private isAltDown: boolean;
 
@@ -30,6 +29,7 @@ export class StampService extends Tool {
         this.clearPath();
         this.angleInRadian = 0; //angle du debut
         this.isAltDown = false;
+        this.widthService.setWidth(25);
     }
 
     onAltDown(event: KeyboardEvent): void {
@@ -48,17 +48,35 @@ export class StampService extends Tool {
             this.previewStamp(this.drawingService.previewCtx, this.pathData);
         }
     }
-
-    onMouseScroll(event: MouseEvent): void {
+    onMouseScrollUp(event: MouseEvent): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.previewStamp(this.drawingService.previewCtx, this.pathData);
-        if (this.angleInRadian == 360) {
+        const rotateAngle15 = 15;
+        const rotateAngle1 = 1;
+        const resetAngle = 0;
+        if (this.angleInRadian === resetAngle) {
+            this.angleInRadian = 360; // pour le ramener a 0
+        }
+        if (this.isAltDown) {
+            this.angleInRadian = this.angleInRadian - rotateAngle1;
+        } else {
+            this.angleInRadian = this.angleInRadian - rotateAngle15;
+        }
+    }
+
+    onMouseScrollDown(event: MouseEvent): void {
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.previewStamp(this.drawingService.previewCtx, this.pathData);
+        const rotateAngle15 = 15;
+        const rotateAngle1 = 1;
+        const resetAngle = 360;
+        if (this.angleInRadian == resetAngle) {
             this.angleInRadian = 0; // pour le ramener a 0
         }
         if (this.isAltDown) {
-            this.angleInRadian = this.angleInRadian + 1;
+            this.angleInRadian = this.angleInRadian + rotateAngle1;
         } else {
-            this.angleInRadian = this.angleInRadian + 15;
+            this.angleInRadian = this.angleInRadian + rotateAngle15;
         }
     }
 
@@ -82,12 +100,10 @@ export class StampService extends Tool {
         this.pathData.push(mousePosition);
         this.previewStamp(this.drawingService.previewCtx, this.pathData);
 
-        if (!this.isInCanvas(mousePosition)) {
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        }
-
         if (this.mouseDown) {
             if (!this.isInCanvas(mousePosition) && this.mouseDown) {
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
+
                 if (mousePosition.x >= this.drawingService.baseCtx.canvas.width) {
                     this.drawingService.previewCtx.canvas.width = mousePosition.x;
                 }
@@ -95,8 +111,9 @@ export class StampService extends Tool {
                     this.drawingService.previewCtx.canvas.height = mousePosition.y;
                 }
             } else {
-                this.resetBorder();
+                //this.applyStamp(this.drawingService.baseCtx, this.pathData);
                 this.previewStamp(this.drawingService.previewCtx, this.pathData);
+                this.resetBorder();
             }
         }
     }
