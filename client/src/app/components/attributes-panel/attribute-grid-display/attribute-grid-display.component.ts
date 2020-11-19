@@ -9,7 +9,7 @@ import { GridService } from '@app/services/tools/grid/grid.service';
 export class AttributeGridDisplayComponent {
     constructor(private gridService: GridService) {}
 
-    gridMessage() {
+    gridMessage(): string {
         if (this.gridService.isGridActivated()) return 'Désactiver';
         else return 'Activer';
     }

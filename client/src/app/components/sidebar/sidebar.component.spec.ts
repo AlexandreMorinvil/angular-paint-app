@@ -15,6 +15,7 @@ import { ColorPickerService } from '@app/services/tools/color-picker/color-picke
 import { CursorService } from '@app/services/tools/cursor/cursor.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse-service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
+import { GridService } from '@app/services/tools/grid/grid.service';
 import { LineService } from '@app/services/tools/line/line-service';
 import { PaintService } from '@app/services/tools/paint/paint.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
@@ -48,12 +49,13 @@ describe('SidebarComponent', () => {
     beforeEach(
         waitForAsync(() => {
             toolStub = new ToolStub({} as DrawingService, {} as Description);
-            drawingStub = new DrawingService({} as WorkzoneSizeService);
+            drawingStub = new DrawingService({} as WorkzoneSizeService, {} as GridService);
             drawingStateStub = new DrawingStateTrackerService({} as DrawingService);
             toolboxSpy = jasmine.createSpyObj('toolboxSpy', ['getAvailableTools', 'getCurrentTool', 'setSelectedTool']);
 
             toolserviceMock = new ToolboxService(
                 {} as CursorService,
+                {} as GridService,
                 {} as PencilService,
                 {} as BrushService,
                 {} as EraserService,

@@ -4,6 +4,7 @@ import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { GridOpacityService } from '@app/services/tool-modifier/grid-opacity/grid-opacity.service';
 import { SpacingService } from '@app/services/tool-modifier/spacing/spacing.service';
+import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzone-size.service';
 
 @Injectable({
     providedIn: 'root',
@@ -11,11 +12,12 @@ import { SpacingService } from '@app/services/tool-modifier/spacing/spacing.serv
 export class GridService extends Tool {
     gridCtx: CanvasRenderingContext2D;
     gridCanvas: HTMLCanvasElement;
-    private isGridOn: boolean = true;
+    private isGridOn: boolean = false;
     private lineWidth: number = 1;
 
     constructor(private spacingService: SpacingService, private gridOpacityService: GridOpacityService) {
-        super({} as DrawingService, new Description('grille', '4', 'grid_icon.png'));
+        super(new DrawingService({} as WorkzoneSizeService, {} as GridService), new Description('grille', '4', 'grid_icon.png'));
+        
         this.modifiers.push(this.spacingService);
         this.modifiers.push(this.gridOpacityService);
     }
@@ -55,7 +57,7 @@ export class GridService extends Tool {
         this.gridCtx.globalAlpha = this.gridOpacityService.getGridOpacity();
     }
 
-    private drawGrid() {
+    private drawGrid(): void {
         const width = this.gridCanvas.width;
         const height = this.gridCanvas.height;
         const spacing = this.spacingService.getSpacing();

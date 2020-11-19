@@ -52,7 +52,7 @@ export class AttributeSpacingComponent implements OnDestroy {
         return this.spacing !== this.spacingService.getSpacing();
     }
 
-    ngOnDestroy() {
+    ngOnDestroy(): void {
         this.subscription.unsubscribe();
     }
 }

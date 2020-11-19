@@ -12,10 +12,7 @@ export class DrawingService {
     hasBeenDrawnOnto: boolean;
     shortcutEnable: boolean = true;
 
-    constructor(
-        private workzoneSizeService: WorkzoneSizeService,
-        private gridService: GridService
-        ) {}
+    constructor(private workzoneSizeService: WorkzoneSizeService, private gridService: GridService) {}
 
     resetDrawing(): void {
         this.clearCanvas(this.baseCtx);

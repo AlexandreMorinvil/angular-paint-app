@@ -7,7 +7,6 @@ import { SpacingModifierState } from './spacing-state';
     providedIn: 'root',
 })
 export class SpacingService extends ToolModifier {
-
     spacingChange: Subject<number> = new Subject<number>();
     readonly MAX_ATTRIBUTE_SPACING: number = 50;
     readonly MIN_ATTRIBUTE_SPACING: number = 5;
@@ -18,12 +17,12 @@ export class SpacingService extends ToolModifier {
         super();
     }
 
-    stepUp() {
+    stepUp(): void {
         this.setSpacing(this.spacing + this.STEP_SIZE);
         this.spacingChange.next(this.spacing);
     }
 
-    stepDown() {
+    stepDown(): void {
         this.setSpacing(this.spacing - this.STEP_SIZE);
         this.spacingChange.next(this.spacing);
     }

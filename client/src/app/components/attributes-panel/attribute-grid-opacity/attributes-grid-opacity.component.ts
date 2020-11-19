@@ -26,8 +26,10 @@ export class AttributeGridOpacityComponent {
         return this.gridOpacityService.STEP_SIZE;
     }
 
-    convertToPercentage(number: number): number {
-        return Math.round(number * 100);
+    convertToPercentage(value: number): number {
+        // The 100 is a multiplication factor for percentage conversion
+        // tslint:disable-next-line:no-magic-numbers
+        return Math.round(value * 100);
     }
 
     getMaxValue(): number {
