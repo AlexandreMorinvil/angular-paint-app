@@ -252,39 +252,42 @@ export abstract class SelectionToolService extends Tool {
             default:
                 break;
         }
+        // mirror effect
+        canvas.scale(scaleX, scaleY);
+        adjustStartCoords = { x: scaleX * adjustStartCoords.x, y: scaleY * adjustStartCoords.y };
+        adjustOffsetCoords = { x: scaleX * adjustOffsetCoords.x, y: scaleY * adjustOffsetCoords.y };
+        mousePosition = { x: scaleX * mousePosition.x, y: scaleY * mousePosition.y };
         // Resizing while keeping the aspect ratio
         if (this.shiftDown) {
             const ratioW = this.imageData.width / this.ratio;
             const ratioH = this.imageData.height / this.ratio;
             let value = adjustOffsetCoords.x % ratioW;
             let value1 = adjustOffsetCoords.y % ratioH;
-            if ((adjustOffsetCoords.x - value) / ratioW > (adjustOffsetCoords.y - value1) / ratioH) {
+            if (Math.abs(adjustOffsetCoords.x - value) / ratioW > Math.abs(adjustOffsetCoords.y - value1) / ratioH) {
+                console.log('x');
                 adjustOffsetCoords.y -= value1;
-                const val = Math.floor((adjustOffsetCoords.x - value) / ratioW - (adjustOffsetCoords.y - value1) / ratioH);
+                const val = Math.floor(Math.abs(adjustOffsetCoords.x - value) / ratioW - Math.abs(adjustOffsetCoords.y - value1) / ratioH);
                 for (let i = 0; i < val; i++) {
                     adjustOffsetCoords.x -= value + 1;
                     value = adjustOffsetCoords.x % ratioW;
                     adjustOffsetCoords.x -= value;
                 }
-            } else if ((adjustOffsetCoords.x - value) / ratioW < (adjustOffsetCoords.y - value1) / ratioH) {
+            } else if (Math.abs(adjustOffsetCoords.x - value) / ratioW < Math.abs(adjustOffsetCoords.y - value1) / ratioH) {
+                console.log('y');
                 adjustOffsetCoords.x -= value;
-                const val = Math.floor((adjustOffsetCoords.y - value1) / ratioH - (adjustOffsetCoords.x - value) / ratioW);
+                const val = Math.floor(Math.abs(adjustOffsetCoords.y - value1) / ratioH - Math.abs(adjustOffsetCoords.x - value) / ratioW);
                 for (let i = 0; i < val; i++) {
                     adjustOffsetCoords.y -= value1 + 1;
                     value1 = adjustOffsetCoords.y % ratioH;
                     adjustOffsetCoords.y -= value1;
                 }
             } else {
+                console.log('autre');
                 adjustOffsetCoords.y -= value1;
                 adjustOffsetCoords.x -= value;
             }
             mousePosition = { x: adjustOffsetCoords.x + adjustStartCoords.x, y: adjustOffsetCoords.y + adjustStartCoords.y };
         }
-        // mirror effect
-        canvas.scale(scaleX, scaleY);
-        adjustStartCoords = { x: scaleX * adjustStartCoords.x, y: scaleY * adjustStartCoords.y };
-        adjustOffsetCoords = { x: scaleX * adjustOffsetCoords.x, y: scaleY * adjustOffsetCoords.y };
-        mousePosition = { x: scaleX * mousePosition.x, y: scaleY * mousePosition.y };
         if (caller === 1) {
             // ellipse is calling
             this.showSelectionResize(canvas, size, adjustStartCoords, adjustOffsetCoords, mousePosition);
