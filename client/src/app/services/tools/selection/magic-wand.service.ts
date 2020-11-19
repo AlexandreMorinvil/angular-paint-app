@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Description } from '@app/classes/description';
 import { MouseButton } from '@app/classes/mouse';
 import { Vec2 } from '@app/classes/vec2';
-//import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
+// import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
@@ -25,7 +25,7 @@ export class MagicWandService extends SelectionToolService {
 
     constructor(
         drawingService: DrawingService,
-        //private drawingStateTrackingService: DrawingStateTrackerService,
+        // private drawingStateTrackingService: DrawingStateTrackerService,
         private rectangleService: RectangleService,
         private tracingService: TracingService,
         private widthService: WidthService,
@@ -48,7 +48,7 @@ this.arrowDown = false;
 
         // translate
         if (this.selectionCreated && this.hitSelection(this.mouseDownCoord.x, this.mouseDownCoord.y)) {
-            //this.pathData.push(this.pathLastCoord);
+            // this.pathData.push(this.pathLastCoord);
             // Puts back what was under the selection
             if (this.hasDoneFirstTranslation) {
                 this.deleteUnderSelection(this.drawingService.baseCtx);
@@ -74,54 +74,59 @@ this.arrowDown = false;
             // set variables
             this.draggingImage = true;
             this.mouseDown = true;
-            //this.startDownCoord = this.evenImageStartCoord(this.mouseDownCoord);
+            // this.startDownCoord = this.evenImageStartCoord(this.mouseDownCoord);
             // creation
         } else {
             this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
             this.oldImage.src = this.drawingService.baseCtx.canvas.toDataURL();
             this.setStartColor();
-            let pixelsSelected = this.floodFillSelect(this.mouseDownCoord);
+            const pixelsSelected = this.floodFillSelect(this.mouseDownCoord);
             this.drawRect(pixelsSelected);
             // For the path that will be form the clip
-            this.sortEdgeArray();
             this.pathStartCoordReference = this.startDownCoord;
-            this.firstMagicCoord = this.startDownCoord;
+
             // set variables
+            this.firstMagicCoord = this.startDownCoord;
             this.selectionCreated = true;
             this.hasDoneFirstTranslation = false;
             this.localMouseDown = false;
-            //this.pathData.push(this.startDownCoord);
+            // this.pathData.push(this.startDownCoord);
         }
         this.drawingService.previewCtx.restore();
     }
-    drawRect(pixelsSelected: Vec2[]) {
-        let x_min = pixelsSelected[0].x;
-        let x_max = pixelsSelected[0].x;
-        let y_min = pixelsSelected[0].y;
-        let y_max = pixelsSelected[0].y;
-        for (let pixel of pixelsSelected) {
-            if (pixel.x < x_min) x_min = pixel.x;
-            if (pixel.x > x_max) x_max = pixel.x;
-            if (pixel.y < y_min) y_min = pixel.y;
-            if (pixel.y > y_max) y_max = pixel.y;
+    drawRect(pixelsSelected: Vec2[]): void {
+        let xMin = pixelsSelected[0].x;
+        let xMax = pixelsSelected[0].x;
+        let yMin = pixelsSelected[0].y;
+        let yMax = pixelsSelected[0].y;
+        for (const pixel of pixelsSelected) {
+            if (pixel.x < xMin) xMin = pixel.x;
+            if (pixel.x > xMax) xMax = pixel.x;
+            if (pixel.y < yMin) yMin = pixel.y;
+            if (pixel.y > yMax) yMax = pixel.y;
         }
 
         // Save the rectangle delimited by the same color pixels
-        this.startDownCoord = { x: x_min, y: y_min };
+        this.startDownCoord = { x: xMin, y: yMin };
         this.imageData = this.drawingService.baseCtx.getImageData(
             this.startDownCoord.x,
             this.startDownCoord.y,
-            x_max - this.startDownCoord.x,
-            y_max - this.startDownCoord.y,
+            xMax - this.startDownCoord.x,
+            yMax - this.startDownCoord.y,
         );
 
-        // Drawing of the preview rectangle
-        this.pathData.push({ x: x_max, y: y_max });
-        this.rectangleService.mouseDownCoord = { x: x_min, y: y_min };
+        // Drawing of the preview rectangle and the selection contour
+
+        this.pathData.push({ x: xMax, y: yMax });
+        this.rectangleService.mouseDownCoord = { x: xMin, y: yMin };
         this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.pathData);
         this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
-        //this.drawingService.previewCtx.putImageData(this.imageData, this.startDownCoord.x, this.startDownCoord.y);
-        //this.showSelection(this.drawingService.previewCtx, this.image, { x: this.imageData.width, y: this.imageData.height }, this.startDownCoord);
+
+        this.sortEdgeArray();
+        this.drawSelectionCoutour();
+
+        // this.drawingService.previewCtx.putImageData(this.imageData, this.startDownCoord.x, this.startDownCoord.y);
+        // this.showSelection(this.drawingService.previewCtx, this.image, { x: this.imageData.width, y: this.imageData.height }, this.startDownCoord);
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -154,8 +159,7 @@ this.arrowDown = false;
             this.drawingService.previewCtx.rect(this.startDownCoord.x, this.startDownCoord.y, this.imageData.width, this.imageData.height);
             this.drawingService.previewCtx.stroke();
             this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
-            //this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
-            //this.firstMagicCoord = this.startDownCoord;
+            this.drawSelectionCoutour();
             this.draggingImage = false;
             this.hasDoneFirstTranslation = true;
         }
@@ -171,16 +175,16 @@ this.arrowDown = false;
         this.tracingService.setHasFill(false);
         this.tracingService.setHasContour(true);
     }
-
+    // tslint:disable:cyclomatic-complexity
     private floodFillSelect(pixelClicked: Vec2): Vec2[] {
         // tslint:disable:no-non-null-assertion
         this.edgePixels = [];
-        let pixelSelected: Vec2[] = [];
-        let pixelStack: Vec2[] = [];
-        //let pixelPos: Vec2 = {x: 0,y:0};
+        const pixelSelected: Vec2[] = [];
+        const pixelStack: Vec2[] = [];
+        // let pixelPos: Vec2 = {x: 0,y:0};
         pixelStack.push(pixelClicked);
         while (pixelStack.length) {
-            let pixelPos = pixelStack.pop() as Vec2;
+            const pixelPos = pixelStack.pop() as Vec2;
             const xPosition = pixelPos.x;
             let yPosition = pixelPos.y;
             // Get current pixel position
@@ -234,22 +238,17 @@ this.arrowDown = false;
         }
         return pixelSelected;
     }
-    sortEdgeArray() {
-        let foundSomething;
-        let newArray: Vec2[] = [this.edgePixels[0]];
+    sortEdgeArray(): void {
+        const newArray: Vec2[] = [this.edgePixels[0]];
         this.edgePixels.splice(0, 1);
-        for (let i = 0; i < newArray.length; i++) {
-            foundSomething = false;
+        for (const value of newArray) {
             for (let j = 0; j < this.edgePixels.length; j++) {
                 if (
-                    ((newArray[i].x - this.edgePixels[j].x === 1 || newArray[i].x - this.edgePixels[j].x === -1) &&
-                        newArray[i].y - this.edgePixels[j].y === 0) ||
-                    ((newArray[i].y - this.edgePixels[j].y === 1 || newArray[i].y - this.edgePixels[j].y === -1) &&
-                        newArray[i].x - this.edgePixels[j].x === 0)
+                    ((value.x - this.edgePixels[j].x === 1 || value.x - this.edgePixels[j].x === -1) && value.y - this.edgePixels[j].y === 0) ||
+                    ((value.y - this.edgePixels[j].y === 1 || value.y - this.edgePixels[j].y === -1) && value.x - this.edgePixels[j].x === 0)
                 ) {
                     newArray.push(this.edgePixels[j]);
                     this.edgePixels.splice(j, 1);
-                    foundSomething = true;
                     break;
                 }
             }
@@ -257,13 +256,26 @@ this.arrowDown = false;
         this.edgePixels = newArray;
     }
 
-    isNotSelected(pixelsSelected: Vec2[], pixelPos: Vec2) {
-        for (let pixel of pixelsSelected) {
+    isNotSelected(pixelsSelected: Vec2[], pixelPos: Vec2): boolean {
+        for (const pixel of pixelsSelected) {
             if (pixelPos.x === pixel.x && pixelPos.y === pixel.y) {
                 return false;
             }
         }
         return true;
+    }
+    private drawSelectionCoutour(): void {
+        this.drawingService.previewCtx.beginPath();
+        for (const edge of this.edgePixels) {
+            this.drawingService.previewCtx.lineTo(edge.x, edge.y);
+        }
+        this.drawingService.previewCtx.strokeStyle = '#777777';
+        this.drawingService.previewCtx.lineWidth = 2;
+        // tslint:disable-next-line:no-magic-numbers
+        this.drawingService.previewCtx.setLineDash([8, 4]);
+        this.drawingService.previewCtx.stroke();
+        this.drawingService.previewCtx.lineWidth = 1;
+        this.drawingService.previewCtx.setLineDash([]);
     }
 
     private matchStartColor(pixelPos: Vec2): boolean {
@@ -280,9 +292,11 @@ this.arrowDown = false;
     }
 
     private isEdgePixel(pixel: Vec2): boolean {
-        let data = this.drawingService.baseCtx.getImageData(pixel.x - 1, pixel.y - 1, 3, 3).data;
+        const distanceToCheck = 3;
+        const stepBetweenPixel = 4;
+        const data = this.drawingService.baseCtx.getImageData(pixel.x - 1, pixel.y - 1, distanceToCheck, distanceToCheck).data;
 
-        for (let i = 0; i < data.length; i += 4) {
+        for (let i = 0; i < data.length; i += stepBetweenPixel) {
             if (!(data[i] === this.startR) || !(data[i + 1] === this.startG) || !(data[i + 2] === this.startB)) return true;
         }
         return false;
@@ -313,18 +327,21 @@ this.arrowDown = false;
         canvas.restore();
     }
     private getPath(): Path2D {
-        let magicWandPath = new Path2D();
-        //magicWandPath.moveTo(this.edgePixels[0].x, this.edgePixels[0].y)
+        const magicWandPath = new Path2D();
+        // magicWandPath.moveTo(this.edgePixels[0].x, this.edgePixels[0].y)
         if (!(this.pathStartCoordReference === this.startDownCoord)) {
-            let coordDiff = { x: this.startDownCoord.x - this.pathStartCoordReference.x, y: this.startDownCoord.y - this.pathStartCoordReference.y };
-            for (let edge of this.edgePixels) {
+            const coordDiff = {
+                x: this.startDownCoord.x - this.pathStartCoordReference.x,
+                y: this.startDownCoord.y - this.pathStartCoordReference.y,
+            };
+            for (const edge of this.edgePixels) {
                 edge.x = edge.x + coordDiff.x;
                 edge.y = edge.y + coordDiff.y;
             }
             this.pathStartCoordReference = this.startDownCoord;
         }
 
-        for (let edge of this.edgePixels) {
+        for (const edge of this.edgePixels) {
             magicWandPath.lineTo(edge.x, edge.y);
         }
         return magicWandPath;
