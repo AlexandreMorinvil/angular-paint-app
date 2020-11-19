@@ -41,7 +41,7 @@ export class AerosolService extends Tool {
             this.clearPath();
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
-            this.sprayPaint(this.drawingService.previewCtx, this.pathData);
+            this.sprayPaint(this.drawingService.baseCtx, this.pathData);
             this.sprayIntervalId = setInterval(
                 () => this.wrapperSprayPaint(),
                 this.NUMBER_MILLISECONDS_IN_SECOND / this.factorTimeIntervalBeetweenSpray,
@@ -50,7 +50,7 @@ export class AerosolService extends Tool {
     }
 
     wrapperSprayPaint(): void {
-        this.sprayPaint(this.drawingService.previewCtx, this.pathData);
+        this.sprayPaint(this.drawingService.baseCtx, this.pathData);
     }
 
     onMouseUp(event: MouseEvent): void {
