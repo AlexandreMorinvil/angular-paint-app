@@ -51,24 +51,18 @@ this.arrowDown = false;
             //this.pathData.push(this.pathLastCoord);
             // Puts back what was under the selection
             if (this.hasDoneFirstTranslation) {
-                /*
-this.showSelection(
-  this.drawingService.baseCtx,
-  this.oldImage,
-  { x: this.imageData.width, y: this.imageData.height },
-  this.firstCoord,
-);
-*/
-                this.startSelectionPoint = this.startDownCoord;
-            }
-            // Puts a space on selection original placement
-            else {
-                this.deleteUnderSelection(
+                this.deleteUnderSelection(this.drawingService.baseCtx);
+
+                this.showSelection(
                     this.drawingService.baseCtx,
-                    this.image,
+                    this.oldImage,
                     { x: this.imageData.width, y: this.imageData.height },
                     this.startDownCoord,
                 );
+            }
+            // Puts a space on selection original placement
+            else {
+                this.deleteUnderSelection(this.drawingService.baseCtx);
             }
             // draw selection on preview
             this.showSelection(
@@ -136,15 +130,13 @@ this.showSelection(
         if (this.draggingImage && this.localMouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
-            this.startDownCoord = this.evenImageStartCoord(mousePosition);
-            this.drawingService.previewCtx.drawImage(this.image, 0, 0);
-
             this.showSelection(
                 this.drawingService.previewCtx,
                 this.image,
                 { x: this.imageData.width, y: this.imageData.height },
                 this.startDownCoord,
             );
+            this.startDownCoord = this.evenImageStartCoord(mousePosition);
         }
     }
 
@@ -154,7 +146,6 @@ this.showSelection(
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             // saves what was under the selection
             this.oldImage.src = this.drawingService.baseCtx.canvas.toDataURL();
-            this.mouseDownCoord = this.startDownCoord;
 
             this.showSelection(this.drawingService.baseCtx, this.image, { x: this.imageData.width, y: this.imageData.height }, this.startDownCoord);
 
@@ -162,7 +153,7 @@ this.showSelection(
             this.drawingService.previewCtx.rect(this.startDownCoord.x, this.startDownCoord.y, this.imageData.width, this.imageData.height);
             this.drawingService.previewCtx.stroke();
             this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
-            this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
+            //this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
             this.draggingImage = false;
             this.hasDoneFirstTranslation = true;
         }
@@ -299,6 +290,7 @@ this.showSelection(
         canvas.save();
         const path = this.getPath();
         canvas.clip(path);
+
         this.drawImage(
             canvas,
             this.startDownCoord,
@@ -312,7 +304,7 @@ this.showSelection(
         );
         canvas.restore();
     }
-    private deleteUnderSelection(canvas: CanvasRenderingContext2D, image: HTMLImageElement, size: Vec2, imageStart: Vec2, offset: number = 0): void {
+    private deleteUnderSelection(canvas: CanvasRenderingContext2D): void {
         canvas.save();
         const path = this.getPath();
         canvas.clip(path);
@@ -332,7 +324,7 @@ this.showSelection(
         }
 
         for (let edge of this.edgePixels) {
-            magicWandPath.lineTo(edge.x /*+ this.pathDifference.x*/, edge.y /*+ this.pathDifference.x*/);
+            magicWandPath.lineTo(edge.x, edge.y);
         }
         console.log(this.edgePixels);
         return magicWandPath;
