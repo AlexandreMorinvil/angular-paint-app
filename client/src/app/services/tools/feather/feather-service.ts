@@ -49,9 +49,11 @@ export class FeatherService extends Tool {
         const rotationAngle15 = 15;
         const rotationAngle1 = 1;
         const resetAngle = 0;
+        const setAngle = 360;
+
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         if (this.angleInRadian === resetAngle) {
-            this.angleInRadian = 360;
+            this.angleInRadian = setAngle;
         }
         if (this.isAltDown) {
             this.angleInRadian = this.angleInRadian - rotationAngle1;
@@ -111,8 +113,8 @@ export class FeatherService extends Tool {
     private featherDraw(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
-        ctx.strokeStyle = this.colorService.getPrimaryColor(); // color of the line
-        ctx.fillStyle = this.colorService.getPrimaryColor(); // color of the starting point
+        ctx.strokeStyle = this.colorService.getPrimaryColor();
+        ctx.fillStyle = this.colorService.getPrimaryColor();
         ctx.lineWidth = 1;
         const lastPosition: Vec2 = path[path.length - 2];
         const currentPosition: Vec2 = path[path.length - 1];
