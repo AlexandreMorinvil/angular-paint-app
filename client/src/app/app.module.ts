@@ -14,8 +14,11 @@ import { AppComponent } from './components/app/app.component';
 import { AttributeColorPickerViewerComponent } from './components/attributes-panel/attribute-color-picker-viewer/attribute-color-picker-viewer.component';
 // Attribute components
 import { AttributeColorComponent } from './components/attributes-panel/attribute-color/attributes-color.component';
+import { AttributeGridDisplayComponent } from './components/attributes-panel/attribute-grid-display/attribute-grid-display.component';
+import { AttributeGridOpacityComponent } from './components/attributes-panel/attribute-grid-opacity/attributes-grid-opacity.component';
 import { AttributeJunctionComponent } from './components/attributes-panel/attribute-junction/attributes-junction.component';
 import { AttributeSelectionComponent } from './components/attributes-panel/attribute-selection/attribute-selection.component';
+import { AttributeSpacingComponent } from './components/attributes-panel/attribute-spacing/attributes-spacing.component';
 import { AttributeTextureComponent } from './components/attributes-panel/attribute-texture/attributes-texture.component';
 import { AttributeTracingComponent } from './components/attributes-panel/attribute-tracing/attributes-tracing.component';
 import { AttributeWidthComponent } from './components/attributes-panel/attribute-width/attributes-width.component';
@@ -37,6 +40,9 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
     declarations: [
         AppComponent,
         AttributesPanelComponent,
+        AttributeSpacingComponent,
+        AttributeGridDisplayComponent,
+        AttributeGridOpacityComponent,
         AttributeJunctionComponent,
         AttributeTextureComponent,
         AttributeTracingComponent,

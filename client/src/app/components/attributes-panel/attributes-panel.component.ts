@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { ColorPickerViewerService } from '@app/services/tool-modifier/color-picker-viewer/color-picker-viewer.service';
+import { GridOpacityService } from '@app/services/tool-modifier/grid-opacity/grid-opacity.service';
 import { JunctionService } from '@app/services/tool-modifier/junction/junction.service';
 import { SidesService } from '@app/services/tool-modifier/sides/sides.service';
+import { SpacingService } from '@app/services/tool-modifier/spacing/spacing.service';
 import { TextureService } from '@app/services/tool-modifier/texture/texture.service';
 import { ToleranceService } from '@app/services/tool-modifier/tolerance/tolerance.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
@@ -17,6 +19,8 @@ import { ToolboxService } from '@app/services/toolbox/toolbox.service';
 export class AttributesPanelComponent {
     constructor(
         private toolboxService: ToolboxService,
+        private spacingService: SpacingService,
+        private gridOpacityService: GridOpacityService,
         private widthService: WidthService,
         private junctionService: JunctionService,
         private sideService: SidesService,
@@ -32,6 +36,14 @@ export class AttributesPanelComponent {
 
     capitalizeFirstLetter(str: string): string {
         return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    needsSpacingAttribute(): boolean {
+        return this.currentTool.needsModifierManager(this.spacingService);
+    }
+
+    needsGridOpacityAttribute(): boolean {
+        return this.currentTool.needsModifierManager(this.gridOpacityService);
     }
 
     needsWidthAttribute(): boolean {
@@ -63,5 +75,9 @@ export class AttributesPanelComponent {
 
     needsSelectionAttribute(): boolean {
         return this.currentTool.name === 'selection rectangle' || this.currentTool.name === 'selection ellipse';
+    }
+
+    needsGridDisplayAttribute(): boolean {
+        return this.currentTool.name === 'grille';
     }
 }
