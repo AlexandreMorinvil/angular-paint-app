@@ -49,7 +49,7 @@ export class GridService extends Tool {
         this.resetGrid();
     }
 
-    setAttribtes(): void {
+    private setAttribtes(): void {
         this.gridCtx.lineWidth = this.lineWidth;
         this.gridCtx.globalAlpha = this.gridOpacityService.getGridOpacity();
     }
