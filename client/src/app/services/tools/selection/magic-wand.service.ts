@@ -75,13 +75,18 @@ this.arrowDown = false;
             this.draggingImage = true;
             this.mouseDown = true;
             // this.startDownCoord = this.evenImageStartCoord(this.mouseDownCoord);
-            // creation
+            // creation with neighbour pixels only
         } else {
             this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
             this.oldImage.src = this.drawingService.baseCtx.canvas.toDataURL();
+            let pixelsSelected: Vec2[];
             this.setStartColor();
-            const pixelsSelected = this.floodFillSelect(this.mouseDownCoord);
+
+            if (event.button === MouseButton.Left) pixelsSelected = this.floodFillSelect(this.mouseDownCoord);
+            else pixelsSelected = this.sameColorSelect();
+
             this.drawRect(pixelsSelected);
+
             // For the path that will be form the clip
             this.pathStartCoordReference = this.startDownCoord;
 
@@ -90,43 +95,7 @@ this.arrowDown = false;
             this.selectionCreated = true;
             this.hasDoneFirstTranslation = false;
             this.localMouseDown = false;
-            // this.pathData.push(this.startDownCoord);
         }
-        this.drawingService.previewCtx.restore();
-    }
-    drawRect(pixelsSelected: Vec2[]): void {
-        let xMin = pixelsSelected[0].x;
-        let xMax = pixelsSelected[0].x;
-        let yMin = pixelsSelected[0].y;
-        let yMax = pixelsSelected[0].y;
-        for (const pixel of pixelsSelected) {
-            if (pixel.x < xMin) xMin = pixel.x;
-            if (pixel.x > xMax) xMax = pixel.x;
-            if (pixel.y < yMin) yMin = pixel.y;
-            if (pixel.y > yMax) yMax = pixel.y;
-        }
-
-        // Save the rectangle delimited by the same color pixels
-        this.startDownCoord = { x: xMin, y: yMin };
-        this.imageData = this.drawingService.baseCtx.getImageData(
-            this.startDownCoord.x,
-            this.startDownCoord.y,
-            xMax - this.startDownCoord.x,
-            yMax - this.startDownCoord.y,
-        );
-
-        // Drawing of the preview rectangle and the selection contour
-
-        this.pathData.push({ x: xMax, y: yMax });
-        this.rectangleService.mouseDownCoord = { x: xMin, y: yMin };
-        this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.pathData);
-        this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
-
-        this.sortEdgeArray();
-        this.drawSelectionCoutour();
-
-        // this.drawingService.previewCtx.putImageData(this.imageData, this.startDownCoord.x, this.startDownCoord.y);
-        // this.showSelection(this.drawingService.previewCtx, this.image, { x: this.imageData.width, y: this.imageData.height }, this.startDownCoord);
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -166,6 +135,44 @@ this.arrowDown = false;
 
         this.localMouseDown = false;
         this.clearPath();
+    }
+    private drawRect(pixelsSelected: Vec2[]): void {
+        let xMin = pixelsSelected[0].x;
+        let xMax = pixelsSelected[0].x;
+        let yMin = pixelsSelected[0].y;
+        let yMax = pixelsSelected[0].y;
+        for (const pixel of pixelsSelected) {
+            if (pixel.x < xMin) xMin = pixel.x;
+            if (pixel.x > xMax) xMax = pixel.x;
+            if (pixel.y < yMin) yMin = pixel.y;
+            if (pixel.y > yMax) yMax = pixel.y;
+        }
+        console.log(xMin);
+        console.log(xMax);
+        console.log(yMin);
+        console.log(yMax);
+
+        // Save the rectangle delimited by the same color pixels
+        this.startDownCoord = { x: xMin, y: yMin };
+        this.imageData = this.drawingService.baseCtx.getImageData(
+            this.startDownCoord.x,
+            this.startDownCoord.y,
+            xMax - this.startDownCoord.x,
+            yMax - this.startDownCoord.y,
+        );
+
+        // Drawing of the preview rectangle and the selection contour
+
+        this.pathData.push({ x: xMax, y: yMax });
+        this.rectangleService.mouseDownCoord = { x: xMin, y: yMin };
+        this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.pathData);
+        this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
+
+        this.sortEdgeArray();
+        this.drawSelectionCoutour();
+
+        // this.drawingService.previewCtx.putImageData(this.imageData, this.startDownCoord.x, this.startDownCoord.y);
+        // this.showSelection(this.drawingService.previewCtx, this.image, { x: this.imageData.width, y: this.imageData.height }, this.startDownCoord);
     }
 
     private resetTransform(): void {
@@ -236,6 +243,25 @@ this.arrowDown = false;
                 }
             }
         }
+        return pixelSelected;
+    }
+
+    private sameColorSelect(): Vec2[] {
+        const pixelSelected: Vec2[] = [];
+        let pixelPos: Vec2 = { x: 0, y: 0 };
+        while (pixelPos.y < this.drawingService.baseCtx.canvas.height) {
+            while (pixelPos.x < this.drawingService.baseCtx.canvas.width) {
+                if (this.matchStartColor(pixelPos)) {
+                    console.log(pixelPos);
+                    pixelSelected.push({ x: pixelPos.x, y: pixelPos.y });
+                    if (this.isEdgePixel(pixelPos)) this.edgePixels.push({ x: pixelPos.x, y: pixelPos.y });
+                }
+                pixelPos.x++;
+            }
+            pixelPos.y++;
+            pixelPos.x = 0;
+        }
+        console.log(pixelSelected);
         return pixelSelected;
     }
     sortEdgeArray(): void {
