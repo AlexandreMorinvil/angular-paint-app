@@ -24,7 +24,10 @@ describe('DrawingStateTrackerService', () => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(DrawingStateTrackerService);
         servicePencil = TestBed.inject(PencilService);
+
         gridService = TestBed.inject(GridService);
+        gridService.gridCanvas = canvasTestHelper.canvas;
+        gridService.gridCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
 
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;

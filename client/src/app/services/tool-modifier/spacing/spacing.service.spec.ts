@@ -49,12 +49,28 @@ describe('SpacingService', () => {
         expect(getSpacingSpy).toHaveBeenCalled();
     });
 
+    it(' should increment by a STEP_SIZE the spacing', () => {
+        const initialSpacing = service.MIN_ATTRIBUTE_SPACING;
+        const expectedSpacing = service.MIN_ATTRIBUTE_SPACING + service.STEP_SIZE;
+        service.setSpacing(initialSpacing);
+        service.stepUp();
+        expect(service.getSpacing()).toEqual(expectedSpacing);
+    });
+
+    it(' should decrement by a STEP_SIZE the spacing', () => {
+        const initialSpacing = service.MAX_ATTRIBUTE_SPACING;
+        const expectedSpacing = service.MAX_ATTRIBUTE_SPACING - service.STEP_SIZE;
+        service.setSpacing(initialSpacing);
+        service.stepDown();
+        expect(service.getSpacing()).toEqual(expectedSpacing);
+    });
+
     it(' should call setState to the incoming argument and getSpacing should return the right number', () => {
-        const state = {
-            spacing: 100,
-        } as SpacingModifierState;
+        const spacing = 100;
+        const state = new SpacingModifierState(spacing);
         service.setState(state);
         expect(setStateSpy).toHaveBeenCalled();
         expect(service.getSpacing()).toEqual(state.spacing);
+        expect(service.getState()).toEqual(state);
     });
 });

@@ -39,7 +39,7 @@ export class GridService extends Tool {
     }
 
     resetGrid(): void {
-        // this.gridCtx.clearRect(0, 0, this.gridCanvas.width, this.gridCanvas.height);
+        this.gridCtx.clearRect(0, 0, this.gridCanvas.width, this.gridCanvas.height);
         if (this.isGridOn) this.drawGrid();
     }
 

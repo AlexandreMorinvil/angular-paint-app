@@ -50,11 +50,10 @@ describe('GridOpacityService', () => {
     });
 
     it(' should call setState to the incoming argument and getGridOpacity should return the right number', () => {
-        const state = {
-            gridOpacity: 1,
-        } as GridOpacityModifierState;
+        const state = new GridOpacityModifierState(1);
         service.setState(state);
         expect(setStateSpy).toHaveBeenCalled();
         expect(service.getGridOpacity()).toEqual(state.gridOpacity);
+        expect(service.getState()).toEqual(state);
     });
 });

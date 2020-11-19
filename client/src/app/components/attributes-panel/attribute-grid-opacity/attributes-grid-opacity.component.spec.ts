@@ -1,17 +1,20 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { GridOpacityService } from '@app/services/tool-modifier/grid-opacity/grid-opacity.service';
+import { GridService } from '@app/services/tools/grid/grid.service';
 import { AttributeGridOpacityComponent } from './attributes-grid-opacity.component';
 
 describe('AttributeGridOpacityComponent', () => {
     let component: AttributeGridOpacityComponent;
     let fixture: ComponentFixture<AttributeGridOpacityComponent>;
     let gridOpacityService: GridOpacityService;
+    let gridService: GridService;
 
     beforeEach(
         waitForAsync(() => {
             TestBed.configureTestingModule({
                 declarations: [AttributeGridOpacityComponent],
-                providers: [GridOpacityService],
+                providers: [GridOpacityService, GridService],
             }).compileComponents();
         }),
     );
@@ -22,6 +25,9 @@ describe('AttributeGridOpacityComponent', () => {
         fixture.detectChanges();
 
         gridOpacityService = TestBed.inject(GridOpacityService);
+        gridService = TestBed.inject(GridService);
+        gridService.gridCanvas = canvasTestHelper.canvas;
+        gridService.gridCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
     });
 
     it('should create', () => {

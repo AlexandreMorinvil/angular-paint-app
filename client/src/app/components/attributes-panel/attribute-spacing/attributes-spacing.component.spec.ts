@@ -1,11 +1,14 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { SpacingService } from '@app/services/tool-modifier/spacing/spacing.service';
+import { GridService } from '@app/services/tools/grid/grid.service';
 import { AttributeSpacingComponent } from './attributes-spacing.component';
 
 describe('AttributeSpacingComponent', () => {
     let component: AttributeSpacingComponent;
     let fixture: ComponentFixture<AttributeSpacingComponent>;
     let spacingService: SpacingService;
+    let gridService: GridService;
 
     beforeEach(
         waitForAsync(() => {
@@ -22,6 +25,9 @@ describe('AttributeSpacingComponent', () => {
         fixture.detectChanges();
 
         spacingService = TestBed.inject(SpacingService);
+        gridService = TestBed.inject(GridService);
+        gridService.gridCanvas = canvasTestHelper.canvas;
+        gridService.gridCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
     });
 
     it('should create', () => {
