@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
+import { InteractionSelectionEllipse } from '@app/classes/action/interaction-selection-ellipse';
 import { Description } from '@app/classes/description';
 import { MouseButton } from '@app/classes/mouse';
 import { Vec2 } from '@app/classes/vec2';
-// import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
+import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
@@ -27,7 +28,7 @@ export class MagicWandService extends SelectionToolService {
 
     constructor(
         drawingService: DrawingService,
-        // private drawingStateTrackingService: DrawingStateTrackerService,
+        private drawingStateTrackingService: DrawingStateTrackerService,
         private rectangleService: RectangleService,
         private tracingService: TracingService,
         private widthService: WidthService,
@@ -49,9 +50,9 @@ export class MagicWandService extends SelectionToolService {
 
         // translate
         if (this.selectionCreated && this.hitSelection(this.mouseDownCoord.x, this.mouseDownCoord.y)) {
-            // this.pathData.push(this.pathLastCoord);
             // Puts back what was under the selection
             if (this.hasDoneFirstTranslation) {
+                this.startSelectionPoint = this.startDownCoord;
                 this.deleteUnderSelection(this.drawingService.baseCtx);
 
                 this.showSelection(
@@ -61,6 +62,7 @@ export class MagicWandService extends SelectionToolService {
                     this.startDownCoord,
                 );
             }
+
             // Puts a space on selection original placement
             else {
                 this.deleteUnderSelection(this.drawingService.baseCtx);
@@ -98,6 +100,7 @@ export class MagicWandService extends SelectionToolService {
             this.hasDoneFirstTranslation = false;
             this.localMouseDown = false;
             this.pathLastCoord = this.pathData[this.pathData.length - 1];
+            this.startSelectionPoint = this.startDownCoord;
         }
     }
 
@@ -127,7 +130,7 @@ export class MagicWandService extends SelectionToolService {
 
             this.oldImage.src = this.drawingService.baseCtx.canvas.toDataURL();
             this.showSelection(this.drawingService.baseCtx, this.image, { x: this.imageData.width, y: this.imageData.height }, this.firstMagicCoord);
-
+            this.addActionTracking();
             this.drawingService.previewCtx.beginPath();
             this.drawingService.previewCtx.rect(this.startDownCoord.x, this.startDownCoord.y, this.imageData.width, this.imageData.height);
             this.drawingService.previewCtx.stroke();
@@ -439,6 +442,36 @@ export class MagicWandService extends SelectionToolService {
                 this.onArrowDown({} as KeyboardEvent);
             }
         }
+    }
+    private addActionTracking(): void {
+        const imageDataStart: Vec2 = { x: 0, y: 0 };
+        const imageDataEnd: Vec2 = { x: 0, y: 0 };
+        imageDataStart.x = this.startSelectionPoint.x < this.startDownCoord.x ? this.startSelectionPoint.x : this.startDownCoord.x;
+        imageDataStart.y = this.startSelectionPoint.y < this.startDownCoord.y ? this.startSelectionPoint.y : this.startDownCoord.y;
+        imageDataEnd.x =
+            this.startSelectionPoint.x > this.startDownCoord.x
+                ? this.startSelectionPoint.x + this.imageData.width
+                : this.startDownCoord.x + this.imageData.width;
+        imageDataEnd.y =
+            this.startSelectionPoint.y > this.startDownCoord.y
+                ? this.startSelectionPoint.y + this.imageData.height
+                : this.startDownCoord.y + this.imageData.height;
+
+        const imageDataSelection: ImageData = this.drawingService.baseCtx.getImageData(
+            imageDataStart.x,
+            imageDataStart.y,
+            imageDataEnd.x - imageDataStart.x,
+            imageDataEnd.y - imageDataStart.y,
+        );
+
+        this.drawingStateTrackingService.addAction(
+            this,
+            new InteractionSelectionEllipse({ x: imageDataStart.x, y: imageDataStart.y }, imageDataSelection),
+        );
+    }
+    execute(interaction: InteractionSelectionEllipse): void {
+        this.putImageData(interaction.startSelectionPoint, this.drawingService.baseCtx, interaction.selection);
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 }
 
