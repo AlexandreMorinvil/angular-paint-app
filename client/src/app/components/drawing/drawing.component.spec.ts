@@ -21,6 +21,7 @@ import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzon
 import { DrawingComponent } from './drawing.component';
 class ToolStub extends Tool {}
 // tslint:disable:no-any
+// tslint:disable:max-file-line-count
 describe('DrawingComponent', () => {
     let component: DrawingComponent;
     let fixture: ComponentFixture<DrawingComponent>;
@@ -270,21 +271,21 @@ describe('DrawingComponent', () => {
     });
 
     it('should toogle the grid when pressing the key G', () => {
-        let toggleGridSpy: jasmine.Spy<any> = spyOn<any>(gridStub, 'toogleGrid');
+        const toggleGridSpy: jasmine.Spy<any> = spyOn<any>(gridStub, 'toogleGrid');
         const event = new KeyboardEvent('keydown', { key: 'G' });
         component.onShiftDown(event);
         expect(toggleGridSpy).toHaveBeenCalled();
     });
 
     it('should call the increment the spacing of the grid when pressing the key +', () => {
-        let incrementSpacingSpy: jasmine.Spy<any> = spyOn<any>(gridStub, 'incrementSpacing');
+        const incrementSpacingSpy: jasmine.Spy<any> = spyOn<any>(gridStub, 'incrementSpacing');
         const event = new KeyboardEvent('keydown', { key: '+' });
         component.onShiftDown(event);
         expect(incrementSpacingSpy).toHaveBeenCalled();
     });
 
     it('should call the decrementSpacing the spacing of the grid when pressing the key +', () => {
-        let decrementSpacingSpy: jasmine.Spy<any> = spyOn<any>(gridStub, 'decrementSpacing');
+        const decrementSpacingSpy: jasmine.Spy<any> = spyOn<any>(gridStub, 'decrementSpacing');
         const event = new KeyboardEvent('keydown', { key: '-' });
         component.onShiftDown(event);
         expect(decrementSpacingSpy).toHaveBeenCalled();

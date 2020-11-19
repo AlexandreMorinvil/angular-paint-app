@@ -2,7 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { SpacingService } from '@app/services/tool-modifier/spacing/spacing.service';
 import { GridService } from './grid.service';
-// tslint: disable: no - any;
+
+// tslint:disable:no-any
 describe('GridService', () => {
     let service: GridService;
     let spacingService: SpacingService;
