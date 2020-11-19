@@ -25,6 +25,7 @@ import { AttributesToleranceComponent } from './components/attributes-panel/attr
 import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorPageComponent } from './components/editor-page/editor-page.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
+import { ContinueDrawingModalComponent } from './components/modal/modal-continue-drawing/modal-continue-drawing.component';
 import { DrawingCarouselComponent } from './components/modal/modal-drawing-carousel/modal-drawing-carousel.component';
 import { ExportComponent } from './components/modal/modal-export/modal-export.component';
 import { ModalSaveComponent } from './components/modal/modal-save/modal-save.component';
@@ -56,6 +57,7 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
         AttributeColorPickerViewerComponent,
         AttributesToleranceComponent,
         AttributeSelectionComponent,
+        ContinueDrawingModalComponent,
     ],
 
     exports: [MatChipsModule],

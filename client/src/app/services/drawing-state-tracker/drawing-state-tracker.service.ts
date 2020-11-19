@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Action } from '@app/classes/action/action';
 import { Interaction } from '@app/classes/action/interactions';
 import { Tool } from '@app/classes/tool';
+import { AutoSaveService } from '@app/services/auto-save/auto-save.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Injectable({
@@ -14,7 +15,7 @@ export class DrawingStateTrackerService {
     private actionsToRedo: Action[] = [];
     private canvasesToRedo: ImageData[] = [];
 
-    constructor(private drawingService: DrawingService) {}
+    constructor(private drawingService: DrawingService, private autoSaveService: AutoSaveService) {}
 
     onCtrlZDown(): void {
         this.undo();
@@ -31,6 +32,10 @@ export class DrawingStateTrackerService {
 
         this.actions.push(new Action(tool, interaction));
         if (this.actions.length % this.intervalCanvasSave === 0) this.saveCanvas();
+
+        // autosave
+        const dataURL: string = this.drawingService.baseCtx.canvas.toDataURL() as string;
+        this.autoSaveService.autoSave(dataURL);
     }
 
     undo(): void {
@@ -85,6 +90,7 @@ export class DrawingStateTrackerService {
 
     private saveCanvas(): void {
         const contex = this.drawingService.baseCtx;
+
         const canvas: ImageData = contex.getImageData(0, 0, this.drawingService.getWidth(), this.drawingService.getHeight());
         this.canvases.push(canvas);
     }

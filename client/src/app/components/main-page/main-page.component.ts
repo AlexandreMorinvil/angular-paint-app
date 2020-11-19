@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AutoSaveService } from '@app/services/auto-save/auto-save.service';
 import { ModalHandlerService } from '@app/services/modal-handler/modal-handler';
 
 @Component({
@@ -7,7 +8,7 @@ import { ModalHandlerService } from '@app/services/modal-handler/modal-handler';
     styleUrls: ['./main-page.component.scss'],
 })
 export class MainPageComponent {
-    constructor(private modalHandler: ModalHandlerService) {}
+    constructor(private modalHandler: ModalHandlerService, private autoSaveService: AutoSaveService) {}
 
     openDrawingCarousel(): void {
         this.modalHandler.openDrawingCarouselDialog();
@@ -15,5 +16,13 @@ export class MainPageComponent {
 
     openUserGuide(): void {
         this.modalHandler.openUserGuide();
+    }
+
+    openContinueDrawing(): void {
+        this.modalHandler.openContinueDrawingDialog();
+    }
+
+    hasSavedDrawing(): boolean {
+        return this.autoSaveService.hasSavedDrawing();
     }
 }
