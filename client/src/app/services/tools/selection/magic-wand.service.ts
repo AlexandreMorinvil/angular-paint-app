@@ -10,6 +10,9 @@ import { WidthService } from '@app/services/tool-modifier/width/width.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
 import { SelectionToolService } from '@app/services/tools/selection/selection-tool.service';
 
+class edgePixelsOneRegion {
+    public edgePixels: Vec2[] = [];
+}
 @Injectable({
     providedIn: 'root',
 })
@@ -17,7 +20,8 @@ export class MagicWandService extends SelectionToolService {
     private startR: number;
     private startG: number;
     private startB: number;
-    private edgePixels: Vec2[] = [];
+    private edgePixelsAllRegionSplitted: edgePixelsOneRegion[] = [];
+    private edgePixelsAllRegion: Vec2[] = [];
     protected image: HTMLImageElement;
     protected oldImage: HTMLImageElement;
     private pathStartCoordReference: Vec2;
@@ -168,7 +172,8 @@ this.arrowDown = false;
         this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.pathData);
         this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
 
-        this.sortEdgeArray();
+        this.splitAndSortEdgeArray();
+        console.log(this.edgePixelsAllRegionSplitted[0]);
         this.drawSelectionCoutour();
 
         // this.drawingService.previewCtx.putImageData(this.imageData, this.startDownCoord.x, this.startDownCoord.y);
@@ -184,8 +189,8 @@ this.arrowDown = false;
     }
     // tslint:disable:cyclomatic-complexity
     private floodFillSelect(pixelClicked: Vec2): Vec2[] {
-        // tslint:disable:no-non-null-assertion
-        this.edgePixels = [];
+        // We only use one region for this selection
+        this.edgePixelsAllRegion = [];
         const pixelSelected: Vec2[] = [];
         const pixelStack: Vec2[] = [];
         // let pixelPos: Vec2 = {x: 0,y:0};
@@ -212,7 +217,7 @@ this.arrowDown = false;
                 this.isNotSelected(pixelSelected, pixelPos)
             ) {
                 pixelSelected.push({ x: pixelPos.x, y: pixelPos.y } as Vec2);
-                if (this.isEdgePixel({ x: pixelPos.x, y: pixelPos.y })) this.edgePixels.push({ x: pixelPos.x, y: pixelPos.y });
+                if (this.isEdgePixel({ x: pixelPos.x, y: pixelPos.y })) this.edgePixelsAllRegion.push({ x: pixelPos.x, y: pixelPos.y });
 
                 if (xPosition > 0) {
                     if (
@@ -252,36 +257,41 @@ this.arrowDown = false;
         while (pixelPos.y < this.drawingService.baseCtx.canvas.height) {
             while (pixelPos.x < this.drawingService.baseCtx.canvas.width) {
                 if (this.matchStartColor(pixelPos)) {
-                    console.log(pixelPos);
                     pixelSelected.push({ x: pixelPos.x, y: pixelPos.y });
-                    if (this.isEdgePixel(pixelPos)) this.edgePixels.push({ x: pixelPos.x, y: pixelPos.y });
+                    if (this.isEdgePixel(pixelPos)) this.edgePixelsAllRegion.push({ x: pixelPos.x, y: pixelPos.y });
                 }
                 pixelPos.x++;
             }
             pixelPos.y++;
             pixelPos.x = 0;
         }
-        console.log(pixelSelected);
         return pixelSelected;
     }
-    sortEdgeArray(): void {
-        const newArray: Vec2[] = [this.edgePixels[0]];
-        this.edgePixels.splice(0, 1);
-        for (const value of newArray) {
-            for (let j = 0; j < this.edgePixels.length; j++) {
-                if (
-                    ((value.x - this.edgePixels[j].x === 1 || value.x - this.edgePixels[j].x === -1) && value.y - this.edgePixels[j].y === 0) ||
-                    ((value.y - this.edgePixels[j].y === 1 || value.y - this.edgePixels[j].y === -1) && value.x - this.edgePixels[j].x === 0)
-                ) {
-                    newArray.push(this.edgePixels[j]);
-                    this.edgePixels.splice(j, 1);
-                    break;
+    splitAndSortEdgeArray(): void {
+        let regionIndex: number = -1;
+        while ((this.edgePixelsAllRegion.length, regionIndex++)) {
+            const newRegion: Vec2[] = [this.edgePixelsAllRegion[0]];
+            this.edgePixelsAllRegion.splice(0, 1);
+            for (const value of newRegion) {
+                for (let j = 0; j < this.edgePixelsAllRegion.length; j++) {
+                    if (
+                        ((value.x - this.edgePixelsAllRegion[j].x === 1 || value.x - this.edgePixelsAllRegion[j].x === -1) &&
+                            value.y - this.edgePixelsAllRegion[j].y === 0) ||
+                        ((value.y - this.edgePixelsAllRegion[j].y === 1 || value.y - this.edgePixelsAllRegion[j].y === -1) &&
+                            value.x - this.edgePixelsAllRegion[j].x === 0)
+                    ) {
+                        newRegion.push(this.edgePixelsAllRegion[j]);
+                        this.edgePixelsAllRegion.splice(j, 1);
+                        break;
+                    }
                 }
             }
+            if (!(newRegion.length === 0)) {
+                this.edgePixelsAllRegionSplitted.push({ edgePixels: [] });
+                this.edgePixelsAllRegionSplitted[regionIndex].edgePixels = newRegion;
+            }
         }
-        this.edgePixels = newArray;
     }
-
     isNotSelected(pixelsSelected: Vec2[], pixelPos: Vec2): boolean {
         for (const pixel of pixelsSelected) {
             if (pixelPos.x === pixel.x && pixelPos.y === pixel.y) {
@@ -291,15 +301,17 @@ this.arrowDown = false;
         return true;
     }
     private drawSelectionCoutour(): void {
-        this.drawingService.previewCtx.beginPath();
-        for (const edge of this.edgePixels) {
-            this.drawingService.previewCtx.lineTo(edge.x, edge.y);
-        }
         this.drawingService.previewCtx.strokeStyle = '#777777';
         this.drawingService.previewCtx.lineWidth = 2;
         // tslint:disable-next-line:no-magic-numbers
         this.drawingService.previewCtx.setLineDash([8, 4]);
-        this.drawingService.previewCtx.stroke();
+        for (let region of this.edgePixelsAllRegionSplitted) {
+            this.drawingService.previewCtx.beginPath();
+            for (const edge of region.edgePixels) {
+                this.drawingService.previewCtx.lineTo(edge.x, edge.y);
+            }
+            this.drawingService.previewCtx.stroke();
+        }
         this.drawingService.previewCtx.lineWidth = 1;
         this.drawingService.previewCtx.setLineDash([]);
     }
@@ -360,15 +372,19 @@ this.arrowDown = false;
                 x: this.startDownCoord.x - this.pathStartCoordReference.x,
                 y: this.startDownCoord.y - this.pathStartCoordReference.y,
             };
-            for (const edge of this.edgePixels) {
-                edge.x = edge.x + coordDiff.x;
-                edge.y = edge.y + coordDiff.y;
+            for (const region of this.edgePixelsAllRegionSplitted) {
+                for (const edge of region.edgePixels) {
+                    edge.x = edge.x + coordDiff.x;
+                    edge.y = edge.y + coordDiff.y;
+                }
             }
             this.pathStartCoordReference = this.startDownCoord;
         }
-
-        for (const edge of this.edgePixels) {
-            magicWandPath.lineTo(edge.x, edge.y);
+        for (const region of this.edgePixelsAllRegionSplitted) {
+            magicWandPath.moveTo(region.edgePixels[0].x, region.edgePixels[0].y);
+            for (const edge of region.edgePixels) {
+                magicWandPath.lineTo(edge.x, edge.y);
+            }
         }
         return magicWandPath;
     }
