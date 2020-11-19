@@ -23,6 +23,7 @@ export class MagicWandService extends SelectionToolService {
     protected oldImage: HTMLImageElement;
     private pathStartCoordReference: Vec2;
     protected firstMagicCoord: Vec2;
+    protected pathLastCoord: Vec2;
 
     constructor(
         drawingService: DrawingService,
@@ -38,10 +39,9 @@ export class MagicWandService extends SelectionToolService {
     }
 
     onMouseDown(event: MouseEvent): void {
-        /*
-this.arrowPress = [false, false, false, false];
-this.arrowDown = false;
-*/
+        this.arrowPress = [false, false, false, false];
+        this.arrowDown = false;
+
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.mouseDownCoord = this.getPositionFromMouse(event);
         this.localMouseDown = event.button === MouseButton.Left;
@@ -97,6 +97,7 @@ this.arrowDown = false;
             this.selectionCreated = true;
             this.hasDoneFirstTranslation = false;
             this.localMouseDown = false;
+            this.pathLastCoord = this.pathData[this.pathData.length - 1];
         }
     }
 
@@ -114,6 +115,7 @@ this.arrowDown = false;
                 this.firstMagicCoord,
             );
             this.startDownCoord = this.evenImageStartCoord(mousePosition);
+            this.pathLastCoord = { x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y + this.imageData.height };
         }
     }
 
@@ -149,10 +151,6 @@ this.arrowDown = false;
             if (pixel.y < yMin) yMin = pixel.y;
             if (pixel.y > yMax) yMax = pixel.y;
         }
-        console.log(xMin);
-        console.log(xMax);
-        console.log(yMin);
-        console.log(yMax);
 
         // Save the rectangle delimited by the same color pixels
         this.startDownCoord = { x: xMin, y: yMin };
@@ -266,10 +264,9 @@ this.arrowDown = false;
     }
     splitAndSortEdgeArray(): void {
         const distanceBetweenEdgePixels = 1;
-        let regionIndex: number = -1;
+        let regionIndex = -1;
         while (this.edgePixelsAllRegions.length) {
             regionIndex++;
-            console.log('been there');
             const newRegion: Vec2[] = [this.edgePixelsAllRegions[0]];
             this.edgePixelsAllRegions.splice(0, 1);
             for (const value of newRegion) {
@@ -288,7 +285,6 @@ this.arrowDown = false;
                     }
                 }
             }
-            console.log(this.edgePixelsAllRegions.length);
             // Prevents unlinked edge pixel to form regions
             if (!(newRegion.length === 0)) {
                 this.edgePixelsSplitted.push({ edgePixels: [] });
@@ -394,5 +390,56 @@ this.arrowDown = false;
         }
         return magicWandPath;
     }
+    onArrowDown(event: KeyboardEvent): void {
+        if (!this.arrowDown) {
+            this.arrowCoord = { x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y + this.imageData.height };
+            if (this.hasDoneFirstTranslation) {
+                this.deleteUnderSelection(this.drawingService.baseCtx);
+                this.showSelection(
+                    this.drawingService.baseCtx,
+                    this.oldImage,
+                    { x: this.imageData.width, y: this.imageData.height },
+                    this.startDownCoord,
+                );
+            }
+            // Puts a white rectangle on selection original placement
+            else {
+                this.deleteUnderSelection(this.drawingService.baseCtx);
+            }
+            this.startSelectionPoint = { x: this.startDownCoord.x, y: this.startDownCoord.y };
+        }
+        if (this.selectionCreated) {
+            this.checkArrowHit(event);
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.showSelection(
+                this.drawingService.previewCtx,
+                this.image,
+                { x: this.imageData.width, y: this.imageData.height },
+                this.firstMagicCoord,
+            );
+            this.draggingImage = false;
+        }
+    }
+
+    onArrowUp(event: KeyboardEvent): void {
+        if (this.selectionCreated) {
+            this.checkArrowUnhit(event);
+            if (this.arrowPress.every((v) => v === false)) {
+                this.arrowDown = false;
+                this.draggingImage = true;
+                this.clearPath();
+                this.pathData.push(this.pathLastCoord);
+                this.clearPath();
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                this.onMouseUp({ offsetX: 25, offsetY: 25, button: 0 } as MouseEvent);
+                this.draggingImage = false;
+                this.hasDoneFirstTranslation = true;
+            }
+            if (this.arrowDown) {
+                this.onArrowDown({} as KeyboardEvent);
+            }
+        }
+    }
 }
+
 // tslint:disable:max-file-line-count
