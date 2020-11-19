@@ -21,6 +21,7 @@ export class MagicWandService extends SelectionToolService {
     protected image: HTMLImageElement;
     protected oldImage: HTMLImageElement;
     private pathStartCoordReference: Vec2;
+    protected firstMagicCoord: Vec2;
 
     constructor(
         drawingService: DrawingService,
@@ -40,7 +41,7 @@ export class MagicWandService extends SelectionToolService {
 this.arrowPress = [false, false, false, false];
 this.arrowDown = false;
 */
-
+        this.drawingService.previewCtx.save();
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.mouseDownCoord = this.getPositionFromMouse(event);
         this.localMouseDown = event.button === MouseButton.Left;
@@ -57,7 +58,7 @@ this.arrowDown = false;
                     this.drawingService.baseCtx,
                     this.oldImage,
                     { x: this.imageData.width, y: this.imageData.height },
-                    this.startDownCoord,
+                    this.firstMagicCoord,
                 );
             }
             // Puts a space on selection original placement
@@ -69,7 +70,7 @@ this.arrowDown = false;
                 this.drawingService.previewCtx,
                 this.image,
                 { x: this.imageData.width, y: this.imageData.height },
-                this.startDownCoord,
+                this.firstMagicCoord,
             );
             // set variables
             this.draggingImage = true;
@@ -85,13 +86,14 @@ this.arrowDown = false;
             // For the path that will be form the clip
             this.sortEdgeArray();
             this.pathStartCoordReference = this.startDownCoord;
-
+            this.firstMagicCoord = this.startDownCoord;
             // set variables
             this.selectionCreated = true;
             this.hasDoneFirstTranslation = false;
             this.localMouseDown = false;
             //this.pathData.push(this.startDownCoord);
         }
+        this.drawingService.previewCtx.restore();
     }
     drawRect(pixelsSelected: Vec2[]) {
         let x_min = pixelsSelected[0].x;
@@ -134,7 +136,7 @@ this.arrowDown = false;
                 this.drawingService.previewCtx,
                 this.image,
                 { x: this.imageData.width, y: this.imageData.height },
-                this.startDownCoord,
+                this.firstMagicCoord,
             );
             this.startDownCoord = this.evenImageStartCoord(mousePosition);
         }
@@ -145,18 +147,20 @@ this.arrowDown = false;
         if (this.draggingImage) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             // saves what was under the selection
+            
             this.oldImage.src = this.drawingService.baseCtx.canvas.toDataURL();
-
-            this.showSelection(this.drawingService.baseCtx, this.image, { x: this.imageData.width, y: this.imageData.height }, this.startDownCoord);
+            this.showSelection(this.drawingService.baseCtx, this.image, { x: this.imageData.width, y: this.imageData.height }, this.firstMagicCoord);
 
             this.drawingService.previewCtx.beginPath();
             this.drawingService.previewCtx.rect(this.startDownCoord.x, this.startDownCoord.y, this.imageData.width, this.imageData.height);
             this.drawingService.previewCtx.stroke();
             this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
             //this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
+            this.firstMagicCoord = this.startDownCoord;
             this.draggingImage = false;
             this.hasDoneFirstTranslation = true;
         }
+        
         this.localMouseDown = false;
         this.clearPath();
     }
