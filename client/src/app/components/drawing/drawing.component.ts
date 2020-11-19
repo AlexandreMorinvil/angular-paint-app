@@ -110,7 +110,7 @@ export class DrawingComponent implements AfterViewInit {
             // tslint:disable:prefer-switch
         } else if (event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown') {
             this.toolbox.getCurrentTool().onArrowUp(event);
-        } else if (event.key == 'Alt') {
+        } else if (event.key === 'Alt') {
             event.preventDefault(); // to prevent key of windows
             this.toolbox.getCurrentTool().onAltUp(event);
         } else {
