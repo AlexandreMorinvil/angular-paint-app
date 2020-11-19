@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { InteractionAerosol } from '@app/classes/action/interaction-aerosol';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -20,6 +21,7 @@ fdescribe('AerosolService', () => {
     let sprayPaintSpy: jasmine.Spy<any>;
     let setAttributeSpy: jasmine.Spy<any>;
     let clearPathSpy: jasmine.Spy<any>;
+    let redoSprayPaintSpy: jasmine.Spy<any>;
     // let ctxFillSpy: jasmine.Spy<any>;
     // let ctxBeginPath: jasmine.Spy<any>;
     // let ctxArc: jasmine.Spy<any>;
@@ -36,6 +38,7 @@ fdescribe('AerosolService', () => {
 
         colorService = TestBed.inject(ColorService);
         sprayPaintSpy = spyOn<any>(service, 'sprayPaint').and.callThrough();
+        redoSprayPaintSpy = spyOn<any>(service, 'redoSprayPaint').and.callThrough();
         setAttributeSpy = spyOn<any>(service, 'setAttribute').and.callThrough();
         clearPathSpy = spyOn<any>(service, 'clearPath').and.callThrough();
 
@@ -103,12 +106,20 @@ fdescribe('AerosolService', () => {
     });
 
     it(' should call set attribute on spray paint', () => {
-        const path: Vec2[] = [{ x: 25, y: 25 }];
-        (service as any).numberSprayTransmissionService.setNumberSprayTransmission(50);
+        const path: Vec2[] = [
+            { x: 25, y: 25 },
+            { x: 20, y: 20 },
+        ];
+        (service as any).numberSprayTransmissionService.numberSprayTransmissionService = 50;
+        (service as any).sprayDropletService.sprayDropletDiameter = 10;
+        (service as any).sprayService.sprayDiameter = 20;
         previewCtxStub.lineCap = 'round';
         previewCtxStub.lineJoin = 'round';
+        colorService.setPrimaryColor('#0000ff');
         colorService.setSecondaryColor('#0000ff');
-        (service as any).sprayPaint(previewCtxStub, path);
+        colorService.setSecondaryColorOpacity(10);
+        colorService.setSecondaryColorOpacity(10);
+        (service as any).sprayPaint(baseCtxStub, path);
         expect(setAttributeSpy).toHaveBeenCalled();
     });
 
@@ -128,5 +139,18 @@ fdescribe('AerosolService', () => {
         service.mouseDown = false;
         service.onMouseUp(mouseEvent);
         expect(clearPathSpy).toHaveBeenCalled();
+    });
+
+    it('should execute and drawL is called', () => {
+        const interaction = {
+            path: [
+                { x: 0, y: 0 },
+                { x: 1, y: 1 },
+            ],
+            sprayDropletDiameter: 10,
+        } as InteractionAerosol;
+        service.execute(interaction);
+        expect(redoSprayPaintSpy).toHaveBeenCalled();
+        expect(setAttributeSpy).toHaveBeenCalled();
     });
 });

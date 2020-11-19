@@ -77,10 +77,10 @@ export class AerosolService extends Tool {
 
     private sprayPaint(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         this.setAttribute(ctx);
-        const mouseMoveCoord = path[path.length - 1];
-        const xposition = mouseMoveCoord.x;
-        const yposition = mouseMoveCoord.y;
+        const mouseMoveCoord: Vec2 = path[path.length - 1];
         if (this.isInCanvas(mouseMoveCoord)) {
+            const xposition = mouseMoveCoord.x;
+            const yposition = mouseMoveCoord.y;
             const numberSprayTransmission = this.numberSprayTransmissionService.getNumberSprayTransmission() / this.factorTimeIntervalBeetweenSpray;
             for (let i = 0; i < numberSprayTransmission; i++) {
                 ctx.beginPath();
@@ -116,7 +116,7 @@ export class AerosolService extends Tool {
         this.savedPathData = [];
     }
 
-    execute(interaction: InteractionAerosol): void {
+    private redoSprayPaint(ctx: CanvasRenderingContext2D, interaction: InteractionAerosol): void {
         this.setAttribute(this.drawingService.baseCtx);
         for (let i = 0; i < interaction.path.length; i++) {
             this.drawingService.baseCtx.beginPath();
@@ -124,5 +124,9 @@ export class AerosolService extends Tool {
             this.drawingService.baseCtx.arc(interaction.path[i].x, interaction.path[i].y, sprayDropletRadius, 0, 2 * Math.PI, false);
             this.drawingService.baseCtx.fill();
         }
+    }
+
+    execute(interaction: InteractionAerosol): void {
+        this.redoSprayPaint(this.drawingService.baseCtx, interaction);
     }
 }
