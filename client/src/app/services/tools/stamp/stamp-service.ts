@@ -4,6 +4,7 @@ import { Description } from '@app/classes/description';
 import { MouseButton } from '@app/classes/mouse';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { StampEnum, StampPickerService } from '@app/services/tool-modifier/stamp-picker/stamp-picker.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
@@ -20,7 +21,8 @@ export class StampService extends Tool {
     constructor(
         public drawingService: DrawingService,
         private stampPickerService: StampPickerService,
-        private widthService: WidthService, //private drawingStateTrackingService: DrawingStateTrackerService,
+        private widthService: WidthService,
+        private drawingStateTrackingService: DrawingStateTrackerService,
     ) {
         super(drawingService, new Description('stamp', 'd', 'stamp_icon.png'));
         this.modifiers.push(this.stampPickerService);
@@ -67,7 +69,7 @@ export class StampService extends Tool {
             this.pathData.push(mousePosition);
             this.applyStamp(this.drawingService.baseCtx, this.pathData);
             this.previewStamp(this.drawingService.previewCtx, this.pathData);
-            // this.drawingStateTrackingService.addAction(this, new InteractionPath(this.pathData));
+            this.drawingStateTrackingService.addAction(this, new InteractionPath(this.pathData));
         }
         this.mouseDown = false;
         this.clearPath();
@@ -118,7 +120,6 @@ export class StampService extends Tool {
                 break;
             }
             case StampEnum.stamp5: {
-                //this.rotateStamp(90, path);
                 this.stamp5(ctx, path);
                 break;
             }
@@ -138,6 +139,7 @@ export class StampService extends Tool {
 
         image.onload = () => {
             ctx.save();
+
             ctx.translate(xPosition, yPosition);
             ctx.rotate(this.convertDegreeToRad(this.angleInRadian));
             ctx.translate(-xPosition, -yPosition);
@@ -163,12 +165,11 @@ export class StampService extends Tool {
         const lastPostion: Vec2 = path[path.length - 1];
         const xPosition: number = lastPostion.x;
         const yPosition: number = lastPostion.y;
-        const angleInDegree: number = 90;
 
         image.onload = () => {
             ctx.save();
             ctx.translate(xPosition, yPosition);
-            ctx.rotate(this.convertDegreeToRad(angleInDegree));
+            ctx.rotate(this.convertDegreeToRad(this.angleInRadian));
             ctx.translate(-xPosition, -yPosition);
             ctx.drawImage(
                 image,
@@ -187,12 +188,11 @@ export class StampService extends Tool {
         const lastPostion: Vec2 = path[path.length - 1];
         const xPosition: number = lastPostion.x;
         const yPosition: number = lastPostion.y;
-        const angleInDegree: number = 90;
 
         image.onload = () => {
             ctx.save();
             ctx.translate(xPosition, yPosition);
-            ctx.rotate(this.convertDegreeToRad(angleInDegree));
+            ctx.rotate(this.convertDegreeToRad(this.angleInRadian));
             ctx.translate(-xPosition, -yPosition);
             ctx.drawImage(
                 image,
@@ -210,12 +210,11 @@ export class StampService extends Tool {
         const lastPostion: Vec2 = path[path.length - 1];
         const xPosition: number = lastPostion.x;
         const yPosition: number = lastPostion.y;
-        const angleInDegree: number = 90;
 
         image.onload = () => {
             ctx.save();
             ctx.translate(xPosition, yPosition);
-            ctx.rotate(this.convertDegreeToRad(angleInDegree));
+            ctx.rotate(this.convertDegreeToRad(this.angleInRadian));
             ctx.translate(-xPosition, -yPosition);
             ctx.drawImage(
                 image,
@@ -233,12 +232,11 @@ export class StampService extends Tool {
         const lastPostion: Vec2 = path[path.length - 1];
         const xPosition: number = lastPostion.x;
         const yPosition: number = lastPostion.y;
-        const angleInDegree: number = 90;
 
         image.onload = () => {
             ctx.save();
             ctx.translate(xPosition, yPosition);
-            ctx.rotate(this.convertDegreeToRad(angleInDegree));
+            ctx.rotate(this.convertDegreeToRad(this.angleInRadian));
             ctx.translate(-xPosition, -yPosition);
             ctx.drawImage(
                 image,
