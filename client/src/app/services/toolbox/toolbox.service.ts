@@ -6,6 +6,7 @@ import { ColorPickerService } from '@app/services/tools/color-picker/color-picke
 import { CursorService } from '@app/services/tools/cursor/cursor.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse-service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
+import { FeatherService } from '@app/services/tools/feather/feather-service';
 import { GridService } from '@app/services/tools/grid/grid.service';
 import { LineService } from '@app/services/tools/line/line-service';
 import { PaintService } from '@app/services/tools/paint/paint.service';
@@ -36,6 +37,7 @@ export class ToolboxService {
         paintService: PaintService,
         rectangleSelectionService: RectangleSelectionService,
         ellipseSelectionService: EllipseSelectionService,
+        featherService: FeatherService,
         private drawingService: DrawingService,
     ) {
         this.currentTool = cursorService;
@@ -52,6 +54,7 @@ export class ToolboxService {
         this.availableTools.push(paintService);
         this.availableTools.push(rectangleSelectionService);
         this.availableTools.push(ellipseSelectionService);
+        this.availableTools.push(featherService);
     }
 
     getAvailableTools(): Tool[] {

@@ -15,6 +15,7 @@ import { ColorPickerService } from '@app/services/tools/color-picker/color-picke
 import { CursorService } from '@app/services/tools/cursor/cursor.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse-service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
+import { FeatherService } from '@app/services/tools/feather/feather-service';
 import { GridService } from '@app/services/tools/grid/grid.service';
 import { LineService } from '@app/services/tools/line/line-service';
 import { PaintService } from '@app/services/tools/paint/paint.service';
@@ -67,6 +68,7 @@ describe('SidebarComponent', () => {
                 {} as PaintService,
                 {} as RectangleSelectionService,
                 {} as EllipseSelectionService,
+                {} as FeatherService,
                 {} as DrawingService,
             );
 
