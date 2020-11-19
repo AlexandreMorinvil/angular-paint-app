@@ -4,7 +4,7 @@ import { Description } from '@app/classes/description';
 import { MouseButton } from '@app/classes/mouse';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
-//import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
+import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
@@ -19,11 +19,11 @@ export class FeatherService extends Tool {
 
     constructor(
         drawingService: DrawingService,
-        //private drawingStateTrackingService: DrawingStateTrackerService,
+        private drawingStateTrackingService: DrawingStateTrackerService,
         private colorService: ColorService,
         private widthService: WidthService,
     ) {
-        super(drawingService, new Description('feather', 'p', 'feather_icon.png'));
+        super(drawingService, new Description('plume', 'p', 'feather_icon.png'));
         this.modifiers.push(this.colorService);
         this.modifiers.push(this.widthService);
         this.clearPath();
@@ -64,22 +64,20 @@ export class FeatherService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.featherDraw(this.drawingService.baseCtx, this.pathData);
-            // this.drawingStateTrackingService.addAction(this, new InteractionPath(this.pathData));
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawingStateTrackingService.addAction(this, new InteractionPath(this.pathData));
         }
         this.mouseDown = false;
         this.clearPath();
     }
 
     onMouseMove(event: MouseEvent): void {
-        const mousePosition = this.getPositionFromMouse(event);
-        this.pathData.push(mousePosition);
-
-        if (!this.isInCanvas(mousePosition)) {
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        }
-
         if (this.mouseDown) {
+            const mousePosition = this.getPositionFromMouse(event);
+            this.pathData.push(mousePosition);
             if (!this.isInCanvas(mousePosition) && this.mouseDown) {
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
+
                 if (mousePosition.x >= this.drawingService.baseCtx.canvas.width) {
                     this.drawingService.previewCtx.canvas.width = mousePosition.x;
                 }
@@ -88,30 +86,23 @@ export class FeatherService extends Tool {
                 }
             } else {
                 this.featherDraw(this.drawingService.baseCtx, this.pathData);
-
                 this.resetBorder();
             }
         }
     }
 
     private featherDraw(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        const lastPosition: Vec2 = path[path.length - 2];
-        const currentPosition: Vec2 = path[path.length - 1];
-        const xPosition: number = lastPosition.x;
-        const yPosition: number = lastPosition.y;
-        ctx.save();
         ctx.beginPath();
-        ctx.lineJoin = 'round';
-        ctx.lineCap = 'round';
         ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
         ctx.strokeStyle = this.colorService.getPrimaryColor(); // color of the line
         ctx.fillStyle = this.colorService.getPrimaryColor(); // color of the starting point
-
+        ctx.lineWidth = 1;
+        const lastPosition: Vec2 = path[path.length - 2];
+        const currentPosition: Vec2 = path[path.length - 1];
         for (let i = 0; i < this.widthService.getWidth(); i++) {
-            //middle +2
             ctx.moveTo(
-                xPosition + (Math.sin(this.convertDegreeToRad(this.angleInRadian)) * i) / 2,
-                yPosition - (Math.cos(this.convertDegreeToRad(this.angleInRadian)) * i) / 2,
+                lastPosition.x + (Math.sin(this.convertDegreeToRad(this.angleInRadian)) * i) / 2,
+                lastPosition.y - (Math.cos(this.convertDegreeToRad(this.angleInRadian)) * i) / 2,
             );
 
             ctx.lineTo(
@@ -119,8 +110,8 @@ export class FeatherService extends Tool {
                 currentPosition.y - (Math.cos(this.convertDegreeToRad(this.angleInRadian)) * i) / 2,
             );
         }
+
         ctx.stroke();
-        ctx.restore();
     }
 
     private convertDegreeToRad(angleDegre: number): number {
@@ -136,6 +127,9 @@ export class FeatherService extends Tool {
     }
 
     execute(interaction: InteractionPath): void {
-        this.featherDraw(this.drawingService.baseCtx, interaction.path);
+        for (let i = 0; i < interaction.path.length - 1; i++) {
+            const pathData: Vec2[] = [interaction.path[i], interaction.path[i + 1]];
+            this.featherDraw(this.drawingService.baseCtx, pathData);
+        }
     }
 }
