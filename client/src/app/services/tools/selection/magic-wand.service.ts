@@ -9,10 +9,7 @@ import { TracingService } from '@app/services/tool-modifier/tracing/tracing.serv
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
 import { SelectionToolService } from '@app/services/tools/selection/selection-tool.service';
-
-class edgePixelsOneRegion {
-    public edgePixels: Vec2[] = [];
-}
+import { EdgePixelsOneRegion } from './edge-pixel';
 @Injectable({
     providedIn: 'root',
 })
@@ -20,8 +17,8 @@ export class MagicWandService extends SelectionToolService {
     private startR: number;
     private startG: number;
     private startB: number;
-    private edgePixelsAllRegionSplitted: edgePixelsOneRegion[] = [];
-    private edgePixelsAllRegion: Vec2[] = [];
+    private edgePixelsSplitted: EdgePixelsOneRegion[] = [];
+    private edgePixelsAllRegions: Vec2[] = [];
     protected image: HTMLImageElement;
     protected oldImage: HTMLImageElement;
     private pathStartCoordReference: Vec2;
@@ -79,12 +76,13 @@ this.arrowDown = false;
             this.draggingImage = true;
             this.mouseDown = true;
             // this.startDownCoord = this.evenImageStartCoord(this.mouseDownCoord);
-            // creation with neighbour pixels only
         } else {
             this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
             this.oldImage.src = this.drawingService.baseCtx.canvas.toDataURL();
             let pixelsSelected: Vec2[];
             this.setStartColor();
+            this.edgePixelsAllRegions = [];
+            this.edgePixelsSplitted = [];
 
             if (event.button === MouseButton.Left) pixelsSelected = this.floodFillSelect(this.mouseDownCoord);
             else pixelsSelected = this.sameColorSelect();
@@ -173,7 +171,6 @@ this.arrowDown = false;
         this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
 
         this.splitAndSortEdgeArray();
-        console.log(this.edgePixelsAllRegionSplitted[0]);
         this.drawSelectionCoutour();
 
         // this.drawingService.previewCtx.putImageData(this.imageData, this.startDownCoord.x, this.startDownCoord.y);
@@ -190,7 +187,7 @@ this.arrowDown = false;
     // tslint:disable:cyclomatic-complexity
     private floodFillSelect(pixelClicked: Vec2): Vec2[] {
         // We only use one region for this selection
-        this.edgePixelsAllRegion = [];
+        this.edgePixelsAllRegions = [];
         const pixelSelected: Vec2[] = [];
         const pixelStack: Vec2[] = [];
         // let pixelPos: Vec2 = {x: 0,y:0};
@@ -217,7 +214,7 @@ this.arrowDown = false;
                 this.isNotSelected(pixelSelected, pixelPos)
             ) {
                 pixelSelected.push({ x: pixelPos.x, y: pixelPos.y } as Vec2);
-                if (this.isEdgePixel({ x: pixelPos.x, y: pixelPos.y })) this.edgePixelsAllRegion.push({ x: pixelPos.x, y: pixelPos.y });
+                if (this.isEdgePixel({ x: pixelPos.x, y: pixelPos.y })) this.edgePixelsAllRegions.push({ x: pixelPos.x, y: pixelPos.y });
 
                 if (xPosition > 0) {
                     if (
@@ -253,12 +250,12 @@ this.arrowDown = false;
 
     private sameColorSelect(): Vec2[] {
         const pixelSelected: Vec2[] = [];
-        let pixelPos: Vec2 = { x: 0, y: 0 };
+        const pixelPos: Vec2 = { x: 0, y: 0 };
         while (pixelPos.y < this.drawingService.baseCtx.canvas.height) {
             while (pixelPos.x < this.drawingService.baseCtx.canvas.width) {
                 if (this.matchStartColor(pixelPos)) {
                     pixelSelected.push({ x: pixelPos.x, y: pixelPos.y });
-                    if (this.isEdgePixel(pixelPos)) this.edgePixelsAllRegion.push({ x: pixelPos.x, y: pixelPos.y });
+                    if (this.isEdgePixel(pixelPos)) this.edgePixelsAllRegions.push({ x: pixelPos.x, y: pixelPos.y });
                 }
                 pixelPos.x++;
             }
@@ -268,27 +265,36 @@ this.arrowDown = false;
         return pixelSelected;
     }
     splitAndSortEdgeArray(): void {
+        const distanceBetweenEdgePixels = 1;
         let regionIndex: number = -1;
-        while ((this.edgePixelsAllRegion.length, regionIndex++)) {
-            const newRegion: Vec2[] = [this.edgePixelsAllRegion[0]];
-            this.edgePixelsAllRegion.splice(0, 1);
+        while (this.edgePixelsAllRegions.length) {
+            regionIndex++;
+            console.log('been there');
+            const newRegion: Vec2[] = [this.edgePixelsAllRegions[0]];
+            this.edgePixelsAllRegions.splice(0, 1);
             for (const value of newRegion) {
-                for (let j = 0; j < this.edgePixelsAllRegion.length; j++) {
+                for (let j = 0; j < this.edgePixelsAllRegions.length; j++) {
                     if (
-                        ((value.x - this.edgePixelsAllRegion[j].x === 1 || value.x - this.edgePixelsAllRegion[j].x === -1) &&
-                            value.y - this.edgePixelsAllRegion[j].y === 0) ||
-                        ((value.y - this.edgePixelsAllRegion[j].y === 1 || value.y - this.edgePixelsAllRegion[j].y === -1) &&
-                            value.x - this.edgePixelsAllRegion[j].x === 0)
+                        ((value.x - this.edgePixelsAllRegions[j].x === distanceBetweenEdgePixels ||
+                            value.x - this.edgePixelsAllRegions[j].x === -distanceBetweenEdgePixels) &&
+                            value.y - this.edgePixelsAllRegions[j].y === 0) ||
+                        ((value.y - this.edgePixelsAllRegions[j].y === distanceBetweenEdgePixels ||
+                            value.y - this.edgePixelsAllRegions[j].y === -distanceBetweenEdgePixels) &&
+                            value.x - this.edgePixelsAllRegions[j].x === 0)
                     ) {
-                        newRegion.push(this.edgePixelsAllRegion[j]);
-                        this.edgePixelsAllRegion.splice(j, 1);
+                        newRegion.push(this.edgePixelsAllRegions[j]);
+                        this.edgePixelsAllRegions.splice(j, 1);
                         break;
                     }
                 }
             }
+            console.log(this.edgePixelsAllRegions.length);
+            // Prevents unlinked edge pixel to form regions
             if (!(newRegion.length === 0)) {
-                this.edgePixelsAllRegionSplitted.push({ edgePixels: [] });
-                this.edgePixelsAllRegionSplitted[regionIndex].edgePixels = newRegion;
+                this.edgePixelsSplitted.push({ edgePixels: [] });
+                this.edgePixelsSplitted[regionIndex].edgePixels = newRegion;
+            } else {
+                regionIndex--;
             }
         }
     }
@@ -305,7 +311,7 @@ this.arrowDown = false;
         this.drawingService.previewCtx.lineWidth = 2;
         // tslint:disable-next-line:no-magic-numbers
         this.drawingService.previewCtx.setLineDash([8, 4]);
-        for (let region of this.edgePixelsAllRegionSplitted) {
+        for (const region of this.edgePixelsSplitted) {
             this.drawingService.previewCtx.beginPath();
             for (const edge of region.edgePixels) {
                 this.drawingService.previewCtx.lineTo(edge.x, edge.y);
@@ -372,7 +378,7 @@ this.arrowDown = false;
                 x: this.startDownCoord.x - this.pathStartCoordReference.x,
                 y: this.startDownCoord.y - this.pathStartCoordReference.y,
             };
-            for (const region of this.edgePixelsAllRegionSplitted) {
+            for (const region of this.edgePixelsSplitted) {
                 for (const edge of region.edgePixels) {
                     edge.x = edge.x + coordDiff.x;
                     edge.y = edge.y + coordDiff.y;
@@ -380,7 +386,7 @@ this.arrowDown = false;
             }
             this.pathStartCoordReference = this.startDownCoord;
         }
-        for (const region of this.edgePixelsAllRegionSplitted) {
+        for (const region of this.edgePixelsSplitted) {
             magicWandPath.moveTo(region.edgePixels[0].x, region.edgePixels[0].y);
             for (const edge of region.edgePixels) {
                 magicWandPath.lineTo(edge.x, edge.y);
@@ -389,3 +395,4 @@ this.arrowDown = false;
         return magicWandPath;
     }
 }
+// tslint:disable:max-file-line-count
