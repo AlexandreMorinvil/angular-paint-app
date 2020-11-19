@@ -297,14 +297,7 @@ export class MagicWandService extends SelectionToolService {
             }
         }
     }
-    isNotSelected(pixelsSelected: Vec2[], pixelPos: Vec2): boolean {
-        for (const pixel of pixelsSelected) {
-            if (pixelPos.x === pixel.x && pixelPos.y === pixel.y) {
-                return false;
-            }
-        }
-        return true;
-    }
+
     private drawSelectionCoutour(): void {
         this.drawingService.previewCtx.strokeStyle = '#777777';
         this.drawingService.previewCtx.lineWidth = 2;
@@ -325,6 +318,14 @@ export class MagicWandService extends SelectionToolService {
         const imageData: ImageData = this.drawingService.baseCtx.getImageData(pixelPos.x, pixelPos.y, 1, 1);
         return imageData.data[0] === this.startR && imageData.data[1] === this.startG && imageData.data[2] === this.startB;
     }
+    private isNotSelected(pixelsSelected: Vec2[], pixelPos: Vec2): boolean {
+        for (const pixel of pixelsSelected) {
+            if (pixelPos.x === pixel.x && pixelPos.y === pixel.y) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     private setStartColor(): void {
         // get the pixel on the first Path of mouse
@@ -344,7 +345,7 @@ export class MagicWandService extends SelectionToolService {
         }
         return false;
     }
-    private showSelection(canvas: CanvasRenderingContext2D, image: HTMLImageElement, size: Vec2, imageStart: Vec2, offset: number = 0): void {
+    private showSelection(canvas: CanvasRenderingContext2D, image: HTMLImageElement, size: Vec2, imageStart: Vec2): void {
         canvas.save();
         const path = this.getPath();
         canvas.clip(path);
@@ -366,7 +367,8 @@ export class MagicWandService extends SelectionToolService {
         canvas.save();
         const path = this.getPath();
         canvas.clip(path);
-        canvas.clearRect(this.startDownCoord.x, this.startDownCoord.y, this.imageData.width, this.imageData.height);
+        canvas.fillStyle = '#FFFFFF';
+        canvas.fillRect(this.startDownCoord.x, this.startDownCoord.y, this.imageData.width, this.imageData.height);
         canvas.restore();
     }
     private getPath(): Path2D {
