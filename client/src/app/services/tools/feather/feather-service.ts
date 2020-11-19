@@ -29,6 +29,7 @@ export class FeatherService extends Tool {
         this.clearPath();
         this.angleInRadian = 0;
         this.isAltDown = false;
+        this.widthService.setWidth(2);
     }
     onAltDown(event: KeyboardEvent): void {
         this.isAltDown = true;
@@ -120,13 +121,13 @@ export class FeatherService extends Tool {
         const currentPosition: Vec2 = path[path.length - 1];
         for (let i = 0; i < this.widthService.getWidth(); i++) {
             ctx.moveTo(
-                lastPosition.x + (Math.sin(this.convertDegreeToRad(this.angleInRadian)) * i) / 2,
-                lastPosition.y - (Math.cos(this.convertDegreeToRad(this.angleInRadian)) * i) / 2,
+                lastPosition.x + Math.sin(this.convertDegreeToRad(this.angleInRadian)) * i,
+                lastPosition.y - Math.cos(this.convertDegreeToRad(this.angleInRadian)) * i,
             );
 
             ctx.lineTo(
-                currentPosition.x + (Math.sin(this.convertDegreeToRad(this.angleInRadian)) * i) / 2,
-                currentPosition.y - (Math.cos(this.convertDegreeToRad(this.angleInRadian)) * i) / 2,
+                currentPosition.x + Math.sin(this.convertDegreeToRad(this.angleInRadian)) * i,
+                currentPosition.y - Math.cos(this.convertDegreeToRad(this.angleInRadian)) * i,
             );
         }
 
