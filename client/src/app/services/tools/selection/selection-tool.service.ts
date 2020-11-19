@@ -278,6 +278,7 @@ export abstract class SelectionToolService extends Tool {
                 adjustOffsetCoords.y -= value1;
                 adjustOffsetCoords.x -= value;
             }
+            mousePosition = { x: adjustOffsetCoords.x + adjustStartCoords.x, y: adjustOffsetCoords.y + adjustStartCoords.y };
         }
         // mirror effect
         canvas.scale(scaleX, scaleY);

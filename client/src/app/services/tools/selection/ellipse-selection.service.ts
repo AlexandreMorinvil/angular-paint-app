@@ -183,6 +183,7 @@ export class EllipseSelectionService extends SelectionToolService {
     onShiftDown(event: KeyboardEvent): void {
         if (!event.ctrlKey) {
             this.shiftDown = true;
+            this.ratio = this.getRatio(this.imageData.width, this.imageData.height);
             if (!this.clickOnAnchor) {
                 this.ellipseService.shiftDown = true;
                 this.createOnMouseMoveEvent();
@@ -291,7 +292,7 @@ export class EllipseSelectionService extends SelectionToolService {
     }
 
     private createOnMouseMoveEvent(): void {
-        if (this.mouseDown) {
+        if (this.localMouseDown) {
             const mouseEvent = {
                 offsetX: this.pathData[this.pathData.length - 1].x,
                 offsetY: this.pathData[this.pathData.length - 1].y,
