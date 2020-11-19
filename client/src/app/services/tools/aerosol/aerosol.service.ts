@@ -79,8 +79,6 @@ export class AerosolService extends Tool {
         const mouseMoveCoord = path[path.length - 1];
         const xposition = mouseMoveCoord.x;
         const yposition = mouseMoveCoord.y;
-        const savedData: Vec2 = { x: xposition, y: yposition }; //pour undo redo
-        this.savedPathData.push(savedData); //pour undo redo
         if (this.isInCanvas(mouseMoveCoord)) {
             const numberSprayTransmission = this.numberSprayTransmissionService.getNumberSprayTransmission() / this.factorTimeIntervalBeetweenSpray;
             for (let i = 0; i < numberSprayTransmission; i++) {
@@ -93,6 +91,8 @@ export class AerosolService extends Tool {
                 const xValue = xposition + xvalueOffset;
                 const yValue = yposition + yvalueOffset;
                 const dropletDiameter = this.sprayDropletService.getSprayDropletDiameter() / 2;
+                const savedData: Vec2 = { x: xValue, y: yValue }; //pour undo redo
+                this.savedPathData.push(savedData); //pour undo redo
                 ctx.arc(xValue, yValue, dropletDiameter, 0, 2 * Math.PI, false);
                 ctx.fill();
             }
@@ -109,21 +109,17 @@ export class AerosolService extends Tool {
         ctx.globalAlpha = this.colorService.getSecondaryColorOpacity();
     }
 
-    private redoSprayPaint(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        this.setAttribute(ctx);
-        for (let i = 0; i < path.length; i++) {
-            ctx.beginPath();
-            ctx.arc(path[i].x, path[i].y, 1, 0, 2 * Math.PI, false);
-            ctx.fill();
-        }
-    }
-
     private clearPath(): void {
         this.pathData = [];
         this.savedPathData = [];
     }
 
     execute(interaction: InteractionPath): void {
-        this.redoSprayPaint(this.drawingService.baseCtx, interaction.path);
+        this.setAttribute(this.drawingService.baseCtx);
+        for (let i = 0; i < interaction.path.length; i++) {
+            this.drawingService.baseCtx.beginPath();
+            this.drawingService.baseCtx.arc(interaction.path[i].x, interaction.path[i].y, 1, 0, 2 * Math.PI, false);
+            this.drawingService.baseCtx.fill();
+        }
     }
 }
