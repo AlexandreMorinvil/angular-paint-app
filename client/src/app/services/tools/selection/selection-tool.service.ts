@@ -41,6 +41,7 @@ export abstract class SelectionToolService extends Tool {
     protected startSelectionPoint: Vec2;
     protected image: HTMLImageElement;
     protected ratio: number;
+    protected angle: number;
 
     constructor(drawingService: DrawingService, private color: ColorService, description: Description) {
         super(drawingService, description);
@@ -51,6 +52,7 @@ export abstract class SelectionToolService extends Tool {
         this.clickOnAnchor = false;
         this.shiftDown = false;
         this.hasDoneFirstTranslation = false;
+        this.angle = 0;
     }
 
     onEscapeDown(): void {

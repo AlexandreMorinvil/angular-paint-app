@@ -150,6 +150,12 @@ export class DrawingComponent implements AfterViewInit {
         }
     }
 
+    @HostListener('mousewheel', ['$event'])
+    onMousewheel(event: WheelEvent) {
+        event.preventDefault(); // to prevent key of windows
+        this.toolbox.getCurrentTool().onMouseWheel(event);
+    }
+
     get width(): number {
         // return this.canvasSize.x;
         return this.workzoneSizeService.drawingZoneWidth;
