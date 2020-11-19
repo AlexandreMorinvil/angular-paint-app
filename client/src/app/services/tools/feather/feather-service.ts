@@ -45,8 +45,22 @@ export class FeatherService extends Tool {
             this.pathData.push(this.mouseDownCoord);
         }
     }
+    onMouseScrollUp(event: MouseEvent): void {
+        const rotationAngle15 = 15;
+        const rotationAngle1 = 1;
+        const resetAngle = 0;
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        if (this.angleInRadian === resetAngle) {
+            this.angleInRadian = 360;
+        }
+        if (this.isAltDown) {
+            this.angleInRadian = this.angleInRadian - rotationAngle1;
+        } else {
+            this.angleInRadian = this.angleInRadian - rotationAngle15;
+        }
+    }
 
-    onMouseScroll(event: MouseEvent): void {
+    onMouseScrollDown(event: MouseEvent): void {
         const rotationAngle15 = 15;
         const rotationAngle1 = 1;
         const resetAngle = 360;
@@ -118,7 +132,7 @@ export class FeatherService extends Tool {
     }
 
     private convertDegreeToRad(angleDegre: number): number {
-        // Number is self explanatory
+        // Number is self explanatory and is used as a conversion
         // tslint:disable:no-magic-numbers
         return (angleDegre * Math.PI) / 180;
     }
