@@ -35,7 +35,7 @@ describe('AttributeGridOpacityComponent', () => {
     });
 
     it('the gridOpacity should change to the input value upon confirmation of the gridOpacity choice', () => {
-        const newGridOpacity = 27;
+        const newGridOpacity = 0.27;
 
         component.gridOpacityDisplayed = newGridOpacity;
         component.assign();

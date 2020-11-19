@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
+import { GridService } from '../tools/grid/grid.service';
 import { DrawingStateTrackerService } from './drawing-state-tracker.service';
 // The disablement of the "any" tslint rule is justified in this situation as the prototype
 // of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
@@ -8,6 +9,7 @@ import { DrawingStateTrackerService } from './drawing-state-tracker.service';
 describe('DrawingStateTrackerService', () => {
     let service: DrawingStateTrackerService;
     let servicePencil: PencilService;
+    let gridService: GridService;
     let onCtrlZDownSpy: jasmine.Spy<any>;
     let onCtrlShiftZDownSpy: jasmine.Spy<any>;
     let undoSpy: jasmine.Spy<any>;
@@ -22,6 +24,7 @@ describe('DrawingStateTrackerService', () => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(DrawingStateTrackerService);
         servicePencil = TestBed.inject(PencilService);
+        gridService = TestBed.inject(GridService);
 
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
@@ -41,6 +44,7 @@ describe('DrawingStateTrackerService', () => {
         (service as any).drawingService.canvas = canvasStub;
         (service as any).drawingService.canvas.width = canvasWidth;
         (service as any).drawingService.canvas.height = canvasHeight;
+        (gridService as any).gridCtx = previewCtxStub;
     });
 
     it('should be created', () => {

@@ -24,15 +24,15 @@ describe('GridOpacityService', () => {
     });
 
     it(' setGridOpacity should set gridOpacity to the incoming argument and getGridOpacity should return the right number', () => {
-        const gridOpacity = 25;
+        const gridOpacity = 0.25;
         service.setGridOpacity(gridOpacity);
         expect(setGridOpacitySpy).toHaveBeenCalled();
         expect(service.getGridOpacity()).toEqual(gridOpacity);
         expect(getGridOpacitySpy).toHaveBeenCalled();
     });
 
-    it(' setGridOpacity should set gridOpacity to the 50 if input is above 50', () => {
-        const gridOpacity = 75;
+    it(' setGridOpacity should set gridOpacity to 1.0 if input is above 1.0', () => {
+        const gridOpacity = 7;
         const maxGridOpacity = service.MAX_ATTRIBUTE_GRID_OPACITY;
         service.setGridOpacity(gridOpacity);
         expect(setGridOpacitySpy).toHaveBeenCalled();
@@ -40,7 +40,7 @@ describe('GridOpacityService', () => {
         expect(getGridOpacitySpy).toHaveBeenCalled();
     });
 
-    it(' setGridOpacity should set gridOpacity to 1 if input is below 1', () => {
+    it(' setGridOpacity should set gridOpacity to the minimal opacity value if input is below the minimal opacity value', () => {
         const gridOpacity = 0;
         const minGridOpacity = service.MIN_ATTRIBUTE_GRID_OPACITY;
         service.setGridOpacity(gridOpacity);
@@ -51,7 +51,7 @@ describe('GridOpacityService', () => {
 
     it(' should call setState to the incoming argument and getGridOpacity should return the right number', () => {
         const state = {
-            gridOpacity: 100,
+            gridOpacity: 1,
         } as GridOpacityModifierState;
         service.setState(state);
         expect(setStateSpy).toHaveBeenCalled();
