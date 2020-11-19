@@ -41,7 +41,6 @@ export class MagicWandService extends SelectionToolService {
 this.arrowPress = [false, false, false, false];
 this.arrowDown = false;
 */
-        this.drawingService.previewCtx.save();
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.mouseDownCoord = this.getPositionFromMouse(event);
         this.localMouseDown = event.button === MouseButton.Left;
@@ -58,7 +57,7 @@ this.arrowDown = false;
                     this.drawingService.baseCtx,
                     this.oldImage,
                     { x: this.imageData.width, y: this.imageData.height },
-                    this.firstMagicCoord,
+                    this.startDownCoord,
                 );
             }
             // Puts a space on selection original placement
@@ -147,7 +146,7 @@ this.arrowDown = false;
         if (this.draggingImage) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             // saves what was under the selection
-            
+
             this.oldImage.src = this.drawingService.baseCtx.canvas.toDataURL();
             this.showSelection(this.drawingService.baseCtx, this.image, { x: this.imageData.width, y: this.imageData.height }, this.firstMagicCoord);
 
@@ -156,11 +155,11 @@ this.arrowDown = false;
             this.drawingService.previewCtx.stroke();
             this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
             //this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
-            this.firstMagicCoord = this.startDownCoord;
+            //this.firstMagicCoord = this.startDownCoord;
             this.draggingImage = false;
             this.hasDoneFirstTranslation = true;
         }
-        
+
         this.localMouseDown = false;
         this.clearPath();
     }
@@ -254,9 +253,7 @@ this.arrowDown = false;
                     break;
                 }
             }
-            console.log(foundSomething);
         }
-        console.log(this.edgePixels);
         this.edgePixels = newArray;
     }
 
@@ -330,7 +327,6 @@ this.arrowDown = false;
         for (let edge of this.edgePixels) {
             magicWandPath.lineTo(edge.x, edge.y);
         }
-        console.log(this.edgePixels);
         return magicWandPath;
     }
 }
