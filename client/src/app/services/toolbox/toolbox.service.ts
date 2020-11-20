@@ -7,6 +7,7 @@ import { CursorService } from '@app/services/tools/cursor/cursor.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse-service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
 import { FeatherService } from '@app/services/tools/feather/feather-service';
+import { GridService } from '@app/services/tools/grid/grid.service';
 import { LineService } from '@app/services/tools/line/line-service';
 import { PaintService } from '@app/services/tools/paint/paint.service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
@@ -25,6 +26,7 @@ export class ToolboxService {
 
     constructor(
         cursorService: CursorService,
+        gridService: GridService,
         pencilService: PencilService,
         brushService: BrushService,
         eraserService: EraserService,
@@ -42,6 +44,7 @@ export class ToolboxService {
     ) {
         this.currentTool = cursorService;
         this.availableTools.push(cursorService);
+        this.availableTools.push(gridService);
         this.availableTools.push(pencilService);
         this.availableTools.push(brushService);
         this.availableTools.push(eraserService);
