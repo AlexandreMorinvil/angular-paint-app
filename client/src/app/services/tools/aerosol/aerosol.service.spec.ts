@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { InteractionAerosol } from '@app/classes/action/interaction-aerosol';
+import { InteractionPath } from '@app/classes/action/interaction-path';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -107,10 +107,7 @@ fdescribe('AerosolService', () => {
 
     // tslint:disable:no-magic-numbers
     it(' should call set attribute on spray paint', () => {
-        const path: Vec2[] = [
-            { x: 25, y: 25 },
-            { x: 20, y: 20 },
-        ];
+        const path: Vec2[] = [{ x: 0, y: 0 }];
         (service as any).numberSprayTransmissionService.numberSprayTransmissionService = 50;
         (service as any).sprayDropletService.sprayDropletDiameter = 10;
         (service as any).sprayService.sprayDiameter = 20;
@@ -148,8 +145,7 @@ fdescribe('AerosolService', () => {
                 { x: 0, y: 0 },
                 { x: 1, y: 1 },
             ],
-            sprayDropletDiameter: 10,
-        } as InteractionAerosol;
+        } as InteractionPath;
         service.execute(interaction);
         expect(redoSprayPaintSpy).toHaveBeenCalled();
         expect(setAttributeSpy).toHaveBeenCalled();

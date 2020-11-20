@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { InteractionAerosol } from '@app/classes/action/interaction-aerosol';
+import { InteractionPath } from '@app/classes/action/interaction-path';
 import { Description } from '@app/classes/description';
 import { MouseButton } from '@app/classes/mouse';
 import { Tool } from '@app/classes/tool';
@@ -18,7 +18,8 @@ export class AerosolService extends Tool {
     private readonly NUMBER_MILLISECONDS_IN_SECOND: number = 1000;
     private readonly factorTimeIntervalBeetweenSpray: number = 100;
     private pathData: Vec2[];
-    private sprayIntervalId: number;
+    // tslint:disable:no-any
+    private sprayIntervalId: any;
     private savedPathData: Vec2[];
     private sprayDropletDiameter: number;
 
@@ -63,7 +64,7 @@ export class AerosolService extends Tool {
             this.pathData.push(mousePosition);
         }
         clearInterval(this.sprayIntervalId);
-        this.drawingStateTrackingService.addAction(this, new InteractionAerosol(this.savedPathData, this.sprayDropletDiameter));
+        this.drawingStateTrackingService.addAction(this, new InteractionPath(this.savedPathData));
         this.mouseDown = false;
         this.clearPath();
     }
@@ -117,18 +118,24 @@ export class AerosolService extends Tool {
         this.savedPathData = [];
     }
 
-    private redoSprayPaint(ctx: CanvasRenderingContext2D, interaction: InteractionAerosol): void {
+    private redoSprayPaint(ctx: CanvasRenderingContext2D, interaction: InteractionPath): void {
         this.setAttribute(this.drawingService.baseCtx);
         // tslint:disable:prefer-for-of
         for (let i = 0; i < interaction.path.length; i++) {
             this.drawingService.baseCtx.beginPath();
-            const sprayDropletRadius = interaction.sprayDropletDiameter / 2;
-            this.drawingService.baseCtx.arc(interaction.path[i].x, interaction.path[i].y, sprayDropletRadius, 0, 2 * Math.PI, false);
+            this.drawingService.baseCtx.arc(
+                interaction.path[i].x,
+                interaction.path[i].y,
+                this.sprayDropletService.getSprayDropletDiameter() / 2,
+                0,
+                2 * Math.PI,
+                false,
+            );
             this.drawingService.baseCtx.fill();
         }
     }
 
-    execute(interaction: InteractionAerosol): void {
+    execute(interaction: InteractionPath): void {
         this.redoSprayPaint(this.drawingService.baseCtx, interaction);
     }
 }
