@@ -346,6 +346,7 @@ describe('EllipseSelectionService', () => {
 
     it('should on shiftDown', () => {
         const keyboardEvent = {} as KeyboardEvent;
+        (service as any).imageData = new ImageData(1, 1);
         service.onShiftDown(keyboardEvent);
         expect((service as any).ellipseService.shiftDown).toBeTrue();
         expect(createOnMouseMoveEventSpy).toHaveBeenCalled();
@@ -537,7 +538,7 @@ describe('EllipseSelectionService', () => {
         (service as any).mouseDown = true;
         (service as any).localMouseDown = true;
         service.firstEllipseCoord = { x: 0, y: 20 };
-        expect((service as any).getPath(0)).not.toBeNull();
+        expect((service as any).getPath(0, (service as any).startDownCoord)).not.toBeNull();
     });
     it('should clear canvas with a white ellipse after clearCanvasEllipse', () => {
         (service as any).clearCanvasEllipse();

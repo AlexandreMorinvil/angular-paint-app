@@ -23,6 +23,7 @@ export class RectangleSelectionService extends SelectionToolService {
         private widthService: WidthService,
     ) {
         super(drawingService, colorService, new Description('selection rectangle', 'r', 'rectangle-selection.png'));
+        this.image = new Image();
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -35,13 +36,17 @@ export class RectangleSelectionService extends SelectionToolService {
         this.mouseDownCoord = this.getPositionFromMouse(event);
         this.localMouseDown = event.button === MouseButton.Left;
         this.resetTransform();
-        // translate
-        if (this.selectionCreated && this.hitSelection(this.mouseDownCoord.x, this.mouseDownCoord.y)) {
+        // resizing
+        if (this.selectionCreated && this.checkHit(this.mouseDownCoord)) {
+            this.getAnchorHit(this.drawingService.previewCtx, this.mouseDownCoord, 2);
+            this.startSelectionPoint = this.startDownCoord;
+            // translate
+        } else if (this.selectionCreated && this.hitSelection(this.mouseDownCoord.x, this.mouseDownCoord.y)) {
             this.pathData.push(this.pathLastCoord);
+            this.startSelectionPoint = this.startDownCoord;
             // Puts back what was under the selection
             if (this.hasDoneFirstTranslation) {
                 this.putImageData(this.startDownCoord, this.drawingService.baseCtx, this.oldImageData);
-                this.startSelectionPoint = this.startDownCoord;
             }
             // Puts a white rectangle on selection original placement
             else {
@@ -58,6 +63,7 @@ export class RectangleSelectionService extends SelectionToolService {
             this.pathData.push(this.startDownCoord);
             this.startSelectionPoint = this.getPositionFromMouse(event);
             this.mouseDown = true;
+            this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
         }
     }
 
@@ -68,6 +74,11 @@ export class RectangleSelectionService extends SelectionToolService {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.startDownCoord = this.evenImageStartCoord(mousePosition);
             this.putImageData(this.evenImageStartCoord(mousePosition), this.drawingService.previewCtx, this.imageData);
+            // resizing
+        } else if (this.clickOnAnchor && this.mouseDown) {
+            this.drawingService.baseCtx.clearRect(this.startDownCoord.x, this.startDownCoord.y, this.imageData.width, this.imageData.height);
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.getAnchorHit(this.drawingService.previewCtx, mousePosition, 2);
             // creation
         } else if (this.isInCanvas(mousePosition) && this.localMouseDown) {
             this.rectangleService.onMouseMove(event);
@@ -111,6 +122,31 @@ export class RectangleSelectionService extends SelectionToolService {
             this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
             this.draggingImage = false;
             this.hasDoneFirstTranslation = true;
+            this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
+            // resizing
+        } else if (this.clickOnAnchor) {
+            this.getAnchorHit(this.drawingService.baseCtx, mousePosition, 2);
+            const trackingInfo = this.getActionTrackingInfo(mousePosition);
+            const imageDataSelection = this.drawingService.baseCtx.getImageData(
+                trackingInfo[0].x,
+                trackingInfo[0].y,
+                trackingInfo[1].x - trackingInfo[0].x,
+                trackingInfo[1].y - trackingInfo[0].y,
+            );
+            this.drawingStateTrackingService.addAction(
+                this,
+                new InteractionSelection(
+                    this.hasDoneFirstTranslation,
+                    this.startSelectionPoint,
+                    trackingInfo[0],
+                    imageDataSelection,
+                    this.oldImageData,
+                ),
+            );
+            this.oldImageData = imageDataSelection;
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.clickOnAnchor = false;
+            this.selectionCreated = false;
             // creation
         } else if (this.localMouseDown) {
             if (this.rectangleService.shiftDown) {
@@ -120,6 +156,7 @@ export class RectangleSelectionService extends SelectionToolService {
             } else {
                 this.pathData.push(mousePosition);
             }
+            this.startDownCoord = this.offsetAnchors(this.startDownCoord);
             // saves what was under the selection
             this.oldImageData = this.drawingService.baseCtx.getImageData(
                 this.startDownCoord.x,
@@ -127,9 +164,7 @@ export class RectangleSelectionService extends SelectionToolService {
                 this.imageData.width,
                 this.imageData.height,
             );
-            // this.getOldImageData(mousePosition);
             this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.pathData);
-            this.offsetAnchors(this.startDownCoord);
             this.drawingService.previewCtx.putImageData(this.imageData, this.startDownCoord.x, this.startDownCoord.y);
             this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
             this.selectionCreated = true;
@@ -141,13 +176,24 @@ export class RectangleSelectionService extends SelectionToolService {
     }
 
     onShiftDown(event: KeyboardEvent): void {
-        this.rectangleService.shiftDown = true;
-        this.createOnMouseMoveEvent();
+        if (!event.ctrlKey) {
+            this.shiftDown = true;
+            this.ratio = this.getRatio(this.imageData.width, this.imageData.height);
+            if (!this.clickOnAnchor) {
+                this.rectangleService.shiftDown = true;
+                this.createOnMouseMoveEvent();
+            }
+        }
     }
 
     onShiftUp(event: KeyboardEvent): void {
-        this.rectangleService.shiftDown = false;
-        this.createOnMouseMoveEvent();
+        if (!event.ctrlKey) {
+            this.shiftDown = false;
+            if (!this.clickOnAnchor) {
+                this.rectangleService.shiftDown = false;
+                this.createOnMouseMoveEvent();
+            }
+        }
     }
 
     onArrowDown(event: KeyboardEvent): void {
