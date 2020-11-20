@@ -1,39 +1,43 @@
 <div class="container container-flex">
-    <button *ngFor="let tool of getListOfTools()" (click)="setCurrentTool(tool)" class="has-tooltip" [class.active]="tool === getCurrentTool()">
-        <img [src]="tool.iconDirectory" [alt]="tool.name" />
-        <app-tooltip [text]="formatTooltipMessage(tool)" class="tooltip"></app-tooltip>
-    </button>
-
-    <button (click)="undo()" class="to-bottom has-tooltip">
-        <img src="assets/images/undo.png" />
-        <app-tooltip [text]="messageUndo" class="tooltip"></app-tooltip>
-    </button>
-    <button (click)="redo()" class="to-bottom has-tooltip">
-        <img src="assets/images/redo.png" />
-        <app-tooltip [text]="messageRedo" class="tooltip"></app-tooltip>
-    </button>
-    <button (click)="openExportDialog()" class="to-bottom has-tooltip">
-        <img src="assets/images/icon/export_icon.png" />
-        <app-tooltip [text]="messageExportDialog" class="tooltip"></app-tooltip>
-    </button>
-    <button (click)="openSaveDialog()" class="has-tooltip">
-        <img src="assets/images/icon/save_icon.png" />
-        <app-tooltip [text]="messageSaveDialog" class="tooltip"></app-tooltip>
-    </button>
-    <button (click)="openCarouselDialog()" class="has-tooltip">
-        <img src="assets/images/icon/open_folder.png" />
-        <app-tooltip [text]="messageCarouselDialog" class="tooltip"></app-tooltip>
-    </button>
-    <button (click)="resetDrawing()" class="has-tooltip">
-        <img src="assets/images/icon/document_icon.png" />
-        <app-tooltip [text]="messageNewDrawing" class="tooltip"></app-tooltip>
-    </button>
-    <button (click)="openGuide()" class="has-tooltip">
-        <img src="assets/images/icon/question_mark.png" />
-        <app-tooltip [text]="messageUserGuide" class="tooltip"></app-tooltip>
-    </button>
-    <button (click)="navigateToMain()" class="home-button has-tooltip">
-        <img home-image src="assets/images/icon/home_icon.png" />
-        <app-tooltip [text]="messageBack" class="tooltip"></app-tooltip>
-    </button>
+    <div class=" buttons-group to-top">
+        <button *ngFor="let tool of getListOfTools()" (click)="setCurrentTool(tool)" class="has-tooltip" [class.active]="tool === getCurrentTool()">
+            <img [src]="tool.iconDirectory" [alt]="tool.name" />
+            <app-tooltip [text]="formatTooltipMessage(tool)" class="tooltip"></app-tooltip>
+        </button>
+    </div>
+    
+    <div class="buttons-group to-bottom">
+        <button (click)="undo()" class="to-bottom has-tooltip">
+            <img src="assets/images/undo.png" />
+            <app-tooltip [text]="messageUndo" class="tooltip"></app-tooltip>
+        </button>
+        <button (click)="redo()" class="to-bottom has-tooltip">
+            <img src="assets/images/redo.png" />
+            <app-tooltip [text]="messageRedo" class="tooltip"></app-tooltip>
+        </button>
+        <button (click)="openExportDialog()" class="to-bottom has-tooltip">
+            <img src="assets/images/icon/export_icon.png" />
+            <app-tooltip [text]="messageExportDialog" class="tooltip"></app-tooltip>
+        </button>
+        <button (click)="openSaveDialog()" class="to-bottom has-tooltip">
+            <img src="assets/images/icon/save_icon.png" />
+            <app-tooltip [text]="messageSaveDialog" class="tooltip"></app-tooltip>
+        </button>
+        <button (click)="openCarouselDialog()" class="to-bottom has-tooltip">
+            <img src="assets/images/icon/open_folder.png" />
+            <app-tooltip [text]="messageCarouselDialog" class="tooltip"></app-tooltip>
+        </button>
+        <button (click)="resetDrawing()" class="to-bottom has-tooltip">
+            <img src="assets/images/icon/document_icon.png" />
+            <app-tooltip [text]="messageNewDrawing" class="tooltip"></app-tooltip>
+        </button>
+        <button (click)="openGuide()" class="to-bottom has-tooltip">
+            <img src="assets/images/icon/question_mark.png" />
+            <app-tooltip [text]="messageUserGuide" class="tooltip"></app-tooltip>
+        </button>
+        <button (click)="navigateToMain()" class="to-bottom has-tooltip">
+            <img home-image src="assets/images/icon/home_icon.png" />
+            <app-tooltip [text]="messageBack" class="tooltip"></app-tooltip>
+        </button>
+    </div>
 </div>
