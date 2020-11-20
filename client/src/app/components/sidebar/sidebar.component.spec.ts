@@ -6,6 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
+import { AutoSaveService } from '@app/services/auto-save/auto-save.service';
 import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ModalHandlerService } from '@app/services/modal-handler/modal-handler';
@@ -53,7 +54,8 @@ describe('SidebarComponent', () => {
         waitForAsync(() => {
             toolStub = new ToolStub({} as DrawingService, {} as Description);
             drawingStub = new DrawingService({} as WorkzoneSizeService, {} as GridService);
-            drawingStateStub = new DrawingStateTrackerService({} as DrawingService);
+
+            drawingStateStub = new DrawingStateTrackerService({} as DrawingService, {} as AutoSaveService);
             toolboxSpy = jasmine.createSpyObj('toolboxSpy', ['getAvailableTools', 'getCurrentTool', 'setSelectedTool']);
 
             toolserviceMock = new ToolboxService(
