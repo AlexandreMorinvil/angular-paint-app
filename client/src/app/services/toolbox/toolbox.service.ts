@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { AerosolService } from '@app/services/tools/aerosol/aerosol.service';
 import { BrushService } from '@app/services/tools/brush/brush-service';
 import { ColorPickerService } from '@app/services/tools/color-picker/color-picker.service';
 import { CursorService } from '@app/services/tools/cursor/cursor.service';
@@ -38,6 +39,7 @@ export class ToolboxService {
         paintService: PaintService,
         rectangleSelectionService: RectangleSelectionService,
         ellipseSelectionService: EllipseSelectionService,
+        aerosolService: AerosolService,
         magicWandService: MagicWandService,
         featherService: FeatherService,
         private drawingService: DrawingService,
@@ -56,6 +58,7 @@ export class ToolboxService {
         this.availableTools.push(paintService);
         this.availableTools.push(rectangleSelectionService);
         this.availableTools.push(ellipseSelectionService);
+        this.availableTools.push(aerosolService);
         this.availableTools.push(magicWandService);
         this.availableTools.push(featherService);
     }

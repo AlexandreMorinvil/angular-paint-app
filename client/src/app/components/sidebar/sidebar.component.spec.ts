@@ -6,10 +6,12 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
+import { AutoSaveService } from '@app/services/auto-save/auto-save.service';
 import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ModalHandlerService } from '@app/services/modal-handler/modal-handler';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
+import { AerosolService } from '@app/services/tools/aerosol/aerosol.service';
 import { BrushService } from '@app/services/tools/brush/brush-service';
 import { ColorPickerService } from '@app/services/tools/color-picker/color-picker.service';
 import { CursorService } from '@app/services/tools/cursor/cursor.service';
@@ -52,7 +54,8 @@ describe('SidebarComponent', () => {
         waitForAsync(() => {
             toolStub = new ToolStub({} as DrawingService, {} as Description);
             drawingStub = new DrawingService({} as WorkzoneSizeService, {} as GridService);
-            drawingStateStub = new DrawingStateTrackerService({} as DrawingService);
+
+            drawingStateStub = new DrawingStateTrackerService({} as DrawingService, {} as AutoSaveService);
             toolboxSpy = jasmine.createSpyObj('toolboxSpy', ['getAvailableTools', 'getCurrentTool', 'setSelectedTool']);
 
             toolserviceMock = new ToolboxService(
@@ -69,6 +72,7 @@ describe('SidebarComponent', () => {
                 {} as PaintService,
                 {} as RectangleSelectionService,
                 {} as EllipseSelectionService,
+                {} as AerosolService,
                 {} as MagicWandService,
                 {} as FeatherService,
                 {} as DrawingService,
@@ -82,6 +86,7 @@ describe('SidebarComponent', () => {
                     { provide: LineService, useValue: toolStub },
                     { provide: BrushService, useValue: toolStub },
                     { provide: DrawingService, useValue: drawingStub },
+                    { provide: AerosolService, useValue: toolStub },
                     { provide: RectangleService, useValue: toolStub },
                     { provide: EllipseService, useValue: toolStub },
                     { provide: PolygonService, useValue: toolStub },
