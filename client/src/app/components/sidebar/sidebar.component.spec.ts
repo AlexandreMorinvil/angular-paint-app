@@ -10,6 +10,7 @@ import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ModalHandlerService } from '@app/services/modal-handler/modal-handler';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
+import { AerosolService } from '@app/services/tools/aerosol/aerosol.service';
 import { BrushService } from '@app/services/tools/brush/brush-service';
 import { ColorPickerService } from '@app/services/tools/color-picker/color-picker.service';
 import { CursorService } from '@app/services/tools/cursor/cursor.service';
@@ -69,6 +70,7 @@ describe('SidebarComponent', () => {
                 {} as PaintService,
                 {} as RectangleSelectionService,
                 {} as EllipseSelectionService,
+                {} as AerosolService,
                 {} as MagicWandService,
                 {} as FeatherService,
                 {} as DrawingService,
@@ -82,6 +84,7 @@ describe('SidebarComponent', () => {
                     { provide: LineService, useValue: toolStub },
                     { provide: BrushService, useValue: toolStub },
                     { provide: DrawingService, useValue: drawingStub },
+                    { provide: AerosolService, useValue: toolStub },
                     { provide: RectangleService, useValue: toolStub },
                     { provide: EllipseService, useValue: toolStub },
                     { provide: PolygonService, useValue: toolStub },

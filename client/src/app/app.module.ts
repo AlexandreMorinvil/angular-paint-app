@@ -17,8 +17,11 @@ import { AttributeColorComponent } from './components/attributes-panel/attribute
 import { AttributeGridDisplayComponent } from './components/attributes-panel/attribute-grid-display/attribute-grid-display.component';
 import { AttributeGridOpacityComponent } from './components/attributes-panel/attribute-grid-opacity/attributes-grid-opacity.component';
 import { AttributeJunctionComponent } from './components/attributes-panel/attribute-junction/attributes-junction.component';
+import { AttributeNumberSprayTransmissionComponent } from './components/attributes-panel/attribute-number-spray-transmission/attribute-number-spray-transmission.component';
 import { AttributeSelectionComponent } from './components/attributes-panel/attribute-selection/attribute-selection.component';
 import { AttributeSpacingComponent } from './components/attributes-panel/attribute-spacing/attributes-spacing.component';
+import { AttributeSprayDiameterComponent } from './components/attributes-panel/attribute-spray-diameter/attribute-spray-diameter.component';
+import { AttributeSprayDropletDiameterComponent } from './components/attributes-panel/attribute-spray-droplet-diameter/attribute-spray-droplet-diameter.component';
 import { AttributeTextureComponent } from './components/attributes-panel/attribute-texture/attributes-texture.component';
 import { AttributeTracingComponent } from './components/attributes-panel/attribute-tracing/attributes-tracing.component';
 import { AttributeWidthComponent } from './components/attributes-panel/attribute-width/attributes-width.component';
@@ -62,6 +65,9 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
         AttributeColorPickerViewerComponent,
         AttributesToleranceComponent,
         AttributeSelectionComponent,
+        AttributeSprayDiameterComponent,
+        AttributeSprayDropletDiameterComponent,
+        AttributeNumberSprayTransmissionComponent,
     ],
 
     exports: [MatChipsModule],
