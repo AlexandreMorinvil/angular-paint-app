@@ -5,9 +5,9 @@ import { GridOpacityService } from '@app/services/tool-modifier/grid-opacity/gri
 import { JunctionService } from '@app/services/tool-modifier/junction/junction.service';
 import { NumberSprayTransmissionService } from '@app/services/tool-modifier/numberspraytransmission/numberspraytransmission.service';
 import { SidesService } from '@app/services/tool-modifier/sides/sides.service';
+import { SpacingService } from '@app/services/tool-modifier/spacing/spacing.service';
 import { SprayDiameterService } from '@app/services/tool-modifier/spraydiameter/spray-diameter.service';
 import { SprayDropletDiameterService } from '@app/services/tool-modifier/spraydropletdiameter/spraydropletdiameter.service';
-import { SpacingService } from '@app/services/tool-modifier/spacing/spacing.service';
 import { TextureService } from '@app/services/tool-modifier/texture/texture.service';
 import { ToleranceService } from '@app/services/tool-modifier/tolerance/tolerance.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
