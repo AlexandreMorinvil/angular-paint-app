@@ -1,0 +1,21 @@
+<div class="container">
+    <h2>Opacité</h2>
+    <div class="grid-input-value">
+        <div class="centered">
+            <label for="width" style="display: none">Opacité</label>
+            <input
+                type="range"
+                [step]="stepSize"
+                [min]="getMinValue()"
+                [max]="getMaxValue()"
+                [value]="gridOpacityDisplayed"
+                [(ngModel)]="gridOpacityDisplayed"
+            />
+        </div>
+        <p class="centered">{{ convertToPercentage(gridOpacityDisplayed) }} </p>
+    </div>
+    <div class="grid-confirmation" *ngIf="needConfirmation()">
+        <button class="confirmation-button cancel" (click)="revert()">Annuler</button>
+        <button class="confirmation-button confirm" (click)="assign()">Confirmer</button>
+    </div>
+</div>
