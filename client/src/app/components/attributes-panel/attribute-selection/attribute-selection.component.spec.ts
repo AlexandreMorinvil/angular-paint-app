@@ -3,6 +3,7 @@ import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
+import { GridService } from '@app/services/tools/grid/grid.service';
 import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzone-size.service';
 import { AttributeSelectionComponent } from './attribute-selection.component';
 class ToolStub extends Tool {}
@@ -20,7 +21,7 @@ describe('AttributeSelectionComponent', () => {
     beforeEach(
         waitForAsync(() => {
             toolStub = new ToolStub({} as DrawingService, {} as Description);
-            drawingStub = new DrawingService({} as WorkzoneSizeService);
+            drawingStub = new DrawingService({} as WorkzoneSizeService, {} as GridService);
             TestBed.configureTestingModule({
                 declarations: [AttributeSelectionComponent],
                 providers: [{ provide: DrawingService, useValue: drawingStub }, ToolboxService],

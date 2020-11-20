@@ -6,11 +6,14 @@ import { Tool } from '@app/classes/tool';
 import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ModalHandlerService } from '@app/services/modal-handler/modal-handler';
+import { GridOpacityService } from '@app/services/tool-modifier/grid-opacity/grid-opacity.service';
+import { SpacingService } from '@app/services/tool-modifier/spacing/spacing.service';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
 import { BrushService } from '@app/services/tools/brush/brush-service';
 import { CursorService } from '@app/services/tools/cursor/cursor.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse-service';
 import { EraserService } from '@app/services/tools/eraser/eraser-service';
+import { GridService } from '@app/services/tools/grid/grid.service';
 import { LineService } from '@app/services/tools/line/line-service';
 import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
@@ -18,10 +21,12 @@ import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzon
 import { DrawingComponent } from './drawing.component';
 class ToolStub extends Tool {}
 // tslint:disable:no-any
+// tslint:disable:max-file-line-count
 describe('DrawingComponent', () => {
     let component: DrawingComponent;
     let fixture: ComponentFixture<DrawingComponent>;
     let toolStub: ToolStub;
+    let gridStub: GridService;
     let drawingStub: DrawingService;
     let toolboxService: ToolboxService;
     let modalHandlerService: ModalHandlerService;
@@ -52,13 +57,15 @@ describe('DrawingComponent', () => {
     beforeEach(
         waitForAsync(() => {
             toolStub = new ToolStub({} as DrawingService, {} as Description);
-            drawingStub = new DrawingService({} as WorkzoneSizeService);
+            drawingStub = new DrawingService({} as WorkzoneSizeService, {} as GridService);
+            gridStub = new GridService({} as SpacingService, {} as GridOpacityService);
 
             TestBed.configureTestingModule({
                 declarations: [DrawingComponent],
                 imports: [MatDialogModule],
                 providers: [
                     { provide: DrawingService, useValue: drawingStub },
+                    { provide: GridService, useValue: gridStub },
                     PencilService,
                     BrushService,
                     RectangleService,
@@ -261,6 +268,27 @@ describe('DrawingComponent', () => {
         const event = new KeyboardEvent('keyup', { key: 'C' });
         component.keyEventUp(event);
         expect(toolboxService.getCurrentTool()).toBe(pencil);
+    });
+
+    it('should toogle the grid when pressing the key G', () => {
+        const toggleGridSpy: jasmine.Spy<any> = spyOn<any>(gridStub, 'toogleGrid');
+        const event = new KeyboardEvent('keydown', { key: 'G' });
+        component.onShiftDown(event);
+        expect(toggleGridSpy).toHaveBeenCalled();
+    });
+
+    it('should call the increment the spacing of the grid when pressing the key +', () => {
+        const incrementSpacingSpy: jasmine.Spy<any> = spyOn<any>(gridStub, 'incrementSpacing');
+        const event = new KeyboardEvent('keydown', { key: '+' });
+        component.onShiftDown(event);
+        expect(incrementSpacingSpy).toHaveBeenCalled();
+    });
+
+    it('should call the decrementSpacing the spacing of the grid when pressing the key +', () => {
+        const decrementSpacingSpy: jasmine.Spy<any> = spyOn<any>(gridStub, 'decrementSpacing');
+        const event = new KeyboardEvent('keydown', { key: '-' });
+        component.onShiftDown(event);
+        expect(decrementSpacingSpy).toHaveBeenCalled();
     });
 
     it('should call the tool cursor when pressing the key Y', () => {
