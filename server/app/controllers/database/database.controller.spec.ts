@@ -2,12 +2,12 @@ import { expect } from 'chai';
 import { StatusCodes } from 'http-status-codes';
 import { describe } from 'mocha';
 import * as tests from 'supertest';
-import { Drawing } from '../../../common/communication/drawing';
-import { DrawingToDatabase } from '../../../common/communication/drawing-to-database';
-import { Stubbed, testingContainer } from '../../test/test-utils';
-import { Application } from '../app';
-import { DatabaseService } from '../services/database/database.service';
-import { TYPES } from '../types';
+import { Drawing } from '../../../../common/communication/drawing';
+import { DrawingToDatabase } from '../../../../common/communication/drawing-to-database';
+import { Stubbed, testingContainer } from '../../../test/test-utils';
+import { Application } from '../../app';
+import { DatabaseService } from '../../services/database/database.service';
+import { TYPES } from '../../types';
 
 const HTTP_STATUS_CODE_NOT_FOUND = StatusCodes.NOT_FOUND;
 const HTTPS_STATUS_CODE_OK = StatusCodes.OK;

@@ -103,7 +103,6 @@ export class ExportDrawingService {
 
     private downloadImage(drawName: string, format: string, newCanvas: HTMLCanvasElement): void {
         const link = document.createElement('a');
-
         link.href = newCanvas.toDataURL('image/' + format);
         this.drawLink = link.href;
         link.download = drawName + '.' + format;

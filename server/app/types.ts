@@ -2,11 +2,13 @@ export const TYPES = {
     Server: Symbol('Server'),
     Application: Symbol('Application'),
 
-    // IndexController: Symbol('IndexController'),
-    DatabaseController: Symbol('DatabaseController'),
-    DateController: Symbol('DateController'),
+    EmailController: Symbol('EmailController'),
+    EmailService: Symbol('EmailService'),
 
-    // IndexService: Symbol('IndexService'),
+    DatabaseController: Symbol('DatabaseController'),
     DatabaseService: Symbol('DatabaseService'),
+
+    // PK on a garder sa????????????????????????
+    DateController: Symbol('DateController'),
     DateService: Symbol('DateService'),
 };
