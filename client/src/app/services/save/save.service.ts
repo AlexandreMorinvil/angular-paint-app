@@ -9,7 +9,7 @@ export class SaveService {
     imageSource: string;
     constructor(private drawingService: DrawingService, public dialog: MatDialog) {}
 
-    saveDraw(): void {
+    saveDraw(format: string): void {
         const contex = this.drawingService.baseCtx;
         contex.save();
         contex.globalCompositeOperation = 'destination-over';
@@ -23,7 +23,10 @@ export class SaveService {
         ctx.drawImage(image, 0, 0);
         image.style.display = 'none';
         image.src = canvas.toDataURL();
-        link.download = 'image' + '.png';
+        if (format == 'jpeg') {
+            image.src = canvas.toDataURL('image/jpeg');
+        }
+        link.download = 'image' + '.' + format;
         this.imageSource = image.src;
     }
 }

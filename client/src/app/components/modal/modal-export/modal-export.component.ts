@@ -62,19 +62,30 @@ export class ExportComponent implements AfterViewInit {
     }
 
     sendEmailToPNG() {
-        //verification du bon format a ajouter
-        this.saveImageSRC();
-        this.sendEmailToServer('PNG');
+        this.saveImageSRC('png');
+        let sourceBase64 = this.saveService.imageSource.replace('data:image/png;base64,', '');
+        sourceBase64 = sourceBase64.split(/\s/).join('');
+        const firstPNGnumber = sourceBase64.substring(0, 11);
+        if (firstPNGnumber == 'iVBORw0KGgo') {
+            // png start with 89 50 4E 47 0D 0A 1A 0A
+            this.sendEmailToServer('png');
+        }
     }
 
     sendEmailToJPG() {
-        //verification du bon format a ajouter
-        this.saveImageSRC();
-        this.sendEmailToServer('JPG');
+        this.saveImageSRC('jpeg');
+        let sourceBase64 = this.saveService.imageSource.replace('data:image/jpeg;base64,', '');
+        sourceBase64 = sourceBase64.split(/\s/).join('');
+        const firstJPGnumber = sourceBase64.substring(0, 16);
+        console.log(firstJPGnumber);
+        if (firstJPGnumber == '/9j/4AAQSkZJRgAB') {
+            // format jpeg start with FF D8 FF E0 00 10 4A 46 49 46 00 01
+            this.sendEmailToServer('jpg');
+        }
     }
 
-    saveImageSRC() {
-        this.saveService.saveDraw();
+    saveImageSRC(format: string) {
+        this.saveService.saveDraw(format);
     }
 
     sendEmailToServer(format: string) {
