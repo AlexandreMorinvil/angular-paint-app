@@ -25,6 +25,7 @@ export class MagicWandService extends SelectionToolService {
     private pathStartCoordReference: Vec2;
     protected firstMagicCoord: Vec2;
     protected pathLastCoord: Vec2;
+    private canvasData: Uint8ClampedArray;
 
     constructor(
         drawingService: DrawingService,
@@ -187,11 +188,12 @@ export class MagicWandService extends SelectionToolService {
     }
     // tslint:disable:cyclomatic-complexity
     private floodFillSelect(pixelClicked: Vec2): Vec2[] {
-        // We only use one region for this selection
+        this.scanCanvas();
         this.edgePixelsAllRegions = [];
-        const pixelSelected: Vec2[] = [];
+        const pixelsSelectedCoord: Vec2[] = [];
         const pixelStack: Vec2[] = [];
-        // let pixelPos: Vec2 = {x: 0,y:0};
+        const pixelsSelectedValidation: boolean[] = [];
+        pixelsSelectedValidation.fill(false, 0, this.drawingService.baseCtx.canvas.width * (this.drawingService.baseCtx.canvas.height - 2));
         pixelStack.push(pixelClicked);
         while (pixelStack.length) {
             const pixelPos = pixelStack.pop() as Vec2;
@@ -200,7 +202,7 @@ export class MagicWandService extends SelectionToolService {
             // Get current pixel position
             // Go up as long as the color matches and are inside the canvas
             // tslint:disable-next-line:no-magic-numbers
-            while (yPosition-- > -1 && this.matchStartColor(pixelPos) && this.isNotSelected(pixelSelected, pixelPos)) {
+            while (yPosition-- > -1 && this.matchStartColor(pixelPos) && !this.isSelected(pixelsSelectedValidation, pixelPos)) {
                 pixelPos.y -= 1;
             }
             pixelPos.y += 1;
@@ -212,15 +214,16 @@ export class MagicWandService extends SelectionToolService {
             while (
                 yPosition++ <= this.drawingService.baseCtx.canvas.height - 2 &&
                 this.matchStartColor(pixelPos) &&
-                this.isNotSelected(pixelSelected, pixelPos)
+                !this.isSelected(pixelsSelectedValidation, pixelPos)
             ) {
-                pixelSelected.push({ x: pixelPos.x, y: pixelPos.y } as Vec2);
+                pixelsSelectedCoord.push({ x: pixelPos.x, y: pixelPos.y } as Vec2);
+                pixelsSelectedValidation[pixelPos.y * this.drawingService.baseCtx.canvas.width + pixelPos.x] = true;
                 if (this.isEdgePixel({ x: pixelPos.x, y: pixelPos.y })) this.edgePixelsAllRegions.push({ x: pixelPos.x, y: pixelPos.y });
 
                 if (xPosition > 0) {
                     if (
                         this.matchStartColor({ x: pixelPos.x - 1, y: pixelPos.y }) &&
-                        this.isNotSelected(pixelSelected, { x: pixelPos.x - 1, y: pixelPos.y })
+                        !this.isSelected(pixelsSelectedValidation, { x: pixelPos.x - 1, y: pixelPos.y })
                     ) {
                         if (!reachLeft) {
                             pixelStack.push({ x: xPosition - 1, y: yPosition });
@@ -233,7 +236,7 @@ export class MagicWandService extends SelectionToolService {
                 if (xPosition < this.drawingService.baseCtx.canvas.width) {
                     if (
                         this.matchStartColor({ x: pixelPos.x + 1, y: pixelPos.y }) &&
-                        this.isNotSelected(pixelSelected, { x: pixelPos.x + 1, y: pixelPos.y })
+                        !this.isSelected(pixelsSelectedValidation, { x: pixelPos.x + 1, y: pixelPos.y })
                     ) {
                         if (!reachRight) {
                             pixelStack.push({ x: xPosition + 1, y: yPosition });
@@ -246,7 +249,7 @@ export class MagicWandService extends SelectionToolService {
                 }
             }
         }
-        return pixelSelected;
+        return pixelsSelectedCoord;
     }
 
     private sameColorSelect(): Vec2[] {
@@ -313,18 +316,25 @@ export class MagicWandService extends SelectionToolService {
         this.drawingService.previewCtx.lineWidth = 1;
         this.drawingService.previewCtx.setLineDash([]);
     }
+    private scanCanvas(): void {
+        this.canvasData = this.drawingService.baseCtx.getImageData(
+            0,
+            0,
+            this.drawingService.baseCtx.canvas.width,
+            this.drawingService.baseCtx.canvas.height - 2,
+        ).data;
+    }
 
     private matchStartColor(pixelPos: Vec2): boolean {
-        const imageData: ImageData = this.drawingService.baseCtx.getImageData(pixelPos.x, pixelPos.y, 1, 1);
-        return imageData.data[0] === this.startR && imageData.data[1] === this.startG && imageData.data[2] === this.startB;
+        const stepSize = 4;
+        return (
+            this.canvasData[stepSize * (pixelPos.y * this.drawingService.baseCtx.canvas.width + pixelPos.x)] === this.startR &&
+            this.canvasData[stepSize * (pixelPos.y * this.drawingService.baseCtx.canvas.width + pixelPos.x) + 1] === this.startG &&
+            this.canvasData[stepSize * (pixelPos.y * this.drawingService.baseCtx.canvas.width + pixelPos.x) + 2] === this.startB
+        );
     }
-    private isNotSelected(pixelsSelected: Vec2[], pixelPos: Vec2): boolean {
-        for (const pixel of pixelsSelected) {
-            if (pixelPos.x === pixel.x && pixelPos.y === pixel.y) {
-                return false;
-            }
-        }
-        return true;
+    private isSelected(pixelsSelected: boolean[], pixelPos: Vec2): boolean {
+        return pixelsSelected[pixelPos.y * this.drawingService.baseCtx.canvas.width + pixelPos.x];
     }
 
     private setStartColor(): void {
