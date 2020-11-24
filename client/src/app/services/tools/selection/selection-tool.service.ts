@@ -266,7 +266,6 @@ export abstract class SelectionToolService extends Tool {
             let value = adjustOffsetCoords.x % ratioW;
             let value1 = adjustOffsetCoords.y % ratioH;
             if (Math.abs(adjustOffsetCoords.x - value) / ratioW > Math.abs(adjustOffsetCoords.y - value1) / ratioH) {
-                console.log('x');
                 adjustOffsetCoords.y -= value1;
                 const val = Math.floor(Math.abs(adjustOffsetCoords.x - value) / ratioW - Math.abs(adjustOffsetCoords.y - value1) / ratioH);
                 for (let i = 0; i < val; i++) {
@@ -275,7 +274,6 @@ export abstract class SelectionToolService extends Tool {
                     adjustOffsetCoords.x -= value;
                 }
             } else if (Math.abs(adjustOffsetCoords.x - value) / ratioW < Math.abs(adjustOffsetCoords.y - value1) / ratioH) {
-                console.log('y');
                 adjustOffsetCoords.x -= value;
                 const val = Math.floor(Math.abs(adjustOffsetCoords.y - value1) / ratioH - Math.abs(adjustOffsetCoords.x - value) / ratioW);
                 for (let i = 0; i < val; i++) {
@@ -284,7 +282,6 @@ export abstract class SelectionToolService extends Tool {
                     adjustOffsetCoords.y -= value1;
                 }
             } else {
-                console.log('autre');
                 adjustOffsetCoords.y -= value1;
                 adjustOffsetCoords.x -= value;
             }

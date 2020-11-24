@@ -1,7 +1,7 @@
 .container {
     box-sizing: border-box;
     height: 100vh;
-    width: var(--sidebar-width);
+    width: calc(2 * var(--sidebar-width));
     background-color: rgb(66, 63, 89);
     border-right: 1px solid rgb(33, 33, 59);
     overflow: visible;
@@ -10,7 +10,8 @@
 
 .container-flex {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
 }
 
 img {
@@ -23,10 +24,9 @@ button {
     cursor: pointer;
     position: relative;
     height: var(--sidebar-width);
-    width: var(--sidebar-width);
+    width: calc(var(--sidebar-width) - 1px);
     background-color: inherit;
     border-style: none;
-    border-right: inherit;
     border-bottom: 1px solid rgb(53, 53, 79);
     color: white;
     outline: none;
@@ -50,10 +50,22 @@ button.active {
     visibility: hidden;
 }
 
+.to-top {
+    margin-bottom: auto;
+}
+
 .to-bottom {
     margin-top: auto;
 }
 
 .has-tooltip:hover .tooltip {
     visibility: visible;
+}
+
+.buttons-group {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-top: 1px solid rgb(53, 53, 79);
 }

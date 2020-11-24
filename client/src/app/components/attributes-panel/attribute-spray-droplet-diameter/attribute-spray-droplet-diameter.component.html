@@ -1,0 +1,14 @@
+<div class="container">
+    <h2>Diamètre des goutelettes du jet</h2>
+    <div class="grid-input-value">
+        <div class="centered">
+            <label for="width" style="display: none">Taille</label>
+            <input type="range" [min]="getMinValue()" [max]="getMaxValue()" [value]="sprayDropletDiameter" [(ngModel)]="sprayDropletDiameter" />
+        </div>
+        <p class="centered">{{ sprayDropletDiameter }} px</p>
+    </div>
+    <div class="grid-confirmation" *ngIf="needConfirmation()">
+        <button class="confirmation-button cancel" (click)="revert()">Annuler</button>
+        <button class="confirmation-button confirm" (click)="assign()">Confirmer</button>
+    </div>
+</div>
