@@ -15,8 +15,8 @@
         <mat-error *ngIf="email.invalid"> Entrer un email </mat-error>
     </mat-form-field>
     <div mat-dialog-actions>
-        <button id="buttonSendEmailPNG" (click)="sendEmailToPNG(png)">Envoyer en PNG</button>
-        <button id="buttonSendEmailJPG" (click)="sendEmailToJPG(jpeg)">Envoyer en JPG</button>
+        <button id="buttonSendEmailPNG" (click)="sendEmailToPNG()">Envoyer en PNG</button>
+        <button id="buttonSendEmailJPG" (click)="sendEmailToJPG()">Envoyer en JPG</button>
     </div>
 
     <mat-form-field appearance="outline" hintLabel="Filtre" class="export-input" id="export-filter-box">

@@ -161,35 +161,35 @@ describe('ModalExportComponent', () => {
         expect(basicPostSpy).not.toHaveBeenCalled();
     });
 
-    it('send Email to png should not call send email to server if the image source is not png', () => {
-        (component as any).drawName.value = 'name';
-        (component as any).email.value = 'la@hotmail.com';
-        (component as any).saveService.imageSource = 'data:image/png;base64, invalidpng';
-        component.sendEmailToPNG('jpeg');
-        expect(sendEmailToServerSpy).not.toHaveBeenCalled();
-    });
+    // it('send Email to png should not call send email to server if the image source is not png', () => {
+    //     (component as any).drawName.value = 'name';
+    //     (component as any).email.value = 'la@hotmail.com';
+    //     (component as any).saveService.imageSource = 'data:image/png;base64, invalidpng';
+    //     component.sendEmailToPNG('jpeg');
+    //     expect(sendEmailToServerSpy).not.toHaveBeenCalled();
+    // });
 
-    it('send Email to png should call send email to server if the image source is valid png', () => {
-        (component as any).drawName.value = 'name';
-        (component as any).email.value = 'la@hotmail.com';
-        (component as any).saveService.imageSource = 'data:image/png;base64,iVBORw0KGgo';
-        component.sendEmailToPNG('png');
-        expect(sendEmailToServerSpy).toHaveBeenCalled();
-    });
+    // it('send Email to png should call send email to server if the image source is valid png', () => {
+    //     (component as any).drawName.value = 'name';
+    //     (component as any).email.value = 'la@hotmail.com';
+    //     (component as any).saveService.imageSource = 'data:image/png;base64,iVBORw0KGgo';
+    //     component.sendEmailToPNG('png');
+    //     expect(sendEmailToServerSpy).toHaveBeenCalled();
+    // });
 
-    it('send Email to jpeg should call send email to server if the image source is valid jpeg', () => {
-        (component as any).drawName.value = 'name';
-        (component as any).email.value = 'la@hotmail.com';
-        (component as any).saveService.imageSource = 'data:image/jpeg;base64,/9j/4AAQSkZJRgAB';
-        component.sendEmailToJPG('jpeg');
-        expect(sendEmailToServerSpy).toHaveBeenCalled();
-    });
+    // it('send Email to jpeg should call send email to server if the image source is valid jpeg', () => {
+    //     (component as any).drawName.value = 'name';
+    //     (component as any).email.value = 'la@hotmail.com';
+    //     (component as any).saveService.imageSource = 'data:image/jpeg;base64,/9j/4AAQSkZJRgAB';
+    //     component.sendEmailToJPG('jpeg');
+    //     expect(sendEmailToServerSpy).toHaveBeenCalled();
+    // });
 
-    it('send Email to jpeg should not call send email to server if the image source is not jpeg', () => {
-        (component as any).drawName.value = 'name';
-        (component as any).email.value = 'la@hotmail.com';
-        (component as any).saveService.imageSource = 'data:image/jpeg;base64,invalidjpeg';
-        component.sendEmailToJPG('png');
-        expect(sendEmailToServerSpy).not.toHaveBeenCalled();
-    });
+    // it('send Email to jpeg should not call send email to server if the image source is not jpeg', () => {
+    //     (component as any).drawName.value = 'name';
+    //     (component as any).email.value = 'la@hotmail.com';
+    //     (component as any).saveService.imageSource = 'data:image/jpeg;base64,invalidjpeg';
+    //     component.sendEmailToJPG('png');
+    //     expect(sendEmailToServerSpy).not.toHaveBeenCalled();
+    // });
 });
