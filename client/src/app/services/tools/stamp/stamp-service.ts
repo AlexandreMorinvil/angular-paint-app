@@ -6,6 +6,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { StampEnum, StampPickerService } from '@app/services/tool-modifier/stamp-picker/stamp-picker.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
 
@@ -21,6 +22,7 @@ export class StampService extends Tool {
         public drawingService: DrawingService,
         private stampPickerService: StampPickerService,
         private widthService: WidthService,
+        private colorService: ColorService,
         private drawingStateTrackingService: DrawingStateTrackerService,
     ) {
         super(drawingService, new Description('stamp', 'd', 'stamp_icon.png'));
@@ -85,8 +87,8 @@ export class StampService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-            this.applyStamp(this.drawingService.baseCtx, this.pathData);
             this.previewStamp(this.drawingService.previewCtx, this.pathData);
+            this.applyStamp(this.drawingService.baseCtx, this.pathData);
             this.drawingStateTrackingService.addAction(this, new InteractionPath(this.pathData));
         }
         this.mouseDown = false;
@@ -111,7 +113,6 @@ export class StampService extends Tool {
                     this.drawingService.previewCtx.canvas.height = mousePosition.y;
                 }
             } else {
-                //this.applyStamp(this.drawingService.baseCtx, this.pathData);
                 this.previewStamp(this.drawingService.previewCtx, this.pathData);
                 this.resetBorder();
             }
@@ -150,26 +151,7 @@ export class StampService extends Tool {
     private stamp1(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         const image = new Image();
         image.src = '/assets/images/approved.png';
-        const lastPostion: Vec2 = path[path.length - 1];
-        const xPosition: number = lastPostion.x;
-        const yPosition: number = lastPostion.y;
-
-        image.onload = () => {
-            ctx.save();
-
-            ctx.translate(xPosition, yPosition);
-            ctx.rotate(this.convertDegreeToRad(this.angleInRadian));
-            ctx.translate(-xPosition, -yPosition);
-            ctx.drawImage(
-                image,
-                xPosition - this.widthService.getWidth() / 2,
-                yPosition - this.widthService.getWidth() / 2,
-                this.widthService.getWidth(),
-                this.widthService.getWidth(),
-            );
-
-            ctx.restore();
-        };
+        this.drawImage(ctx, path, image);
     }
 
     private convertDegreeToRad(angleDegre: number): number {
@@ -179,82 +161,38 @@ export class StampService extends Tool {
     private stamp2(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         const image = new Image();
         image.src = '/assets/images/certified.png';
-        const lastPostion: Vec2 = path[path.length - 1];
-        const xPosition: number = lastPostion.x;
-        const yPosition: number = lastPostion.y;
-
-        image.onload = () => {
-            ctx.save();
-            ctx.translate(xPosition, yPosition);
-            ctx.rotate(this.convertDegreeToRad(this.angleInRadian));
-            ctx.translate(-xPosition, -yPosition);
-            ctx.drawImage(
-                image,
-                xPosition - this.widthService.getWidth() / 2,
-                yPosition - this.widthService.getWidth() / 2,
-                this.widthService.getWidth(),
-                this.widthService.getWidth(),
-            );
-
-            ctx.restore();
-        };
+        this.drawImage(ctx, path, image);
     }
     private stamp3(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         const image = new Image();
         image.src = '/assets/images/crown.png';
-        const lastPostion: Vec2 = path[path.length - 1];
-        const xPosition: number = lastPostion.x;
-        const yPosition: number = lastPostion.y;
-
-        image.onload = () => {
-            ctx.save();
-            ctx.translate(xPosition, yPosition);
-            ctx.rotate(this.convertDegreeToRad(this.angleInRadian));
-            ctx.translate(-xPosition, -yPosition);
-            ctx.drawImage(
-                image,
-                xPosition - this.widthService.getWidth() / 2,
-                yPosition - this.widthService.getWidth() / 2,
-                this.widthService.getWidth(),
-                this.widthService.getWidth(),
-            );
-            ctx.restore();
-        };
+        this.drawImage(ctx, path, image);
     }
     private stamp4(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         const image = new Image();
         image.src = '/assets/images/crown2.png';
-        const lastPostion: Vec2 = path[path.length - 1];
-        const xPosition: number = lastPostion.x;
-        const yPosition: number = lastPostion.y;
-
-        image.onload = () => {
-            ctx.save();
-            ctx.translate(xPosition, yPosition);
-            ctx.rotate(this.convertDegreeToRad(this.angleInRadian));
-            ctx.translate(-xPosition, -yPosition);
-            ctx.drawImage(
-                image,
-                xPosition - this.widthService.getWidth() / 2,
-                yPosition - this.widthService.getWidth() / 2,
-                this.widthService.getWidth(),
-                this.widthService.getWidth(),
-            );
-            ctx.restore();
-        };
+        this.drawImage(ctx, path, image);
     }
     private stamp5(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         const image = new Image();
         image.src = '/assets/images/sealN.png';
+        this.drawImage(ctx, path, image);
+    }
+    private drawImage(ctx: CanvasRenderingContext2D, path: Vec2[], image: HTMLImageElement): void {
         const lastPostion: Vec2 = path[path.length - 1];
         const xPosition: number = lastPostion.x;
         const yPosition: number = lastPostion.y;
 
         image.onload = () => {
             ctx.save();
+            ctx.fillStyle = this.colorService.getPrimaryColor();
+            ctx.beginPath();
+            ctx.arc(xPosition, yPosition, this.widthService.getWidth() / 2, 0, 2 * Math.PI);
+            ctx.fill();
             ctx.translate(xPosition, yPosition);
             ctx.rotate(this.convertDegreeToRad(this.angleInRadian));
             ctx.translate(-xPosition, -yPosition);
+            ctx.globalCompositeOperation = 'destination-out';
             ctx.drawImage(
                 image,
                 xPosition - this.widthService.getWidth() / 2,
