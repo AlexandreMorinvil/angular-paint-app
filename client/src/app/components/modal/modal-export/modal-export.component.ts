@@ -61,8 +61,8 @@ export class ExportComponent implements AfterViewInit {
         }
     }
 
-    sendEmailToPNG() {
-        this.saveImageSRC('png');
+    sendEmailToPNG(format: string) {
+        this.saveImageSRC(format);
         let sourceBase64 = this.saveService.imageSource.replace('data:image/png;base64,', '');
         sourceBase64 = sourceBase64.split(/\s/).join('');
         const firstPNGnumber = sourceBase64.substring(0, 11);
@@ -72,12 +72,11 @@ export class ExportComponent implements AfterViewInit {
         }
     }
 
-    sendEmailToJPG() {
-        this.saveImageSRC('jpeg');
+    sendEmailToJPG(format: string) {
+        this.saveImageSRC(format);
         let sourceBase64 = this.saveService.imageSource.replace('data:image/jpeg;base64,', '');
         sourceBase64 = sourceBase64.split(/\s/).join('');
         const firstJPGnumber = sourceBase64.substring(0, 16);
-        console.log(firstJPGnumber);
         if (firstJPGnumber == '/9j/4AAQSkZJRgAB') {
             // format jpeg start with FF D8 FF E0 00 10 4A 46 49 46 00 01
             this.sendEmailToServer('jpg');
@@ -91,7 +90,6 @@ export class ExportComponent implements AfterViewInit {
     sendEmailToServer(format: string) {
         //verifie bon format de l'email
         if (this.validateEmail(this.email.value) && this.validateValue()) {
-            console.log(this.saveService.imageSource);
             const newDrawingToSend: DrawingToEmail = new DrawingToEmail(this.email.value, this.drawName.value, format, this.saveService.imageSource);
             this.apiDrawingService.sendEmail(newDrawingToSend).subscribe(() => {
                 alert(this.SUCCESSFUL_CREATION);
