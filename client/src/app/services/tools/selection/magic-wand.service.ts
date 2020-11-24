@@ -38,12 +38,11 @@ export class MagicWandService extends SelectionToolService {
         super(drawingService, colorService, new Description('Baguette magique', 'v', 'magic-wand.png'));
         this.image = new Image();
         this.oldImage = new Image();
+        this.arrowPress = [false, false, false, false];
+        this.arrowDown = false;
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.arrowPress = [false, false, false, false];
-        this.arrowDown = false;
-
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.mouseDownCoord = this.getPositionFromMouse(event);
         this.localMouseDown = event.button === MouseButton.Left;
@@ -86,6 +85,7 @@ export class MagicWandService extends SelectionToolService {
             this.setStartColor();
             this.edgePixelsAllRegions = [];
             this.edgePixelsSplitted = [];
+            this.scanCanvas();
 
             if (event.button === MouseButton.Left) pixelsSelected = this.floodFillSelect(this.mouseDownCoord);
             else pixelsSelected = this.sameColorSelect();
@@ -123,7 +123,7 @@ export class MagicWandService extends SelectionToolService {
         }
     }
 
-    onMouseUp(event: MouseEvent): void {
+    onMouseUp(): void {
         // translate
         if (this.draggingImage) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -188,7 +188,6 @@ export class MagicWandService extends SelectionToolService {
     }
     // tslint:disable:cyclomatic-complexity
     private floodFillSelect(pixelClicked: Vec2): Vec2[] {
-        this.scanCanvas();
         this.edgePixelsAllRegions = [];
         const pixelsSelectedCoord: Vec2[] = [];
         const pixelStack: Vec2[] = [];
@@ -268,6 +267,7 @@ export class MagicWandService extends SelectionToolService {
         }
         return pixelSelected;
     }
+
     splitAndSortEdgeArray(): void {
         const distanceBetweenEdgePixels = 1;
         let regionIndex = -1;
@@ -292,7 +292,7 @@ export class MagicWandService extends SelectionToolService {
                 }
             }
             // Prevents unlinked edge pixel to form regions
-            if (!(newRegion.length === 0)) {
+            if (!(newRegion.length === 1)) {
                 this.edgePixelsSplitted.push({ edgePixels: [] });
                 this.edgePixelsSplitted[regionIndex].edgePixels = newRegion;
             } else {
@@ -383,7 +383,6 @@ export class MagicWandService extends SelectionToolService {
     }
     private getPathToClip(): Path2D {
         const magicWandPath = new Path2D();
-        // magicWandPath.moveTo(this.edgePixels[0].x, this.edgePixels[0].y)
         if (!(this.pathStartCoordReference === this.startDownCoord)) {
             const coordDiff = {
                 x: this.startDownCoord.x - this.pathStartCoordReference.x,
@@ -446,12 +445,9 @@ export class MagicWandService extends SelectionToolService {
                 this.pathData.push(this.pathLastCoord);
                 this.clearPath();
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                this.onMouseUp({ offsetX: 25, offsetY: 25, button: 0 } as MouseEvent);
+                this.onMouseUp();
                 this.draggingImage = false;
                 this.hasDoneFirstTranslation = true;
-            }
-            if (this.arrowDown) {
-                this.onArrowDown({} as KeyboardEvent);
             }
         }
     }
