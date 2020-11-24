@@ -10,6 +10,7 @@ import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { StampEnum, StampPickerService } from '@app/services/tool-modifier/stamp-picker/stamp-picker.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
 
+const DEFAULT_SIZE_VALUE = 25;
 @Injectable({
     providedIn: 'root',
 })
@@ -29,9 +30,9 @@ export class StampService extends Tool {
         this.modifiers.push(this.stampPickerService);
         this.modifiers.push(this.widthService);
         this.clearPath();
-        this.angleInRadian = 0; //angle du debut
+        this.angleInRadian = 0;
         this.isAltDown = false;
-        this.widthService.setWidth(25);
+        this.widthService.setWidth(DEFAULT_SIZE_VALUE);
     }
 
     onAltDown(event: KeyboardEvent): void {
@@ -55,9 +56,9 @@ export class StampService extends Tool {
         this.previewStamp(this.drawingService.previewCtx, this.pathData);
         const rotateAngle15 = 15;
         const rotateAngle1 = 1;
-        const resetAngle = 0;
-        if (this.angleInRadian === resetAngle) {
-            this.angleInRadian = 360; // pour le ramener a 0
+        const resetAngle = 360;
+        if (this.angleInRadian === 0) {
+            this.angleInRadian = resetAngle;
         }
         if (this.isAltDown) {
             this.angleInRadian = this.angleInRadian - rotateAngle1;
@@ -72,8 +73,8 @@ export class StampService extends Tool {
         const rotateAngle15 = 15;
         const rotateAngle1 = 1;
         const resetAngle = 360;
-        if (this.angleInRadian == resetAngle) {
-            this.angleInRadian = 0; // pour le ramener a 0
+        if (this.angleInRadian === resetAngle) {
+            this.angleInRadian = 0;
         }
         if (this.isAltDown) {
             this.angleInRadian = this.angleInRadian + rotateAngle1;
@@ -145,7 +146,8 @@ export class StampService extends Tool {
     }
 
     private previewStamp(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        ctx.globalAlpha = 0.4;
+        const transparenceValue = 0.4;
+        ctx.globalAlpha = transparenceValue;
         this.applyStamp(ctx, path);
     }
     private stamp1(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
@@ -155,6 +157,8 @@ export class StampService extends Tool {
     }
 
     private convertDegreeToRad(angleDegre: number): number {
+        // value 180 is used for conversion purposes of degree to rad
+        // tslint:disable:no-magic-numbers
         return (angleDegre * Math.PI) / 180;
     }
 

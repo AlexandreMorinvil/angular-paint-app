@@ -115,7 +115,7 @@ export class DrawingComponent implements AfterViewInit {
             // tslint:disable:prefer-switch
         } else if (event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown') {
             this.toolbox.getCurrentTool().onArrowUp(event);
-        } else if (event.key == 'Alt') {
+        } else if (event.key === 'Alt') {
             event.preventDefault(); // to prevent key of windows
             this.toolbox.getCurrentTool().onAltUp(event);
         } else {
@@ -138,7 +138,7 @@ export class DrawingComponent implements AfterViewInit {
         } else if (event.key === 'Escape') {
             this.toolbox.getCurrentTool().onEscapeDown(event);
             this.hasBeenDrawnOnto = true;
-        } else if (event.key == 'Alt') {
+        } else if (event.key === 'Alt') {
             event.preventDefault(); // to prevent key of windows
             this.toolbox.getCurrentTool().onAltDown(event);
         } else if (event.ctrlKey && event.key.toLowerCase() === 's' && this.drawingService.shortcutEnable) {
