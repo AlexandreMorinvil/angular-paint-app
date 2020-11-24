@@ -11,7 +11,7 @@ import { MagicWandService } from './magic-wand.service';
 // tslint:disable:no-any
 // tslint:disable:no-magic-numbers
 
-fdescribe('MagicWandService', () => {
+describe('MagicWandService', () => {
     let service: MagicWandService;
     let tracingService: TracingService;
     let colorService: ColorService;
@@ -259,13 +259,6 @@ fdescribe('MagicWandService', () => {
         (service as any).arrowDown = true;
         service.onArrowDown({ key: 'ArrowUp' } as KeyboardEvent);
         service.onArrowUp({ key: 'ArrowUp' } as KeyboardEvent);
-        expect(showSelectionSpy).not.toHaveBeenCalled();
-    });
-
-    it('should not do anything when pressing a button that is not an arrow', () => {
-        service.onMouseDown(mouseEventInRegionLeftClick);
-        service.onArrowDown({ key: 'Q' } as KeyboardEvent);
-        service.onArrowUp({ key: 'Q' } as KeyboardEvent);
         expect(showSelectionSpy).not.toHaveBeenCalled();
     });
 
