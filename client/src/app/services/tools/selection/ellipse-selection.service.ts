@@ -10,7 +10,7 @@ import { TracingService } from '@app/services/tool-modifier/tracing/tracing.serv
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse-service';
 import { SelectionToolService } from '@app/services/tools/selection/selection-tool.service';
-
+// tslint:disable:max-file-line-count
 @Injectable({
     providedIn: 'root',
 })
@@ -100,7 +100,7 @@ export class EllipseSelectionService extends SelectionToolService {
             this.startDownCoord = this.evenImageStartCoord(mousePosition);
             this.pathLastCoord = { x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y + this.imageData.height };
             // resizing
-        } else if (this.clickOnAnchor && this.mouseDown) {
+        } else if (this.clickOnAnchor && this.localMouseDown) {
             this.pathData.push({ x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y + this.imageData.height });
             this.clearCanvasEllipse();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -129,6 +129,7 @@ export class EllipseSelectionService extends SelectionToolService {
         if (this.draggingImage) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.oldImage.src = this.drawingService.baseCtx.canvas.toDataURL();
+            this.getImageRotation();
             this.ellipseService.mouseDownCoord = this.startDownCoord;
             this.pathData.push(this.pathLastCoord);
             this.showSelection(
@@ -151,6 +152,7 @@ export class EllipseSelectionService extends SelectionToolService {
             this.getAnchorHit(this.drawingService.baseCtx, mousePosition, 1);
             this.imageData = this.getOldImageData(this.evenImageStartCoord(mousePosition));
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.getImageRotation();
             this.clickOnAnchor = false;
             this.selectionCreated = false;
             const trackingInfo = this.getActionTrackingInfo(mousePosition);
@@ -175,6 +177,8 @@ export class EllipseSelectionService extends SelectionToolService {
                 { x: this.imageData.width, y: this.imageData.height },
                 this.firstEllipseCoord,
             );
+            this.getImageRotation();
+            this.hasDoneFirstRotation = false;
             this.hasDoneFirstTranslation = false;
         }
         this.localMouseDown = false;
@@ -279,29 +283,57 @@ export class EllipseSelectionService extends SelectionToolService {
         this.onMouseUp(mouseEvent);
     }
 
+    // tslint:disable:no-magic-numbers
     onMouseWheel(event: WheelEvent): void {
-        // rotate
-        const memCoords = this.startDownCoord;
-        const orientation = event.deltaY / 100;
-        this.angle += orientation * 15;
-        console.log(this.angle);
-        const rotation = (this.angle * Math.PI) / 180;
-        const size = { x: this.imageData.width, y: this.imageData.height };
-        this.pathLastCoord = { x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y + this.imageData.height };
-        this.pathData.push(this.pathLastCoord);
+        // setting up variable/const
+        if (this.selectionCreated) {
+            const size = { x: this.imageData.width, y: this.imageData.height };
+            const translation = { x: this.startDownCoord.x + size.x / 2, y: this.startDownCoord.y + size.y / 2 };
+            const memCoords = this.startDownCoord;
+            const orientation = event.deltaY / 100;
 
-        this.clearCanvasEllipse();
-        this.clearPath();
+            // clearing old spot
+            const maxSide = Math.max(size.x, size.y);
+            this.putImageData({ x: translation.x - maxSide / 2, y: translation.y - maxSide / 2 }, this.drawingService.baseCtx, this.oldImageData);
+            if (!this.hasDoneFirstTranslation) {
+                this.ellipseService.mouseDownCoord = this.firstEllipseCoord;
+                this.pathLastCoord = { x: memCoords.x + size.x, y: memCoords.y + size.y };
+                this.pathData.push(this.pathLastCoord);
+                this.clearCanvasEllipse();
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.pathData);
+                this.ellipseService.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
+                this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
+                this.clearPath();
+            }
 
-        this.drawingService.baseCtx.translate(this.startDownCoord.x + this.imageData.width / 2, this.startDownCoord.y + this.imageData.height / 2);
-        this.drawingService.baseCtx.rotate(rotation);
-        this.startDownCoord = { x: -this.imageData.width / 2, y: -this.imageData.height / 2 };
-        this.pathLastCoord = { x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y + this.imageData.height };
-        this.showSelection(this.drawingService.baseCtx, this.image, size, this.firstEllipseCoord);
-        // reset canvas transform after rotation
-        this.drawingService.baseCtx.setTransform(1, 0, 0, 1, 0, 0);
-        this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
-        this.startDownCoord = memCoords;
+            let angleVoulue = 0;
+            if (event.altKey) {
+                angleVoulue = 1;
+            } else {
+                angleVoulue = 15;
+            }
+            this.angle += orientation * angleVoulue;
+            const rotation = (this.angle * Math.PI) / 180;
+
+            // rotation
+            this.drawingService.baseCtx.translate(translation.x, translation.y);
+            this.drawingService.baseCtx.rotate(rotation);
+            this.startDownCoord = { x: -size.x / 2, y: -size.y / 2 };
+            console.log(this.startDownCoord);
+            this.pathLastCoord = {
+                x: this.startDownCoord.x + size.x / Math.cos((angleVoulue * Math.PI) / 180),
+                y: this.startDownCoord.y + size.y / Math.cos((angleVoulue * Math.PI) / 180),
+            };
+            console.log(this.pathLastCoord);
+            console.log('---------------');
+            this.showSelection(this.drawingService.baseCtx, this.image, size, this.firstEllipseCoord);
+
+            // reset canvas transform after rotation
+            this.drawingService.baseCtx.setTransform(1, 0, 0, 1, 0, 0);
+            this.startDownCoord = memCoords;
+            this.hasDoneFirstRotation = true;
+        }
     }
 
     private addActionTracking(trackingInfo: Vec2[]): void {
@@ -340,29 +372,32 @@ export class EllipseSelectionService extends SelectionToolService {
         canvas.save();
         const ellipsePath = this.getPath(offset, this.startDownCoord);
         canvas.clip(ellipsePath);
-        this.drawImage(
-            canvas,
-            this.startDownCoord,
-            imageStart,
-            {
-                x: this.imageData.width,
-                y: this.imageData.height,
-            },
-            image,
-            size,
-        );
+        this.drawImage(canvas, this.startDownCoord, imageStart, { x: this.imageData.width, y: this.imageData.height }, image, size);
         canvas.restore();
     }
+
     private clearCanvasEllipse(): void {
-        this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.pathData);
         this.colorService.setPrimaryColor('#FFFFFF');
         this.tracingService.setHasFill(true);
         this.tracingService.setHasContour(false);
+        this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.pathData);
         this.ellipseService.drawEllipse(this.drawingService.baseCtx, this.pathData);
         this.resetTransform();
     }
+
+    private getImageRotation(): void {
+        const maxSide = Math.max(this.imageData.width, this.imageData.height);
+        this.oldImageData = this.drawingService.baseCtx.getImageData(
+            this.startDownCoord.x + this.imageData.width / 2 - maxSide / 2,
+            this.startDownCoord.y + this.imageData.height / 2 - maxSide / 2,
+            maxSide,
+            maxSide,
+        );
+    }
+
     execute(interaction: InteractionSelectionEllipse): void {
         this.putImageData(interaction.startSelectionPoint, this.drawingService.baseCtx, interaction.selection);
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.selectionCreated = false;
     }
 }

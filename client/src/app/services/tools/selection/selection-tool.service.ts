@@ -37,6 +37,7 @@ export abstract class SelectionToolService extends Tool {
     protected arrowDown: boolean;
     protected arrowCoord: Vec2;
     protected hasDoneFirstTranslation: boolean;
+    protected hasDoneFirstRotation: boolean;
     protected localMouseDown: boolean = false;
     protected startSelectionPoint: Vec2;
     protected image: HTMLImageElement;
@@ -52,6 +53,7 @@ export abstract class SelectionToolService extends Tool {
         this.clickOnAnchor = false;
         this.shiftDown = false;
         this.hasDoneFirstTranslation = false;
+        this.hasDoneFirstRotation = false;
         this.angle = 0;
     }
 

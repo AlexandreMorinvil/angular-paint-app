@@ -14,7 +14,6 @@ import { WidthService } from '@app/services/tool-modifier/width/width.service';
 })
 export class StampService extends Tool {
     private pathData: Vec2[];
-    //private mouseWheelDown: boolean;
 
     constructor(
         public drawingService: DrawingService,
@@ -76,7 +75,7 @@ export class StampService extends Tool {
             }
         }
     }
-    //Pas bien implente
+    // Pas bien implente
     /* private rotateStamp(degrees: number, path: Vec2[]): void {
         const image = new Image();
         image.src = '/assets/images/approved.png';
@@ -126,13 +125,13 @@ export class StampService extends Tool {
                 break;
             }
             case StampEnum.stamp5: {
-                //this.rotateStamp(90, path);
+                // this.rotateStamp(90, path);
                 this.stamp5(ctx, path);
                 break;
             }
         }
     }
-
+    // tslint:disable:no-magic-numbers
     private previewStamp(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.globalAlpha = 0.4;
         this.applyStamp(ctx, path);

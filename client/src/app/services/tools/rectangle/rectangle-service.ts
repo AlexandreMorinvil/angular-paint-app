@@ -165,8 +165,6 @@ export class RectangleService extends Tool {
             } else if (width < 0 && height >= 0) {
                 width -= this.widthService.getWidth();
                 height += this.widthService.getWidth();
-                console.log(width);
-                console.log(height);
                 startX += this.widthService.getWidth() / 2;
                 startY -= this.widthService.getWidth() / 2;
             } else {
