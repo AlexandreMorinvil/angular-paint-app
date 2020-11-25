@@ -147,11 +147,11 @@ export class PaintService extends Tool {
     private matchStartColor(pixelPos: Vec2): boolean {
         const stepSize = 4;
 
-        let targetR = this.canvasData[stepSize * (pixelPos.y * this.drawingService.baseCtx.canvas.width + pixelPos.x)];
-        let targetG = this.canvasData[stepSize * (pixelPos.y * this.drawingService.baseCtx.canvas.width + pixelPos.x) + 1];
-        let targetB = this.canvasData[stepSize * (pixelPos.y * this.drawingService.baseCtx.canvas.width + pixelPos.x) + 2];
-
-        const average = (Math.abs(this.startR - targetR) + Math.abs(this.startG - targetG) + Math.abs(this.startB - targetB)) / 3; // tslint:disable-next-line:no-magic-numbers
+        const targetR = this.canvasData[stepSize * (pixelPos.y * this.drawingService.baseCtx.canvas.width + pixelPos.x)];
+        const targetG = this.canvasData[stepSize * (pixelPos.y * this.drawingService.baseCtx.canvas.width + pixelPos.x) + 1];
+        const targetB = this.canvasData[stepSize * (pixelPos.y * this.drawingService.baseCtx.canvas.width + pixelPos.x) + 2];
+        // tslint:disable-next-line:no-magic-numbers
+        const average = (Math.abs(this.startR - targetR) + Math.abs(this.startG - targetG) + Math.abs(this.startB - targetB)) / 3;
 
         if (
             average <= this.toleranceService.getPixelTolerance() &&
