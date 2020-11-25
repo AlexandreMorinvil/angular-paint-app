@@ -107,60 +107,60 @@ export abstract class SelectionToolService extends Tool {
     protected checkHit(mouse: Vec2): boolean {
         let x: number;
         let y: number;
-        const dotSizeSquare: number = Math.pow(DOTSIZE, 2);
+        const DOT_SIZE_SQUARE: number = Math.pow(DOTSIZE, 2);
         // top left corner
         x = Math.pow(mouse.x - this.startDownCoord.x, 2);
         y = Math.pow(mouse.y - this.startDownCoord.y, 2);
-        if (x + y <= dotSizeSquare) {
+        if (x + y <= DOT_SIZE_SQUARE) {
             this.clickOnAnchor = true;
             this.anchorHit = Anchors.TopLeft;
         }
         // top middle
         x = Math.pow(mouse.x - (this.startDownCoord.x + this.imageData.width / 2), 2);
         y = Math.pow(mouse.y - this.startDownCoord.y, 2);
-        if (x + y <= dotSizeSquare) {
+        if (x + y <= DOT_SIZE_SQUARE) {
             this.clickOnAnchor = true;
             this.anchorHit = Anchors.TopMiddle;
         }
         // top right corner
         x = Math.pow(mouse.x - (this.imageData.width + this.startDownCoord.x), 2);
         y = Math.pow(mouse.y - this.startDownCoord.y, 2);
-        if (x + y <= dotSizeSquare) {
+        if (x + y <= DOT_SIZE_SQUARE) {
             this.clickOnAnchor = true;
             this.anchorHit = Anchors.TopRight;
         }
         // middle left
         x = Math.pow(mouse.x - this.startDownCoord.x, 2);
         y = Math.pow(mouse.y - (this.startDownCoord.y + this.imageData.height / 2), 2);
-        if (x + y <= dotSizeSquare) {
+        if (x + y <= DOT_SIZE_SQUARE) {
             this.clickOnAnchor = true;
             this.anchorHit = Anchors.MiddleLeft;
         }
         // middle right
         x = Math.pow(mouse.x - (this.imageData.width + this.startDownCoord.x), 2);
         y = Math.pow(mouse.y - (this.startDownCoord.y + this.imageData.height / 2), 2);
-        if (x + y <= dotSizeSquare) {
+        if (x + y <= DOT_SIZE_SQUARE) {
             this.clickOnAnchor = true;
             this.anchorHit = Anchors.MiddleRight;
         }
         // bottom left corner
         x = Math.pow(mouse.x - this.startDownCoord.x, 2);
         y = Math.pow(mouse.y - (this.imageData.height + this.startDownCoord.y), 2);
-        if (x + y <= dotSizeSquare) {
+        if (x + y <= DOT_SIZE_SQUARE) {
             this.clickOnAnchor = true;
             this.anchorHit = Anchors.BottomLeft;
         }
         // bottom middle
         x = Math.pow(mouse.x - (this.startDownCoord.x + this.imageData.width / 2), 2);
         y = Math.pow(mouse.y - (this.imageData.height + this.startDownCoord.y), 2);
-        if (x + y <= dotSizeSquare) {
+        if (x + y <= DOT_SIZE_SQUARE) {
             this.clickOnAnchor = true;
             this.anchorHit = Anchors.BottomMiddle;
         }
         // bottom right corner
         x = Math.pow(mouse.x - (this.imageData.width + this.startDownCoord.x), 2);
         y = Math.pow(mouse.y - (this.imageData.height + this.startDownCoord.y), 2);
-        if (x + y <= dotSizeSquare) {
+        if (x + y <= DOT_SIZE_SQUARE) {
             this.clickOnAnchor = true;
             this.anchorHit = Anchors.BottomRight;
         }
@@ -176,9 +176,9 @@ export abstract class SelectionToolService extends Tool {
     }
 
     protected hitSelection(x: number, y: number): boolean {
-        const xIn = x > this.startDownCoord.x && x < this.imageData.width + this.startDownCoord.x;
-        const yIn = y > this.startDownCoord.y && y < this.imageData.height + this.startDownCoord.y;
-        return xIn && yIn;
+        const X_IN = x > this.startDownCoord.x && x < this.imageData.width + this.startDownCoord.x;
+        const Y_IN = y > this.startDownCoord.y && y < this.imageData.height + this.startDownCoord.y;
+        return X_IN && Y_IN;
     }
 
     protected offsetAnchors(coords: Vec2): Vec2 {
@@ -203,7 +203,7 @@ export abstract class SelectionToolService extends Tool {
     protected getAnchorHit(canvas: CanvasRenderingContext2D, mousePosition: Vec2, caller: number): void {
         let adjustStartCoords: Vec2 = this.startDownCoord;
         let adjustOffsetCoords: Vec2 = { x: mousePosition.x - adjustStartCoords.x, y: mousePosition.y - adjustStartCoords.y };
-        const size = { x: this.imageData.width, y: this.imageData.height };
+        const SIZE = { x: this.imageData.width, y: this.imageData.height };
         let scaleX = 1;
         let scaleY = 1;
         // tslint:disable:no-magic-numbers
@@ -263,24 +263,28 @@ export abstract class SelectionToolService extends Tool {
         mousePosition = { x: scaleX * mousePosition.x, y: scaleY * mousePosition.y };
         // Resizing while keeping the aspect ratio
         if (this.shiftDown) {
-            const ratioW = this.imageData.width / this.ratio;
-            const ratioH = this.imageData.height / this.ratio;
-            let value = adjustOffsetCoords.x % ratioW;
-            let value1 = adjustOffsetCoords.y % ratioH;
-            if (Math.abs(adjustOffsetCoords.x - value) / ratioW > Math.abs(adjustOffsetCoords.y - value1) / ratioH) {
+            const RATIO_WIDTH = this.imageData.width / this.ratio;
+            const RATIO_HEIGHT = this.imageData.height / this.ratio;
+            let value = adjustOffsetCoords.x % RATIO_WIDTH; ///////// CHANGER LES NOMS
+            let value1 = adjustOffsetCoords.y % RATIO_HEIGHT;
+            if (Math.abs(adjustOffsetCoords.x - value) / RATIO_WIDTH > Math.abs(adjustOffsetCoords.y - value1) / RATIO_HEIGHT) {
                 adjustOffsetCoords.y -= value1;
-                const val = Math.floor(Math.abs(adjustOffsetCoords.x - value) / ratioW - Math.abs(adjustOffsetCoords.y - value1) / ratioH);
-                for (let i = 0; i < val; i++) {
+                const ASPECT_DIFFERENCE = Math.floor(
+                    Math.abs(adjustOffsetCoords.x - value) / RATIO_WIDTH - Math.abs(adjustOffsetCoords.y - value1) / RATIO_HEIGHT,
+                );
+                for (let i = 0; i < ASPECT_DIFFERENCE; i++) {
                     adjustOffsetCoords.x -= value + 1;
-                    value = adjustOffsetCoords.x % ratioW;
+                    value = adjustOffsetCoords.x % RATIO_WIDTH;
                     adjustOffsetCoords.x -= value;
                 }
-            } else if (Math.abs(adjustOffsetCoords.x - value) / ratioW < Math.abs(adjustOffsetCoords.y - value1) / ratioH) {
+            } else if (Math.abs(adjustOffsetCoords.x - value) / RATIO_WIDTH < Math.abs(adjustOffsetCoords.y - value1) / RATIO_HEIGHT) {
                 adjustOffsetCoords.x -= value;
-                const val = Math.floor(Math.abs(adjustOffsetCoords.y - value1) / ratioH - Math.abs(adjustOffsetCoords.x - value) / ratioW);
-                for (let i = 0; i < val; i++) {
+                const ASPECT_DIFFERENCE = Math.floor(
+                    Math.abs(adjustOffsetCoords.y - value1) / RATIO_HEIGHT - Math.abs(adjustOffsetCoords.x - value) / RATIO_WIDTH,
+                );
+                for (let i = 0; i < ASPECT_DIFFERENCE; i++) {
                     adjustOffsetCoords.y -= value1 + 1;
-                    value1 = adjustOffsetCoords.y % ratioH;
+                    value1 = adjustOffsetCoords.y % RATIO_HEIGHT;
                     adjustOffsetCoords.y -= value1;
                 }
             } else {
@@ -291,10 +295,10 @@ export abstract class SelectionToolService extends Tool {
         }
         if (caller === 1) {
             // ellipse is calling
-            this.showSelectionResize(canvas, size, adjustStartCoords, adjustOffsetCoords, mousePosition);
+            this.showSelectionResize(canvas, SIZE, adjustStartCoords, adjustOffsetCoords, mousePosition);
         } else if (caller === 2) {
             // rectangle is calling
-            this.drawImage(canvas, adjustStartCoords, this.startDownCoord, adjustOffsetCoords, this.image, size);
+            this.drawImage(canvas, adjustStartCoords, this.startDownCoord, adjustOffsetCoords, this.image, SIZE);
         }
         // reset canvas transform after mirror effect
         canvas.setTransform(1, 0, 0, 1, 0, 0);
@@ -311,19 +315,19 @@ export abstract class SelectionToolService extends Tool {
         let width = mousePosition.x - this.startDownCoord.x;
         let height = mousePosition.y - this.startDownCoord.y;
         // If Shift is pressed should be a square
-        const squareSide = Math.abs(Math.min(height, width));
+        const SQUARE_SIZE = Math.abs(Math.min(height, width));
         if (height < 0 && width >= 0) {
-            height = -squareSide;
-            width = squareSide;
+            height = -SQUARE_SIZE;
+            width = SQUARE_SIZE;
         } else if (height >= 0 && width < 0) {
-            width = -squareSide;
-            height = squareSide;
+            width = -SQUARE_SIZE;
+            height = SQUARE_SIZE;
         } else if (height < 0 && width < 0) {
-            width = -squareSide;
-            height = -squareSide;
+            width = -SQUARE_SIZE;
+            height = -SQUARE_SIZE;
         } else {
-            width = squareSide;
-            height = squareSide;
+            width = SQUARE_SIZE;
+            height = SQUARE_SIZE;
         }
         return { x: width, y: height };
     }
@@ -331,7 +335,7 @@ export abstract class SelectionToolService extends Tool {
     protected checkArrowHit(event: KeyboardEvent): void {
         // tslint:disable:no-magic-numbers
         this.arrowDown = true;
-        const move = 3;
+        const MOVE = 3;
         switch (event.key) {
             case 'ArrowLeft':
                 this.arrowPress[0] = true;
@@ -354,20 +358,20 @@ export abstract class SelectionToolService extends Tool {
         }
 
         if (this.arrowPress[0]) {
-            this.startDownCoord = { x: this.startDownCoord.x - move, y: this.startDownCoord.y };
-            this.pathLastCoord = { x: this.pathLastCoord.x - move, y: this.pathLastCoord.y };
+            this.startDownCoord = { x: this.startDownCoord.x - MOVE, y: this.startDownCoord.y };
+            this.pathLastCoord = { x: this.pathLastCoord.x - MOVE, y: this.pathLastCoord.y };
         }
         if (this.arrowPress[1]) {
-            this.startDownCoord = { x: this.startDownCoord.x + move, y: this.startDownCoord.y };
-            this.pathLastCoord = { x: this.pathLastCoord.x + move, y: this.pathLastCoord.y };
+            this.startDownCoord = { x: this.startDownCoord.x + MOVE, y: this.startDownCoord.y };
+            this.pathLastCoord = { x: this.pathLastCoord.x + MOVE, y: this.pathLastCoord.y };
         }
         if (this.arrowPress[2]) {
-            this.startDownCoord = { x: this.startDownCoord.x, y: this.startDownCoord.y - move };
-            this.pathLastCoord = { x: this.pathLastCoord.x, y: this.pathLastCoord.y - move };
+            this.startDownCoord = { x: this.startDownCoord.x, y: this.startDownCoord.y - MOVE };
+            this.pathLastCoord = { x: this.pathLastCoord.x, y: this.pathLastCoord.y - MOVE };
         }
         if (this.arrowPress[3]) {
-            this.startDownCoord = { x: this.startDownCoord.x, y: this.startDownCoord.y + move };
-            this.pathLastCoord = { x: this.pathLastCoord.x, y: this.pathLastCoord.y + move };
+            this.startDownCoord = { x: this.startDownCoord.x, y: this.startDownCoord.y + MOVE };
+            this.pathLastCoord = { x: this.pathLastCoord.x, y: this.pathLastCoord.y + MOVE };
         }
     }
 
@@ -407,17 +411,16 @@ export abstract class SelectionToolService extends Tool {
     }
 
     protected evenImageStartCoord(mousePosition: Vec2): Vec2 {
-        // tslint:disable:prefer-const
-        let startCoord = { x: mousePosition.x - this.imageData.width / 2, y: mousePosition.y - this.imageData.height / 2 };
+        const START_COORDS = { x: mousePosition.x - this.imageData.width / 2, y: mousePosition.y - this.imageData.height / 2 };
         if (this.imageData.width % 2 !== 0 || this.imageData.height % 2 !== 0) {
             if (this.imageData.width % 2 !== 0) {
-                startCoord.x = mousePosition.x - (this.imageData.width + 1) / 2;
+                START_COORDS.x = mousePosition.x - (this.imageData.width + 1) / 2;
             }
             if (this.imageData.height % 2 !== 0) {
-                startCoord.y = mousePosition.y - (this.imageData.height + 1) / 2;
+                START_COORDS.y = mousePosition.y - (this.imageData.height + 1) / 2;
             }
         }
-        return startCoord;
+        return START_COORDS;
     }
 
     private showSelectionResize(
@@ -429,38 +432,38 @@ export abstract class SelectionToolService extends Tool {
     ): void {
         this.pathLastCoord = mousePosition;
         canvas.save();
-        const ellipsePath = this.getPath(0, adjustStartCoords);
-        canvas.clip(ellipsePath);
+        const ELLIPSE_PATH = this.getPath(0, adjustStartCoords);
+        canvas.clip(ELLIPSE_PATH);
         this.drawImage(canvas, adjustStartCoords, this.startDownCoord, adjustOffsetCoords, this.image, size);
         canvas.restore();
     }
 
     protected getPath(offset: number, startCoord: Vec2): Path2D {
-        const ellipsePath = new Path2D();
-        const mouseMoveCoord = this.pathLastCoord;
-        const centerX = (mouseMoveCoord.x + startCoord.x) / 2;
-        const centerY = (mouseMoveCoord.y + startCoord.y) / 2;
+        const ELLIPSE_PATH = new Path2D();
+        const MOUSE_MOVE_COORD = this.pathLastCoord;
+        const CENTER_X = (MOUSE_MOVE_COORD.x + startCoord.x) / 2;
+        const CENTER_Y = (MOUSE_MOVE_COORD.y + startCoord.y) / 2;
 
-        const radiusX = Math.abs(mouseMoveCoord.x - startCoord.x) / 2;
-        const radiusY = Math.abs(mouseMoveCoord.y - startCoord.y) / 2;
+        const RADIUS_X = Math.abs(MOUSE_MOVE_COORD.x - startCoord.x) / 2;
+        const RADIUS_Y = Math.abs(MOUSE_MOVE_COORD.y - startCoord.y) / 2;
 
-        const contourRadiusX = Math.abs(radiusX - 1 / 2);
-        const contourRadiusY = Math.abs(radiusY - 1 / 2);
-        ellipsePath.ellipse(centerX, centerY, contourRadiusX + offset, contourRadiusY + offset, 0, 0, Math.PI * 2, false);
-        return ellipsePath;
+        const CONTOUR_RADIUS_X = Math.abs(RADIUS_X - 1 / 2);
+        const CONTOUR_RADIUS_Y = Math.abs(RADIUS_Y - 1 / 2);
+        ELLIPSE_PATH.ellipse(CENTER_X, CENTER_Y, CONTOUR_RADIUS_X + offset, CONTOUR_RADIUS_Y + offset, 0, 0, Math.PI * 2, false);
+        return ELLIPSE_PATH;
     }
 
     protected getActionTrackingInfo(mousePosition: Vec2): Vec2[] {
-        const imageDataStart = { x: 0, y: 0 };
-        const imageDataEnd = { x: 0, y: 0 };
-        imageDataStart.x = this.startSelectionPoint.x < mousePosition.x ? this.startSelectionPoint.x : mousePosition.x;
-        imageDataStart.y = this.startSelectionPoint.y < mousePosition.y ? this.startSelectionPoint.y : mousePosition.y;
-        imageDataEnd.x =
+        const IMAGE_DATA_START = { x: 0, y: 0 };
+        const IMAGE_DATA_END = { x: 0, y: 0 };
+        IMAGE_DATA_START.x = this.startSelectionPoint.x < mousePosition.x ? this.startSelectionPoint.x : mousePosition.x;
+        IMAGE_DATA_START.y = this.startSelectionPoint.y < mousePosition.y ? this.startSelectionPoint.y : mousePosition.y;
+        IMAGE_DATA_END.x =
             this.startSelectionPoint.x > mousePosition.x ? this.startSelectionPoint.x + this.imageData.width : mousePosition.x + this.imageData.width;
-        imageDataEnd.y =
+        IMAGE_DATA_END.y =
             this.startSelectionPoint.y > mousePosition.y
                 ? this.startSelectionPoint.y + this.imageData.height
                 : mousePosition.y + this.imageData.height;
-        return [imageDataStart, imageDataEnd];
+        return [IMAGE_DATA_START, IMAGE_DATA_END];
     }
 }
