@@ -34,21 +34,38 @@ export class TextService extends Tool {
     }
   }
   onKeyDown(event: KeyboardEvent) {
-    const spaceBetweenLines = 10;
     if (this.editingOn) {
+      const spaceBetweenLines = 10;
       if (event.key === 'Enter') {
         this.numberOfLines++
         this.text[this.numberOfLines - 1] = '';
-      } else {
-        this.text[this.numberOfLines - 1] = this.text[this.numberOfLines - 1].concat(event.key);
-        const adjustment: number = this.findTextPositionAdjustment();
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        for (let i = 0; i < this.numberOfLines; i++)
-          this.drawingService.previewCtx.fillText(this.text[i], this.textPosition.x - adjustment, this.textPosition.y + spaceBetweenLines * i);
+        this.cursorPosition.x = this.textPosition.x;
+        this.cursorPosition.y += spaceBetweenLines;
+      } else if (event.key === 'Backspace') {
+        if (this.text[this.numberOfLines - 1] === '') {
+          this.numberOfLines--
+          this.cursorPosition.x = this.textPosition.x + this.drawingService.baseCtx.measureText(this.text[this.numberOfLines - 1]).width
+          this.cursorPosition.y -= spaceBetweenLines;
+        } else {
+          const lastCharacterWidth = this.drawingService.baseCtx.measureText(this.text[this.numberOfLines - 1].charAt(this.text[this.numberOfLines - 1].length - 1)).width
+          this.text[this.numberOfLines - 1] = this.text[this.numberOfLines - 1].slice(0, -1);
+          console.log(lastCharacterWidth);
+          this.cursorPosition.x -= lastCharacterWidth;
+        }
       }
+      else {
+        this.text[this.numberOfLines - 1] = this.text[this.numberOfLines - 1].concat(event.key);
+        this.cursorPosition.x += this.drawingService.previewCtx.measureText(event.key).width;
+
+      }
+      const adjustment = this.findTextPositionAdjustment();
+      this.drawingService.clearCanvas(this.drawingService.previewCtx);
+      for (let i = 0; i < this.numberOfLines; i++)
+        this.drawingService.previewCtx.fillText(this.text[i], this.textPosition.x - adjustment, this.textPosition.y + spaceBetweenLines * i);
+      this.showCursor(adjustment);
     }
   }
-  findTextPositionAdjustment(): number {
+  private findTextPositionAdjustment(): number {
     let longestLineLength = 0;
     for (let i = 0; i < this.numberOfLines; i++) {
       if (this.drawingService.baseCtx.measureText(this.text[i]).width > longestLineLength)
@@ -57,11 +74,11 @@ export class TextService extends Tool {
     return longestLineLength / 2
   }
 
-  showCursor() {
+  private showCursor(adjustement: number = 0) {
     this.drawingService.previewCtx.strokeStyle = '#000000';
     this.drawingService.previewCtx.beginPath();
-    this.drawingService.previewCtx.lineTo(this.cursorPosition.x, this.cursorPosition.y - 5);
-    this.drawingService.previewCtx.lineTo(this.cursorPosition.x, this.cursorPosition.y + 5);
+    this.drawingService.previewCtx.lineTo(this.cursorPosition.x - adjustement, this.cursorPosition.y - 10);
+    this.drawingService.previewCtx.lineTo(this.cursorPosition.x - adjustement, this.cursorPosition.y + 5);
     this.drawingService.previewCtx.stroke();
   }
 }
