@@ -44,7 +44,6 @@ export class PaintService extends Tool {
         if (this.isInCanvas(this.mouseDownCoord)) {
             let hasFilled = false;
             const newPosition: Vec2 = { x: this.pathData[0].x, y: this.pathData[0].y };
-            this.scanCanvas();
             if (event.button === MouseButton.Left) {
                 this.floodFill(this.drawingService.baseCtx, this.pathData);
                 hasFilled = true;
@@ -71,6 +70,7 @@ export class PaintService extends Tool {
 
     private sameColorFill(ctx: CanvasRenderingContext2D): void {
         this.setAttribute(ctx);
+        this.scanCanvas();
         const pixelPos: Vec2 = { x: 0, y: 0 };
         while (pixelPos.y < ctx.canvas.height) {
             while (pixelPos.x < ctx.canvas.width) {
@@ -86,6 +86,7 @@ export class PaintService extends Tool {
 
     private floodFill(ctx: CanvasRenderingContext2D, pathPixel: Vec2[]): void {
         this.setAttribute(ctx);
+        this.scanCanvas();
         // tslint:disable:no-non-null-assertion
         while (pathPixel.length) {
             const pixelPos = pathPixel.pop()!;
