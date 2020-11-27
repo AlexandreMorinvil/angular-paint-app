@@ -42,9 +42,13 @@ export class TextService extends Tool {
             } else if (event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown') {
                 this.onArrowDown(event);
             } else {
-                this.text[this.numberOfLines - 1] = this.text[this.numberOfLines - 1].concat(event.key);
+                let beforeCursor = this.text[this.cursorPosition.y].substring(0, this.cursorPosition.x);
+                const afterCursor = this.text[this.cursorPosition.y].substring(this.cursorPosition.x);
+                beforeCursor = beforeCursor.concat(event.key);
+                this.text[this.cursorPosition.y] = beforeCursor.concat(afterCursor);
                 this.cursorPosition.x += 1;
             }
+            console.log(this.cursorPosition);
             const adjustment = this.findTextPositionAdjustment();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             for (let i = 0; i < this.numberOfLines; i++)
@@ -69,7 +73,8 @@ export class TextService extends Tool {
         const cursorTopAdjustment = 10;
         const cursorBottomAdjustment = 5;
         this.drawingService.previewCtx.strokeStyle = '#000000';
-        const textLength: number = this.drawingService.baseCtx.measureText(this.text[this.numberOfLines - 1]).width;
+        const textLength: number = this.drawingService.baseCtx.measureText(this.text[this.cursorPosition.y].substring(0, this.cursorPosition.x))
+            .width;
         this.drawingService.previewCtx.beginPath();
         this.drawingService.previewCtx.lineTo(
             this.textPosition.x + textLength - adjustement,
@@ -83,30 +88,73 @@ export class TextService extends Tool {
     }
 
     private onEnterDown(): void {
+        let beforeCursor = this.text[this.cursorPosition.y].substring(0, this.cursorPosition.x);
+        const afterCursor = this.text[this.cursorPosition.y].substring(this.cursorPosition.x);
+        this.text[this.cursorPosition.y] = beforeCursor;
         this.numberOfLines++;
-        this.text[this.numberOfLines - 1] = '';
+        for (let i = this.numberOfLines - 1; i > this.cursorPosition.y; i--) this.text[i] = this.text[i - 1];
+        this.text[this.cursorPosition.y + 1] = afterCursor;
         this.cursorPosition.x = 0;
         this.cursorPosition.y += 1;
     }
     private onBackspaceDown(): void {
-        if (this.text[this.numberOfLines - 1] === '' && this.numberOfLines === 1) {
+        if (this.text[this.cursorPosition.y].substring(0, this.cursorPosition.x) === '' && this.cursorPosition.y === 0) {
             // dont do anything
-        } else if (this.text[this.numberOfLines - 1] === '') {
+        } else if (this.text[this.cursorPosition.y].substring(0, this.cursorPosition.x) === '') {
+            const afterCursor = this.text[this.cursorPosition.y].substring(this.cursorPosition.x);
             this.numberOfLines--;
-            this.cursorPosition.x = this.text[this.numberOfLines - 1].length;
-            this.cursorPosition.y = this.numberOfLines - 1;
+            for (let i = this.cursorPosition.y; i < this.numberOfLines; i++) {
+                this.text[i] = this.text[i + 1];
+            }
+            this.cursorPosition.x = this.text[this.cursorPosition.y - 1].length;
+            this.cursorPosition.y = this.cursorPosition.y - 1;
+            this.text[this.cursorPosition.y] = this.text[this.cursorPosition.y].concat(afterCursor);
         } else {
-            const lastIndex = -1;
-            this.text[this.numberOfLines - 1] = this.text[this.numberOfLines - 1].slice(0, lastIndex);
-            this.cursorPosition.x = this.text[this.numberOfLines - 1].length;
+            let beforeCursor = this.text[this.cursorPosition.y].substring(0, this.cursorPosition.x - 1);
+            const afterCursor = this.text[this.cursorPosition.y].substring(this.cursorPosition.x);
+            this.text[this.cursorPosition.y] = beforeCursor.concat(afterCursor);
+            this.cursorPosition.x -= 1;
         }
     }
 
     private onArrowDown(event: KeyboardEvent): void {
-        if (event.key === 'ArrowUp') {
-            if (this.numberOfLines === 1) {
-                //dont do anything
-            } else {
+        switch (event.key) {
+            case 'ArrowUp': {
+                if (this.numberOfLines === 1) {
+                    // dont do anything
+                } else {
+                    this.cursorPosition.y -= 1;
+                    if (this.cursorPosition.x > this.text[this.cursorPosition.y].length)
+                        this.cursorPosition.x = this.text[this.cursorPosition.y].length;
+                }
+                break;
+            }
+            case 'ArrowRight': {
+                if (this.cursorPosition.x === this.text[this.cursorPosition.y].length) {
+                    console.log('je me rends');
+                    // dont do anything
+                } else {
+                    this.cursorPosition.x += 1;
+                }
+                break;
+            }
+            case 'ArrowDown': {
+                if (this.cursorPosition.y === this.numberOfLines - 1) {
+                    // dont do anything
+                } else {
+                    this.cursorPosition.y += 1;
+                    if (this.cursorPosition.x > this.text[this.cursorPosition.y].length)
+                        this.cursorPosition.x = this.text[this.cursorPosition.y].length;
+                }
+                break;
+            }
+            case 'ArrowLeft': {
+                if (this.cursorPosition.x === 0) {
+                    // dont do anything
+                } else {
+                    this.cursorPosition.x -= 1;
+                }
+                break;
             }
         }
     }
