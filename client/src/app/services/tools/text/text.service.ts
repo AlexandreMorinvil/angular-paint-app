@@ -49,7 +49,7 @@ export class TextService extends Tool {
                 this.onDeleteDown();
             } else if (event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown') {
                 this.onArrowDown(event);
-            } else {
+            } else if (this.isLetter(event.key)) {
                 let beforeCursor = this.text[this.cursorPosition.y].substring(0, this.cursorPosition.x);
                 const afterCursor = this.text[this.cursorPosition.y].substring(this.cursorPosition.x);
                 beforeCursor = beforeCursor.concat(event.key);
@@ -67,6 +67,10 @@ export class TextService extends Tool {
                 );
             this.showCursor(adjustment);
         }
+    }
+
+    private isLetter(letter: string) {
+        return letter.length === 1;
     }
 
     private findTextPositionAdjustment(): number {
