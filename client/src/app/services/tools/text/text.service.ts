@@ -3,6 +3,7 @@ import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ColorService } from '@app/services/tool-modifier/color/color.service';
 
 @Injectable({
     providedIn: 'root',
@@ -14,12 +15,15 @@ export class TextService extends Tool {
     private editingOn: boolean = false;
     private cursorPosition: Vec2 = { x: 0, y: 0 };
     private spaceBetweenLines: number = 10;
-    constructor(public drawingService: DrawingService) {
+
+    constructor(public drawingService: DrawingService, private colorService: ColorService) {
         super(drawingService, new Description('texte', 't', 'text_icon.png'));
+        this.modifiers.push(this.colorService);
     }
 
     confirm(): void {
-        this.drawingService.baseCtx.fillStyle = '#000000';
+        this.drawingService.baseCtx.fillStyle = this.colorService.getPrimaryColor();
+        this.drawingService.baseCtx.globalAlpha = this.colorService.getPrimaryColorOpacity();
         this.editingOn = false;
         this.drawingService.shortcutEnable = true;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -31,6 +35,8 @@ export class TextService extends Tool {
 
     onMouseDown(event: MouseEvent): void {
         if (!this.editingOn) {
+            this.drawingService.previewCtx.fillStyle = this.colorService.getPrimaryColor();
+            this.drawingService.previewCtx.globalAlpha = this.colorService.getPrimaryColorOpacity();
             this.editingOn = true;
             this.drawingService.shortcutEnable = false;
             this.textPosition = this.getPositionFromMouse(event);
@@ -67,6 +73,14 @@ export class TextService extends Tool {
             this.drawText(this.drawingService.previewCtx, adjustment);
             this.showCursor(adjustment);
         }
+    }
+    onAttributeChange(): void {
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawingService.previewCtx.fillStyle = this.colorService.getPrimaryColor();
+        this.drawingService.previewCtx.globalAlpha = this.colorService.getPrimaryColorOpacity();
+        const adjustment = this.findTextPositionAdjustment();
+        this.drawText(this.drawingService.previewCtx, adjustment);
+        this.showCursor(adjustment);
     }
     private drawText(ctx: CanvasRenderingContext2D, adjustment: number) {
         for (let i = 0; i < this.numberOfLines; i++)

@@ -58,6 +58,8 @@ export abstract class Tool {
 
     onCtrlADown(): void {}
 
+    onAttributeChange(): void {}
+
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };
     }
