@@ -5,6 +5,14 @@
         <input class="centered" name="bold" type="checkbox" [value]="hasBold" [(ngModel)]="hasBold" />
         <label for="contour">Italique</label>
         <input class="centered" name="italic" type="checkbox" [value]="hasItalic" [(ngModel)]="hasItalic" />
+        <label for="alignment">Alignement du texte</label>
+        <select name="alignment" [(ngModel)]="alignment">
+            <option *ngFor="let alignmentName of getListAlignments()" [ngValue]="alignmentName">{{ alignmentName }}</option>
+        </select>
+        <label for="font">Police du texte</label>
+        <select name="font" [(ngModel)]="font">
+            <option *ngFor="let fontName of getListFonts()" [ngValue]="fontName">{{ fontName }}</option>
+        </select>
     </div>
     <div class="grid-confirmation" *ngIf="needConfirmation()">
         <button class="confirmation-button cancel" (click)="revert()">Annuler</button>
