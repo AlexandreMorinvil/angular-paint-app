@@ -38,11 +38,14 @@ export abstract class SelectionToolService extends Tool {
     protected arrowCoord: Vec2;
     protected hasDoneFirstTranslation: boolean;
     protected hasDoneFirstRotation: boolean;
+    protected hasDoneResizing: boolean;
     protected localMouseDown: boolean = false;
     protected startSelectionPoint: Vec2;
     protected image: HTMLImageElement;
     protected ratio: number;
     protected angle: number;
+    protected resizeWidth: number;
+    protected resizeHeight: number;
 
     constructor(drawingService: DrawingService, private color: ColorService, description: Description) {
         super(drawingService, description);
@@ -54,6 +57,7 @@ export abstract class SelectionToolService extends Tool {
         this.shiftDown = false;
         this.hasDoneFirstTranslation = false;
         this.hasDoneFirstRotation = false;
+        this.hasDoneResizing = false;
         this.angle = 0;
     }
 
@@ -63,7 +67,7 @@ export abstract class SelectionToolService extends Tool {
         this.arrowDown = true;
     }
 
-    protected drawnAnchor(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement): void {
+    protected drawnAnchor(ctx: CanvasRenderingContext2D): void {
         this.color.setPrimaryColor('#000000');
         ctx.beginPath();
         // start coner
@@ -302,6 +306,8 @@ export abstract class SelectionToolService extends Tool {
         }
         // reset canvas transform after mirror effect
         canvas.setTransform(1, 0, 0, 1, 0, 0);
+        this.resizeWidth = Math.abs(adjustOffsetCoords.x);
+        this.resizeHeight = Math.abs(adjustOffsetCoords.y);
     }
     protected getRatio(w: number, h: number): number {
         return h === 0 ? w : this.getRatio(h, w % h);
@@ -440,12 +446,11 @@ export abstract class SelectionToolService extends Tool {
 
     protected getPath(offset: number, startCoord: Vec2): Path2D {
         const ELLIPSE_PATH = new Path2D();
-        const MOUSE_MOVE_COORD = this.pathLastCoord;
-        const CENTER_X = (MOUSE_MOVE_COORD.x + startCoord.x) / 2;
-        const CENTER_Y = (MOUSE_MOVE_COORD.y + startCoord.y) / 2;
+        const CENTER_X = (this.pathLastCoord.x + startCoord.x) / 2;
+        const CENTER_Y = (this.pathLastCoord.y + startCoord.y) / 2;
 
-        const RADIUS_X = Math.abs(MOUSE_MOVE_COORD.x - startCoord.x) / 2;
-        const RADIUS_Y = Math.abs(MOUSE_MOVE_COORD.y - startCoord.y) / 2;
+        const RADIUS_X = Math.abs(this.pathLastCoord.x - startCoord.x) / 2;
+        const RADIUS_Y = Math.abs(this.pathLastCoord.y - startCoord.y) / 2;
 
         const CONTOUR_RADIUS_X = Math.abs(RADIUS_X - 1 / 2);
         const CONTOUR_RADIUS_Y = Math.abs(RADIUS_Y - 1 / 2);

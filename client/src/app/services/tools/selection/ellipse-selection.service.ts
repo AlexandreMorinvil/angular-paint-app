@@ -142,7 +142,7 @@ export class EllipseSelectionService extends SelectionToolService {
             this.addActionTracking(TRACKING_INFO);
             this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.pathData);
             this.ellipseService.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
-            this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
+            this.drawnAnchor(this.drawingService.previewCtx);
             this.draggingImage = false;
             this.firstEllipseCoord = this.startDownCoord;
             this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
@@ -150,13 +150,27 @@ export class EllipseSelectionService extends SelectionToolService {
             // resizing
         } else if (this.clickOnAnchor) {
             this.getAnchorHit(this.drawingService.baseCtx, MOUSE_POSITION, 1);
-            this.imageData = this.getOldImageData(this.evenImageStartCoord(MOUSE_POSITION));
+            this.imageData = this.drawingService.baseCtx.getImageData(
+                this.startDownCoord.x,
+                this.startDownCoord.y,
+                this.resizeWidth,
+                this.resizeHeight,
+            );
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.getImageRotation();
+            this.pathData.push(MOUSE_POSITION);
+            this.offsetAnchors(this.startDownCoord);
+            this.clearPath();
+            this.pathData.push({ x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y + this.imageData.height });
+            this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.pathData);
+            this.ellipseService.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
+            this.drawnAnchor(this.drawingService.previewCtx);
+            this.clearPath();
             this.clickOnAnchor = false;
-            this.selectionCreated = false;
+            this.hasDoneResizing = true;
             const TRACKING_INFO = this.getActionTrackingInfo(MOUSE_POSITION);
             this.addActionTracking(TRACKING_INFO);
+            this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
             // creation
         } else if (this.mouseDown) {
             if (this.ellipseService.shiftDown) {
@@ -168,7 +182,7 @@ export class EllipseSelectionService extends SelectionToolService {
             this.oldImage.src = this.drawingService.baseCtx.canvas.toDataURL();
             this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.pathData);
             this.startDownCoord = this.offsetAnchors(this.startDownCoord);
-            this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
+            this.drawnAnchor(this.drawingService.previewCtx);
             this.selectionCreated = true;
             this.pathLastCoord = this.pathData[this.pathData.length - 1];
             this.showSelection(
@@ -303,10 +317,11 @@ export class EllipseSelectionService extends SelectionToolService {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.pathData);
                 this.ellipseService.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
-                this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
+                this.drawnAnchor(this.drawingService.previewCtx);
                 this.clearPath();
             }
 
+            // calculate desire angle for canvas rotation
             let angleVoulue = 0;
             if (event.altKey) {
                 angleVoulue = 1;
@@ -320,13 +335,7 @@ export class EllipseSelectionService extends SelectionToolService {
             this.drawingService.baseCtx.translate(TRANSLATION.x, TRANSLATION.y);
             this.drawingService.baseCtx.rotate(ROTATION);
             this.startDownCoord = { x: -SIZE.x / 2, y: -SIZE.y / 2 };
-            console.log(this.startDownCoord);
-            this.pathLastCoord = {
-                x: this.startDownCoord.x + SIZE.x / Math.cos((angleVoulue * Math.PI) / 180),
-                y: this.startDownCoord.y + SIZE.y / Math.cos((angleVoulue * Math.PI) / 180),
-            };
-            console.log(this.pathLastCoord);
-            console.log('---------------');
+            this.pathLastCoord = { x: SIZE.x / 2, y: SIZE.y / 2 };
             this.showSelection(this.drawingService.baseCtx, this.image, SIZE, this.firstEllipseCoord);
 
             // reset canvas transform after rotation

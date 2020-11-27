@@ -134,7 +134,7 @@ export class MagicWandService extends SelectionToolService {
             this.drawingService.previewCtx.beginPath();
             this.drawingService.previewCtx.rect(this.startDownCoord.x, this.startDownCoord.y, this.imageData.width, this.imageData.height);
             this.drawingService.previewCtx.stroke();
-            this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
+            this.drawnAnchor(this.drawingService.previewCtx);
             this.drawSelectionCoutour();
             this.draggingImage = false;
             this.hasDoneFirstTranslation = true;
@@ -169,7 +169,7 @@ export class MagicWandService extends SelectionToolService {
         this.pathData.push({ x: xMax, y: yMax });
         this.rectangleService.mouseDownCoord = { x: xMin, y: yMin };
         this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.pathData);
-        this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
+        this.drawnAnchor(this.drawingService.previewCtx);
 
         this.splitAndSortEdgeArray();
         this.drawSelectionCoutour();
