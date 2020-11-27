@@ -17,6 +17,18 @@ export class TextService extends Tool {
     constructor(public drawingService: DrawingService) {
         super(drawingService, new Description('texte', 't', 'text_icon.png'));
     }
+
+    confirm(): void {
+        this.drawingService.baseCtx.fillStyle = '#000000';
+        this.editingOn = false;
+        this.drawingService.shortcutEnable = true;
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        const adjustment = this.findTextPositionAdjustment();
+        this.drawText(this.drawingService.baseCtx, adjustment);
+        this.text = [''];
+        this.numberOfLines = 1;
+    }
+
     onMouseDown(event: MouseEvent): void {
         if (!this.editingOn) {
             this.editingOn = true;
@@ -25,13 +37,7 @@ export class TextService extends Tool {
             this.cursorPosition = { x: 0, y: 0 };
             this.showCursor();
         } else {
-            this.editingOn = false;
-            this.drawingService.shortcutEnable = true;
-
-            // confirm text
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.text = [''];
-            this.numberOfLines = 0;
+            this.confirm();
         }
     }
     onKeyDown(event: KeyboardEvent): void {
@@ -56,17 +62,15 @@ export class TextService extends Tool {
                 this.text[this.cursorPosition.y] = beforeCursor.concat(afterCursor);
                 this.cursorPosition.x += 1;
             }
-            console.log(this.cursorPosition);
-            const adjustment = this.findTextPositionAdjustment();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            for (let i = 0; i < this.numberOfLines; i++)
-                this.drawingService.previewCtx.fillText(
-                    this.text[i],
-                    this.textPosition.x - adjustment,
-                    this.textPosition.y + this.spaceBetweenLines * i,
-                );
+            const adjustment = this.findTextPositionAdjustment();
+            this.drawText(this.drawingService.previewCtx, adjustment);
             this.showCursor(adjustment);
         }
+    }
+    private drawText(ctx: CanvasRenderingContext2D, adjustment: number) {
+        for (let i = 0; i < this.numberOfLines; i++)
+            ctx.fillText(this.text[i], this.textPosition.x - adjustment, this.textPosition.y + this.spaceBetweenLines * i);
     }
 
     private isLetter(letter: string) {
