@@ -8,6 +8,7 @@ import { SidesService } from '@app/services/tool-modifier/sides/sides.service';
 import { SpacingService } from '@app/services/tool-modifier/spacing/spacing.service';
 import { SprayDiameterService } from '@app/services/tool-modifier/spraydiameter/spray-diameter.service';
 import { SprayDropletDiameterService } from '@app/services/tool-modifier/spraydropletdiameter/spraydropletdiameter.service';
+import { StyleService } from '@app/services/tool-modifier/style/style.service';
 import { TextureService } from '@app/services/tool-modifier/texture/texture.service';
 import { ToleranceService } from '@app/services/tool-modifier/tolerance/tolerance.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
@@ -29,6 +30,7 @@ export class AttributesPanelComponent {
         private sideService: SidesService,
         private sprayService: SprayDiameterService,
         private sprayDropletService: SprayDropletDiameterService,
+        private styleService: StyleService,
         private numberSprayTransmissionService: NumberSprayTransmissionService,
         private textureService: TextureService,
         private tracingService: TracingService,
@@ -75,6 +77,9 @@ export class AttributesPanelComponent {
     }
     needsSprayDropletDiameterAttribute(): boolean {
         return this.currentTool.needsModifierManager(this.sprayDropletService);
+    }
+    needsStyleAttribute(): boolean {
+        return this.currentTool.needsModifierManager(this.styleService);
     }
     needsNumberSprayTransmissionAttribute(): boolean {
         return this.currentTool.needsModifierManager(this.numberSprayTransmissionService);

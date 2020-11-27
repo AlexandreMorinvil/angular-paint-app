@@ -4,6 +4,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
+import { StyleService } from '@app/services/tool-modifier/style/style.service';
 
 @Injectable({
     providedIn: 'root',
@@ -11,14 +12,15 @@ import { ColorService } from '@app/services/tool-modifier/color/color.service';
 export class TextService extends Tool {
     private text: string[] = [''];
     private numberOfLines: number = 1;
-    private textPosition: Vec2;
+    private textPosition: Vec2 = { x: 0, y: 0 };
     private editingOn: boolean = false;
     private cursorPosition: Vec2 = { x: 0, y: 0 };
     private spaceBetweenLines: number = 10;
 
-    constructor(public drawingService: DrawingService, private colorService: ColorService) {
+    constructor(public drawingService: DrawingService, private colorService: ColorService, private styleService: StyleService) {
         super(drawingService, new Description('texte', 't', 'text_icon.png'));
         this.modifiers.push(this.colorService);
+        this.modifiers.push(this.styleService);
     }
 
     confirm(): void {
@@ -128,7 +130,7 @@ export class TextService extends Tool {
         this.cursorPosition.x = 0;
         this.cursorPosition.y += 1;
     }
-    private onBackspaceDown(): void {
+    onBackspaceDown(): void {
         if (this.text[this.cursorPosition.y].substring(0, this.cursorPosition.x) === '' && this.cursorPosition.y === 0) {
             // dont do anything
         } else if (this.text[this.cursorPosition.y].substring(0, this.cursorPosition.x) === '') {
