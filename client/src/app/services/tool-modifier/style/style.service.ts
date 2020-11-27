@@ -29,6 +29,8 @@ export class StyleService extends ToolModifier {
     readonly DEFAULT_HAS_ITALIC: boolean = false;
     private hasBold: boolean = this.DEFAULT_HAS_BOLD;
     private hasItalic: boolean = this.DEFAULT_HAS_ITALIC;
+    readonly DEFAULT_FONT_SIZE: number = 10;
+    private fontSize: number = this.DEFAULT_FONT_SIZE;
 
     constructor() {
         super();
@@ -73,5 +75,11 @@ export class StyleService extends ToolModifier {
 
     setHasItalic(input: boolean): void {
         this.hasItalic = input;
+    }
+    getFontSize() {
+        return this.fontSize;
+    }
+    setFontSize(input: number) {
+        this.fontSize = input;
     }
 }
