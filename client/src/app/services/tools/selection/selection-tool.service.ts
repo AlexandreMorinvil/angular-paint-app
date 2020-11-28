@@ -67,42 +67,28 @@ export abstract class SelectionToolService extends Tool {
         this.arrowDown = true;
     }
 
-    protected drawnAnchor(ctx: CanvasRenderingContext2D): void {
+    protected drawnAnchor(ctx: CanvasRenderingContext2D, size: Vec2 = { x: this.imageData.width, y: this.imageData.height }): void {
         this.color.setPrimaryColor('#000000');
         ctx.beginPath();
         // start coner
         ctx.arc(this.startDownCoord.x, this.startDownCoord.y, DOTSIZE, 0, Math.PI * 2, false);
         ctx.closePath();
         // end corner
-        ctx.arc(this.startDownCoord.x + this.imageData.width, this.startDownCoord.y + this.imageData.height, DOTSIZE, 0, Math.PI * 2, false);
+        ctx.arc(this.startDownCoord.x + size.x, this.startDownCoord.y + size.y, DOTSIZE, 0, Math.PI * 2, false);
         ctx.closePath();
         // two other corner
-        ctx.arc(this.startDownCoord.x, this.startDownCoord.y + this.imageData.height, DOTSIZE, 0, Math.PI * 2, false);
+        ctx.arc(this.startDownCoord.x, this.startDownCoord.y + size.y, DOTSIZE, 0, Math.PI * 2, false);
         ctx.closePath();
-        ctx.arc(this.startDownCoord.x + this.imageData.width, this.startDownCoord.y, DOTSIZE, 0, Math.PI * 2, false);
+        ctx.arc(this.startDownCoord.x + size.x, this.startDownCoord.y, DOTSIZE, 0, Math.PI * 2, false);
         ctx.closePath();
         // four mid anchor
-        ctx.arc(
-            (this.imageData.width + this.startDownCoord.x * 2) / 2,
-            this.startDownCoord.y + this.imageData.height,
-            DOTSIZE,
-            0,
-            Math.PI * 2,
-            false,
-        );
+        ctx.arc((size.x + this.startDownCoord.x * 2) / 2, this.startDownCoord.y + size.y, DOTSIZE, 0, Math.PI * 2, false);
         ctx.closePath();
-        ctx.arc((this.imageData.width + this.startDownCoord.x * 2) / 2, this.startDownCoord.y, DOTSIZE, 0, Math.PI * 2, false);
+        ctx.arc((size.x + this.startDownCoord.x * 2) / 2, this.startDownCoord.y, DOTSIZE, 0, Math.PI * 2, false);
         ctx.closePath();
-        ctx.arc(this.startDownCoord.x, (this.imageData.height + this.startDownCoord.y * 2) / 2, DOTSIZE, 0, Math.PI * 2, false);
+        ctx.arc(this.startDownCoord.x, (size.y + this.startDownCoord.y * 2) / 2, DOTSIZE, 0, Math.PI * 2, false);
         ctx.closePath();
-        ctx.arc(
-            this.startDownCoord.x + this.imageData.width,
-            (this.imageData.height + this.startDownCoord.y * 2) / 2,
-            DOTSIZE,
-            0,
-            Math.PI * 2,
-            false,
-        );
+        ctx.arc(this.startDownCoord.x + size.x, (size.y + this.startDownCoord.y * 2) / 2, DOTSIZE, 0, Math.PI * 2, false);
         ctx.closePath();
         ctx.fill();
     }
@@ -470,5 +456,23 @@ export abstract class SelectionToolService extends Tool {
                 ? this.startSelectionPoint.y + this.imageData.height
                 : mousePosition.y + this.imageData.height;
         return [IMAGE_DATA_START, IMAGE_DATA_END];
+    }
+
+    protected rotateCanvas(angle: number): void {
+        const ROTATION = (this.angle * Math.PI) / 180;
+        const SIZE = { x: this.imageData.width, y: this.imageData.height };
+        const TRANSLATION = { x: this.startDownCoord.x + SIZE.x / 2, y: this.startDownCoord.y + SIZE.y / 2 };
+        // rotation
+        this.drawingService.baseCtx.translate(TRANSLATION.x, TRANSLATION.y);
+        this.drawingService.baseCtx.rotate(ROTATION);
+        this.drawingService.previewCtx.translate(TRANSLATION.x, TRANSLATION.y);
+        this.drawingService.previewCtx.rotate(ROTATION);
+        this.startDownCoord = { x: -SIZE.x / 2, y: -SIZE.y / 2 };
+        this.pathLastCoord = { x: SIZE.x / 2, y: SIZE.y / 2 };
+    }
+
+    protected resetCanvasRotation(): void {
+        this.drawingService.baseCtx.setTransform(1, 0, 0, 1, 0, 0);
+        this.drawingService.previewCtx.setTransform(1, 0, 0, 1, 0, 0);
     }
 }

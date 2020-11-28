@@ -168,7 +168,7 @@ export class MagicWandService extends SelectionToolService {
 
         this.pathData.push({ x: xMax, y: yMax });
         this.rectangleService.mouseDownCoord = { x: xMin, y: yMin };
-        this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.pathData);
+        this.rectangleService.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
         this.drawnAnchor(this.drawingService.previewCtx);
 
         this.splitAndSortEdgeArray();
