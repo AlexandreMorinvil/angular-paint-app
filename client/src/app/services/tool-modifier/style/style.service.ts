@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ToolModifier } from '@app/classes/tool-modifier';
+import { StyleModifierState } from './style-state';
 
 export enum TextAlignment {
     left = 'gauche',
@@ -76,10 +77,22 @@ export class StyleService extends ToolModifier {
     setHasItalic(input: boolean): void {
         this.hasItalic = input;
     }
-    getFontSize() {
+
+    getFontSize(): number {
         return this.fontSize;
     }
-    setFontSize(input: number) {
+    setFontSize(input: number): void {
         this.fontSize = input;
+    }
+    getState(): StyleModifierState {
+        return new StyleModifierState(this.alignment, this.font, this.hasBold, this.hasItalic, this.fontSize);
+    }
+
+    setState(state: StyleModifierState): void {
+        this.alignment = state.alignment;
+        this.font = state.font;
+        this.hasBold = state.hasBold;
+        this.hasItalic = state.hasItalic;
+        this.fontSize = state.fontSize;
     }
 }

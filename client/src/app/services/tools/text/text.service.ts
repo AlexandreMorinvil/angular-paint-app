@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
+import { InteractionText } from '@app/classes/action/interaction-text';
 import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { StyleService, TextAlignment } from '@app/services/tool-modifier/style/style.service';
@@ -17,7 +19,12 @@ export class TextService extends Tool {
     private cursorPosition: Vec2 = { x: 0, y: 0 };
     private spaceBetweenLines: number = this.styleService.getFontSize();
 
-    constructor(public drawingService: DrawingService, private colorService: ColorService, private styleService: StyleService) {
+    constructor(
+        public drawingService: DrawingService,
+        private colorService: ColorService,
+        private styleService: StyleService,
+        private drawingStateTrackingService: DrawingStateTrackerService,
+    ) {
         super(drawingService, new Description('texte', 't', 'text_icon.png'));
         this.modifiers.push(this.colorService);
         this.modifiers.push(this.styleService);
@@ -30,6 +37,8 @@ export class TextService extends Tool {
         this.setAttributes(this.drawingService.baseCtx);
         const adjustment = this.findTextPositionAdjustment(this.drawingService.baseCtx);
         this.drawText(this.drawingService.baseCtx, adjustment);
+        this.drawingStateTrackingService.addAction(this, new InteractionText(this.text, this.textPosition, adjustment, this.numberOfLines));
+        console.log(this.drawingStateTrackingService);
         this.text = [''];
         this.numberOfLines = 1;
     }
@@ -70,7 +79,6 @@ export class TextService extends Tool {
             }
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             const adjustment = this.findTextPositionAdjustment(this.drawingService.previewCtx);
-            console.log(adjustment);
             this.drawText(this.drawingService.previewCtx, adjustment);
             this.showCursor(adjustment);
         }
@@ -84,7 +92,7 @@ export class TextService extends Tool {
         this.showCursor(adjustment);
     }
 
-    private setAttributes(ctx: CanvasRenderingContext2D) {
+    private setAttributes(ctx: CanvasRenderingContext2D): void {
         ctx.fillStyle = this.colorService.getPrimaryColor();
         ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
         ctx.font = this.styleService.getFontSize().toString().concat('px ').concat(this.styleService.getFont());
@@ -111,12 +119,12 @@ export class TextService extends Tool {
         this.spaceBetweenLines = this.styleService.getFontSize();
     }
 
-    private drawText(ctx: CanvasRenderingContext2D, adjustment: number) {
+    private drawText(ctx: CanvasRenderingContext2D, adjustment: number): void {
         for (let i = 0; i < this.numberOfLines; i++)
             ctx.fillText(this.text[i], this.textPosition.x - adjustment, this.textPosition.y + this.spaceBetweenLines * i);
     }
 
-    private isLetter(letter: string) {
+    private isLetter(letter: string): boolean {
         return letter.length === 1;
     }
 
@@ -141,8 +149,9 @@ export class TextService extends Tool {
     }
 
     private showCursor(adjustement: number = 0): void {
-        const cursorTopAdjustment = this.styleService.getFontSize() / 2 + 5;
-        const cursorBottomAdjustment = 5;
+        const edgeCursor = 5;
+        const cursorTopAdjustment = this.styleService.getFontSize() / 2 + edgeCursor;
+        const cursorBottomAdjustment = edgeCursor;
         this.drawingService.previewCtx.strokeStyle = '#000000';
         let textLength: number = this.drawingService.previewCtx.measureText(this.text[this.cursorPosition.y].substring(0, this.cursorPosition.x))
             .width;
@@ -180,7 +189,7 @@ export class TextService extends Tool {
     }
 
     private onEnterDown(): void {
-        let beforeCursor = this.text[this.cursorPosition.y].substring(0, this.cursorPosition.x);
+        const beforeCursor = this.text[this.cursorPosition.y].substring(0, this.cursorPosition.x);
         const afterCursor = this.text[this.cursorPosition.y].substring(this.cursorPosition.x);
         this.text[this.cursorPosition.y] = beforeCursor;
         this.numberOfLines++;
@@ -203,14 +212,14 @@ export class TextService extends Tool {
             this.cursorPosition.y = this.cursorPosition.y - 1;
             this.text[this.cursorPosition.y] = this.text[this.cursorPosition.y].concat(afterCursor);
         } else {
-            let beforeCursor = this.text[this.cursorPosition.y].substring(0, this.cursorPosition.x - 1);
+            const beforeCursor = this.text[this.cursorPosition.y].substring(0, this.cursorPosition.x - 1);
             const afterCursor = this.text[this.cursorPosition.y].substring(this.cursorPosition.x);
             this.text[this.cursorPosition.y] = beforeCursor.concat(afterCursor);
             this.cursorPosition.x -= 1;
         }
     }
 
-    private onDeleteDown() {
+    private onDeleteDown(): void {
         if (
             this.text[this.cursorPosition.y].substring(this.cursorPosition.x, this.text[this.cursorPosition.y].length) === '' &&
             this.cursorPosition.y === this.numberOfLines - 1
@@ -224,58 +233,73 @@ export class TextService extends Tool {
             }
             this.text[this.cursorPosition.y] = this.text[this.cursorPosition.y].concat(nextline);
         } else {
-            let beforeCursor = this.text[this.cursorPosition.y].substring(0, this.cursorPosition.x);
+            const beforeCursor = this.text[this.cursorPosition.y].substring(0, this.cursorPosition.x);
             const afterCursor = this.text[this.cursorPosition.y].substring(this.cursorPosition.x + 1);
             this.text[this.cursorPosition.y] = beforeCursor.concat(afterCursor);
         }
     }
-
-    private onArrowDown(event: KeyboardEvent): void {
-        // switch (event.key) {
-        if (event.key === 'ArrowUp') {
-            if (this.cursorPosition.y === 0) {
-                // dont do anything
-            } else {
-                this.cursorPosition.y -= 1;
-                if (this.styleService.getAlignment() !== TextAlignment.right) {
-                    if (this.cursorPosition.x > this.text[this.cursorPosition.y].length)
-                        this.cursorPosition.x = this.text[this.cursorPosition.y].length;
+    // Since the behaviors of the arrows needs to account for a lot of differents scenarios, the tslint:disable is justified
+    // tslint:disable:cyclomatic-complexity
+    onArrowDown(event: KeyboardEvent): void {
+        switch (event.key) {
+            case 'ArrowUp': {
+                if (this.cursorPosition.y === 0) {
+                    // dont do anything
                 } else {
-                    this.cursorPosition.x =
-                        this.cursorPosition.x - this.text[this.cursorPosition.y + 1].length + this.text[this.cursorPosition.y].length;
+                    this.cursorPosition.y -= 1;
+                    if (this.styleService.getAlignment() !== TextAlignment.right) {
+                        if (this.cursorPosition.x > this.text[this.cursorPosition.y].length)
+                            this.cursorPosition.x = this.text[this.cursorPosition.y].length;
+                    } else {
+                        this.cursorPosition.x =
+                            this.cursorPosition.x - this.text[this.cursorPosition.y + 1].length + this.text[this.cursorPosition.y].length;
+                    }
                 }
             }
-        } else if (event.key === 'ArrowRight') {
-            if (this.cursorPosition.x === this.text[this.cursorPosition.y].length && this.cursorPosition.y === this.numberOfLines - 1) {
-                // dont do anything
-            } else if (this.cursorPosition.x === this.text[this.cursorPosition.y].length) {
-                this.cursorPosition.x = 0;
-                this.cursorPosition.y += 1;
-            } else {
-                this.cursorPosition.x += 1;
-            }
-        } else if (event.key === 'ArrowDown') {
-            if (this.cursorPosition.y === this.numberOfLines - 1) {
-                // dont do anything
-            } else {
-                this.cursorPosition.y += 1;
-                if (this.styleService.getAlignment() !== TextAlignment.right) {
-                    if (this.cursorPosition.x > this.text[this.cursorPosition.y].length)
-                        this.cursorPosition.x = this.text[this.cursorPosition.y].length;
+            case 'ArrowRight': {
+                if (this.cursorPosition.x === this.text[this.cursorPosition.y].length && this.cursorPosition.y === this.numberOfLines - 1) {
+                    // dont do anything
+                } else if (this.cursorPosition.x === this.text[this.cursorPosition.y].length) {
+                    this.cursorPosition.x = 0;
+                    this.cursorPosition.y += 1;
                 } else {
-                    this.cursorPosition.x =
-                        this.cursorPosition.x - this.text[this.cursorPosition.y - 1].length + this.text[this.cursorPosition.y].length;
+                    this.cursorPosition.x += 1;
                 }
             }
-        } else if (event.key === 'ArrowLeft') {
-            if (this.cursorPosition.x === 0 && this.cursorPosition.y === 0) {
-                // dont do anything
-            } else if (this.cursorPosition.x === 0) {
-                this.cursorPosition.y -= 1;
-                this.cursorPosition.x = this.text[this.cursorPosition.y].length;
-            } else {
-                this.cursorPosition.x -= 1;
+            case 'ArrowDown': {
+                if (this.cursorPosition.y === this.numberOfLines - 1) {
+                    // dont do anything
+                } else {
+                    this.cursorPosition.y += 1;
+                    if (this.styleService.getAlignment() !== TextAlignment.right) {
+                        if (this.cursorPosition.x > this.text[this.cursorPosition.y].length)
+                            this.cursorPosition.x = this.text[this.cursorPosition.y].length;
+                    } else {
+                        this.cursorPosition.x =
+                            this.cursorPosition.x - this.text[this.cursorPosition.y - 1].length + this.text[this.cursorPosition.y].length;
+                    }
+                }
+            }
+            case 'ArrowLeft': {
+                if (this.cursorPosition.x === 0 && this.cursorPosition.y === 0) {
+                    // dont do anything
+                } else if (this.cursorPosition.x === 0) {
+                    this.cursorPosition.y -= 1;
+                    this.cursorPosition.x = this.text[this.cursorPosition.y].length;
+                } else {
+                    this.cursorPosition.x -= 1;
+                }
             }
         }
+    }
+
+    execute(interaction: InteractionText): void {
+        this.text = interaction.text;
+        this.textPosition = interaction.textPosition;
+        this.numberOfLines = interaction.numberOfLines;
+        this.setAttributes(this.drawingService.baseCtx);
+        this.drawText(this.drawingService.baseCtx, interaction.adjustment);
+        this.text = [''];
+        this.numberOfLines = 1;
     }
 }

@@ -22,11 +22,11 @@ export class AttributeStyleComponent {
         this.fontSize = this.styleService.getFontSize();
     }
 
-    getListAlignments() {
+    getListAlignments(): string[] {
         return this.styleService.getListAlignments();
     }
 
-    getListFonts() {
+    getListFonts(): string[] {
         return this.styleService.getListFonts();
     }
 
