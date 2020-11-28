@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { StyleService } from '@app/services/tool-modifier/style/style.service';
+import { ToolboxService } from '@app/services/toolbox/toolbox.service';
 
 @Component({
     selector: 'app-attributes-style',
@@ -13,7 +14,7 @@ export class AttributeStyleComponent {
     font: string;
     fontSize: number;
 
-    constructor(private styleService: StyleService) {
+    constructor(private styleService: StyleService, private toolbox: ToolboxService) {
         this.hasBold = this.styleService.getHasBold();
         this.hasItalic = this.styleService.getHasItalic();
         this.alignment = this.styleService.getAlignment();
@@ -24,15 +25,18 @@ export class AttributeStyleComponent {
     getListAlignments() {
         return this.styleService.getListAlignments();
     }
+
     getListFonts() {
         return this.styleService.getListFonts();
     }
+
     assign(): void {
         this.styleService.setHasBold(this.hasBold);
         this.styleService.setHasItalic(this.hasItalic);
         this.styleService.setAlignment(this.alignment);
         this.styleService.setFont(this.font);
         this.styleService.setFontSize(this.fontSize);
+        this.toolbox.getCurrentTool().onAttributeChange();
     }
 
     revert(): void {
