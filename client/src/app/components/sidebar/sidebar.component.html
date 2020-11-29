@@ -7,7 +7,7 @@
     </div>
     
     <div class="buttons-group to-bottom">
-        <button (click)="toogleMagnetism()" class="to-bottom has-tooltip double-width">
+        <button (click)="toogleMagnetism()" class="to-bottom has-tooltip double-width" [class.turned-on]="magnetismService.isActivated">
             <img src="assets/images/icon/magnet_icon.png" />
             <app-tooltip [text]="messageMagnet" class="tooltip"></app-tooltip>
         </button>

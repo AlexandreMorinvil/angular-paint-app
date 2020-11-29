@@ -31,7 +31,7 @@ export class SidebarComponent {
         private router: Router,
         private modalHandler: ModalHandlerService,
         private drawingStateTracker: DrawingStateTrackerService,
-        private magnetismService: MagnetismService,
+        public magnetismService: MagnetismService,
     ) {}
 
     toogleMagnetism(): void {

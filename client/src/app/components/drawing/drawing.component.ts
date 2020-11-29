@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MagnetismService } from '@app/services/magnetism/magnetism.service';
 import { ModalHandlerService } from '@app/services/modal-handler/modal-handler';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
 import { GridService } from '@app/services/tools/grid/grid.service';
@@ -34,6 +35,7 @@ export class DrawingComponent implements AfterViewInit {
         private workzoneSizeService: WorkzoneSizeService,
         private drawingStateTrackerService: DrawingStateTrackerService,
         private gridService: GridService,
+        private magnetismService: MagnetismService,
     ) {}
 
     ngAfterViewInit(): void {
@@ -175,6 +177,8 @@ export class DrawingComponent implements AfterViewInit {
             this.gridService.incrementSpacing();
         } else if (event.key.toLowerCase() === '-' && this.drawingService.shortcutEnable) {
             this.gridService.decrementSpacing();
+        } else if (event.key.toLowerCase() === 'm' && this.drawingService.shortcutEnable) {
+            this.magnetismService.toogleMagnetism();
         }
     }
 
