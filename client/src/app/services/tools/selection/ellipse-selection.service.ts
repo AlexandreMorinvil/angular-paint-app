@@ -137,13 +137,12 @@ export class EllipseSelectionService extends SelectionToolService {
         // translate
         if (this.draggingImage) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.ellipseService.mouseDownCoord = this.startDownCoord;
-            this.pathLastCoord = { x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y + this.imageData.height };
-            this.pathData.push(this.pathLastCoord);
-
             this.oldImage.src = this.drawingService.baseCtx.canvas.toDataURL();
             this.getImageRotation();
+            this.ellipseService.mouseDownCoord = this.startDownCoord;
 
+            this.pathLastCoord = { x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y + this.imageData.height };
+            this.pathData.push(this.pathLastCoord);
             //this.rotateCanvas(this.angle);
             //this.startDownCoord = { x: -this.imageData.width / 2, y: -this.imageData.height / 2 };
             this.showSelection(
@@ -155,14 +154,16 @@ export class EllipseSelectionService extends SelectionToolService {
             // reset canvas transform after rotation
             //this.resetCanvasRotation();
             const TRACKING_INFO = this.getActionTrackingInfo(this.startDownCoord);
+
             this.addActionTracking(TRACKING_INFO);
             this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.pathData);
             this.ellipseService.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
-            //this.startDownCoord = { x: MOUSE_POSITION.x - this.imageData.width / 2, y: MOUSE_POSITION.y - this.imageData.height / 2 };
+            //this.startDownCoord = { x: this.pathData[0].x, y: this.pathData[0].y };
+            //this.startDownCoord = { x: this.pathData[1].x - this.imageData.width, y: this.pathData[1].y - this.imageData.height };
+
             this.drawnAnchor(this.drawingService.previewCtx);
             this.draggingImage = false;
-            this.firstEllipseCoord = this.startDownCoord;
-            this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
+            //this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
             this.hasDoneFirstTranslation = true;
             // resizing
         } else if (this.clickOnAnchor) {
