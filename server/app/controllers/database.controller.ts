@@ -2,6 +2,7 @@ import { DatabaseService } from '@app/services/database/database.service';
 import { TYPES } from '@app/types';
 import { DrawingToDatabase } from '@common/communication/drawing-to-database';
 import { NextFunction, Request, Response, Router } from 'express';
+import * as fs from 'fs';
 import { StatusCodes } from 'http-status-codes';
 import { inject, injectable } from 'inversify';
 
@@ -112,8 +113,6 @@ export class DatabaseController {
     }
 
     private saveDrawIntoImageFolder(imageSource: string, id: string, path: string): void {
-        // tslint:disable:no-require-imports
-        const fs = require('fs');
         const nameDirectory = '/' + id + '.png';
         let img64 = imageSource.replace('data:image/png;base64,', '');
         img64 = img64.split(/\s/).join('');

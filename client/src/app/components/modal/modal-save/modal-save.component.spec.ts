@@ -162,7 +162,7 @@ describe('ModalSaveComponent', () => {
     it('validate value should return false if the tags is invalid', () => {
         const name = 'valid';
         const imageSource = 'KEJDHTERTGSU';
-        const tags: string[] = ['@a1!', '!!ml'];
+        const tags: string[] = ['', ''];
         const result = (component as any).validateValue(name, tags, imageSource);
         expect(result).toBeFalse();
     });
