@@ -134,17 +134,20 @@ export class EllipseSelectionService extends SelectionToolService {
 
     onMouseUp(event: MouseEvent): void {
         const MOUSE_POSITION = this.getPositionFromMouse(event);
+        const SIZE = { x: this.imageData.width, y: this.imageData.height };
+        const TRANSLATION = { x: this.startDownCoord.x + SIZE.x / 2, y: this.startDownCoord.y + SIZE.y / 2 };
+        const MEMORY_COORDS = this.startDownCoord;
+        const MAX_SIDE = Math.max(SIZE.x, SIZE.y);
         // translate
         if (this.draggingImage) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.oldImage.src = this.drawingService.baseCtx.canvas.toDataURL();
             this.getImageRotation();
             this.ellipseService.mouseDownCoord = this.startDownCoord;
-
             this.pathLastCoord = { x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y + this.imageData.height };
             this.pathData.push(this.pathLastCoord);
-            //this.rotateCanvas(this.angle);
-            //this.startDownCoord = { x: -this.imageData.width / 2, y: -this.imageData.height / 2 };
+            this.rotateCanvas(this.angle);
+            this.startDownCoord = { x: -this.imageData.width / 2, y: -this.imageData.height / 2 };
             this.showSelection(
                 this.drawingService.baseCtx,
                 this.image,
@@ -152,19 +155,32 @@ export class EllipseSelectionService extends SelectionToolService {
                 this.firstEllipseCoord,
             );
             // reset canvas transform after rotation
-            //this.resetCanvasRotation();
+            this.resetCanvasRotation();
+            this.startDownCoord = this.ellipseService.mouseDownCoord;
             const TRACKING_INFO = this.getActionTrackingInfo(this.startDownCoord);
-
             this.addActionTracking(TRACKING_INFO);
-            this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.pathData);
-            this.ellipseService.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
+            //this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.pathData);
+            //this.ellipseService.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
             //this.startDownCoord = { x: this.pathData[0].x, y: this.pathData[0].y };
             //this.startDownCoord = { x: this.pathData[1].x - this.imageData.width, y: this.pathData[1].y - this.imageData.height };
 
-            this.drawnAnchor(this.drawingService.previewCtx);
+            //this.drawnAnchor(this.drawingService.previewCtx);
             this.draggingImage = false;
+            //this.firstEllipseCoord = this.startDownCoord;
             //this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
             this.hasDoneFirstTranslation = true;
+            // Added
+
+            // draw selection preview
+            this.startDownCoord = { x: TRANSLATION.x - MAX_SIDE / 2, y: TRANSLATION.y - MAX_SIDE / 2 };
+            this.pathLastCoord = { x: this.startDownCoord.x + MAX_SIDE, y: this.startDownCoord.y + MAX_SIDE };
+            this.pathData.push(this.pathLastCoord);
+            this.ellipseService.mouseDownCoord = this.startDownCoord;
+            this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.pathData);
+            this.ellipseService.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
+            this.drawnAnchor(this.drawingService.previewCtx, { x: MAX_SIDE, y: MAX_SIDE });
+            this.clearPath();
+            this.startDownCoord = MEMORY_COORDS;
             // resizing
         } else if (this.clickOnAnchor) {
             this.getAnchorHit(this.drawingService.baseCtx, MOUSE_POSITION, 1);
@@ -189,6 +205,7 @@ export class EllipseSelectionService extends SelectionToolService {
             const TRACKING_INFO = this.getActionTrackingInfo(MOUSE_POSITION);
             this.addActionTracking(TRACKING_INFO);
             this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
+
             // creation
         } else if (this.mouseDown) {
             if (this.ellipseService.shiftDown) {
