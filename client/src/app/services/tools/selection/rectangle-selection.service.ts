@@ -4,6 +4,7 @@ import { Description } from '@app/classes/description';
 import { MouseButton } from '@app/classes/mouse';
 import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MagnetismService } from '@app/services/magnetism/magnetism.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
@@ -21,8 +22,9 @@ export class RectangleSelectionService extends SelectionToolService {
         private tracingService: TracingService,
         private colorService: ColorService,
         private widthService: WidthService,
+        magnetismService: MagnetismService,
     ) {
-        super(drawingService, colorService, new Description('selection rectangle', 'r', 'rectangle-selection.png'));
+        super(drawingService, colorService, new Description('selection rectangle', 'r', 'rectangle-selection.png'), magnetismService);
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -62,7 +64,7 @@ export class RectangleSelectionService extends SelectionToolService {
     }
 
     onMouseMove(event: MouseEvent): void {
-        const mousePosition = this.getPositionFromMouse(event);
+        const mousePosition = this.getPositionFromMouse(event, true);
         // translate
         if (this.draggingImage && this.localMouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -87,7 +89,7 @@ export class RectangleSelectionService extends SelectionToolService {
     }
 
     onMouseUp(event: MouseEvent): void {
-        const mousePosition = this.getPositionFromMouse(event);
+        const mousePosition = this.getPositionFromMouse(event, true);
         // translate
         if (this.draggingImage) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);

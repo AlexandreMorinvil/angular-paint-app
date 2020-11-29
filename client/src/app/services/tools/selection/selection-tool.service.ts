@@ -3,6 +3,7 @@ import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MagnetismService } from '@app/services/magnetism/magnetism.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 
 export enum Anchors {
@@ -40,7 +41,7 @@ export abstract class SelectionToolService extends Tool {
     protected localMouseDown: boolean = false;
     protected startSelectionPoint: Vec2;
 
-    constructor(drawingService: DrawingService, private color: ColorService, description: Description) {
+    constructor(drawingService: DrawingService, private color: ColorService, description: Description, protected magnetismService: MagnetismService) {
         super(drawingService, description);
         this.mouseDown = false;
         this.clearPath();
@@ -49,6 +50,12 @@ export abstract class SelectionToolService extends Tool {
         this.clickOnAnchor = false;
         this.shiftDown = false;
         this.hasDoneFirstTranslation = false;
+    }
+
+    getPositionFromMouse(event: MouseEvent, isMagnetisc: Boolean = false): Vec2 {
+        const clickCoordinate: Vec2 = { x: event.offsetX, y: event.offsetY } as Vec2;
+        if (this.magnetismService.isActivated && isMagnetisc) return this.magnetismService.getNearestGridCoordinate(clickCoordinate)
+        else return clickCoordinate;
     }
 
     onEscapeDown(): void {

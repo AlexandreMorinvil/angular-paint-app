@@ -46,6 +46,14 @@ button.active {
     background-color: rgb(227, 205, 61);
 }
 
+.double-width {
+    width: calc(2 * var(--sidebar-width) - 1px);
+}
+
+.double-width img {
+    width: 40%;
+}
+
 .tooltip {
     visibility: hidden;
 }

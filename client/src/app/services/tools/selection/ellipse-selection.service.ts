@@ -5,6 +5,7 @@ import { MouseButton } from '@app/classes/mouse';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MagnetismService } from '@app/services/magnetism/magnetism.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
@@ -27,8 +28,9 @@ export class EllipseSelectionService extends SelectionToolService {
         private tracingService: TracingService,
         private colorService: ColorService,
         private widthService: WidthService,
+        magnetismService: MagnetismService,
     ) {
-        super(drawingService, colorService, new Description('selection ellipse', 's', 'ellipse-selection.png'));
+        super(drawingService, colorService, new Description('selection ellipse', 's', 'ellipse-selection.png'), magnetismService);
         this.image = new Image();
         this.oldImage = new Image();
     }

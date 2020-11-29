@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Tool } from '@app/classes/tool';
 import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MagnetismService } from '@app/services/magnetism/magnetism.service';
 import { ModalHandlerService } from '@app/services/modal-handler/modal-handler';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
 
@@ -22,13 +23,20 @@ export class SidebarComponent {
     messageUndo: string = 'Annuler\n(Raccourci: Ctr + Z)';
     messageRedo: string = 'Refaire\n(Raccourci: Ctr + Shift + Z)';
 
+    messageMagnet: string = 'Magnetisme\n(Raccourci: M)';
+
     constructor(
         private toolboxSevice: ToolboxService,
         private drawingService: DrawingService,
         private router: Router,
         private modalHandler: ModalHandlerService,
         private drawingStateTracker: DrawingStateTrackerService,
+        private magnetismService: MagnetismService,
     ) {}
+
+    toogleMagnetism(): void {
+        this.magnetismService.toogleMagnetism();
+    }
 
     undo(): void {
         this.drawingStateTracker.undo();

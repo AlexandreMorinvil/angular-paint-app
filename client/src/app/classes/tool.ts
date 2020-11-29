@@ -56,8 +56,8 @@ export abstract class Tool {
 
     onCtrlADown(): void {}
 
-    getPositionFromMouse(event: MouseEvent): Vec2 {
-        return { x: event.offsetX, y: event.offsetY };
+    getPositionFromMouse(event: MouseEvent, isMagnetisc: Boolean = false): Vec2 {
+        return { x: event.offsetX, y: event.offsetY } as Vec2;
     }
 
     execute(interaction: Interaction): void {}
