@@ -1,3 +1,4 @@
+import { DrawingToEmail } from '@common/communication/drawing-to-email';
 import * as FormData from 'form-data';
 import * as fs from 'fs';
 import { request } from 'http';
@@ -6,7 +7,12 @@ import 'reflect-metadata';
 
 @injectable()
 export class EmailService {
-    async sendEmail(email: string, ext: string): Promise<number> {
+    async sendEmail(drawingToEmail: DrawingToEmail): Promise<number> {
+        const email = drawingToEmail.emailAdress;
+        const data = drawingToEmail.imageSrc.split(';base64,');
+        //const base64Image = data.pop();
+        const ext = data[0].split('/').pop();
+
         const form = new FormData();
         form.append('to', email);
         const file = fs.createReadStream('temp.' + ext);
