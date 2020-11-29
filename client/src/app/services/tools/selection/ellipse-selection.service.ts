@@ -144,8 +144,8 @@ export class EllipseSelectionService extends SelectionToolService {
             this.oldImage.src = this.drawingService.baseCtx.canvas.toDataURL();
             this.getImageRotation();
 
-            this.rotateCanvas(this.angle);
-            this.startDownCoord = { x: -this.imageData.width / 2, y: -this.imageData.height / 2 };
+            //this.rotateCanvas(this.angle);
+            //this.startDownCoord = { x: -this.imageData.width / 2, y: -this.imageData.height / 2 };
             this.showSelection(
                 this.drawingService.baseCtx,
                 this.image,
@@ -153,12 +153,12 @@ export class EllipseSelectionService extends SelectionToolService {
                 this.firstEllipseCoord,
             );
             // reset canvas transform after rotation
-            this.resetCanvasRotation();
+            //this.resetCanvasRotation();
             const TRACKING_INFO = this.getActionTrackingInfo(this.startDownCoord);
             this.addActionTracking(TRACKING_INFO);
             this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.pathData);
             this.ellipseService.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
-            this.startDownCoord = { x: MOUSE_POSITION.x - this.imageData.width / 2, y: MOUSE_POSITION.y - this.imageData.height / 2 };
+            //this.startDownCoord = { x: MOUSE_POSITION.x - this.imageData.width / 2, y: MOUSE_POSITION.y - this.imageData.height / 2 };
             this.drawnAnchor(this.drawingService.previewCtx);
             this.draggingImage = false;
             this.firstEllipseCoord = this.startDownCoord;
