@@ -40,16 +40,16 @@ export class ExportComponent implements AfterViewInit {
 
     exportToPNG(): void {
         if (this.validateValue()) {
-            const drawName = this.drawingName.value;
+            const drawingName = this.drawingName.value;
             const format = 'png';
-            this.exportDrawingService.exportDraw(drawName, format);
+            this.exportDrawingService.exportDraw(drawingName, format);
         }
     }
     exportToJPG(): void {
         if (this.validateValue()) {
-            const drawName = this.drawingName.value;
+            const drawingName = this.drawingName.value;
             const format = 'jpeg';
-            this.exportDrawingService.exportDraw(drawName, format);
+            this.exportDrawingService.exportDraw(drawingName, format);
         }
     }
     private validateValue(): boolean {
