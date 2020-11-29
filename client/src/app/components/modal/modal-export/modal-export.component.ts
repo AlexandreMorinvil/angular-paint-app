@@ -13,7 +13,7 @@ import { ExportDrawingService } from '@app/services/export/export-drawing.servic
 })
 export class ExportComponent implements AfterViewInit {
     visible: boolean = true;
-    drawName: FormControl = new FormControl('', Validators.required);
+    drawingName: FormControl = new FormControl('', Validators.required);
     constructor(
         public exportDrawingService: ExportDrawingService,
         public drawingService: DrawingService,
@@ -40,20 +40,20 @@ export class ExportComponent implements AfterViewInit {
 
     exportToPNG(): void {
         if (this.validateValue()) {
-            const drawName = this.drawName.value;
+            const drawName = this.drawingName.value;
             const format = 'png';
             this.exportDrawingService.exportDraw(drawName, format);
         }
     }
     exportToJPG(): void {
         if (this.validateValue()) {
-            const drawName = this.drawName.value;
+            const drawName = this.drawingName.value;
             const format = 'jpeg';
             this.exportDrawingService.exportDraw(drawName, format);
         }
     }
     private validateValue(): boolean {
-        return this.validateDrawName(this.drawName.value);
+        return this.validateDrawName(this.drawingName.value);
     }
 
     private validateDrawName(name: string): boolean {
