@@ -10,7 +10,7 @@ import { TracingService } from '@app/services/tool-modifier/tracing/tracing.serv
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
 import { SelectionToolService } from '@app/services/tools/selection/selection-tool.service';
-import { EdgePixelsOneRegion } from './edge-pixel';
+
 @Injectable({
     providedIn: 'root',
 })
@@ -18,11 +18,9 @@ export class MagicWandService extends SelectionToolService {
     private startR: number;
     private startG: number;
     private startB: number;
-    private edgePixelsSplitted: EdgePixelsOneRegion[] = [];
     private edgePixelsAllRegions: Vec2[] = [];
     protected image: HTMLImageElement;
     protected oldImage: HTMLImageElement;
-    private pathStartCoordReference: Vec2;
     protected firstMagicCoord: Vec2;
     protected pathLastCoord: Vec2;
     private canvasData: Uint8ClampedArray;
@@ -43,13 +41,20 @@ export class MagicWandService extends SelectionToolService {
     }
 
     onMouseDown(event: MouseEvent): void {
+        if (!this.mouseDown) {
+            this.onEscapeDown();
+        }
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.mouseDownCoord = this.getPositionFromMouse(event);
         this.localMouseDown = event.button === MouseButton.Left;
         this.resetTransform();
-
-        // translate
-        if (this.selectionCreated && this.hitSelection(this.mouseDownCoord.x, this.mouseDownCoord.y)) {
+        // resizing
+        if (this.selectionCreated && this.checkHit(this.mouseDownCoord)) {
+            this.getAnchorHit(this.drawingService.previewCtx, this.mouseDownCoord, 3);
+            this.pathLastCoord = this.mouseDownCoord;
+            this.startSelectionPoint = this.startDownCoord;
+            // translate
+        } else if (this.selectionCreated && this.hitSelection(this.mouseDownCoord.x, this.mouseDownCoord.y)) {
             // Puts back what was under the selection
             if (this.hasDoneFirstTranslation) {
                 this.startSelectionPoint = this.startDownCoord;
@@ -102,10 +107,11 @@ export class MagicWandService extends SelectionToolService {
             this.pathLastCoord = this.pathData[this.pathData.length - 1];
             this.startSelectionPoint = this.startDownCoord;
         }
+        this.mouseDown = true;
     }
 
     onMouseMove(event: MouseEvent): void {
-        const mousePosition = this.getPositionFromMouse(event);
+        const MOUSE_POSITION = this.getPositionFromMouse(event);
 
         // translate
         if (this.draggingImage && this.localMouseDown) {
@@ -117,17 +123,23 @@ export class MagicWandService extends SelectionToolService {
                 { x: this.imageData.width, y: this.imageData.height },
                 this.firstMagicCoord,
             );
-            this.startDownCoord = this.evenImageStartCoord(mousePosition);
+            this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION);
             this.pathLastCoord = { x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y + this.imageData.height };
+            // resizing
+        } else if (this.clickOnAnchor && this.localMouseDown) {
+            this.pathData.push({ x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y + this.imageData.height });
+            this.clearCanvasSelection();
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.getAnchorHit(this.drawingService.previewCtx, MOUSE_POSITION, 3);
         }
     }
 
-    onMouseUp(): void {
+    onMouseUp(event: MouseEvent): void {
+        const MOUSE_POSITION = this.getPositionFromMouse(event);
         // translate
         if (this.draggingImage) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             // saves what was under the selection
-
             this.oldImage.src = this.drawingService.baseCtx.canvas.toDataURL();
             this.getImageRotation();
             this.showSelection(this.drawingService.baseCtx, this.image, { x: this.imageData.width, y: this.imageData.height }, this.firstMagicCoord);
@@ -139,6 +151,30 @@ export class MagicWandService extends SelectionToolService {
             this.drawSelectionCoutour();
             this.draggingImage = false;
             this.hasDoneFirstTranslation = true;
+            // resizing
+        } else if (this.clickOnAnchor) {
+            this.getAnchorHit(this.drawingService.baseCtx, MOUSE_POSITION, 3);
+            this.pathData.push(MOUSE_POSITION);
+            this.offsetAnchors(this.startDownCoord);
+            this.clearPath();
+            this.imageData = this.drawingService.baseCtx.getImageData(
+                this.startDownCoord.x,
+                this.startDownCoord.y,
+                this.resizeWidth,
+                this.resizeHeight,
+            );
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.getImageRotation();
+            this.pathData.push({ x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y + this.imageData.height });
+            //this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.pathData);
+            //this.ellipseService.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
+            this.drawnAnchor(this.drawingService.previewCtx);
+            this.clearPath();
+            this.clickOnAnchor = false;
+            this.hasDoneResizing = true;
+            //const TRACKING_INFO = this.getActionTrackingInfo(MOUSE_POSITION);
+            //this.addActionTracking(TRACKING_INFO);
+            this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
         }
 
         this.localMouseDown = false;
@@ -147,6 +183,9 @@ export class MagicWandService extends SelectionToolService {
 
     // tslint:disable:no-magic-numbers
     onMouseWheel(event: WheelEvent): void {
+        if (!this.mouseDown) {
+            this.onEscapeDown();
+        }
         // setting up variable/const
         if (this.selectionCreated) {
             const SIZE = { x: this.imageData.width, y: this.imageData.height };
@@ -157,13 +196,9 @@ export class MagicWandService extends SelectionToolService {
             // clearing old spot
             const MAX_SIDE = Math.hypot(SIZE.x, SIZE.y);
             this.putImageData({ x: TRANSLATION.x - MAX_SIDE / 2, y: TRANSLATION.y - MAX_SIDE / 2 }, this.drawingService.baseCtx, this.oldImageData);
-            /*if (!this.hasDoneFirstTranslation || this.hasDoneResizing) {
-                this.ellipseService.mouseDownCoord = this.firstEllipseCoord;
-                this.pathLastCoord = { x: MEMORY_COORDS.x + SIZE.x, y: MEMORY_COORDS.y + SIZE.y };
-                this.pathData.push(this.pathLastCoord);
-                this.clearCanvasEllipse();
-                this.clearPath();
-            }*/
+            if (!this.hasDoneFirstTranslation || this.hasDoneResizing) {
+                this.clearCanvasSelection();
+            }
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
             // calculate desire angle for canvas rotation
@@ -174,6 +209,9 @@ export class MagicWandService extends SelectionToolService {
                 angleVoulue = 15;
             }
             this.angle += ORIENTATION * angleVoulue;
+            if (this.angle >= 360) {
+                this.angle -= 360;
+            }
             this.rotateCanvas(this.angle);
             this.startDownCoord = { x: -SIZE.x / 2, y: -SIZE.y / 2 };
             this.showSelection(this.drawingService.baseCtx, this.image, SIZE, this.firstMagicCoord);
@@ -186,9 +224,9 @@ export class MagicWandService extends SelectionToolService {
             this.startDownCoord = { x: TRANSLATION.x - MAX_SIDE / 2, y: TRANSLATION.y - MAX_SIDE / 2 };
             this.pathLastCoord = { x: this.startDownCoord.x + MAX_SIDE, y: this.startDownCoord.y + MAX_SIDE };
             this.pathData.push(this.pathLastCoord);
-            // this.ellipseService.mouseDownCoord = this.startDownCoord;
-            // this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.pathData);
-            // this.ellipseService.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
+            this.drawingService.previewCtx.beginPath();
+            this.drawingService.previewCtx.rect(this.startDownCoord.x, this.startDownCoord.y, MAX_SIDE, MAX_SIDE);
+            this.drawingService.previewCtx.stroke();
             this.drawnAnchor(this.drawingService.previewCtx, { x: MAX_SIDE, y: MAX_SIDE });
             this.clearPath();
             this.startDownCoord = MEMORY_COORDS;
@@ -436,30 +474,6 @@ export class MagicWandService extends SelectionToolService {
         canvas.restore();
     }
 
-    private getPathToClip(): Path2D {
-        const magicWandPath = new Path2D();
-        if (!(this.pathStartCoordReference === this.startDownCoord)) {
-            const coordDiff = {
-                x: this.startDownCoord.x - this.pathStartCoordReference.x,
-                y: this.startDownCoord.y - this.pathStartCoordReference.y,
-            };
-            for (const region of this.edgePixelsSplitted) {
-                for (const edge of region.edgePixels) {
-                    edge.x = edge.x + coordDiff.x;
-                    edge.y = edge.y + coordDiff.y;
-                }
-            }
-            this.pathStartCoordReference = this.startDownCoord;
-        }
-        for (const region of this.edgePixelsSplitted) {
-            magicWandPath.moveTo(region.edgePixels[0].x, region.edgePixels[0].y);
-            for (const edge of region.edgePixels) {
-                magicWandPath.lineTo(edge.x, edge.y);
-            }
-        }
-        return magicWandPath;
-    }
-
     private getImageRotation(): void {
         const MAX_SIDE = Math.hypot(this.imageData.width, this.imageData.height);
         this.oldImageData = this.drawingService.baseCtx.getImageData(
@@ -468,6 +482,13 @@ export class MagicWandService extends SelectionToolService {
             MAX_SIDE,
             MAX_SIDE,
         );
+    }
+
+    private clearCanvasSelection(): void {
+        const PATH = this.getPathToClip();
+        PATH.closePath();
+        this.drawingService.baseCtx.fillStyle = 'white';
+        this.drawingService.baseCtx.fill(PATH, 'evenodd');
     }
 
     onArrowDown(event: KeyboardEvent): void {
@@ -511,10 +532,23 @@ export class MagicWandService extends SelectionToolService {
                 this.pathData.push(this.pathLastCoord);
                 this.clearPath();
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                this.onMouseUp();
+                this.onMouseUp({ offsetX: 25, offsetY: 25, button: 0 } as MouseEvent);
                 this.draggingImage = false;
                 this.hasDoneFirstTranslation = true;
             }
+        }
+    }
+
+    onShiftDown(event: KeyboardEvent): void {
+        if (!event.ctrlKey) {
+            this.shiftDown = true;
+            this.ratio = this.getRatio(this.imageData.width, this.imageData.height);
+        }
+    }
+
+    onShiftUp(event: KeyboardEvent): void {
+        if (!event.ctrlKey) {
+            this.shiftDown = false;
         }
     }
 

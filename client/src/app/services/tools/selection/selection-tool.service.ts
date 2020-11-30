@@ -4,6 +4,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
+import { EdgePixelsOneRegion } from './edge-pixel';
 
 export enum Anchors {
     Default = 0,
@@ -46,6 +47,8 @@ export abstract class SelectionToolService extends Tool {
     protected angle: number;
     protected resizeWidth: number;
     protected resizeHeight: number;
+    protected pathStartCoordReference: Vec2;
+    protected edgePixelsSplitted: EdgePixelsOneRegion[] = [];
 
     constructor(drawingService: DrawingService, private color: ColorService, description: Description) {
         super(drawingService, description);
@@ -285,10 +288,13 @@ export abstract class SelectionToolService extends Tool {
         }
         if (caller === 1) {
             // ellipse is calling
-            this.showSelectionResize(canvas, SIZE, adjustStartCoords, adjustOffsetCoords, mousePosition);
+            this.showSelectionResize(canvas, SIZE, adjustStartCoords, adjustOffsetCoords, mousePosition, caller);
         } else if (caller === 2) {
             // rectangle is calling
             this.drawImage(canvas, adjustStartCoords, this.startDownCoord, adjustOffsetCoords, this.image, SIZE);
+        } else if (caller === 3) {
+            // magic wand is calling
+            this.showSelectionResize(canvas, SIZE, adjustStartCoords, adjustOffsetCoords, mousePosition, caller);
         }
         // reset canvas transform after mirror effect
         canvas.setTransform(1, 0, 0, 1, 0, 0);
@@ -421,11 +427,24 @@ export abstract class SelectionToolService extends Tool {
         adjustStartCoords: Vec2,
         adjustOffsetCoords: Vec2,
         mousePosition: Vec2,
+        caller: number,
     ): void {
         this.pathLastCoord = mousePosition;
         canvas.save();
-        const ELLIPSE_PATH = this.getPath(0, adjustStartCoords);
-        canvas.clip(ELLIPSE_PATH);
+        if (caller === 1) {
+            // ellipse is calling
+            const PATH = this.getPath(0, adjustStartCoords);
+            canvas.clip(PATH);
+        }
+        if (caller === 3) {
+            // magic wand is calling
+            //const MEMORY_START = this.startDownCoord;
+            //this.startDownCoord = adjustStartCoords;
+            //const DIFF = mousePosition.x *100 / 1;
+            const PATH = this.getPathToClip();
+            //this.startDownCoord = MEMORY_START;
+            canvas.clip(PATH);
+        }
         this.drawImage(canvas, adjustStartCoords, this.startDownCoord, adjustOffsetCoords, this.image, size);
         canvas.restore();
     }
@@ -442,6 +461,55 @@ export abstract class SelectionToolService extends Tool {
         const CONTOUR_RADIUS_Y = Math.abs(RADIUS_Y - 1 / 2);
         ELLIPSE_PATH.ellipse(CENTER_X, CENTER_Y, CONTOUR_RADIUS_X + offset, CONTOUR_RADIUS_Y + offset, 0, 0, Math.PI * 2, false);
         return ELLIPSE_PATH;
+    }
+
+    protected getPathToClip(): Path2D {
+        const magicWandPath = new Path2D();
+        if (!(this.pathStartCoordReference === this.startDownCoord)) {
+            const coordDiff = {
+                x: this.startDownCoord.x - this.pathStartCoordReference.x,
+                y: this.startDownCoord.y - this.pathStartCoordReference.y,
+            };
+            for (const region of this.edgePixelsSplitted) {
+                for (const edge of region.edgePixels) {
+                    edge.x = edge.x + coordDiff.x;
+                    edge.y = edge.y + coordDiff.y;
+                }
+            }
+            this.pathStartCoordReference = this.startDownCoord;
+        }
+        for (const region of this.edgePixelsSplitted) {
+            magicWandPath.moveTo(region.edgePixels[0].x, region.edgePixels[0].y);
+            for (const edge of region.edgePixels) {
+                magicWandPath.lineTo(edge.x, edge.y);
+            }
+        }
+        return magicWandPath;
+    }
+
+    protected getPathToClipResize(): Path2D {
+        const magicWandPath = new Path2D();
+        if (!(this.pathStartCoordReference === this.startDownCoord)) {
+            const coordDiff = {
+                x: this.startDownCoord.x - this.pathStartCoordReference.x,
+                y: this.startDownCoord.y - this.pathStartCoordReference.y,
+            };
+            for (const region of this.edgePixelsSplitted) {
+                for (const edge of region.edgePixels) {
+                    edge.x = edge.x + coordDiff.x;
+                    edge.y = edge.y + coordDiff.y;
+                }
+            }
+            this.pathStartCoordReference = this.startDownCoord;
+        }
+        let edgePixel = this.edgePixelsSplitted;
+        for (const region of edgePixel) {
+            magicWandPath.moveTo(region.edgePixels[0].x, region.edgePixels[0].y);
+            for (const edge of region.edgePixels) {
+                magicWandPath.lineTo(edge.x, edge.y);
+            }
+        }
+        return magicWandPath;
     }
 
     protected getActionTrackingInfo(mousePosition: Vec2): Vec2[] {

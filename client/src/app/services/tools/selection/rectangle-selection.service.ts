@@ -29,7 +29,7 @@ export class RectangleSelectionService extends SelectionToolService {
 
     onMouseDown(event: MouseEvent): void {
         if (!this.mouseDown) {
-            this.selectionCreated = false;
+            this.onEscapeDown();
         }
         this.arrowPress = [false, false, false, false];
         this.arrowDown = false;
@@ -84,7 +84,7 @@ export class RectangleSelectionService extends SelectionToolService {
             this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION);
             this.putImageData(this.evenImageStartCoord(MOUSE_POSITION), this.drawingService.previewCtx, this.imageData);
             // resizing
-        } else if (this.clickOnAnchor && this.mouseDown) {
+        } else if (this.clickOnAnchor && this.localMouseDown) {
             this.drawingService.baseCtx.clearRect(this.startDownCoord.x, this.startDownCoord.y, this.imageData.width, this.imageData.height);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.getAnchorHit(this.drawingService.previewCtx, MOUSE_POSITION, 2);
@@ -306,6 +306,9 @@ export class RectangleSelectionService extends SelectionToolService {
 
     // tslint:disable:no-magic-numbers
     onMouseWheel(event: WheelEvent): void {
+        if (!this.mouseDown) {
+            this.onEscapeDown();
+        }
         if (this.selectionCreated) {
             // setting up variable/const
             const SIZE = { x: this.imageData.width, y: this.imageData.height };
@@ -329,7 +332,9 @@ export class RectangleSelectionService extends SelectionToolService {
                 angleVoulue = 15;
             }
             this.angle += ORIENTATION * angleVoulue;
-
+            if (this.angle >= 360) {
+                this.angle -= 360;
+            }
             // rotation
             this.rotateCanvas(this.angle);
             this.startDownCoord = { x: -SIZE.x / 2, y: -SIZE.y / 2 };

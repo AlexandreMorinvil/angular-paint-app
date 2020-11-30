@@ -33,7 +33,7 @@ export class EllipseSelectionService extends SelectionToolService {
 
     onMouseDown(event: MouseEvent): void {
         if (!this.mouseDown) {
-            this.selectionCreated = false;
+            this.onEscapeDown();
         }
         this.arrowPress = [false, false, false, false];
         this.arrowDown = false;
@@ -206,9 +206,8 @@ export class EllipseSelectionService extends SelectionToolService {
             const TRACKING_INFO = this.getActionTrackingInfo(MOUSE_POSITION);
             this.addActionTracking(TRACKING_INFO);
             this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
-
             // creation
-        } else if (this.mouseDown) {
+        } else if (this.localMouseDown) {
             if (this.ellipseService.shiftDown) {
                 const SQUARE = this.getSquaredSize(MOUSE_POSITION);
                 this.pathData.push({ x: SQUARE.x + this.startDownCoord.x, y: SQUARE.y + this.startDownCoord.y });
@@ -239,7 +238,7 @@ export class EllipseSelectionService extends SelectionToolService {
     onMouseWheel(event: WheelEvent): void {
         // setting up variable/const
         if (!this.mouseDown) {
-            this.selectionCreated = false;
+            this.onEscapeDown();
         }
         if (this.selectionCreated) {
             const SIZE = { x: this.imageData.width, y: this.imageData.height };
