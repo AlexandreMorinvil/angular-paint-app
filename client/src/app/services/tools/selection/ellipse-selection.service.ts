@@ -54,7 +54,7 @@ export class EllipseSelectionService extends SelectionToolService {
             this.pathData.push(this.pathLastCoord);
             this.startSelectionPoint = this.startDownCoord;
             if (this.hasDoneFirstTranslation) {
-                //this.clearCanvasEllipse(); //this is clearing unwanted area fix is needed
+                this.clearCanvasEllipse(); //this is clearing unwanted area fix is needed
                 this.showSelection(
                     this.drawingService.baseCtx,
                     this.oldImage,
