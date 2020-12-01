@@ -49,6 +49,8 @@ export abstract class SelectionToolService extends Tool {
     protected resizeHeight: number;
     protected pathStartCoordReference: Vec2;
     protected edgePixelsSplitted: EdgePixelsOneRegion[] = [];
+    protected selectionSize: Vec2;
+    protected firstEllipseCoord: Vec2;
 
     constructor(drawingService: DrawingService, private color: ColorService, description: Description) {
         super(drawingService, description);
@@ -70,7 +72,7 @@ export abstract class SelectionToolService extends Tool {
         this.arrowDown = true;
     }
 
-    protected drawnAnchor(ctx: CanvasRenderingContext2D, size: Vec2 = { x: this.imageData.width, y: this.imageData.height }): void {
+    protected drawnAnchor(ctx: CanvasRenderingContext2D, size: Vec2 = this.selectionSize): void {
         this.color.setPrimaryColor('#000000');
         ctx.beginPath();
         // start coner
@@ -109,14 +111,14 @@ export abstract class SelectionToolService extends Tool {
             this.anchorHit = Anchors.TopLeft;
         }
         // top middle
-        x = Math.pow(mouse.x - (this.startDownCoord.x + this.imageData.width / 2), 2);
+        x = Math.pow(mouse.x - (this.startDownCoord.x + this.selectionSize.x / 2), 2);
         y = Math.pow(mouse.y - this.startDownCoord.y, 2);
         if (x + y <= DOT_SIZE_SQUARE) {
             this.clickOnAnchor = true;
             this.anchorHit = Anchors.TopMiddle;
         }
         // top right corner
-        x = Math.pow(mouse.x - (this.imageData.width + this.startDownCoord.x), 2);
+        x = Math.pow(mouse.x - (this.selectionSize.x + this.startDownCoord.x), 2);
         y = Math.pow(mouse.y - this.startDownCoord.y, 2);
         if (x + y <= DOT_SIZE_SQUARE) {
             this.clickOnAnchor = true;
@@ -124,35 +126,35 @@ export abstract class SelectionToolService extends Tool {
         }
         // middle left
         x = Math.pow(mouse.x - this.startDownCoord.x, 2);
-        y = Math.pow(mouse.y - (this.startDownCoord.y + this.imageData.height / 2), 2);
+        y = Math.pow(mouse.y - (this.startDownCoord.y + this.selectionSize.y / 2), 2);
         if (x + y <= DOT_SIZE_SQUARE) {
             this.clickOnAnchor = true;
             this.anchorHit = Anchors.MiddleLeft;
         }
         // middle right
-        x = Math.pow(mouse.x - (this.imageData.width + this.startDownCoord.x), 2);
-        y = Math.pow(mouse.y - (this.startDownCoord.y + this.imageData.height / 2), 2);
+        x = Math.pow(mouse.x - (this.selectionSize.x + this.startDownCoord.x), 2);
+        y = Math.pow(mouse.y - (this.startDownCoord.y + this.selectionSize.y / 2), 2);
         if (x + y <= DOT_SIZE_SQUARE) {
             this.clickOnAnchor = true;
             this.anchorHit = Anchors.MiddleRight;
         }
         // bottom left corner
         x = Math.pow(mouse.x - this.startDownCoord.x, 2);
-        y = Math.pow(mouse.y - (this.imageData.height + this.startDownCoord.y), 2);
+        y = Math.pow(mouse.y - (this.selectionSize.y + this.startDownCoord.y), 2);
         if (x + y <= DOT_SIZE_SQUARE) {
             this.clickOnAnchor = true;
             this.anchorHit = Anchors.BottomLeft;
         }
         // bottom middle
-        x = Math.pow(mouse.x - (this.startDownCoord.x + this.imageData.width / 2), 2);
-        y = Math.pow(mouse.y - (this.imageData.height + this.startDownCoord.y), 2);
+        x = Math.pow(mouse.x - (this.startDownCoord.x + this.selectionSize.x / 2), 2);
+        y = Math.pow(mouse.y - (this.selectionSize.y + this.startDownCoord.y), 2);
         if (x + y <= DOT_SIZE_SQUARE) {
             this.clickOnAnchor = true;
             this.anchorHit = Anchors.BottomMiddle;
         }
         // bottom right corner
-        x = Math.pow(mouse.x - (this.imageData.width + this.startDownCoord.x), 2);
-        y = Math.pow(mouse.y - (this.imageData.height + this.startDownCoord.y), 2);
+        x = Math.pow(mouse.x - (this.selectionSize.x + this.startDownCoord.x), 2);
+        y = Math.pow(mouse.y - (this.selectionSize.y + this.startDownCoord.y), 2);
         if (x + y <= DOT_SIZE_SQUARE) {
             this.clickOnAnchor = true;
             this.anchorHit = Anchors.BottomRight;
@@ -169,8 +171,8 @@ export abstract class SelectionToolService extends Tool {
     }
 
     protected hitSelection(x: number, y: number): boolean {
-        const X_IN = x > this.startDownCoord.x && x < this.imageData.width + this.startDownCoord.x;
-        const Y_IN = y > this.startDownCoord.y && y < this.imageData.height + this.startDownCoord.y;
+        const X_IN = x > this.startDownCoord.x && x < this.selectionSize.x + this.startDownCoord.x;
+        const Y_IN = y > this.startDownCoord.y && y < this.selectionSize.y + this.startDownCoord.y;
         return X_IN && Y_IN;
     }
 
@@ -182,13 +184,13 @@ export abstract class SelectionToolService extends Tool {
 
     protected drawImage(
         canvas: CanvasRenderingContext2D,
-        startCoord: Vec2,
-        imageStart: Vec2,
-        offset: Vec2,
         image: HTMLImageElement,
-        size: Vec2,
+        imageStart: Vec2,
+        originalSize: Vec2,
+        destStartCoord: Vec2,
+        newSize: Vec2,
     ): void {
-        canvas.drawImage(image, imageStart.x, imageStart.y, size.x, size.y, startCoord.x, startCoord.y, offset.x, offset.y);
+        canvas.drawImage(image, imageStart.x, imageStart.y, originalSize.x, originalSize.y, destStartCoord.x, destStartCoord.y, newSize.x, newSize.y);
     }
 
     // tslint:disable:cyclomatic-complexity
@@ -196,49 +198,48 @@ export abstract class SelectionToolService extends Tool {
     protected getAnchorHit(canvas: CanvasRenderingContext2D, mousePosition: Vec2, caller: number): void {
         let adjustStartCoords: Vec2 = this.startDownCoord;
         let adjustOffsetCoords: Vec2 = { x: mousePosition.x - adjustStartCoords.x, y: mousePosition.y - adjustStartCoords.y };
-        const SIZE = { x: this.imageData.width, y: this.imageData.height };
         let scaleX = 1;
         let scaleY = 1;
         // tslint:disable:no-magic-numbers
         switch (this.anchorHit) {
             case Anchors.TopLeft:
-                adjustStartCoords = { x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y + this.imageData.height };
+                adjustStartCoords = { x: this.startDownCoord.x + this.selectionSize.x, y: this.startDownCoord.y + this.selectionSize.y };
                 adjustOffsetCoords = { x: mousePosition.x - adjustStartCoords.x, y: mousePosition.y - adjustStartCoords.y };
                 scaleX = adjustOffsetCoords.x > 0 ? -1 : 1;
                 scaleY = adjustOffsetCoords.y > 0 ? -1 : 1;
                 break;
             case Anchors.TopMiddle:
-                adjustStartCoords = { x: this.startDownCoord.x, y: this.startDownCoord.y + this.imageData.height };
-                adjustOffsetCoords = { x: this.imageData.width, y: mousePosition.y - adjustStartCoords.y };
-                mousePosition = { x: this.startDownCoord.x + this.imageData.width, y: mousePosition.y };
+                adjustStartCoords = { x: this.startDownCoord.x, y: this.startDownCoord.y + this.selectionSize.y };
+                adjustOffsetCoords = { x: this.selectionSize.x, y: mousePosition.y - adjustStartCoords.y };
+                mousePosition = { x: this.startDownCoord.x + this.selectionSize.x, y: mousePosition.y };
                 scaleY = adjustOffsetCoords.y > 0 ? -1 : 1;
                 break;
             case Anchors.TopRight:
-                adjustStartCoords = { x: this.startDownCoord.x, y: this.startDownCoord.y + this.imageData.height };
+                adjustStartCoords = { x: this.startDownCoord.x, y: this.startDownCoord.y + this.selectionSize.y };
                 adjustOffsetCoords = { x: mousePosition.x - adjustStartCoords.x, y: mousePosition.y - adjustStartCoords.y };
                 scaleX = adjustOffsetCoords.x < 0 ? -1 : 1;
                 scaleY = adjustOffsetCoords.y > 0 ? -1 : 1;
                 break;
             case Anchors.MiddleLeft:
-                adjustStartCoords = { x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y };
-                adjustOffsetCoords = { x: mousePosition.x - adjustStartCoords.x, y: this.imageData.height };
-                mousePosition = { x: mousePosition.x, y: this.startDownCoord.y + this.imageData.height };
+                adjustStartCoords = { x: this.startDownCoord.x + this.selectionSize.x, y: this.startDownCoord.y };
+                adjustOffsetCoords = { x: mousePosition.x - adjustStartCoords.x, y: this.selectionSize.y };
+                mousePosition = { x: mousePosition.x, y: this.startDownCoord.y + this.selectionSize.y };
                 scaleX = adjustOffsetCoords.x > 0 ? -1 : 1;
                 break;
             case Anchors.MiddleRight:
-                adjustOffsetCoords = { x: mousePosition.x - adjustStartCoords.x, y: this.imageData.height };
-                mousePosition = { x: mousePosition.x, y: this.startDownCoord.y + this.imageData.height };
+                adjustOffsetCoords = { x: mousePosition.x - adjustStartCoords.x, y: this.selectionSize.y };
+                mousePosition = { x: mousePosition.x, y: this.startDownCoord.y + this.selectionSize.y };
                 scaleX = adjustOffsetCoords.x < 0 ? -1 : 1;
                 break;
             case Anchors.BottomLeft:
-                adjustStartCoords = { x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y };
+                adjustStartCoords = { x: this.startDownCoord.x + this.selectionSize.x, y: this.startDownCoord.y };
                 adjustOffsetCoords = { x: mousePosition.x - adjustStartCoords.x, y: mousePosition.y - adjustStartCoords.y };
                 scaleX = adjustOffsetCoords.x > 0 ? -1 : 1;
                 scaleY = adjustOffsetCoords.y < 0 ? -1 : 1;
                 break;
             case Anchors.BottomMiddle:
-                adjustOffsetCoords = { x: this.imageData.width, y: mousePosition.y - adjustStartCoords.y };
-                mousePosition = { x: this.startDownCoord.x + this.imageData.width, y: mousePosition.y };
+                adjustOffsetCoords = { x: this.selectionSize.x, y: mousePosition.y - adjustStartCoords.y };
+                mousePosition = { x: this.startDownCoord.x + this.selectionSize.x, y: mousePosition.y };
                 scaleY = adjustOffsetCoords.y < 0 ? -1 : 1;
                 break;
             case Anchors.BottomRight:
@@ -252,12 +253,14 @@ export abstract class SelectionToolService extends Tool {
         // mirror effect
         canvas.scale(scaleX, scaleY);
         adjustStartCoords = { x: scaleX * adjustStartCoords.x, y: scaleY * adjustStartCoords.y };
+        //console.log(adjustOffsetCoords);
         adjustOffsetCoords = { x: scaleX * adjustOffsetCoords.x, y: scaleY * adjustOffsetCoords.y };
+        //console.log(adjustOffsetCoords);
         mousePosition = { x: scaleX * mousePosition.x, y: scaleY * mousePosition.y };
         // Resizing while keeping the aspect ratio
         if (this.shiftDown) {
-            const RATIO_WIDTH = this.imageData.width / this.ratio;
-            const RATIO_HEIGHT = this.imageData.height / this.ratio;
+            const RATIO_WIDTH = this.selectionSize.x / this.ratio;
+            const RATIO_HEIGHT = this.selectionSize.y / this.ratio;
             let value = adjustOffsetCoords.x % RATIO_WIDTH; ///////// CHANGER LES NOMS
             let value1 = adjustOffsetCoords.y % RATIO_HEIGHT;
             if (Math.abs(adjustOffsetCoords.x - value) / RATIO_WIDTH > Math.abs(adjustOffsetCoords.y - value1) / RATIO_HEIGHT) {
@@ -288,19 +291,47 @@ export abstract class SelectionToolService extends Tool {
         }
         if (caller === 1) {
             // ellipse is calling
-            this.showSelectionResize(canvas, SIZE, adjustStartCoords, adjustOffsetCoords, mousePosition, caller);
+            this.showSelectionResize(canvas, adjustStartCoords, adjustOffsetCoords, mousePosition, caller);
         } else if (caller === 2) {
             // rectangle is calling
-            this.drawImage(canvas, adjustStartCoords, this.startDownCoord, adjustOffsetCoords, this.image, SIZE);
+            this.drawImage(canvas, this.image, adjustStartCoords, this.selectionSize, this.startDownCoord, adjustOffsetCoords);
         } else if (caller === 3) {
             // magic wand is calling
-            this.showSelectionResize(canvas, SIZE, adjustStartCoords, adjustOffsetCoords, mousePosition, caller);
+            this.showSelectionResize(canvas, adjustStartCoords, adjustOffsetCoords, mousePosition, caller);
         }
         // reset canvas transform after mirror effect
         canvas.setTransform(1, 0, 0, 1, 0, 0);
         this.resizeWidth = Math.abs(adjustOffsetCoords.x);
         this.resizeHeight = Math.abs(adjustOffsetCoords.y);
     }
+
+    private showSelectionResize(
+        canvas: CanvasRenderingContext2D,
+        adjustStartCoords: Vec2,
+        adjustOffsetCoords: Vec2,
+        mousePosition: Vec2,
+        caller: number,
+    ): void {
+        this.pathLastCoord = mousePosition;
+        canvas.save();
+        if (caller === 1) {
+            // ellipse is calling
+            const PATH = this.getPath(adjustStartCoords);
+            canvas.clip(PATH);
+        }
+        if (caller === 3) {
+            // magic wand is calling
+            //const MEMORY_START = this.startDownCoord;
+            //this.startDownCoord = adjustStartCoords;
+            //const DIFF = mousePosition.x *100 / 1;
+            const PATH = this.getPathToClip();
+            //this.startDownCoord = MEMORY_START;
+            canvas.clip(PATH);
+        }
+        this.drawImage(canvas, this.image, this.firstEllipseCoord, this.selectionSize, adjustStartCoords, adjustOffsetCoords);
+        canvas.restore();
+    }
+
     protected getRatio(w: number, h: number): number {
         return h === 0 ? w : this.getRatio(h, w % h);
     }
@@ -409,47 +440,19 @@ export abstract class SelectionToolService extends Tool {
     }
 
     protected evenImageStartCoord(mousePosition: Vec2): Vec2 {
-        const START_COORDS = { x: mousePosition.x - this.imageData.width / 2, y: mousePosition.y - this.imageData.height / 2 };
-        if (this.imageData.width % 2 !== 0 || this.imageData.height % 2 !== 0) {
-            if (this.imageData.width % 2 !== 0) {
-                START_COORDS.x = mousePosition.x - (this.imageData.width + 1) / 2;
+        const START_COORDS = { x: mousePosition.x - this.selectionSize.x / 2, y: mousePosition.y - this.selectionSize.y / 2 };
+        if (this.selectionSize.x % 2 !== 0 || this.selectionSize.y % 2 !== 0) {
+            if (this.selectionSize.x % 2 !== 0) {
+                START_COORDS.x = mousePosition.x - (this.selectionSize.x + 1) / 2;
             }
-            if (this.imageData.height % 2 !== 0) {
-                START_COORDS.y = mousePosition.y - (this.imageData.height + 1) / 2;
+            if (this.selectionSize.y % 2 !== 0) {
+                START_COORDS.y = mousePosition.y - (this.selectionSize.y + 1) / 2;
             }
         }
         return START_COORDS;
     }
 
-    private showSelectionResize(
-        canvas: CanvasRenderingContext2D,
-        size: Vec2,
-        adjustStartCoords: Vec2,
-        adjustOffsetCoords: Vec2,
-        mousePosition: Vec2,
-        caller: number,
-    ): void {
-        this.pathLastCoord = mousePosition;
-        canvas.save();
-        if (caller === 1) {
-            // ellipse is calling
-            const PATH = this.getPath(0, adjustStartCoords);
-            canvas.clip(PATH);
-        }
-        if (caller === 3) {
-            // magic wand is calling
-            //const MEMORY_START = this.startDownCoord;
-            //this.startDownCoord = adjustStartCoords;
-            //const DIFF = mousePosition.x *100 / 1;
-            const PATH = this.getPathToClip();
-            //this.startDownCoord = MEMORY_START;
-            canvas.clip(PATH);
-        }
-        this.drawImage(canvas, adjustStartCoords, this.startDownCoord, adjustOffsetCoords, this.image, size);
-        canvas.restore();
-    }
-
-    protected getPath(offset: number, startCoord: Vec2): Path2D {
+    protected getPath(startCoord: Vec2): Path2D {
         const ELLIPSE_PATH = new Path2D();
         const CENTER_X = (this.pathLastCoord.x + startCoord.x) / 2;
         const CENTER_Y = (this.pathLastCoord.y + startCoord.y) / 2;
@@ -459,7 +462,7 @@ export abstract class SelectionToolService extends Tool {
 
         const CONTOUR_RADIUS_X = Math.abs(RADIUS_X - 1 / 2);
         const CONTOUR_RADIUS_Y = Math.abs(RADIUS_Y - 1 / 2);
-        ELLIPSE_PATH.ellipse(CENTER_X, CENTER_Y, CONTOUR_RADIUS_X + offset, CONTOUR_RADIUS_Y + offset, 0, 0, Math.PI * 2, false);
+        ELLIPSE_PATH.ellipse(CENTER_X, CENTER_Y, CONTOUR_RADIUS_X, CONTOUR_RADIUS_Y, 0, 0, Math.PI * 2, false);
         return ELLIPSE_PATH;
     }
 

@@ -349,7 +349,7 @@ export class RectangleSelectionService extends SelectionToolService {
         // rotation
         this.rotateCanvas(this.angle);
         this.startDownCoord = { x: -SIZE.x / 2, y: -SIZE.y / 2 };
-        this.drawImage(this.drawingService.baseCtx, this.startDownCoord, this.startSelectionPoint, SIZE, this.image, SIZE);
+        this.drawImage(this.drawingService.baseCtx,this.image,this.startSelectionPoint, SIZE, this.startDownCoord, SIZE);
 
         // reset canvas transform after rotation
         this.resetCanvasRotation();

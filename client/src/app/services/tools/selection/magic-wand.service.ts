@@ -453,13 +453,10 @@ export class MagicWandService extends SelectionToolService {
 
         this.drawImage(
             canvas,
-            this.startDownCoord,
-            imageStart,
-            {
-                x: this.imageData.width,
-                y: this.imageData.height,
-            },
             image,
+            imageStart,
+            this.selectionSize,
+            this.startDownCoord,
             size,
         );
         canvas.restore();
