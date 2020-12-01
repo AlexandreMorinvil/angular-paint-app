@@ -123,6 +123,6 @@ export class ModalSaveComponent {
 
     sendMessageToServer(): void {
         const newDrawingToSend: Drawing = new Drawing('', this.drawingName.value, this.tags, this.saveService.imageSource);
-        this.apiDrawingService.save(newDrawingToSend).subscribe(() => {});
+        this.apiDrawingService.save(newDrawingToSend).subscribe();
     }
 }
