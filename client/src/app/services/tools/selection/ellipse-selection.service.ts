@@ -51,7 +51,7 @@ export class EllipseSelectionService extends SelectionToolService {
             this.pathData.push(this.pathLastCoord);
             this.startSelectionPoint = this.startDownCoord;
             if (this.hasDoneFirstTranslation) {
-                this.clearCanvasEllipse();
+                this.clearCanvasEllipse(); //this is clearing unwanted area fix is needed
                 this.showSelection(
                     this.drawingService.baseCtx,
                     this.oldImage,
@@ -177,11 +177,11 @@ export class EllipseSelectionService extends SelectionToolService {
                 this.drawnAnchor(this.drawingService.previewCtx, { x: MAX_SIDE, y: MAX_SIDE });
                 this.clearPath();
             }
-            this.startDownCoord = MEMORY_COORDS;
-            this.firstEllipseCoord = this.startDownCoord;
+            //this.firstEllipseCoord = this.startDownCoord; this causes a bug??
             this.pathLastCoord = { x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y + this.imageData.height };
             this.draggingImage = false;
             this.hasDoneFirstTranslation = true;
+            this.startDownCoord = MEMORY_COORDS;
             // resizing
         } else if (this.clickOnAnchor) {
             this.getAnchorHit(this.drawingService.baseCtx, MOUSE_POSITION, 1);
