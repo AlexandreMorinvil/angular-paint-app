@@ -48,7 +48,7 @@ export class StyleService extends ToolModifier {
     }
 
     setAlignment(input: string): void {
-        if (this.listAlignments.includes(input)) this.alignment = input;
+        this.alignment = input;
     }
 
     getListFonts(): string[] {
@@ -60,7 +60,7 @@ export class StyleService extends ToolModifier {
     }
 
     setFont(input: string): void {
-        if (this.listFonts.includes(input)) this.font = input;
+        this.font = input;
     }
     setHasBold(input: boolean): void {
         this.hasBold = input;

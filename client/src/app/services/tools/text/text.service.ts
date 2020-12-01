@@ -77,6 +77,7 @@ export class TextService extends Tool {
                 this.text[this.cursorPosition.y] = beforeCursor.concat(afterCursor);
                 this.cursorPosition.x += 1;
             }
+            console.log(this.cursorPosition);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             const adjustment = this.findTextPositionAdjustment(this.drawingService.previewCtx);
             this.drawText(this.drawingService.previewCtx, adjustment);
@@ -135,17 +136,16 @@ export class TextService extends Tool {
         }
         switch (ctx.textAlign) {
             case 'left': {
-                return longestLineLength / 2;
+                longestLineLength = longestLineLength / 2;
             }
             case 'center': {
-                return 0;
+                longestLineLength = 0;
             }
             case 'right': {
-                return -(longestLineLength / 2);
+                longestLineLength = -(longestLineLength / 2);
             }
         }
-        // Should never reach there in theory
-        return longestLineLength / 2;
+        return longestLineLength;
     }
 
     private showCursor(adjustement: number = 0): void {
@@ -255,6 +255,7 @@ export class TextService extends Tool {
                             this.cursorPosition.x - this.text[this.cursorPosition.y + 1].length + this.text[this.cursorPosition.y].length;
                     }
                 }
+                break;
             }
             case 'ArrowRight': {
                 if (this.cursorPosition.x === this.text[this.cursorPosition.y].length && this.cursorPosition.y === this.numberOfLines - 1) {
@@ -265,6 +266,7 @@ export class TextService extends Tool {
                 } else {
                     this.cursorPosition.x += 1;
                 }
+                break;
             }
             case 'ArrowDown': {
                 if (this.cursorPosition.y === this.numberOfLines - 1) {
@@ -279,6 +281,7 @@ export class TextService extends Tool {
                             this.cursorPosition.x - this.text[this.cursorPosition.y - 1].length + this.text[this.cursorPosition.y].length;
                     }
                 }
+                break;
             }
             case 'ArrowLeft': {
                 if (this.cursorPosition.x === 0 && this.cursorPosition.y === 0) {
@@ -289,6 +292,7 @@ export class TextService extends Tool {
                 } else {
                     this.cursorPosition.x -= 1;
                 }
+                break;
             }
         }
     }
