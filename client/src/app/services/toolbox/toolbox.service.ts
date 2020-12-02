@@ -74,6 +74,9 @@ export class ToolboxService {
     }
 
     setSelectedTool(selectedTool: Tool): void {
+        if (this.currentTool instanceof EllipseSelectionService) {
+            (this.currentTool as EllipseSelectionService).drawOnBaseCanvas();
+        }
         this.currentTool = selectedTool;
         this.currentTool.mouseDown = false;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);

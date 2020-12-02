@@ -50,6 +50,7 @@ export class MagicWandService extends SelectionToolService {
         this.resetTransform();
         // resizing
         if (this.selectionCreated && this.checkHit(this.mouseDownCoord)) {
+            // tslint:disable:no-magic-numbers
             this.getAnchorHit(this.drawingService.previewCtx, this.mouseDownCoord, 3);
             this.pathLastCoord = this.mouseDownCoord;
             this.startSelectionPoint = this.startDownCoord;
@@ -130,6 +131,7 @@ export class MagicWandService extends SelectionToolService {
             this.pathData.push({ x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y + this.imageData.height });
             this.clearCanvasSelection();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            // tslint:disable:no-magic-numbers
             this.getAnchorHit(this.drawingService.previewCtx, MOUSE_POSITION, 3);
         }
     }
@@ -153,6 +155,7 @@ export class MagicWandService extends SelectionToolService {
             this.hasDoneFirstTranslation = true;
             // resizing
         } else if (this.clickOnAnchor) {
+            // tslint:disable:no-magic-numbers
             this.getAnchorHit(this.drawingService.baseCtx, MOUSE_POSITION, 3);
             this.pathData.push(MOUSE_POSITION);
             this.offsetAnchors(this.startDownCoord);
@@ -166,14 +169,14 @@ export class MagicWandService extends SelectionToolService {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.getImageRotation();
             this.pathData.push({ x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y + this.imageData.height });
-            //this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.pathData);
-            //this.ellipseService.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
+            // this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.pathData);
+            // this.ellipseService.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
             this.drawnAnchor(this.drawingService.previewCtx);
             this.clearPath();
             this.clickOnAnchor = false;
             this.hasDoneResizing = true;
-            //const TRACKING_INFO = this.getActionTrackingInfo(MOUSE_POSITION);
-            //this.addActionTracking(TRACKING_INFO);
+            // const TRACKING_INFO = this.getActionTrackingInfo(MOUSE_POSITION);
+            // this.addActionTracking(TRACKING_INFO);
             this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
         }
 
@@ -191,7 +194,6 @@ export class MagicWandService extends SelectionToolService {
             const SIZE = { x: this.imageData.width, y: this.imageData.height };
             const TRANSLATION = { x: this.startDownCoord.x + SIZE.x / 2, y: this.startDownCoord.y + SIZE.y / 2 };
             const MEMORY_COORDS = this.startDownCoord;
-            const ORIENTATION = event.deltaY / 100;
 
             // clearing old spot
             const MAX_SIDE = Math.hypot(SIZE.x, SIZE.y);
@@ -202,17 +204,8 @@ export class MagicWandService extends SelectionToolService {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
             // calculate desire angle for canvas rotation
-            let angleVoulue = 0;
-            if (event.altKey) {
-                angleVoulue = 1;
-            } else {
-                angleVoulue = 15;
-            }
-            this.angle += ORIENTATION * angleVoulue;
-            if (this.angle >= 360) {
-                this.angle -= 360;
-            }
-            this.rotateCanvas(this.angle);
+            this.calculateRotation(event.altKey, event.deltaY / 100);
+            this.rotateCanvas();
             this.startDownCoord = { x: -SIZE.x / 2, y: -SIZE.y / 2 };
             this.showSelection(this.drawingService.baseCtx, this.image, SIZE, this.firstMagicCoord);
 
@@ -450,15 +443,7 @@ export class MagicWandService extends SelectionToolService {
         canvas.save();
         const path = this.getPathToClip();
         canvas.clip(path);
-
-        this.drawImage(
-            canvas,
-            image,
-            imageStart,
-            this.selectionSize,
-            this.startDownCoord,
-            size,
-        );
+        this.drawImage(canvas, image, imageStart, this.selectionSize, this.startDownCoord, size);
         canvas.restore();
     }
 
