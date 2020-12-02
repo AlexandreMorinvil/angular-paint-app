@@ -182,9 +182,9 @@ export abstract class SelectionToolService extends Tool {
     }
 
     protected offsetAnchors(coords: Vec2): Vec2 {
-        coords.x = coords.x > this.pathData[this.pathData.length - 1].x ? this.pathData[this.pathData.length - 1].x : coords.x;
-        coords.y = coords.y > this.pathData[this.pathData.length - 1].y ? this.pathData[this.pathData.length - 1].y : coords.y;
-        return coords;
+        const OFFSET_COORDS_X = coords.x > this.pathData[this.pathData.length - 1].x ? this.pathData[this.pathData.length - 1].x : coords.x;
+        const OFFSET_COORDS_Y = coords.y > this.pathData[this.pathData.length - 1].y ? this.pathData[this.pathData.length - 1].y : coords.y;
+        return { x: OFFSET_COORDS_X, y: OFFSET_COORDS_Y };
     }
 
     protected drawImage(
