@@ -77,6 +77,9 @@ export class ToolboxService {
         if (this.currentTool instanceof EllipseSelectionService) {
             (this.currentTool as EllipseSelectionService).drawOnBaseCanvas();
         }
+        if (this.currentTool instanceof MagicWandService) {
+          (this.currentTool as MagicWandService).drawOnBaseCanvas();
+      }
         this.currentTool = selectedTool;
         this.currentTool.mouseDown = false;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
