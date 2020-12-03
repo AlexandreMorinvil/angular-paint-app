@@ -30,7 +30,7 @@ describe('PencilService', () => {
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         });
         service = TestBed.inject(PencilService);
-        drawLineSpy = spyOn<any>(service, 'drawLine');
+        drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
 
         // Configuration of spy service
         const canvasWidth = 1000;
@@ -96,9 +96,8 @@ describe('PencilService', () => {
     });
 
     it(' onMouseMove should call drawLine if mouse was already down', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoord = { x: 5, y: 5 };
         service.mouseDown = true;
-
         service.onMouseMove(mouseEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawLineSpy).toHaveBeenCalled();
