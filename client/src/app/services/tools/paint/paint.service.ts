@@ -22,6 +22,7 @@ export class PaintService extends Tool {
     private startR: number;
     private startG: number;
     private startB: number;
+    private canvasData: Uint8ClampedArray;
 
     constructor(
         drawingService: DrawingService,
@@ -69,6 +70,7 @@ export class PaintService extends Tool {
 
     private sameColorFill(ctx: CanvasRenderingContext2D): void {
         this.setAttribute(ctx);
+        this.scanCanvas();
         const pixelPos: Vec2 = { x: 0, y: 0 };
         while (pixelPos.y < ctx.canvas.height) {
             while (pixelPos.x < ctx.canvas.width) {
@@ -84,6 +86,7 @@ export class PaintService extends Tool {
 
     private floodFill(ctx: CanvasRenderingContext2D, pathPixel: Vec2[]): void {
         this.setAttribute(ctx);
+        this.scanCanvas();
         // tslint:disable:no-non-null-assertion
         while (pathPixel.length) {
             const pixelPos = pathPixel.pop()!;
@@ -142,24 +145,39 @@ export class PaintService extends Tool {
         this.fillColorG = rgb[1];
         this.fillColorB = rgb[2];
     }
-
     private matchStartColor(pixelPos: Vec2): boolean {
-        const imageData: ImageData = this.drawingService.baseCtx.getImageData(pixelPos.x, pixelPos.y, 1, 1);
+        const stepSize = 4;
 
-        const average = // tslint:disable-next-line:no-magic-numbers
-            (Math.abs(this.startR - imageData.data[0]) + Math.abs(this.startG - imageData.data[1]) + Math.abs(this.startB - imageData.data[2])) / 3;
+        const targetR = this.canvasData[stepSize * (pixelPos.y * this.drawingService.baseCtx.canvas.width + pixelPos.x)];
+        const targetG = this.canvasData[stepSize * (pixelPos.y * this.drawingService.baseCtx.canvas.width + pixelPos.x) + 1];
+        const targetB = this.canvasData[stepSize * (pixelPos.y * this.drawingService.baseCtx.canvas.width + pixelPos.x) + 2];
+        // tslint:disable-next-line:no-magic-numbers
+        const average = (Math.abs(this.startR - targetR) + Math.abs(this.startG - targetG) + Math.abs(this.startB - targetB)) / 3;
 
         if (
             average <= this.toleranceService.getPixelTolerance() &&
-            !(imageData.data[0] === this.fillColorR && imageData.data[1] === this.fillColorG && imageData.data[2] === this.fillColorB)
+            !(targetR === this.fillColorR && targetG === this.fillColorG && targetB === this.fillColorB)
         ) {
             return true; // target to surface within tolerance
         }
         return false;
     }
 
+    private scanCanvas(): void {
+        this.canvasData = this.drawingService.baseCtx.getImageData(
+            0,
+            0,
+            this.drawingService.baseCtx.canvas.width,
+            this.drawingService.baseCtx.canvas.height - 2,
+        ).data;
+    }
+
     private colorPixel(pixelPos: Vec2): void {
         this.drawingService.baseCtx.fillRect(pixelPos.x, pixelPos.y, 1, 1);
+        const stepSize = 4;
+        this.canvasData[stepSize * (pixelPos.y * this.drawingService.baseCtx.canvas.width + pixelPos.x)] = this.fillColorR;
+        this.canvasData[stepSize * (pixelPos.y * this.drawingService.baseCtx.canvas.width + pixelPos.x) + 1] = this.fillColorG;
+        this.canvasData[stepSize * (pixelPos.y * this.drawingService.baseCtx.canvas.width + pixelPos.x) + 2] = this.fillColorB;
     }
 
     private setAttribute(ctx: CanvasRenderingContext2D): void {

@@ -5,7 +5,7 @@
 
 .container-grid {
     display: grid;
-    grid-template-columns: var(--sidebar-width) var(--attributes-panel-width) 1fr;
+    grid-template-columns: calc(2 * var(--sidebar-width)) var(--attributes-panel-width) 1fr;
     grid-template-areas: 'sidebar panel workspace';
     grid-gap: 0px;
 }
@@ -29,5 +29,5 @@
 
 .workspace-fixed-offset {
     position: fixed;
-    left: var(--sidebar-width);
+    left: calc(2 * var(--sidebar-width));
 }

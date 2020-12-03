@@ -70,10 +70,10 @@ export class PolygonService extends Tool {
             this.pathData.push(mousePosition);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             if (!this.isInCanvas(mousePosition) && this.mouseDown) {
-                if (mousePosition.x >= this.drawingService.baseCtx.canvas.width) {
+                if (this.drawingService.baseCtx.canvas.width < mousePosition.x) {
                     this.drawingService.previewCtx.canvas.width = mousePosition.x;
                 }
-                if (mousePosition.y >= this.drawingService.baseCtx.canvas.height) {
+                if (this.drawingService.baseCtx.canvas.height < mousePosition.y) {
                     this.drawingService.previewCtx.canvas.height = mousePosition.y;
                 }
             } else {
@@ -125,15 +125,15 @@ export class PolygonService extends Tool {
 
     drawPreviewCircle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
-        const centerX = this.mouseDownCoord.x;
-        const centerY = this.mouseDownCoord.y;
+        const centerX = this.pathData[0].x;
+        const centerY = this.pathData[0].y;
         const numberMinSide = 5;
         const numberSquareSide = 4;
         const numberTriangleSide = 3;
         const halfCircleAngle = 180;
         const circleAngle = 360;
         // Leave the calculation in full so as not to have a space due to calculation imprecision
-        if (this.tracingService.getHasContour() === true && this.sidesService.getSide() >= numberMinSide) {
+        if (this.tracingService.getHasContour() && this.sidesService.getSide() >= numberMinSide) {
             this.radius = this.radius - this.widthService.getWidth() / 2;
             const spaceBetweenTwoPolygon =
                 (2 * this.radius * Math.cos((((halfCircleAngle - circleAngle / this.sidesService.getSide()) / 2) * Math.PI) / halfCircleAngle) +
@@ -141,7 +141,7 @@ export class PolygonService extends Tool {
                         Math.tan((((halfCircleAngle - circleAngle / this.sidesService.getSide()) / 2) * Math.PI) / halfCircleAngle)) /
                 (2 * Math.cos((((halfCircleAngle - circleAngle / this.sidesService.getSide()) / 2) * Math.PI) / halfCircleAngle));
             this.radius = spaceBetweenTwoPolygon;
-        } else if (this.tracingService.getHasContour() === true && this.sidesService.getSide() === numberSquareSide) {
+        } else if (this.tracingService.getHasContour() && this.sidesService.getSide() === numberSquareSide) {
             const spaceBetweenTwoSquare = Math.sqrt(Math.pow(this.widthService.getWidth(), 2) + Math.pow(this.widthService.getWidth(), 2));
             this.radius = this.radius - spaceBetweenTwoSquare / 2;
             this.radius = this.radius + spaceBetweenTwoSquare;
