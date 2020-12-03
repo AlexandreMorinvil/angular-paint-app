@@ -48,35 +48,26 @@ export class FeatherService extends Tool {
             this.pathData.push(this.mouseDownCoord);
         }
     }
-    onMouseScrollUp(event: MouseEvent): void {
+    onMouseWheel(event: WheelEvent): void {
         const rotationAngle15 = 15;
         const rotationAngle1 = 1;
         const resetAngle = 0;
         const setAngle = 360;
+        const orientation = event.deltaY / 100;
 
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         if (this.angleInRadian === resetAngle) {
-            this.angleInRadian = setAngle;
+            if (orientation < 0) {
+                this.angleInRadian = setAngle;
+            }
+            if (orientation > 0) {
+                this.angleInRadian = 0;
+            }
         }
         if (this.isAltDown) {
-            this.angleInRadian = this.angleInRadian - rotationAngle1;
+            this.angleInRadian = this.angleInRadian + rotationAngle1 * orientation;
         } else {
-            this.angleInRadian = this.angleInRadian - rotationAngle15;
-        }
-    }
-
-    onMouseScrollDown(event: MouseEvent): void {
-        const rotationAngle15 = 15;
-        const rotationAngle1 = 1;
-        const resetAngle = 360;
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        if (this.angleInRadian === resetAngle) {
-            this.angleInRadian = 0;
-        }
-        if (this.isAltDown) {
-            this.angleInRadian = this.angleInRadian + rotationAngle1;
-        } else {
-            this.angleInRadian = this.angleInRadian + rotationAngle15;
+            this.angleInRadian = this.angleInRadian + rotationAngle15 * orientation;
         }
     }
 

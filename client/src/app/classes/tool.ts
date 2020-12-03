@@ -46,9 +46,7 @@ export abstract class Tool {
 
     onArrowUp(event: KeyboardEvent): void {}
 
-    onMouseScrollUp(event: MouseEvent): void {}
-
-    onMouseScrollDown(event: MouseEvent): void {}
+    onMouseScrollWheel(event: MouseEvent): void {}
 
     onAltDown(event: KeyboardEvent): void {}
 

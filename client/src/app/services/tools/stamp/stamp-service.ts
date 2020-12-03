@@ -42,35 +42,26 @@ export class StampService extends Tool {
         this.isAltDown = false;
     }
 
-    onMouseScrollUp(event: MouseEvent): void {
+    onMouseWheel(event: WheelEvent): void {
+        const rotationAngle15 = 15;
+        const rotationAngle1 = 1;
+        const resetAngle = 0;
+        const setAngle = 360;
+        const orientation = event.deltaY / 100;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.previewStamp(this.drawingService.previewCtx, this.pathData);
-        const rotateAngle15 = 15;
-        const rotateAngle1 = 1;
-        const resetAngle = 360;
-        if (this.angleInRadian === 0) {
-            this.angleInRadian = resetAngle;
-        }
-        if (this.isAltDown) {
-            this.angleInRadian = this.angleInRadian - rotateAngle1;
-        } else {
-            this.angleInRadian = this.angleInRadian - rotateAngle15;
-        }
-    }
-
-    onMouseScrollDown(event: MouseEvent): void {
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.previewStamp(this.drawingService.previewCtx, this.pathData);
-        const rotateAngle15 = 15;
-        const rotateAngle1 = 1;
-        const resetAngle = 360;
         if (this.angleInRadian === resetAngle) {
-            this.angleInRadian = 0;
+            if (orientation < 0) {
+                this.angleInRadian = setAngle;
+            }
+            if (orientation > 0) {
+                this.angleInRadian = 0;
+            }
         }
         if (this.isAltDown) {
-            this.angleInRadian = this.angleInRadian + rotateAngle1;
+            this.angleInRadian = this.angleInRadian + rotationAngle1 * orientation;
         } else {
-            this.angleInRadian = this.angleInRadian + rotateAngle15;
+            this.angleInRadian = this.angleInRadian + rotationAngle15 * orientation;
         }
     }
     onMouseDown(event: MouseEvent): void {

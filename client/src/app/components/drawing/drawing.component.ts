@@ -71,13 +71,9 @@ export class DrawingComponent implements AfterViewInit {
         event.preventDefault();
         this.resetDrawing();
     }
-    @HostListener('wheel', ['$event'])
+    @HostListener('mousewheel', ['$event'])
     onMouseScroll(event: WheelEvent): void {
-        if (event.deltaY < 0) {
-            this.toolbox.getCurrentTool().onMouseScrollUp(event);
-        } else if (event.deltaY > 0) {
-            this.toolbox.getCurrentTool().onMouseScrollDown(event);
-        }
+        this.toolbox.getCurrentTool().onMouseScrollWheel(event);
     }
 
     @HostListener('mousemove', ['$event'])
