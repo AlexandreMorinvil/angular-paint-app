@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { InteractionSelectionEllipse } from '@app/classes/action/interaction-selection-ellipse';
+import { InteractionSelection } from '@app/classes/action/interaction-selection';
 import { Description } from '@app/classes/description';
 import { MouseButton } from '@app/classes/mouse';
 import { Vec2 } from '@app/classes/vec2';
@@ -232,7 +232,7 @@ export class EllipseSelectionService extends SelectionToolService {
         );
         this.drawingStateTrackingService.addAction(
             this,
-            new InteractionSelectionEllipse({ x: TRACKING_INFO[0].x, y: TRACKING_INFO[0].y }, IMAGE_DATA_SELECTION),
+            new InteractionSelection({ x: TRACKING_INFO[0].x, y: TRACKING_INFO[0].y }, IMAGE_DATA_SELECTION),
         );
     }
 
@@ -349,7 +349,7 @@ export class EllipseSelectionService extends SelectionToolService {
         this.onMouseUp(MOUSE_EVENT);
     }
 
-    execute(interaction: InteractionSelectionEllipse): void {
+    execute(interaction: InteractionSelection): void {
         this.selectionCreated = false;
         this.drawingService.baseCtx.putImageData(interaction.selection, interaction.startSelectionPoint.x, interaction.startSelectionPoint.y);
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
