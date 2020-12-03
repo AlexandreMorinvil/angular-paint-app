@@ -84,9 +84,10 @@ export class EllipseSelectionService extends SelectionToolService {
     }
 
     onMouseMove(event: MouseEvent): void {
-        const mousePosition = this.getPositionFromMouse(event);
+        let mousePosition = this.getPositionFromMouse(event);
         // translate
         if (this.draggingImage && this.localMouseDown) {
+            mousePosition = this.getPositionFromMouse(event, true);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.offsetAnchors(this.firstEllipseCoord);
             this.showSelection(
@@ -116,7 +117,7 @@ export class EllipseSelectionService extends SelectionToolService {
     }
 
     onMouseUp(event: MouseEvent): void {
-        const mousePosition = this.getPositionFromMouse(event);
+        let mousePosition = this.getPositionFromMouse(event, true);
         // translate
         if (this.draggingImage) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -139,6 +140,7 @@ export class EllipseSelectionService extends SelectionToolService {
             this.hasDoneFirstTranslation = true;
             // creation
         } else if (this.mouseDown) {
+            mousePosition = this.getPositionFromMouse(event);
             if (this.ellipseService.shiftDown) {
                 const square = this.getSquaredSize(mousePosition);
                 this.pathData.push({ x: square.x + this.startDownCoord.x, y: square.y + this.startDownCoord.y });

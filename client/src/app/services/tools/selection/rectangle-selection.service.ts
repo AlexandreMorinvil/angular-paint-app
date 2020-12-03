@@ -64,9 +64,10 @@ export class RectangleSelectionService extends SelectionToolService {
     }
 
     onMouseMove(event: MouseEvent): void {
-        const mousePosition = this.getPositionFromMouse(event, true);
+        let mousePosition = this.getPositionFromMouse(event);
         // translate
         if (this.draggingImage && this.localMouseDown) {
+            mousePosition = this.getPositionFromMouse(event, true);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.startDownCoord = this.evenImageStartCoord(mousePosition);
             this.putImageData(this.evenImageStartCoord(mousePosition), this.drawingService.previewCtx, this.imageData);
@@ -89,7 +90,7 @@ export class RectangleSelectionService extends SelectionToolService {
     }
 
     onMouseUp(event: MouseEvent): void {
-        const mousePosition = this.getPositionFromMouse(event, true);
+        let mousePosition = this.getPositionFromMouse(event, true);
         // translate
         if (this.draggingImage) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -115,6 +116,7 @@ export class RectangleSelectionService extends SelectionToolService {
             this.hasDoneFirstTranslation = true;
             // creation
         } else if (this.localMouseDown) {
+            mousePosition = this.getPositionFromMouse(event);
             if (this.rectangleService.shiftDown) {
                 const square = this.getSquaredSize(mousePosition);
                 const endPoint = { x: square.x + this.startDownCoord.x, y: square.y + this.startDownCoord.y };
