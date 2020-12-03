@@ -98,7 +98,7 @@ describe('RectangleService', () => {
         service.onMouseUp(mouseEvent);
         expect(drawRectangleSpy).not.toHaveBeenCalled();
     });
-/*
+    /*
     it(' onMouseMove should call drawRectangle if mouse was already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
@@ -124,7 +124,7 @@ describe('RectangleService', () => {
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(drawRectangleSpy).not.toHaveBeenCalled();
     });
-/*
+    /*
     it(' on Mouse mouve should call setAttribute if mouse was already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
@@ -142,7 +142,7 @@ describe('RectangleService', () => {
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(setAttributeSpy).not.toHaveBeenCalled();
     });
-/*
+    /*
     it(' should be a square  when drawing rectangle and shift pressed', () => {
         mouseEvent = { offsetX: 30, offsetY: 6, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseDown(mouseEvent);
