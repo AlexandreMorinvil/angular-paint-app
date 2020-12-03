@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { AerosolService } from '@app/services/tools/aerosol/aerosol.service';
 import { BrushService } from '@app/services/tools/brush/brush-service';
 import { ColorPickerService } from '@app/services/tools/color-picker/color-picker.service';
 import { CursorService } from '@app/services/tools/cursor/cursor.service';
@@ -14,8 +15,9 @@ import { PencilService } from '@app/services/tools/pencil/pencil-service';
 import { PolygonService } from '@app/services/tools/polygon/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
 import { EllipseSelectionService } from '@app/services/tools/selection/ellipse-selection.service';
+import { MagicWandService } from '@app/services/tools/selection/magic-wand.service';
 import { RectangleSelectionService } from '@app/services/tools/selection/rectangle-selection.service';
-
+import { StampService } from '@app/services/tools/stamp/stamp-service';
 @Injectable({
     providedIn: 'root',
 })
@@ -35,8 +37,11 @@ export class ToolboxService {
         polygonService: PolygonService,
         colorPickerService: ColorPickerService,
         paintService: PaintService,
+        stampService: StampService,
         rectangleSelectionService: RectangleSelectionService,
         ellipseSelectionService: EllipseSelectionService,
+        aerosolService: AerosolService,
+        magicWandService: MagicWandService,
         featherService: FeatherService,
         private drawingService: DrawingService,
     ) {
@@ -54,7 +59,10 @@ export class ToolboxService {
         this.availableTools.push(paintService);
         this.availableTools.push(rectangleSelectionService);
         this.availableTools.push(ellipseSelectionService);
+        this.availableTools.push(aerosolService);
+        this.availableTools.push(magicWandService);
         this.availableTools.push(featherService);
+        this.availableTools.push(stampService);
     }
 
     getAvailableTools(): Tool[] {
@@ -66,6 +74,12 @@ export class ToolboxService {
     }
 
     setSelectedTool(selectedTool: Tool): void {
+        if (this.currentTool instanceof EllipseSelectionService) {
+            (this.currentTool as EllipseSelectionService).drawOnBaseCanvas();
+        }
+        if (this.currentTool instanceof MagicWandService) {
+            (this.currentTool as MagicWandService).drawOnBaseCanvas();
+        }
         this.currentTool = selectedTool;
         this.currentTool.mouseDown = false;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);

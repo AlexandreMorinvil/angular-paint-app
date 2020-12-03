@@ -26,6 +26,8 @@ export class MagnetismService {
         const nearestGridCoordinate: Vec2 = this.getNearestGridCoordinate(coordinate);
         nearestGridCoordinate.x += this.horizontalAnchorPosition * (width / 2);
         nearestGridCoordinate.y += this.verticalAnchorPosition * (height / 2);
+        nearestGridCoordinate.x -= 2;
+        nearestGridCoordinate.y -= 2;
         return nearestGridCoordinate;
     }
 

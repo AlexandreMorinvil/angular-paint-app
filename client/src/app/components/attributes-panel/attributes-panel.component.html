@@ -10,8 +10,15 @@
     <app-attributes-width class="section" *ngIf="needsWidthAttribute()"> </app-attributes-width>
     <app-attributes-junction class="section" *ngIf="needsJunctionAttribute()"> </app-attributes-junction>
     <app-attributes-texture class="section" *ngIf="needsTextureAttribute()"></app-attributes-texture>
+    <app-attribute-stamp-picker class="section" *ngIf="needsStampPickerAttribute()"></app-attribute-stamp-picker>
     <app-attributes-tracing class="section" *ngIf="needsTracingAttribute()"></app-attributes-tracing>
     <app-attributes-sides class="section" *ngIf="needsSidesAttribute()"></app-attributes-sides>
+    <app-attribute-spray-diameter class="section" *ngIf="needsSprayDiameterAttribute()"></app-attribute-spray-diameter>
+    <app-attribute-spray-droplet-diameter class="section" *ngIf="needsSprayDropletDiameterAttribute()"></app-attribute-spray-droplet-diameter>
+    <app-attribute-number-spray-transmission
+        class="section"
+        *ngIf="needsNumberSprayTransmissionAttribute()"
+    ></app-attribute-number-spray-transmission>
     <app-attribute-color-picker-viewer class="section" *ngIf="needsColorPickerViewerAttribute()"></app-attribute-color-picker-viewer>
     <app-attributes-tolerance class="section" *ngIf="needsToleranceAttribute()"></app-attributes-tolerance>
     <app-attribute-selection class="section" *ngIf="needsSelectionAttribute()"> </app-attribute-selection>

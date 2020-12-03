@@ -9,6 +9,8 @@ import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzon
 
 export const DEFAULT_WIDTH = 1000;
 export const DEFAULT_HEIGHT = 800;
+const TOOL_BOX_WIDTH = 313;
+const SIDEBARWIDTH = 95;
 @Component({
     selector: 'app-drawing',
     templateUrl: './drawing.component.html',
@@ -25,7 +27,6 @@ export class DrawingComponent implements AfterViewInit {
     private previewCtx: CanvasRenderingContext2D;
     private editCtx: CanvasRenderingContext2D;
     private gridCtx: CanvasRenderingContext2D;
-    private TOOL_BOX_WIDTH: number = 313;
     hasBeenDrawnOnto: boolean;
 
     constructor(
@@ -37,7 +38,7 @@ export class DrawingComponent implements AfterViewInit {
         private gridService: GridService,
         private magnetismService: MagnetismService,
     ) {}
-
+    // tslint:disable:no-magic-numbers
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -46,8 +47,10 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
-        this.editCtx.canvas.width = window.innerWidth - this.TOOL_BOX_WIDTH;
-        this.editCtx.canvas.height = window.innerHeight;
+        this.editCtx.canvas.width = window.innerWidth - TOOL_BOX_WIDTH - SIDEBARWIDTH;
+        this.editCtx.canvas.height = window.innerHeight - 5;
+        this.gridCtx.canvas.width = this.editCtx.canvas.width;
+        this.gridCtx.canvas.height = this.editCtx.canvas.height;
         this.drawingService.hasBeenDrawnOnto = false;
         this.gridService.gridCtx = this.gridCtx;
         this.gridService.gridCanvas = this.gridCanvas.nativeElement;
@@ -64,7 +67,7 @@ export class DrawingComponent implements AfterViewInit {
     @HostListener('window:resize', ['$event'])
     onResize(event: Event): void {
         this.workzoneSizeService.onResize();
-        this.editCtx.canvas.width = window.innerWidth - this.TOOL_BOX_WIDTH;
+        this.editCtx.canvas.width = window.innerWidth - TOOL_BOX_WIDTH - SIDEBARWIDTH;
         this.editCtx.canvas.height = window.innerHeight;
     }
 
@@ -72,14 +75,6 @@ export class DrawingComponent implements AfterViewInit {
     createNewDrawingKeyboardEvent(event: KeyboardEvent): void {
         event.preventDefault();
         this.resetDrawing();
-    }
-    @HostListener('wheel', ['$event'])
-    onMouseScroll(event: WheelEvent): void {
-        if (event.deltaY < 0) {
-            this.toolbox.getCurrentTool().onMouseScrollUp(event);
-        } else if (event.deltaY > 0) {
-            this.toolbox.getCurrentTool().onMouseScrollDown(event);
-        }
     }
 
     @HostListener('mousemove', ['$event'])
@@ -180,6 +175,12 @@ export class DrawingComponent implements AfterViewInit {
         } else if (event.key.toLowerCase() === 'm' && this.drawingService.shortcutEnable) {
             this.magnetismService.toogleMagnetism();
         }
+    }
+
+    @HostListener('mousewheel', ['$event'])
+    onMousewheel(event: WheelEvent): void {
+        event.preventDefault(); // to prevent key of windows
+        this.toolbox.getCurrentTool().onMouseWheel(event);
     }
 
     get width(): number {

@@ -46,18 +46,16 @@ export abstract class Tool {
 
     onArrowUp(event: KeyboardEvent): void {}
 
-    onMouseScrollUp(event: MouseEvent): void {}
-
-    onMouseScrollDown(event: MouseEvent): void {}
-
     onAltDown(event: KeyboardEvent): void {}
 
     onAltUp(event: KeyboardEvent): void {}
 
     onCtrlADown(): void {}
 
-    getPositionFromMouse(event: MouseEvent, isMagnetisc: Boolean = false): Vec2 {
-        return { x: event.offsetX, y: event.offsetY } as Vec2;
+    onMouseWheel(event: MouseEvent): void {}
+
+    getPositionFromMouse(event: MouseEvent): Vec2 {
+        return { x: event.offsetX, y: event.offsetY };
     }
 
     execute(interaction: Interaction): void {}
