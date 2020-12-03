@@ -19,7 +19,7 @@ export class AerosolService extends Tool {
     private readonly FACTOR_TIME_INTERVAL_BETWEEN_SPRAY: number = 100;
     private pathData: Vec2[];
     private savedPathData: Vec2[]; // Path using for undo redo
-    private sprayIntervalId: number;
+    private sprayIntervalId: any;
     private sprayDropletDiameter: number;
 
     constructor(
@@ -76,9 +76,9 @@ export class AerosolService extends Tool {
     }
 
     private sprayPaint(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        this.setAttribute(ctx);
         const mouseMoveCoord: Vec2 = path[path.length - 1];
         if (this.isInCanvas(mouseMoveCoord)) {
+            this.setAttribute(ctx);
             const X_POSITION = mouseMoveCoord.x;
             const Y_POSITION = mouseMoveCoord.y;
             const numberSprayTransmission =
