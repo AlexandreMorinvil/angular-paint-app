@@ -313,7 +313,11 @@ export class RectangleSelectionService extends SelectionToolService {
         if (this.selectionCreated) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.checkArrowHit(event);
+            const TEMP = this.startDownCoord; // needed because rotateCanvas changes the value
+            this.rotateCanvas();
             this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
+            this.resetCanvasRotation();
+            this.startDownCoord = TEMP; // reset value
         }
     }
 
@@ -327,8 +331,23 @@ export class RectangleSelectionService extends SelectionToolService {
                 this.pathLastCoord = this.getBottomRightCorner();
                 this.pathData.push(this.pathLastCoord);
                 this.rectangleService.mouseDownCoord = this.startDownCoord;
+                this.rotateCanvas();
                 this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
-                this.drawSelectionSurround();
+                this.resetCanvasRotation();
+                this.startDownCoord = this.rectangleService.mouseDownCoord; // needed because rotateCanvas changes the value
+                if (this.hasDoneFirstRotation) {
+                    // draw selection box bigger if there is rotation
+                    const TRANSLATION = { x: this.startDownCoord.x + this.selectionSize.x / 2, y: this.startDownCoord.y + this.selectionSize.y / 2 };
+                    const MAX_SIDE = Math.max(this.selectionSize.x, this.selectionSize.y);
+                    this.drawSelectionSurroundRotation(TRANSLATION, MAX_SIDE);
+                } else {
+                    // draw regular selection box if there is no rotation
+                    this.rectangleService.mouseDownCoord = this.startDownCoord;
+                    this.pathLastCoord = this.getBottomRightCorner();
+                    this.pathData.push(this.pathLastCoord);
+                    this.drawSelectionSurround();
+                }
+                this.startDownCoord = this.rectangleService.mouseDownCoord;
                 this.hasDoneFirstTranslation = true;
             }
             if (this.arrowDown) {
