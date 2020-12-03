@@ -26,10 +26,6 @@ export abstract class Tool {
 
     onMouseMove(event: MouseEvent): void {}
 
-    onMouseScrollDown(event: MouseEvent): void {}
-
-    onMouseScrollUp(event: MouseEvent): void {}
-
     onEscapeDown(event: KeyboardEvent): void {}
 
     onBackspaceDown(event: KeyboardEvent): void {}
@@ -59,10 +55,6 @@ export abstract class Tool {
     onAltUp(event: KeyboardEvent): void {}
 
     onCtrlADown(): void {}
-
-    onAltDown(event: KeyboardEvent): void {}
-
-    onAltUp(event: KeyboardEvent): void {}
 
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };
