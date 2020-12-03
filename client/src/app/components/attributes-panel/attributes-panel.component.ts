@@ -38,6 +38,10 @@ export class AttributesPanelComponent {
         return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
+    needs(): boolean {
+        return true;
+    }
+
     needsSpacingAttribute(): boolean {
         return this.currentTool.needsModifierManager(this.spacingService);
     }

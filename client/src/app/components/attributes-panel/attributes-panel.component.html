@@ -4,6 +4,7 @@
         <h1>{{ capitalizeFirstLetter(currentTool.name) }}</h1>
     </div>
     
+    <app-attribute-magnetism-anchor class="section" ></app-attribute-magnetism-anchor>
     <app-attribute-grid-display class="section" *ngIf="needsGridDisplayAttribute()"></app-attribute-grid-display>
     <app-attributes-spacing class="section" *ngIf="needsSpacingAttribute()"></app-attributes-spacing>
     <app-attributes-grid-opacity class="section" *ngIf="needsGridOpacityAttribute()"></app-attributes-grid-opacity>

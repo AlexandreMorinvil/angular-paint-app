@@ -1,0 +1,22 @@
+<div class="container">
+    <h2>Encrage</h2>
+    <div class="grid-color-selected">
+        <h3 class="area-title-nothing"></h3>
+
+        <h3 class="area-title-left">Gauche</h3>
+        <h3 class="area-title-middle">Milieu</h3>
+        <h3 class="area-title-right">Droite</h3>
+
+        <h3 class="area-title-top">Haut</h3>
+        <h3 class="area-title-center">Centre</h3>
+        <h3 class="area-title-bottom">Bas</h3>
+
+        <input
+            *ngFor="let anchor of anchorMapping"
+            name="anchor"
+            type="radio"
+            (click)="setSelectedAnchor(anchor)"
+            [checked]="isCheckedAnchor(anchor)"
+        />
+    </div>
+</div>

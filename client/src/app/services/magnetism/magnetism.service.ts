@@ -2,11 +2,19 @@ import { Injectable } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import { SpacingService } from '@app/services/tool-modifier/spacing/spacing.service';
 
+export enum MagnetismAnchor {
+    Start = -1,
+    Center = 0,
+    End = 1,
+}
+
 @Injectable({
     providedIn: 'root',
 })
 export class MagnetismService {
     isActivated: Boolean = false;
+    horizontalAnchorPosition: MagnetismAnchor = MagnetismAnchor.Center;
+    verticalAnchorPosition: MagnetismAnchor = MagnetismAnchor.Center;
 
     constructor(private spacingService: SpacingService) {}
 
