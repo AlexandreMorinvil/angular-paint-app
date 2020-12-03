@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { InteractionSelectionEllipse } from '@app/classes/action/interaction-selection-ellipse';
+import { InteractionSelection } from '@app/classes/action/interaction-selection';
 import { Description } from '@app/classes/description';
 import { MouseButton } from '@app/classes/mouse';
 import { Vec2 } from '@app/classes/vec2';
@@ -544,14 +544,11 @@ export class MagicWandService extends SelectionToolService {
             imageDataEnd.y - imageDataStart.y,
         );
 
-        this.drawingStateTrackingService.addAction(
-            this,
-            new InteractionSelectionEllipse({ x: imageDataStart.x, y: imageDataStart.y }, imageDataSelection),
-        );
+        this.drawingStateTrackingService.addAction(this, new InteractionSelection({ x: imageDataStart.x, y: imageDataStart.y }, imageDataSelection));
     }
 
-    execute(interaction: InteractionSelectionEllipse): void {
-        this.putImageData(interaction.startSelectionPoint, this.drawingService.baseCtx, interaction.selection);
+    execute(interaction: InteractionSelection): void {
+        //this.putImageData(interaction.startSelectionPoint, this.drawingService.baseCtx, interaction.selection);
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 }

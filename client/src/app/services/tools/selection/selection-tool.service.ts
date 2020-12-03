@@ -33,10 +33,6 @@ export abstract class SelectionToolService extends Tool {
     protected arrowCoord: Vec2;
     protected pathData: Vec2[];
 
-    // va partir
-    // protected imageData: ImageData;
-    // protected oldImageData: ImageData;
-
     protected selectionCreated: boolean;
     protected hasDoneFirstTranslation: boolean;
     protected hasDoneFirstRotation: boolean;
@@ -70,105 +66,82 @@ export abstract class SelectionToolService extends Tool {
         this.angle = 0;
     }
 
-    // va partir
-    onEscapeDown(): void {
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.selectionCreated = false;
-        this.arrowDown = true;
-    }
-
     protected drawnAnchor(ctx: CanvasRenderingContext2D, size: Vec2 = this.selectionSize): void {
         this.color.setPrimaryColor('#000000');
+        // Corner anchors
+        const X_POINTS_CORNER = [this.startDownCoord.x, this.startDownCoord.x + size.x, this.startDownCoord.x, this.startDownCoord.x + size.x];
+        const Y_POINTS_CORNER = [this.startDownCoord.y, this.startDownCoord.y + size.y, this.startDownCoord.y + size.y, this.startDownCoord.y];
         ctx.beginPath();
-        // start coner
-        ctx.arc(this.startDownCoord.x, this.startDownCoord.y, DOTSIZE, 0, Math.PI * 2, false);
-        ctx.closePath();
-        // end corner
-        ctx.arc(this.startDownCoord.x + size.x, this.startDownCoord.y + size.y, DOTSIZE, 0, Math.PI * 2, false);
-        ctx.closePath();
-        // two other corner
-        ctx.arc(this.startDownCoord.x, this.startDownCoord.y + size.y, DOTSIZE, 0, Math.PI * 2, false);
-        ctx.closePath();
-        ctx.arc(this.startDownCoord.x + size.x, this.startDownCoord.y, DOTSIZE, 0, Math.PI * 2, false);
-        ctx.closePath();
-        // four mid anchor
-        ctx.arc((size.x + this.startDownCoord.x * 2) / 2, this.startDownCoord.y + size.y, DOTSIZE, 0, Math.PI * 2, false);
-        ctx.closePath();
-        ctx.arc((size.x + this.startDownCoord.x * 2) / 2, this.startDownCoord.y, DOTSIZE, 0, Math.PI * 2, false);
-        ctx.closePath();
-        ctx.arc(this.startDownCoord.x, (size.y + this.startDownCoord.y * 2) / 2, DOTSIZE, 0, Math.PI * 2, false);
-        ctx.closePath();
-        ctx.arc(this.startDownCoord.x + size.x, (size.y + this.startDownCoord.y * 2) / 2, DOTSIZE, 0, Math.PI * 2, false);
-        ctx.closePath();
+        for (let i = 0; i < X_POINTS_CORNER.length; i++) {
+            ctx.arc(X_POINTS_CORNER[i], Y_POINTS_CORNER[i], DOTSIZE, 0, Math.PI * 2, false);
+            ctx.closePath();
+        }
+        // Middle anchors
+        const X_POINTS_MID = [
+            (size.x + this.startDownCoord.x * 2) / 2,
+            (size.x + this.startDownCoord.x * 2) / 2,
+            this.startDownCoord.x,
+            this.startDownCoord.x + size.x,
+        ];
+        const Y_POINTS_MID = [
+            this.startDownCoord.y + size.y,
+            this.startDownCoord.y,
+            (size.y + this.startDownCoord.y * 2) / 2,
+            (size.y + this.startDownCoord.y * 2) / 2,
+        ];
+        for (let i = 0; i < X_POINTS_MID.length; i++) {
+            ctx.arc(X_POINTS_MID[i], Y_POINTS_MID[i], DOTSIZE, 0, Math.PI * 2, false);
+            ctx.closePath();
+        }
         ctx.fill();
     }
 
     // resizing
     protected checkHit(mouse: Vec2): boolean {
-        let x: number;
-        let y: number;
-        const DOT_SIZE_SQUARE: number = Math.pow(DOTSIZE, 2);
-        // top left corner
-        x = Math.pow(mouse.x - this.startDownCoord.x, 2);
-        y = Math.pow(mouse.y - this.startDownCoord.y, 2);
-        if (x + y <= DOT_SIZE_SQUARE) {
-            this.clickOnAnchor = true;
-            this.anchorHit = Anchors.TopLeft;
-        }
-        // top middle
-        x = Math.pow(mouse.x - (this.startDownCoord.x + this.selectionSize.x / 2), 2);
-        y = Math.pow(mouse.y - this.startDownCoord.y, 2);
-        if (x + y <= DOT_SIZE_SQUARE) {
-            this.clickOnAnchor = true;
-            this.anchorHit = Anchors.TopMiddle;
-        }
-        // top right corner
-        x = Math.pow(mouse.x - (this.selectionSize.x + this.startDownCoord.x), 2);
-        y = Math.pow(mouse.y - this.startDownCoord.y, 2);
-        if (x + y <= DOT_SIZE_SQUARE) {
-            this.clickOnAnchor = true;
-            this.anchorHit = Anchors.TopRight;
-        }
-        // middle left
-        x = Math.pow(mouse.x - this.startDownCoord.x, 2);
-        y = Math.pow(mouse.y - (this.startDownCoord.y + this.selectionSize.y / 2), 2);
-        if (x + y <= DOT_SIZE_SQUARE) {
-            this.clickOnAnchor = true;
-            this.anchorHit = Anchors.MiddleLeft;
-        }
-        // middle right
-        x = Math.pow(mouse.x - (this.selectionSize.x + this.startDownCoord.x), 2);
-        y = Math.pow(mouse.y - (this.startDownCoord.y + this.selectionSize.y / 2), 2);
-        if (x + y <= DOT_SIZE_SQUARE) {
-            this.clickOnAnchor = true;
-            this.anchorHit = Anchors.MiddleRight;
-        }
-        // bottom left corner
-        x = Math.pow(mouse.x - this.startDownCoord.x, 2);
-        y = Math.pow(mouse.y - (this.selectionSize.y + this.startDownCoord.y), 2);
-        if (x + y <= DOT_SIZE_SQUARE) {
-            this.clickOnAnchor = true;
-            this.anchorHit = Anchors.BottomLeft;
-        }
-        // bottom middle
-        x = Math.pow(mouse.x - (this.startDownCoord.x + this.selectionSize.x / 2), 2);
-        y = Math.pow(mouse.y - (this.selectionSize.y + this.startDownCoord.y), 2);
-        if (x + y <= DOT_SIZE_SQUARE) {
-            this.clickOnAnchor = true;
-            this.anchorHit = Anchors.BottomMiddle;
-        }
-        // bottom right corner
-        x = Math.pow(mouse.x - (this.selectionSize.x + this.startDownCoord.x), 2);
-        y = Math.pow(mouse.y - (this.selectionSize.y + this.startDownCoord.y), 2);
-        if (x + y <= DOT_SIZE_SQUARE) {
-            this.clickOnAnchor = true;
-            this.anchorHit = Anchors.BottomRight;
-        }
-        if (!this.clickOnAnchor) {
-            this.clickOnAnchor = false;
-            this.anchorHit = Anchors.Default;
+        const DOTSIZE_SQUARE: number = Math.pow(DOTSIZE, 2);
+        const X_LEFT = Math.pow(mouse.x - this.startDownCoord.x, 2);
+        const X_MIDDLE = Math.pow(mouse.x - (this.startDownCoord.x + this.selectionSize.x / 2), 2);
+        const X_RIGHT = Math.pow(mouse.x - (this.selectionSize.x + this.startDownCoord.x), 2);
+        const Y_TOP = Math.pow(mouse.y - this.startDownCoord.y, 2);
+        const Y_MIDDLE = Math.pow(mouse.y - (this.startDownCoord.y + this.selectionSize.y / 2), 2);
+        const Y_BOTTOM = Math.pow(mouse.y - (this.selectionSize.y + this.startDownCoord.y), 2);
+        switch (true) {
+            case DOTSIZE_SQUARE >= X_LEFT + Y_TOP: // top left corner
+                this.hitAnchor(Anchors.TopLeft);
+                break;
+            case DOTSIZE_SQUARE >= X_MIDDLE + Y_TOP: // top middle
+                this.hitAnchor(Anchors.TopMiddle);
+                break;
+            case DOTSIZE_SQUARE >= X_RIGHT + Y_TOP: // top right corner
+                this.hitAnchor(Anchors.TopRight);
+                break;
+            case DOTSIZE_SQUARE >= X_LEFT + Y_MIDDLE: // middle left
+                this.hitAnchor(Anchors.MiddleLeft);
+                break;
+            case DOTSIZE_SQUARE >= X_RIGHT + Y_MIDDLE: // middle right
+                this.hitAnchor(Anchors.MiddleRight);
+                break;
+            case DOTSIZE_SQUARE >= X_LEFT + Y_BOTTOM: // bottom left corner
+                this.hitAnchor(Anchors.BottomLeft);
+                break;
+            case DOTSIZE_SQUARE >= X_MIDDLE + Y_BOTTOM: // bottom middle
+                this.hitAnchor(Anchors.BottomMiddle);
+                break;
+            case DOTSIZE_SQUARE >= X_RIGHT + Y_BOTTOM: // bottom right corner
+                this.hitAnchor(Anchors.BottomRight);
+                break;
+            default:
+                // mouseclick not on any anchor
+                this.clickOnAnchor = false;
+                this.anchorHit = Anchors.Default;
+                break;
         }
         return this.clickOnAnchor;
+    }
+
+    private hitAnchor(anchor: Anchors): void {
+        this.clickOnAnchor = true;
+        this.anchorHit = anchor;
     }
 
     protected clearPath(): void {
@@ -345,11 +318,6 @@ export abstract class SelectionToolService extends Tool {
         return h === 0 ? w : this.getRatio(h, w % h);
     }
 
-    // Va partir
-    protected putImageData(startCoord: Vec2, canvas: CanvasRenderingContext2D, image: ImageData): void {
-        canvas.putImageData(image, startCoord.x, startCoord.y);
-    }
-
     // need to fix
     protected getSquaredSize(mousePosition: Vec2): Vec2 {
         let width = mousePosition.x - this.startDownCoord.x;
@@ -437,20 +405,6 @@ export abstract class SelectionToolService extends Tool {
             default:
                 break;
         }
-    }
-
-    // Vas partir
-    protected getOldImageData(mousePosition: Vec2): ImageData {
-        let imageDat: ImageData = new ImageData(1, 1);
-        if (this.startDownCoord.x !== mousePosition.x && this.startDownCoord.y !== mousePosition.y) {
-            imageDat = this.drawingService.baseCtx.getImageData(
-                this.startDownCoord.x,
-                this.startDownCoord.y,
-                (mousePosition.x - this.startDownCoord.x) * 2,
-                (mousePosition.y - this.startDownCoord.y) * 2,
-            );
-        }
-        return imageDat;
     }
 
     protected evenImageStartCoord(mousePosition: Vec2): Vec2 {
