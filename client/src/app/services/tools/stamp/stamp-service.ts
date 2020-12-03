@@ -42,15 +42,6 @@ export class StampService extends Tool {
         this.isAltDown = false;
     }
 
-    onMouseDown(event: MouseEvent): void {
-        this.mouseDown = event.button === MouseButton.Left;
-        if (this.mouseDown) {
-            this.clearPath();
-            this.mouseDownCoord = this.getPositionFromMouse(event);
-            this.pathData.push(this.mouseDownCoord);
-            this.previewStamp(this.drawingService.previewCtx, this.pathData);
-        }
-    }
     onMouseScrollUp(event: MouseEvent): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.previewStamp(this.drawingService.previewCtx, this.pathData);
@@ -82,20 +73,15 @@ export class StampService extends Tool {
             this.angleInRadian = this.angleInRadian + rotateAngle15;
         }
     }
-
-    onMouseUp(event: MouseEvent): void {
-        this.resetBorder();
+    onMouseDown(event: MouseEvent): void {
+        this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
-            this.pathData.push(mousePosition);
+            this.clearPath();
+            this.mouseDownCoord = this.getPositionFromMouse(event);
+            this.pathData.push(this.mouseDownCoord);
             this.previewStamp(this.drawingService.previewCtx, this.pathData);
-            this.applyStamp(this.drawingService.baseCtx, this.pathData);
-            this.drawingStateTrackingService.addAction(this, new InteractionPath(this.pathData));
         }
-        this.mouseDown = false;
-        this.clearPath();
     }
-
     onMouseMove(event: MouseEvent): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
@@ -118,6 +104,19 @@ export class StampService extends Tool {
                 this.resetBorder();
             }
         }
+    }
+
+    onMouseUp(event: MouseEvent): void {
+        this.resetBorder();
+        if (this.mouseDown) {
+            const mousePosition = this.getPositionFromMouse(event);
+            this.pathData.push(mousePosition);
+            this.previewStamp(this.drawingService.previewCtx, this.pathData);
+            this.applyStamp(this.drawingService.baseCtx, this.pathData);
+            this.drawingStateTrackingService.addAction(this, new InteractionPath(this.pathData));
+        }
+        this.mouseDown = false;
+        this.clearPath();
     }
 
     private applyStamp(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
@@ -150,16 +149,16 @@ export class StampService extends Tool {
         ctx.globalAlpha = transparenceValue;
         this.applyStamp(ctx, path);
     }
-    private stamp1(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        const image = new Image();
-        image.src = '/assets/images/approved.png';
-        this.drawImage(ctx, path, image);
-    }
 
     private convertDegreeToRad(angleDegre: number): number {
         // value 180 is used for conversion purposes of degree to rad
         // tslint:disable:no-magic-numbers
         return (angleDegre * Math.PI) / 180;
+    }
+    private stamp1(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+        const image = new Image();
+        image.src = '/assets/images/approved.png';
+        this.drawImage(ctx, path, image);
     }
 
     private stamp2(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
