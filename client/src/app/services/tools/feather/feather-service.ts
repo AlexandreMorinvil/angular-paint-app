@@ -53,6 +53,7 @@ export class FeatherService extends Tool {
         } else {
             this.angleInRadian = this.angleInRadian - rotationAngle15;
         }
+        this.featherDraw(this.drawingService.previewCtx, this.pathData);
     }
 
     onMouseScrollDown(event: MouseEvent): void {
@@ -68,6 +69,7 @@ export class FeatherService extends Tool {
         } else {
             this.angleInRadian = this.angleInRadian + rotationAngle15;
         }
+        this.featherDraw(this.drawingService.previewCtx, this.pathData);
     }
     onMouseDown(event: MouseEvent): void {
         this.clearPath();
@@ -136,8 +138,6 @@ export class FeatherService extends Tool {
             }
         }
         if (this.pathData.length < 2) {
-            const currentPosition: Vec2 = path[path.length - 1];
-
             for (let i = 0; i < this.widthService.getWidth(); i++) {
                 ctx.moveTo(
                     currentPosition.x + Math.sin(this.convertDegreeToRad(this.angleInRadian)) * i,
