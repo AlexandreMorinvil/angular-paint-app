@@ -128,7 +128,7 @@ export class RectangleService extends Tool {
         }
     }
 
-    private drawPreviewRect(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    drawPreviewRect(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         const mouseMoveCoord = path[path.length - 1];
         let width = mouseMoveCoord.x - this.mouseDownCoord.x;
@@ -165,8 +165,6 @@ export class RectangleService extends Tool {
             } else if (width < 0 && height >= 0) {
                 width -= this.widthService.getWidth();
                 height += this.widthService.getWidth();
-                console.log(width);
-                console.log(height);
                 startX += this.widthService.getWidth() / 2;
                 startY -= this.widthService.getWidth() / 2;
             } else {

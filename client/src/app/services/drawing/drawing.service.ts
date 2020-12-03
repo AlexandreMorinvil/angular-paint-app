@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { GridService } from '@app/services/tools/grid/grid.service';
 import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzone-size.service';
 
 @Injectable({
@@ -11,7 +12,7 @@ export class DrawingService {
     hasBeenDrawnOnto: boolean;
     shortcutEnable: boolean = true;
 
-    constructor(private workzoneSizeService: WorkzoneSizeService) {}
+    constructor(private workzoneSizeService: WorkzoneSizeService, private gridService: GridService) {}
 
     resetDrawing(): void {
         this.clearCanvas(this.baseCtx);
@@ -43,6 +44,7 @@ export class DrawingService {
         this.baseCtx.canvas.height = height;
         this.previewCtx.canvas.width = width;
         this.previewCtx.canvas.height = height;
+        this.gridService.resize(width, height);
         this.printCanvas(imageData);
         this.workzoneSizeService.updateDrawingZoneDimension({ width, height });
     }
