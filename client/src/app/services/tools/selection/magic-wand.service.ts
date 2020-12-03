@@ -81,6 +81,8 @@ export class MagicWandService extends SelectionToolService {
 
             this.drawRect(pixelsSelected);
             this.getImageRotation();
+            // Buggy, doesnt do anything here but works in every other functions
+            this.showSelection(this.drawingService.previewCtx, this.image, this.firstMagicCoord, this.selectionSize);
 
             // set variables
             this.selectionCreated = true;
@@ -92,7 +94,7 @@ export class MagicWandService extends SelectionToolService {
             // clear canvas under selection
             this.clearCanvasSelection();
         }
-        this.showSelection(this.drawingService.previewCtx, this.image, this.firstMagicCoord, this.selectionSize);
+
         this.mouseDown = true;
     }
 
