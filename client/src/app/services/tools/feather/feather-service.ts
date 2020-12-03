@@ -13,8 +13,8 @@ import { WidthService } from '@app/services/tool-modifier/width/width.service';
     providedIn: 'root',
 })
 export class FeatherService extends Tool {
-    private readonly ANGLE_ROTATION_ON_ALT_DOWN = 1;
-    private readonly ANGLE_ROTATION_ON_ALT_UP = 15;
+    private readonly ANGLE_ROTATION_ON_ALT_DOWN: number = 1;
+    private readonly ANGLE_ROTATION_ON_ALT_UP: number = 15;
     private pathData: Vec2[];
     private angleInRadian: number;
     private isAltDown: boolean;
@@ -127,7 +127,7 @@ export class FeatherService extends Tool {
     }
 
     private convertDegreeToRadian(angleDegre: number): number {
-        const HALF_CIRCLE_ANGLE: number = 180;
+        const HALF_CIRCLE_ANGLE = 180;
         return (angleDegre * Math.PI) / HALF_CIRCLE_ANGLE;
     }
 
