@@ -27,6 +27,7 @@ import { RectangleService } from '@app/services/tools/rectangle/rectangle-servic
 import { EllipseSelectionService } from '@app/services/tools/selection/ellipse-selection.service';
 import { MagicWandService } from '@app/services/tools/selection/magic-wand.service';
 import { RectangleSelectionService } from '@app/services/tools/selection/rectangle-selection.service';
+import { TextService } from '@app/services/tools/text/text.service';
 import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzone-size.service';
 import { SidebarComponent } from './sidebar.component';
 class ToolStub extends Tool {}
@@ -75,6 +76,7 @@ describe('SidebarComponent', () => {
                 {} as AerosolService,
                 {} as MagicWandService,
                 {} as FeatherService,
+                {} as TextService,
                 {} as DrawingService,
             );
 

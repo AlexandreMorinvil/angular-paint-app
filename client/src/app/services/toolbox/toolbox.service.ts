@@ -17,6 +17,7 @@ import { RectangleService } from '@app/services/tools/rectangle/rectangle-servic
 import { EllipseSelectionService } from '@app/services/tools/selection/ellipse-selection.service';
 import { MagicWandService } from '@app/services/tools/selection/magic-wand.service';
 import { RectangleSelectionService } from '@app/services/tools/selection/rectangle-selection.service';
+import { TextService } from '@app/services/tools/text/text.service';
 
 @Injectable({
     providedIn: 'root',
@@ -42,6 +43,7 @@ export class ToolboxService {
         aerosolService: AerosolService,
         magicWandService: MagicWandService,
         featherService: FeatherService,
+        textService: TextService,
         private drawingService: DrawingService,
     ) {
         this.currentTool = cursorService;
@@ -61,6 +63,7 @@ export class ToolboxService {
         this.availableTools.push(aerosolService);
         this.availableTools.push(magicWandService);
         this.availableTools.push(featherService);
+        this.availableTools.push(textService);
     }
 
     getAvailableTools(): Tool[] {
@@ -72,6 +75,9 @@ export class ToolboxService {
     }
 
     setSelectedTool(selectedTool: Tool): void {
+        if (this.currentTool instanceof TextService) {
+            (this.currentTool as TextService).confirm();
+        }
         this.currentTool = selectedTool;
         this.currentTool.mouseDown = false;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);

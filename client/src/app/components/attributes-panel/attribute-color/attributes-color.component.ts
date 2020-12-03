@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
+import { ToolboxService } from '@app/services/toolbox/toolbox.service';
 import { ColorPickerService } from '@app/services/tools/color-picker/color-picker.service';
 
 @Component({
@@ -13,7 +14,7 @@ export class AttributeColorComponent {
     primaryOpacity: number;
     secondaryOpacity: number;
 
-    constructor(private colorService: ColorService, private colorPickerService: ColorPickerService) {
+    constructor(private colorService: ColorService, private colorPickerService: ColorPickerService, private toolbox: ToolboxService) {
         this.primaryColor = this.colorService.getPrimaryColor();
         this.secondaryColor = this.colorService.getSecondaryColor();
         this.primaryOpacity = this.colorService.getPrimaryColorOpacity();
@@ -61,6 +62,7 @@ export class AttributeColorComponent {
         this.secondaryColor = this.colorService.getSecondaryColor();
         this.primaryOpacity = this.colorService.getPrimaryColorOpacity();
         this.secondaryOpacity = this.colorService.getSecondaryColorOpacity();
+        this.toolbox.getCurrentTool().onAttributeChange();
     }
 
     revert(): void {

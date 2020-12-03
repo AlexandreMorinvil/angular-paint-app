@@ -107,8 +107,10 @@ export class AerosolService extends Tool {
         return { x: Math.cos(RANDOM_ANGLE) * RANDOM_RADIUS, y: Math.sin(RANDOM_ANGLE) * RANDOM_RADIUS };
     }
     private setAttribute(ctx: CanvasRenderingContext2D): void {
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
+        const LINE_CAP: CanvasLineCap = 'round';
+        const LINE_JOIN: CanvasLineJoin = 'round';
+        ctx.lineCap = LINE_CAP;
+        ctx.lineJoin = LINE_JOIN;
         const LINE_WIDTH = 5;
         ctx.lineWidth = LINE_WIDTH;
         ctx.fillStyle = this.colorService.getPrimaryColor();
