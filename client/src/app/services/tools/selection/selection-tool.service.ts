@@ -70,7 +70,7 @@ export abstract class SelectionToolService extends Tool {
     getPositionFromMouse(event: MouseEvent, isMagnetisc: Boolean = false): Vec2 {
         const clickCoordinate: Vec2 = { x: event.offsetX, y: event.offsetY } as Vec2;
         if (this.magnetismService.isActivated && isMagnetisc)
-            return this.magnetismService.getAdjustedPosition(clickCoordinate, this.selectionSize.x, this.selectionSize.y);
+            return this.magnetismService.getAdjustedPositionFromCenter(clickCoordinate, this.selectionSize.x, this.selectionSize.y);
         else return clickCoordinate;
     }
 
@@ -376,21 +376,46 @@ export abstract class SelectionToolService extends Tool {
         }
 
         if (this.arrowPress[0]) {
-            this.startDownCoord = { x: this.startDownCoord.x - MOVE, y: this.startDownCoord.y };
-            this.pathLastCoord = { x: this.pathLastCoord.x - MOVE, y: this.pathLastCoord.y };
+            this.startDownCoord = {
+                x:
+                    this.startDownCoord.x -
+                    (this.magnetismService.isActivated
+                        ? this.magnetismService.getGridHorizontalJumpDistance(this.startDownCoord.x, this.selectionSize.x, false)
+                        : MOVE),
+                y: this.startDownCoord.y,
+            };
         }
         if (this.arrowPress[1]) {
-            this.startDownCoord = { x: this.startDownCoord.x + MOVE, y: this.startDownCoord.y };
-            this.pathLastCoord = { x: this.pathLastCoord.x + MOVE, y: this.pathLastCoord.y };
+            this.startDownCoord = {
+                x:
+                    this.startDownCoord.x +
+                    (this.magnetismService.isActivated
+                        ? this.magnetismService.getGridHorizontalJumpDistance(this.startDownCoord.x, this.selectionSize.x, true)
+                        : MOVE),
+                y: this.startDownCoord.y,
+            };
         }
         if (this.arrowPress[2]) {
-            this.startDownCoord = { x: this.startDownCoord.x, y: this.startDownCoord.y - MOVE };
-            this.pathLastCoord = { x: this.pathLastCoord.x, y: this.pathLastCoord.y - MOVE };
+            this.startDownCoord = {
+                x: this.startDownCoord.x,
+                y:
+                    this.startDownCoord.y -
+                    (this.magnetismService.isActivated
+                        ? this.magnetismService.getVerticalJumpDistance(this.startDownCoord.y, this.selectionSize.y, false)
+                        : MOVE),
+            };
         }
         if (this.arrowPress[3]) {
-            this.startDownCoord = { x: this.startDownCoord.x, y: this.startDownCoord.y + MOVE };
-            this.pathLastCoord = { x: this.pathLastCoord.x, y: this.pathLastCoord.y + MOVE };
+            this.startDownCoord = {
+                x: this.startDownCoord.x,
+                y:
+                    this.startDownCoord.y +
+                    (this.magnetismService.isActivated
+                        ? this.magnetismService.getVerticalJumpDistance(this.startDownCoord.y, this.selectionSize.y, true)
+                        : MOVE),
+            };
         }
+        this.pathLastCoord = this.getBottomRightCorner();
     }
 
     protected checkArrowUnhit(event: KeyboardEvent): void {
