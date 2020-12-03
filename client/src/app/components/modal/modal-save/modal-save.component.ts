@@ -122,6 +122,7 @@ export class ModalSaveComponent {
     }
 
     sendMessageToServer(): void {
+        // tslint:disable:no-empty
         const newDrawingToSend: Drawing = new Drawing('', this.drawingName.value, this.tags, this.saveService.imageSource);
         this.apiDrawingService.save(newDrawingToSend).subscribe(() => {});
     }
