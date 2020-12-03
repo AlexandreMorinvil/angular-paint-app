@@ -87,13 +87,13 @@ export class AerosolService extends Tool {
                 ctx.beginPath();
                 const X_VALUE_OFFSET = this.getRandomPoint().x;
                 const Y_VALUE_OFFSET = this.getRandomPoint().y;
-                const x_VALUE = X_POSITION + X_VALUE_OFFSET;
+                const X_VALUE = X_POSITION + X_VALUE_OFFSET;
                 const Y_VALUE = Y_POSITION + Y_VALUE_OFFSET;
                 this.sprayDropletDiameter = this.sprayDropletService.getSprayDropletDiameter();
                 const DROPLET_RADIUS = this.sprayDropletDiameter / 2;
-                const SAVED_DATA: Vec2 = { x: x_VALUE, y: Y_VALUE }; // Saving Data For Undo Redo
+                const SAVED_DATA: Vec2 = { x: X_VALUE, y: Y_VALUE }; // Saving Data For Undo Redo
                 this.savedPathData.push(SAVED_DATA);
-                ctx.arc(x_VALUE, Y_VALUE, DROPLET_RADIUS, 0, 2 * Math.PI, false);
+                ctx.arc(X_VALUE, Y_VALUE, DROPLET_RADIUS, 0, 2 * Math.PI, false);
                 ctx.fill();
             }
         }

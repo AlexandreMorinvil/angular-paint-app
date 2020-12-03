@@ -92,13 +92,6 @@ export class StampService extends Tool {
         if (this.mouseDown) {
             if (!this.isInCanvas(mousePosition) && this.mouseDown) {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
-
-                if (mousePosition.x >= this.drawingService.baseCtx.canvas.width) {
-                    this.drawingService.previewCtx.canvas.width = mousePosition.x;
-                }
-                if (mousePosition.y >= this.drawingService.baseCtx.canvas.height) {
-                    this.drawingService.previewCtx.canvas.height = mousePosition.y;
-                }
             } else {
                 this.previewStamp(this.drawingService.previewCtx, this.pathData);
                 this.resetBorder();
