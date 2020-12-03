@@ -10,6 +10,7 @@ import { ToleranceService } from '@app/services/tool-modifier/tolerance/toleranc
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
+import { SelectionToolService } from '@app/services/tools/selection/selection-tool.service';
 
 @Component({
     selector: 'app-attributes-panel',
@@ -36,10 +37,6 @@ export class AttributesPanelComponent {
 
     capitalizeFirstLetter(str: string): string {
         return str.charAt(0).toUpperCase() + str.slice(1);
-    }
-
-    needs(): boolean {
-        return true;
     }
 
     needsSpacingAttribute(): boolean {
@@ -78,7 +75,7 @@ export class AttributesPanelComponent {
     }
 
     needsSelectionAttribute(): boolean {
-        return this.currentTool.name === 'selection rectangle' || this.currentTool.name === 'selection ellipse';
+        return this.currentTool instanceof SelectionToolService;
     }
 
     needsGridDisplayAttribute(): boolean {
