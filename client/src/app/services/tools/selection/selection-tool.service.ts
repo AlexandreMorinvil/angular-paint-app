@@ -27,15 +27,15 @@ export abstract class SelectionToolService extends Tool {
     protected pathLastCoord: Vec2;
     protected startSelectionPoint: Vec2;
     protected selectionSize: Vec2;
-    protected firstEllipseCoord: Vec2;
+    protected firstSelectionCoord: Vec2;
     protected resizeStartCoords: Vec2;
     protected pathStartCoordReference: Vec2;
     protected arrowCoord: Vec2;
     protected pathData: Vec2[];
 
     // va partir
-    protected imageData: ImageData;
-    protected oldImageData: ImageData;
+    // protected imageData: ImageData;
+    // protected oldImageData: ImageData;
 
     protected selectionCreated: boolean;
     protected hasDoneFirstTranslation: boolean;
@@ -301,7 +301,7 @@ export abstract class SelectionToolService extends Tool {
                 this.showSelectionResize(canvas, adjustStartCoords, adjustOffsetCoords, mousePosition, caller);
                 break;
             case 2: // rectangle is calling
-                this.drawImage(canvas, this.image, adjustStartCoords, this.selectionSize, this.startDownCoord, adjustOffsetCoords);
+                this.drawImage(canvas, this.image, this.firstSelectionCoord, this.selectionSize, adjustStartCoords, adjustOffsetCoords);
                 break;
             case 3: // magic wand is calling
                 this.showSelectionResize(canvas, adjustStartCoords, adjustOffsetCoords, mousePosition, caller);
@@ -337,7 +337,7 @@ export abstract class SelectionToolService extends Tool {
             // this.startDownCoord = MEMORY_START;
             canvas.clip(PATH);
         }
-        this.drawImage(canvas, this.image, this.firstEllipseCoord, this.selectionSize, adjustStartCoords, adjustOffsetCoords);
+        this.drawImage(canvas, this.image, this.firstSelectionCoord, this.selectionSize, adjustStartCoords, adjustOffsetCoords);
         canvas.restore();
     }
 
