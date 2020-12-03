@@ -54,7 +54,8 @@ export abstract class SelectionToolService extends Tool {
 
     getPositionFromMouse(event: MouseEvent, isMagnetisc: Boolean = false): Vec2 {
         const clickCoordinate: Vec2 = { x: event.offsetX, y: event.offsetY } as Vec2;
-        if (this.magnetismService.isActivated && isMagnetisc) return this.magnetismService.getNearestGridCoordinate(clickCoordinate)
+        if (this.magnetismService.isActivated && isMagnetisc)
+            return this.magnetismService.getAdjustedPosition(clickCoordinate, this.imageData.width, this.imageData.height);
         else return clickCoordinate;
     }
 

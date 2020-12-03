@@ -3,9 +3,9 @@ import { Vec2 } from '@app/classes/vec2';
 import { SpacingService } from '@app/services/tool-modifier/spacing/spacing.service';
 
 export enum MagnetismAnchor {
-    Start = -1,
+    End = -1,
     Center = 0,
-    End = 1,
+    Start = 1,
 }
 
 @Injectable({
@@ -18,7 +18,18 @@ export class MagnetismService {
 
     constructor(private spacingService: SpacingService) {}
 
-    getNearestGridCoordinate(coordinate: Vec2): Vec2 {
+    toogleMagnetism(): void {
+        this.isActivated = !this.isActivated;
+    }
+    
+    getAdjustedPosition(coordinate: Vec2, width: number, height: number): Vec2 {
+        const nearestGridCoordinate: Vec2 = this.getNearestGridCoordinate(coordinate);
+        nearestGridCoordinate.x += this.horizontalAnchorPosition * (width / 2);
+        nearestGridCoordinate.y += this.verticalAnchorPosition * (height / 2);
+        return nearestGridCoordinate;
+    }
+
+    private getNearestGridCoordinate(coordinate: Vec2): Vec2 {
         const spacing: number = this.spacingService.getSpacing();
         const gridClosestX: number = Math.round(coordinate.x / spacing) * spacing;
         const gridClosestY: number = Math.round(coordinate.y / spacing) * spacing;
@@ -26,7 +37,4 @@ export class MagnetismService {
         return { x: gridClosestX, y: gridClosestY } as Vec2;
     }
 
-    toogleMagnetism(): void {
-        this.isActivated = !this.isActivated;
-    }
 }
