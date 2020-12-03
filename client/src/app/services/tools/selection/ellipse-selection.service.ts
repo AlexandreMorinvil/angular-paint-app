@@ -283,47 +283,27 @@ export class EllipseSelectionService extends SelectionToolService {
 
     onArrowDown(event: KeyboardEvent): void {
         if (!this.arrowDown) {
-            this.arrowCoord = this.getBottomRightCorner();
-            this.ellipseService.mouseDownCoord = this.startDownCoord;
-            this.pathData.push(this.arrowCoord);
-            if (this.hasDoneFirstTranslation) {
-                this.showSelection(
-                    this.drawingService.baseCtx,
-                    this.oldImage,
-                    { x: this.selectionSize.x, y: this.selectionSize.y },
-                    this.firstSelectionCoord,
-                );
-            }
-            // Puts a white rectangle on selection original placement
-            else {
-                this.clearCanvasEllipse();
-            }
-            this.startSelectionPoint = { x: this.startDownCoord.x, y: this.startDownCoord.y };
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
         if (this.selectionCreated) {
-            this.checkArrowHit(event);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, {
-                x: this.selectionSize.x,
-                y: this.selectionSize.y,
-            });
-            this.draggingImage = false;
+            this.checkArrowHit(event);
+            this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
         }
     }
 
     onArrowUp(event: KeyboardEvent): void {
         if (this.selectionCreated) {
             this.checkArrowUnhit(event);
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
             if (this.arrowPress.every((v) => v === false)) {
                 this.arrowDown = false;
-                this.draggingImage = true;
                 this.clearPath();
+                this.pathLastCoord = this.getBottomRightCorner();
                 this.pathData.push(this.pathLastCoord);
                 this.ellipseService.mouseDownCoord = this.startDownCoord;
-                this.clearPath();
-                this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                this.onMouseUp({ offsetX: 25, offsetY: 25, button: 0 } as MouseEvent);
-                this.draggingImage = false;
+                this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
+                this.drawSelectionSurround();
                 this.hasDoneFirstTranslation = true;
             }
             if (this.arrowDown) {
