@@ -369,20 +369,17 @@ export abstract class SelectionToolService extends Tool {
 
         if (this.arrowPress[0]) {
             this.startDownCoord = { x: this.startDownCoord.x - MOVE, y: this.startDownCoord.y };
-            this.pathLastCoord = { x: this.pathLastCoord.x - MOVE, y: this.pathLastCoord.y };
         }
         if (this.arrowPress[1]) {
             this.startDownCoord = { x: this.startDownCoord.x + MOVE, y: this.startDownCoord.y };
-            this.pathLastCoord = { x: this.pathLastCoord.x + MOVE, y: this.pathLastCoord.y };
         }
         if (this.arrowPress[2]) {
             this.startDownCoord = { x: this.startDownCoord.x, y: this.startDownCoord.y - MOVE };
-            this.pathLastCoord = { x: this.pathLastCoord.x, y: this.pathLastCoord.y - MOVE };
         }
         if (this.arrowPress[3]) {
             this.startDownCoord = { x: this.startDownCoord.x, y: this.startDownCoord.y + MOVE };
-            this.pathLastCoord = { x: this.pathLastCoord.x, y: this.pathLastCoord.y + MOVE };
         }
+        this.pathLastCoord = this.getBottomRightCorner();
     }
 
     protected checkArrowUnhit(event: KeyboardEvent): void {

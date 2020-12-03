@@ -51,18 +51,21 @@ export class RectangleSelectionService extends SelectionToolService {
         } else if (this.selectionCreated && this.hitSelection(this.mouseDownCoord.x, this.mouseDownCoord.y)) {
             this.pathLastCoord = this.getBottomRightCorner(); // pour le showSelection
             this.draggingImage = true;
+            this.rotateCanvas();
             this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
+            this.resetCanvasRotation();
             // creation
         } else {
             // this.resetCanvasRotation();
             if (this.selectionCreated) {
                 this.drawOnBaseCanvas();
-                this.selectionCreated = false;
                 this.addActionTracking(this.startDownCoord);
             }
             this.rectangleService.onMouseDown(event);
             this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
             this.angle = 0;
+            this.hasDoneFirstRotation = false;
+            this.hasDoneFirstTranslation = false;
             this.startDownCoord = this.getPositionFromMouse(event);
             this.firstSelectionCoord = this.startDownCoord;
             this.startSelectionPoint = this.startDownCoord;
@@ -76,7 +79,10 @@ export class RectangleSelectionService extends SelectionToolService {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION);
             this.pathLastCoord = this.getBottomRightCorner(); // besoin pour le showSelection
+            this.rotateCanvas();
             this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
+            this.resetCanvasRotation();
+            this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION);
             // resizing
         } else if (this.clickOnAnchor && this.localMouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -100,12 +106,24 @@ export class RectangleSelectionService extends SelectionToolService {
         if (this.draggingImage) {
             // put selection on previewCanvas
             this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION);
+            this.rotateCanvas();
             this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
+            this.resetCanvasRotation();
+            this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION);
             // draw selection surround
-            this.rectangleService.mouseDownCoord = this.startDownCoord;
-            this.pathLastCoord = this.getBottomRightCorner();
-            this.pathData.push(this.pathLastCoord);
-            this.drawSelectionSurround(); // draw selection box and anchor
+            if (this.hasDoneFirstRotation) {
+                // draw selection box bigger if there is rotation
+                const TRANSLATION = { x: this.startDownCoord.x + this.selectionSize.x / 2, y: this.startDownCoord.y + this.selectionSize.y / 2 };
+                const MAX_SIDE = Math.max(this.selectionSize.x, this.selectionSize.y);
+                this.drawSelectionSurroundRotation(TRANSLATION, MAX_SIDE);
+                this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION);
+            } else {
+                // draw regular selection box if there is no rotation
+                this.rectangleService.mouseDownCoord = this.startDownCoord;
+                this.pathLastCoord = this.getBottomRightCorner();
+                this.pathData.push(this.pathLastCoord);
+                this.drawSelectionSurround();
+            }
             // set values
             this.draggingImage = false;
             this.hasDoneFirstTranslation = true;
@@ -141,7 +159,7 @@ export class RectangleSelectionService extends SelectionToolService {
             // Puts startDownCoord at the top left of the selection
             this.startDownCoord = this.offsetAnchors(this.startDownCoord);
             this.firstSelectionCoord = this.startDownCoord;
-            // addActionTracking()
+            this.addActionTracking(MOUSE_POSITION);
             // put selection on previewCanvas
             this.pathLastCoord = this.getBottomRightCorner();
             this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
@@ -152,8 +170,6 @@ export class RectangleSelectionService extends SelectionToolService {
             this.drawSelectionSurround();
             // set up values
             this.selectionCreated = true;
-            this.hasDoneFirstRotation = false;
-            this.hasDoneFirstTranslation = false;
         }
         this.localMouseDown = false;
         this.clearPath();
@@ -167,28 +183,34 @@ export class RectangleSelectionService extends SelectionToolService {
         }
         if (this.selectionCreated) {
             // Setting up the constants
-            const MEMORY_COORDS = this.startDownCoord;
+            const MEMORY_COORDS_START = this.startDownCoord;
+            const MEMORY_COORDS_SIZE = this.selectionSize;
             const TRANSLATION = { x: this.startDownCoord.x + this.selectionSize.x / 2, y: this.startDownCoord.y + this.selectionSize.y / 2 };
-            const MAX_SIDE = Math.max(this.selectionSize.x, this.selectionSize.y);
+            const MAX_SIDE = Math.hypot(this.selectionSize.x, this.selectionSize.y);
+            const OFFSET_START = { x: TRANSLATION.x - MAX_SIDE / 2, y: TRANSLATION.y - MAX_SIDE / 2 };
+            // for undo redo
+            const OLD_IMAGE: ImageData = this.drawingService.baseCtx.getImageData(OFFSET_START.x, OFFSET_START.y, MAX_SIDE, MAX_SIDE);
             // calculate desire angle for canvas rotation
             this.calculateRotation(event.altKey, event.deltaY / 100);
             // clearing canvas for rotation
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             // does translation and rotation of the canvas
             this.rotateCanvas();
-            this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
+            this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize); // draw new image on preview
+            // draw new image on base for saving for undo/redo
+            this.showSelection(this.drawingService.baseCtx, this.image, this.firstSelectionCoord, this.selectionSize);
+            this.selectionSize = { x: MAX_SIDE, y: MAX_SIDE }; // set selectionSize to new value for addActionTracking
+            this.addActionTracking({ x: OFFSET_START.x, y: OFFSET_START.y }); // saves undo/redo
+            this.selectionSize = MEMORY_COORDS_SIZE; // set back selectionSize to original value
+            this.drawingService.baseCtx.putImageData(OLD_IMAGE, OFFSET_START.x, OFFSET_START.y); // reput the old image on base canvas
             // reset canvas transform after rotation
             this.resetCanvasRotation();
             // draw selection surround
-            this.startDownCoord = { x: TRANSLATION.x - MAX_SIDE / 2, y: TRANSLATION.y - MAX_SIDE / 2 };
-            this.pathLastCoord = { x: this.startDownCoord.x + MAX_SIDE, y: this.startDownCoord.y + MAX_SIDE };
-            this.pathData.push(this.pathLastCoord);
-            this.rectangleService.mouseDownCoord = this.startDownCoord;
-            this.drawSelectionSurround();
+            this.drawSelectionSurroundRotation(TRANSLATION, MAX_SIDE);
             this.clearPath();
-            this.hasDoneFirstRotation = true;
+            this.hasDoneFirstRotation = this.angle !== 0 ? true : false;
             // reset startDownCoord to original value
-            this.startDownCoord = MEMORY_COORDS;
+            this.startDownCoord = MEMORY_COORDS_START;
         }
     }
 
@@ -196,6 +218,16 @@ export class RectangleSelectionService extends SelectionToolService {
         canvas.save();
         this.drawImage(canvas, image, imageStart, this.selectionSize, this.startDownCoord, size);
         canvas.restore();
+    }
+
+    private drawSelectionSurroundRotation(TRANSLATION: Vec2, MAX_SIDE: number): void {
+        this.startDownCoord = { x: TRANSLATION.x - MAX_SIDE / 2, y: TRANSLATION.y - MAX_SIDE / 2 };
+        this.pathLastCoord = { x: this.startDownCoord.x + MAX_SIDE, y: this.startDownCoord.y + MAX_SIDE };
+        this.pathData.push(this.pathLastCoord);
+        this.rectangleService.mouseDownCoord = this.startDownCoord;
+        this.rectangleService.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
+        this.drawnAnchor(this.drawingService.previewCtx, { x: MAX_SIDE, y: MAX_SIDE });
+        this.clearPath();
     }
 
     private drawSelectionSurround(): void {
@@ -228,8 +260,13 @@ export class RectangleSelectionService extends SelectionToolService {
     // puts selection on baseCanvas
     drawOnBaseCanvas(): void {
         if (this.selectionCreated) {
+            if (this.hasDoneFirstRotation) {
+                this.rotateCanvas();
+            }
             this.showSelection(this.drawingService.baseCtx, this.image, this.firstSelectionCoord, this.selectionSize);
+            this.resetCanvasRotation();
         }
+        this.selectionCreated = false;
     }
 
     onEscapeDown(): void {

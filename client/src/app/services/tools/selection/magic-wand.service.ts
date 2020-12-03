@@ -548,7 +548,7 @@ export class MagicWandService extends SelectionToolService {
     }
 
     execute(interaction: InteractionSelection): void {
-        //this.putImageData(interaction.startSelectionPoint, this.drawingService.baseCtx, interaction.selection);
+        // this.putImageData(interaction.startSelectionPoint, this.drawingService.baseCtx, interaction.selection);
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 }
