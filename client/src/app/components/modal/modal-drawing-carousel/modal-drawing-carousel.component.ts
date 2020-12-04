@@ -126,7 +126,6 @@ export class DrawingCarouselComponent {
 
     moveNext(): void {
         // If we have below three drawings, dont do anything
-
         if (this.currentDrawings[0]._id === null || this.currentDrawings[1]._id === null || this.currentDrawings[2]._id === null) return;
 
         for (let i = 0; i < this.currentDrawings.length; i++) {
@@ -156,6 +155,7 @@ export class DrawingCarouselComponent {
     drawingClicked(drawing: DrawingToDatabase): void {
         if (this.drawingSelectedPurpose === PurposeofClick.Load) {
             this.loadService.loadDraw(this.getDrawingUrl(drawing));
+            this.tagFilterService.clearTags();
         } else {
             this.memoryService.deleteFromDatabase(drawing._id).then(() => {
                 this.memoryService.getAllFromDatabase().then(() => {
