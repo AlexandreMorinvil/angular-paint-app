@@ -18,24 +18,13 @@ export class EmailController {
 
         this.router.post(this.ROUTING_EMAIL, async (req: Request, res: Response, next: NextFunction) => {
             this.emailService
-                .sendEmail(req.body)
-                .then()
+                .processRequest(req.body)
+                .then(() => {
+                    res.sendStatus(StatusCodes.OK);
+                })
                 .catch((error: Error) => {
-                    res.status(StatusCodes.BAD_REQUEST).send(error.message);
+                    res.status(StatusCodes.NOT_FOUND).send(error.message);
                 });
-
-            // const email = req.body.emailAdress;
-            // const data = req.body.imageSrc.split(';base64,');
-            // const base64Image = data.pop();
-            // const ext = data[0].split('/').pop();
-
-            // fs.writeFile('temp.' + ext, base64Image, { encoding: 'base64' }, async () => {
-            //     console.log('File created');
-            //     const code = await this.emailService.sendEmail(email, ext);
-            //     res.status(code).send({ returnCode: code });
-            // });
-
-            // return;
         });
     }
 }
