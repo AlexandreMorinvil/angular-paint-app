@@ -36,7 +36,7 @@ export class LoadService {
         }
     }
 
-    modifyCanvas() {
+    modifyCanvas(): void {
         this.base.canvas.width = this.img.width;
         this.base.canvas.height = this.img.height;
         this.preview.canvas.width = this.img.width;
