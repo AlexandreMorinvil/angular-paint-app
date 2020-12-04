@@ -53,21 +53,21 @@ export class FeatherService extends Tool {
         const ANGLE_ROTATION_ON_ALT_DOWN = 1;
         const RESET_ANGLE = 0;
         const CIRCLE_ANGLE = 360;
-        const orientation = event.deltaY / 100;
+        const ORIENTATION = event.deltaY / 100;
 
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         if (this.angleInRadian === RESET_ANGLE) {
-            if (orientation < 0) {
+            if (ORIENTATION < 0) {
                 this.angleInRadian = CIRCLE_ANGLE;
             }
-            if (orientation > 0) {
+            if (ORIENTATION > 0) {
                 this.angleInRadian = 0;
             }
         }
         if (this.isAltDown) {
-            this.angleInRadian = this.angleInRadian + ANGLE_ROTATION_ON_ALT_DOWN * orientation;
+            this.angleInRadian = this.angleInRadian + ANGLE_ROTATION_ON_ALT_DOWN * ORIENTATION;
         } else {
-            this.angleInRadian = this.angleInRadian + ANGLE_ROTATION_ON_ALT_UP * orientation;
+            this.angleInRadian = this.angleInRadian + ANGLE_ROTATION_ON_ALT_UP * ORIENTATION;
         }
     }
 

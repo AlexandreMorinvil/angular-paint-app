@@ -41,29 +41,31 @@ export class StampService extends Tool {
     onAltUp(event: KeyboardEvent): void {
         this.isAltDown = false;
     }
-
     onMouseWheel(event: WheelEvent): void {
-        const rotationAngle15 = 15;
-        const rotationAngle1 = 1;
-        const resetAngle = 0;
-        const setAngle = 360;
-        const orientation = event.deltaY / 100;
+        const ANGLE_ROTATION_ON_ALT_UP = 15;
+        const ANGLE_ROTATION_ON_ALT_DOWN = 1;
+        const RESET_ANGLE = 0;
+        const CIRCLE_ANGLE = 360;
+        const ORIENTATION = event.deltaY / 100;
+
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.previewStamp(this.drawingService.previewCtx, this.pathData);
-        if (this.angleInRadian === resetAngle) {
-            if (orientation < 0) {
-                this.angleInRadian = setAngle;
+
+        if (this.angleInRadian === RESET_ANGLE) {
+            if (ORIENTATION < 0) {
+                this.angleInRadian = CIRCLE_ANGLE;
             }
-            if (orientation > 0) {
+            if (ORIENTATION > 0) {
                 this.angleInRadian = 0;
             }
         }
         if (this.isAltDown) {
-            this.angleInRadian = this.angleInRadian + rotationAngle1 * orientation;
+            this.angleInRadian = this.angleInRadian + ANGLE_ROTATION_ON_ALT_DOWN * ORIENTATION;
         } else {
-            this.angleInRadian = this.angleInRadian + rotationAngle15 * orientation;
+            this.angleInRadian = this.angleInRadian + ANGLE_ROTATION_ON_ALT_UP * ORIENTATION;
         }
     }
+
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
