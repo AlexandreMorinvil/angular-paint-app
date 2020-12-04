@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Description } from '@app/classes/description';
+import { MouseButton } from '@app/classes/mouse';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -98,36 +99,56 @@ export abstract class SelectionToolService extends Tool {
 
     // resizing
     protected checkHit(mouse: Vec2): boolean {
+        if (this.hasDoneFirstRotation) {
+            // Resize when the selection has been rotated
+            const MEM_COORDS = this.startDownCoord;
+            const TRANSLATION = { x: this.startDownCoord.x + this.selectionSize.x / 2, y: this.startDownCoord.y + this.selectionSize.y / 2 };
+            this.rotateCanvas();
+            mouse = { x: mouse.x - TRANSLATION.x, y: mouse.y - TRANSLATION.y };
+            this.verifyEachAnchor(mouse);
+            this.resetCanvasRotation();
+            this.startDownCoord = MEM_COORDS;
+        } else {
+            // Resize when the selection hasn't been rotated
+            this.verifyEachAnchor(mouse);
+        }
+        return this.clickOnAnchor;
+    }
+
+    private verifyEachAnchor(mouse: Vec2): void {
         const DOTSIZE_SQUARE: number = Math.pow(DOTSIZE, 2);
-        const X_LEFT = Math.pow(mouse.x - this.startDownCoord.x, 2);
-        const X_MIDDLE = Math.pow(mouse.x - (this.startDownCoord.x + this.selectionSize.x / 2), 2);
-        const X_RIGHT = Math.pow(mouse.x - (this.selectionSize.x + this.startDownCoord.x), 2);
-        const Y_TOP = Math.pow(mouse.y - this.startDownCoord.y, 2);
-        const Y_MIDDLE = Math.pow(mouse.y - (this.startDownCoord.y + this.selectionSize.y / 2), 2);
-        const Y_BOTTOM = Math.pow(mouse.y - (this.selectionSize.y + this.startDownCoord.y), 2);
+        const TOP_LEFT = this.rotatePoint(this.startDownCoord.x, this.startDownCoord.y, mouse);
+        const TOP_MIDDLE = this.rotatePoint(this.startDownCoord.x + this.selectionSize.x / 2, this.startDownCoord.y, mouse);
+        const TOP_RIGHT = this.rotatePoint(this.startDownCoord.x + this.selectionSize.x, this.startDownCoord.y, mouse);
+        const MIDDLE_LEFT = this.rotatePoint(this.startDownCoord.x, this.startDownCoord.y + this.selectionSize.y / 2, mouse);
+        const MIDDLE_RIGHT = this.rotatePoint(this.startDownCoord.x + this.selectionSize.x, this.startDownCoord.y + this.selectionSize.y / 2, mouse);
+        const BOTTOM_LEFT = this.rotatePoint(this.startDownCoord.x, this.startDownCoord.y + this.selectionSize.y, mouse);
+        const BOTTOM_MIDDLE = this.rotatePoint(this.startDownCoord.x + this.selectionSize.x / 2, this.startDownCoord.y + this.selectionSize.y, mouse);
+        const BOTTOM_RIGHT = this.rotatePoint(this.startDownCoord.x + this.selectionSize.x, this.startDownCoord.y + this.selectionSize.y, mouse);
+
         switch (true) {
-            case DOTSIZE_SQUARE >= X_LEFT + Y_TOP: // top left corner
+            case DOTSIZE_SQUARE >= TOP_LEFT: // top left corner
                 this.hitAnchor(Anchors.TopLeft);
                 break;
-            case DOTSIZE_SQUARE >= X_MIDDLE + Y_TOP: // top middle
+            case DOTSIZE_SQUARE >= TOP_MIDDLE: // top middle
                 this.hitAnchor(Anchors.TopMiddle);
                 break;
-            case DOTSIZE_SQUARE >= X_RIGHT + Y_TOP: // top right corner
+            case DOTSIZE_SQUARE >= TOP_RIGHT: // top right corner
                 this.hitAnchor(Anchors.TopRight);
                 break;
-            case DOTSIZE_SQUARE >= X_LEFT + Y_MIDDLE: // middle left
+            case DOTSIZE_SQUARE >= MIDDLE_LEFT: // middle left
                 this.hitAnchor(Anchors.MiddleLeft);
                 break;
-            case DOTSIZE_SQUARE >= X_RIGHT + Y_MIDDLE: // middle right
+            case DOTSIZE_SQUARE >= MIDDLE_RIGHT: // middle right
                 this.hitAnchor(Anchors.MiddleRight);
                 break;
-            case DOTSIZE_SQUARE >= X_LEFT + Y_BOTTOM: // bottom left corner
+            case DOTSIZE_SQUARE >= BOTTOM_LEFT: // bottom left corner
                 this.hitAnchor(Anchors.BottomLeft);
                 break;
-            case DOTSIZE_SQUARE >= X_MIDDLE + Y_BOTTOM: // bottom middle
+            case DOTSIZE_SQUARE >= BOTTOM_MIDDLE: // bottom middle
                 this.hitAnchor(Anchors.BottomMiddle);
                 break;
-            case DOTSIZE_SQUARE >= X_RIGHT + Y_BOTTOM: // bottom right corner
+            case DOTSIZE_SQUARE >= BOTTOM_RIGHT: // bottom right corner
                 this.hitAnchor(Anchors.BottomRight);
                 break;
             default:
@@ -136,7 +157,13 @@ export abstract class SelectionToolService extends Tool {
                 this.anchorHit = Anchors.Default;
                 break;
         }
-        return this.clickOnAnchor;
+    }
+
+    private rotatePoint(x: number, y: number, mouse: Vec2): number {
+        const ROTATION = (-this.angle * Math.PI) / 180;
+        const X_ADJUST = x * Math.cos(ROTATION) + y * Math.sin(ROTATION);
+        const Y_ADJUST = -x * Math.sin(ROTATION) + y * Math.cos(ROTATION);
+        return Math.pow(mouse.x - X_ADJUST, 2) + Math.pow(mouse.y - Y_ADJUST, 2);
     }
 
     private hitAnchor(anchor: Anchors): void {
@@ -497,5 +524,14 @@ export abstract class SelectionToolService extends Tool {
             button: 0,
         } as MouseEvent;
         return MOUSE_EVENT;
+    }
+
+    protected resetSelectionPreset(event: MouseEvent): void {
+        this.arrowPress = [false, false, false, false];
+        this.arrowDown = false;
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.mouseDownCoord = this.getPositionFromMouse(event);
+        this.localMouseDown = event.button === MouseButton.Left;
+        this.mouseDown = true;
     }
 }

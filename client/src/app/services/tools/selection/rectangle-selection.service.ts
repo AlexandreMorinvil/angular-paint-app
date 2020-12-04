@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { InteractionSelection } from '@app/classes/action/interaction-selection';
 import { Description } from '@app/classes/description';
-import { MouseButton } from '@app/classes/mouse';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -31,12 +30,7 @@ export class RectangleSelectionService extends SelectionToolService {
         if (!this.mouseDown) {
             this.onEscapeDown();
         }
-        this.arrowPress = [false, false, false, false];
-        this.arrowDown = false;
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.mouseDownCoord = this.getPositionFromMouse(event);
-        this.localMouseDown = event.button === MouseButton.Left;
-        this.mouseDown = true;
+        this.resetSelectionPreset(event);
         this.resetTransform();
         // resizing
         if (this.selectionCreated && this.checkHit(this.mouseDownCoord)) {
@@ -56,13 +50,13 @@ export class RectangleSelectionService extends SelectionToolService {
             this.resetCanvasRotation();
             // creation
         } else {
-            // this.resetCanvasRotation();
             if (this.selectionCreated) {
                 this.drawOnBaseCanvas();
                 this.addActionTracking(this.startDownCoord);
             }
             this.rectangleService.onMouseDown(event);
             this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
+            this.selectionSize = { x: 1, y: 1 };
             this.angle = 0;
             this.hasDoneFirstRotation = false;
             this.hasDoneFirstTranslation = false;
@@ -108,22 +102,12 @@ export class RectangleSelectionService extends SelectionToolService {
             this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION);
             this.rotateCanvas();
             this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
+            this.rectangleService.mouseDownCoord = this.startDownCoord;
+            this.pathLastCoord = this.getBottomRightCorner();
+            this.pathData.push(this.pathLastCoord);
+            this.drawSelectionSurround();
             this.resetCanvasRotation();
             this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION);
-            // draw selection surround
-            if (this.hasDoneFirstRotation) {
-                // draw selection box bigger if there is rotation
-                const TRANSLATION = { x: this.startDownCoord.x + this.selectionSize.x / 2, y: this.startDownCoord.y + this.selectionSize.y / 2 };
-                const MAX_SIDE = Math.max(this.selectionSize.x, this.selectionSize.y);
-                this.drawSelectionSurroundRotation(TRANSLATION, MAX_SIDE);
-                this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION);
-            } else {
-                // draw regular selection box if there is no rotation
-                this.rectangleService.mouseDownCoord = this.startDownCoord;
-                this.pathLastCoord = this.getBottomRightCorner();
-                this.pathData.push(this.pathLastCoord);
-                this.drawSelectionSurround();
-            }
             // set values
             this.draggingImage = false;
             this.hasDoneFirstTranslation = true;
@@ -203,10 +187,12 @@ export class RectangleSelectionService extends SelectionToolService {
             this.addActionTracking({ x: OFFSET_START.x, y: OFFSET_START.y }); // saves undo/redo
             this.selectionSize = MEMORY_COORDS_SIZE; // set back selectionSize to original value
             this.drawingService.baseCtx.putImageData(OLD_IMAGE, OFFSET_START.x, OFFSET_START.y); // reput the old image on base canvas
+            // draw selection surround
+            this.rectangleService.mouseDownCoord = this.startDownCoord;
+            this.pathData.push(this.getBottomRightCorner());
+            this.drawSelectionSurround();
             // reset canvas transform after rotation
             this.resetCanvasRotation();
-            // draw selection surround
-            this.drawSelectionSurroundRotation(TRANSLATION, MAX_SIDE);
             this.clearPath();
             this.hasDoneFirstRotation = this.angle !== 0 ? true : false;
             // reset startDownCoord to original value
@@ -218,16 +204,6 @@ export class RectangleSelectionService extends SelectionToolService {
         canvas.save();
         this.drawImage(canvas, image, imageStart, this.selectionSize, this.startDownCoord, size);
         canvas.restore();
-    }
-
-    private drawSelectionSurroundRotation(TRANSLATION: Vec2, MAX_SIDE: number): void {
-        this.startDownCoord = { x: TRANSLATION.x - MAX_SIDE / 2, y: TRANSLATION.y - MAX_SIDE / 2 };
-        this.pathLastCoord = { x: this.startDownCoord.x + MAX_SIDE, y: this.startDownCoord.y + MAX_SIDE };
-        this.pathData.push(this.pathLastCoord);
-        this.rectangleService.mouseDownCoord = this.startDownCoord;
-        this.rectangleService.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
-        this.drawnAnchor(this.drawingService.previewCtx, { x: MAX_SIDE, y: MAX_SIDE });
-        this.clearPath();
     }
 
     private drawSelectionSurround(): void {
@@ -327,27 +303,17 @@ export class RectangleSelectionService extends SelectionToolService {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             if (this.arrowPress.every((v) => !v)) {
                 this.arrowDown = false;
+                const MEM_COORDS = this.startDownCoord;
                 this.clearPath();
                 this.pathLastCoord = this.getBottomRightCorner();
                 this.pathData.push(this.pathLastCoord);
-                this.rectangleService.mouseDownCoord = this.startDownCoord;
                 this.rotateCanvas();
                 this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
+                this.rectangleService.mouseDownCoord = this.startDownCoord;
+                this.pathData.push(this.getBottomRightCorner());
+                this.drawSelectionSurround();
                 this.resetCanvasRotation();
-                this.startDownCoord = this.rectangleService.mouseDownCoord; // needed because rotateCanvas changes the value
-                if (this.hasDoneFirstRotation) {
-                    // draw selection box bigger if there is rotation
-                    const TRANSLATION = { x: this.startDownCoord.x + this.selectionSize.x / 2, y: this.startDownCoord.y + this.selectionSize.y / 2 };
-                    const MAX_SIDE = Math.max(this.selectionSize.x, this.selectionSize.y);
-                    this.drawSelectionSurroundRotation(TRANSLATION, MAX_SIDE);
-                } else {
-                    // draw regular selection box if there is no rotation
-                    this.rectangleService.mouseDownCoord = this.startDownCoord;
-                    this.pathLastCoord = this.getBottomRightCorner();
-                    this.pathData.push(this.pathLastCoord);
-                    this.drawSelectionSurround();
-                }
-                this.startDownCoord = this.rectangleService.mouseDownCoord;
+                this.startDownCoord = MEM_COORDS; // needed because rotateCanvas changes the value
                 this.hasDoneFirstTranslation = true;
             }
             if (this.arrowDown) {

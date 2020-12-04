@@ -39,12 +39,7 @@ export class MagicWandService extends SelectionToolService {
             // if there is a tool change the selection won't reapply
             this.onEscapeDown();
         }
-        this.arrowPress = [false, false, false, false];
-        this.arrowDown = false;
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.mouseDownCoord = this.getPositionFromMouse(event);
-        this.localMouseDown = event.button === MouseButton.Left;
-        this.mouseDown = true;
+        this.resetSelectionPreset(event);
         this.resetTransform();
         // resizing
         if (this.selectionCreated && this.checkHit(this.mouseDownCoord)) {
@@ -80,6 +75,7 @@ export class MagicWandService extends SelectionToolService {
             this.drawRect(pixelsSelected);
             // set variables
             this.selectionCreated = true;
+            this.selectionSize = { x: 1, y: 1 };
             this.angle = 0;
             this.hasDoneFirstRotation = false;
             this.hasDoneFirstTranslation = false;
