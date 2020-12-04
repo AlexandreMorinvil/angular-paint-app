@@ -90,7 +90,7 @@ export class PaintService extends Tool {
         this.setAttribute(ctx);
         this.scanCanvas();
         while (pathPixel.length) {
-            const pixelPos = pathPixel.pop()!;
+            const pixelPos = pathPixel.pop() as Vec2;
             const xPosition = pixelPos.x;
             let yPosition = pixelPos.y;
             // Get current pixel position
