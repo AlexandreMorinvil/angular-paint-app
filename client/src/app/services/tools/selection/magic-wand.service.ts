@@ -75,7 +75,6 @@ export class MagicWandService extends SelectionToolService {
             this.drawRect(pixelsSelected);
             // set variables
             this.selectionCreated = true;
-            this.selectionSize = { x: 1, y: 1 };
             this.angle = 0;
             this.hasDoneFirstRotation = false;
             this.hasDoneFirstTranslation = false;
