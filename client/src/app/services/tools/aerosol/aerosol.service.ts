@@ -19,7 +19,8 @@ export class AerosolService extends Tool {
     private readonly FACTOR_TIME_INTERVAL_BETWEEN_SPRAY: number = 100;
     private pathData: Vec2[];
     private savedPathData: Vec2[]; // Path using for undo redo
-    private sprayIntervalId: number;
+    // tslint:disable:no-any
+    private sprayIntervalId: any;
     private sprayDropletDiameter: number;
 
     constructor(
@@ -76,9 +77,9 @@ export class AerosolService extends Tool {
     }
 
     private sprayPaint(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        this.setAttribute(ctx);
         const mouseMoveCoord: Vec2 = path[path.length - 1];
         if (this.isInCanvas(mouseMoveCoord)) {
+            this.setAttribute(ctx);
             const X_POSITION = mouseMoveCoord.x;
             const Y_POSITION = mouseMoveCoord.y;
             const numberSprayTransmission =
@@ -106,9 +107,11 @@ export class AerosolService extends Tool {
         return { x: Math.cos(RANDOM_ANGLE) * RANDOM_RADIUS, y: Math.sin(RANDOM_ANGLE) * RANDOM_RADIUS };
     }
     private setAttribute(ctx: CanvasRenderingContext2D): void {
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-        const LINE_WIDTH: number = 5;
+        const LINE_CAP: CanvasLineCap = 'round';
+        const LINE_JOIN: CanvasLineJoin = 'round';
+        ctx.lineCap = LINE_CAP;
+        ctx.lineJoin = LINE_JOIN;
+        const LINE_WIDTH = 5;
         ctx.lineWidth = LINE_WIDTH;
         ctx.fillStyle = this.colorService.getPrimaryColor();
         ctx.strokeStyle = this.colorService.getSecondaryColor();
@@ -118,16 +121,9 @@ export class AerosolService extends Tool {
 
     private redoSprayPaint(ctx: CanvasRenderingContext2D, interaction: InteractionPath): void {
         this.setAttribute(this.drawingService.baseCtx);
-        for (let i = 0; i < interaction.path.length; i++) {
+        for (const point of interaction.path) {
             this.drawingService.baseCtx.beginPath();
-            this.drawingService.baseCtx.arc(
-                interaction.path[i].x,
-                interaction.path[i].y,
-                this.sprayDropletService.getSprayDropletDiameter() / 2,
-                0,
-                2 * Math.PI,
-                false,
-            );
+            this.drawingService.baseCtx.arc(point.x, point.y, this.sprayDropletService.getSprayDropletDiameter() / 2, 0, 2 * Math.PI, false);
             this.drawingService.baseCtx.fill();
         }
     }

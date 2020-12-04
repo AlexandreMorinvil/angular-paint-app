@@ -23,6 +23,7 @@ import { AttributeSpacingComponent } from './components/attributes-panel/attribu
 import { AttributeSprayDiameterComponent } from './components/attributes-panel/attribute-spray-diameter/attribute-spray-diameter.component';
 import { AttributeSprayDropletDiameterComponent } from './components/attributes-panel/attribute-spray-droplet-diameter/attribute-spray-droplet-diameter.component';
 import { AttributeStampPickerComponent } from './components/attributes-panel/attribute-stamp-picker/attributes-stamp-picker.component';
+import { AttributeStyleComponent } from './components/attributes-panel/attribute-style/attributes-style.component';
 import { AttributeTextureComponent } from './components/attributes-panel/attribute-texture/attributes-texture.component';
 import { AttributeTracingComponent } from './components/attributes-panel/attribute-tracing/attributes-tracing.component';
 import { AttributeWidthComponent } from './components/attributes-panel/attribute-width/attributes-width.component';
@@ -71,6 +72,7 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
         AttributeSprayDiameterComponent,
         AttributeSprayDropletDiameterComponent,
         AttributeNumberSprayTransmissionComponent,
+        AttributeStyleComponent,
     ],
 
     exports: [MatChipsModule],

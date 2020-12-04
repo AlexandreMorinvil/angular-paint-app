@@ -10,11 +10,9 @@ describe('LoadService', () => {
     let service: LoadService;
     let colorService: ColorService;
     let tracingService: TracingService;
-
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let dataMock: jasmine.SpyObj<MatDialog>;
-    let imgStub: HTMLImageElement;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     let canvasStub: HTMLCanvasElement;
 
@@ -22,7 +20,6 @@ describe('LoadService', () => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         canvasStub = canvasTestHelper.canvas;
-        imgStub = document.createElement('img');
         dataMock = jasmine.createSpyObj('MatDialog', ['closeAll']);
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
 
@@ -54,14 +51,14 @@ describe('LoadService', () => {
     it('should load image', () => {
         spyOn(window, 'confirm').and.returnValue(true);
         service.loadDraw('/example');
-        service.fillDraw(imgStub);
+        service.fillDraw();
         expect(dataMock.closeAll).toHaveBeenCalled();
     });
 
     it('should not load image', (done) => {
         spyOn(window, 'confirm').and.returnValue(false);
         service.loadDraw('/example');
-        service.fillDraw(imgStub);
+        service.fillDraw();
         expect(dataMock.closeAll).not.toHaveBeenCalled();
         done();
     });
@@ -80,7 +77,7 @@ describe('LoadService', () => {
             (service as any).drawingService.baseCtx.canvas.height,
         );
         service.loadDraw('/example');
-        service.fillDraw(imgStub);
+        service.fillDraw();
         expect(dataMock.closeAll).toHaveBeenCalled();
     });
 });

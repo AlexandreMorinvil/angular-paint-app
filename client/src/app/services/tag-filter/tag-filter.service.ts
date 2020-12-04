@@ -46,4 +46,8 @@ export class TagFilterService {
 
         return filteredDrawings;
     }
+
+    clearTags(): void {
+        this.activeTags = [];
+    }
 }

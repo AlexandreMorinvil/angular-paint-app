@@ -3,7 +3,7 @@
         <img [src]="currentTool.iconDirectory" [alt]="currentTool.name" />
         <h1>{{ capitalizeFirstLetter(currentTool.name) }}</h1>
     </div>
-    
+
     <app-attribute-grid-display class="section" *ngIf="needsGridDisplayAttribute()"></app-attribute-grid-display>
     <app-attributes-spacing class="section" *ngIf="needsSpacingAttribute()"></app-attributes-spacing>
     <app-attributes-grid-opacity class="section" *ngIf="needsGridOpacityAttribute()"></app-attributes-grid-opacity>
@@ -21,6 +21,7 @@
     ></app-attribute-number-spray-transmission>
     <app-attribute-color-picker-viewer class="section" *ngIf="needsColorPickerViewerAttribute()"></app-attribute-color-picker-viewer>
     <app-attributes-tolerance class="section" *ngIf="needsToleranceAttribute()"></app-attributes-tolerance>
+    <app-attributes-style class="section" *ngIf="needsStyleAttribute()"></app-attributes-style>
     <app-attribute-selection class="section" *ngIf="needsSelectionAttribute()"> </app-attribute-selection>
     <app-attributes-color class="section"></app-attributes-color>
 </div>
