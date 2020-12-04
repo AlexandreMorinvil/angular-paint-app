@@ -62,6 +62,7 @@ describe('ModalSaveComponent', () => {
         (component as any).saveService.imageSource = 'IMAGESOURCE';
 
         pushSpy = spyOn(component.tags, 'push').and.callThrough();
+        (component as any).saveService.imageSource = 'IMAGESOURCE';
         saveDrawSpy = spyOn<any>((component as any).saveService, 'saveDraw').and.callThrough();
         sendMessageToServerSpy = spyOn<any>(component, 'sendMessageToServer').and.callThrough();
         basicPostSpy = spyOn<any>((component as any).apiDrawingService, 'save').and.callThrough();
@@ -204,7 +205,6 @@ describe('ModalSaveComponent', () => {
         component.sendMessageToServer();
         expect(basicPostSpy).toHaveBeenCalled();
     });
-
     it('should prevent defaut key on Ctrl+S pressed', () => {
         const event = new KeyboardEvent('keydown', { ctrlKey: true, key: 's' });
         const spy = spyOn(event, 'preventDefault');

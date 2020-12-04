@@ -4,6 +4,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ModalHandlerService } from '@app/services/modal-handler/modal-handler';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
 import { GridService } from '@app/services/tools/grid/grid.service';
+import { TextService } from '@app/services/tools/text/text.service';
 import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzone-size.service';
 
 export const DEFAULT_WIDTH = 1000;
@@ -71,6 +72,7 @@ export class DrawingComponent implements AfterViewInit {
         event.preventDefault();
         this.resetDrawing();
     }
+
     @HostListener('mousewheel', ['$event'])
     onMousewheel(event: WheelEvent): void {
         event.preventDefault(); // to prevent key of windows
@@ -137,7 +139,10 @@ export class DrawingComponent implements AfterViewInit {
     // tslint:disable:cyclomatic-complexity
     @HostListener('window:keydown', ['$event'])
     onShiftDown(event: KeyboardEvent): void {
-        if (event.key === 'Shift') {
+        if (this.toolbox.getCurrentTool() instanceof TextService) {
+            event.preventDefault();
+            this.toolbox.getCurrentTool().onKeyDown(event);
+        } else if (event.key === 'Shift') {
             this.toolbox.getCurrentTool().onShiftDown(event);
         } else if (event.key === 'Escape') {
             this.toolbox.getCurrentTool().onEscapeDown(event);

@@ -17,6 +17,8 @@ import { RectangleService } from '@app/services/tools/rectangle/rectangle-servic
 import { EllipseSelectionService } from '@app/services/tools/selection/ellipse-selection.service';
 import { MagicWandService } from '@app/services/tools/selection/magic-wand.service';
 import { RectangleSelectionService } from '@app/services/tools/selection/rectangle-selection.service';
+import { StampService } from '@app/services/tools/stamp/stamp-service';
+import { TextService } from '@app/services/tools/text/text.service';
 
 @Injectable({
     providedIn: 'root',
@@ -37,11 +39,13 @@ export class ToolboxService {
         polygonService: PolygonService,
         colorPickerService: ColorPickerService,
         paintService: PaintService,
+        stampService: StampService,
         rectangleSelectionService: RectangleSelectionService,
         ellipseSelectionService: EllipseSelectionService,
         aerosolService: AerosolService,
         magicWandService: MagicWandService,
         featherService: FeatherService,
+        textService: TextService,
         private drawingService: DrawingService,
     ) {
         this.currentTool = cursorService;
@@ -58,9 +62,11 @@ export class ToolboxService {
         this.availableTools.push(paintService);
         this.availableTools.push(rectangleSelectionService);
         this.availableTools.push(ellipseSelectionService);
+        this.availableTools.push(stampService);
         this.availableTools.push(aerosolService);
         this.availableTools.push(magicWandService);
         this.availableTools.push(featherService);
+        this.availableTools.push(textService);
     }
 
     getAvailableTools(): Tool[] {
@@ -72,6 +78,9 @@ export class ToolboxService {
     }
 
     setSelectedTool(selectedTool: Tool): void {
+        if (this.currentTool instanceof TextService) {
+            (this.currentTool as TextService).confirm();
+        }
         this.currentTool = selectedTool;
         this.currentTool.mouseDown = false;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);

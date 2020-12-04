@@ -1,0 +1,28 @@
+<div class="container">
+    <h2>Style du texte</h2>
+    <div class="grid-input-value">
+        <label for="bold">Gras</label>
+        <input class="centered" name="bold" type="checkbox" [value]="hasBold" [(ngModel)]="hasBold" />
+        <label for="contour">Italique</label>
+        <input class="centered" name="italic" type="checkbox" [value]="hasItalic" [(ngModel)]="hasItalic" />
+    </div>
+    <div class="grid-input-value-2">
+        <label for="alignment">Alignement</label>
+        <select name="alignment" [(ngModel)]="alignment">
+            <option *ngFor="let alignmentName of getListAlignments()" [ngValue]="alignmentName">{{ alignmentName }}</option>
+        </select>
+        <label for="font">Police du texte</label>
+        <select name="font" [(ngModel)]="font">
+            <option *ngFor="let fontName of getListFonts()" [ngValue]="fontName">{{ fontName }}</option>
+        </select>
+    </div>
+    <label class="title" for="width">Taille de la police</label>
+    <div class="grid-input-value">
+        <input type="range" [min]="1" [max]="100" [value]="fontSize" [(ngModel)]="fontSize" />
+        <p class="centered">{{ fontSize }} px</p>
+    </div>
+    <div class="grid-confirmation" *ngIf="needConfirmation()">
+        <button class="confirmation-button cancel" (click)="revert()">Annuler</button>
+        <button class="confirmation-button confirm" (click)="assign()">Confirmer</button>
+    </div>
+</div>
