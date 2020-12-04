@@ -156,7 +156,7 @@ export class DrawingCarouselComponent {
     drawingClicked(drawing: DrawingToDatabase): void {
         if (this.drawingSelectedPurpose === PurposeofClick.Load) {
             this.loadService.loadDraw(this.getDrawingUrl(drawing));
-        } /* this.drawingSelectedPurpose === PurposeofClick.Delete */ else {
+        } else {
             this.memoryService.deleteFromDatabase(drawing._id).then(() => {
                 this.memoryService.getAllFromDatabase().then(() => {
                     this.setCurrentDrawings();
@@ -169,7 +169,7 @@ export class DrawingCarouselComponent {
     deleteDrawingButtonSelected(): void {
         if (this.drawingSelectedPurpose === PurposeofClick.Load) {
             this.drawingSelectedPurpose = PurposeofClick.Delete;
-        } /*(this.drawingSelectedPurpose === PurposeofClick.Delete) */ else {
+        } else {
             this.drawingSelectedPurpose = PurposeofClick.Load;
         }
     }
