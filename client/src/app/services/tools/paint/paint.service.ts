@@ -39,33 +39,35 @@ export class PaintService extends Tool {
         this.clearPath();
         this.mouseDownCoord = this.getPositionFromMouse(event);
         this.pathData.push(this.mouseDownCoord);
+        // early return if the click is outside the drawing zone
+        if (!this.isInCanvas(this.mouseDownCoord)) {
+            return;
+        }
         this.setStartColor();
         this.setFillColor();
-        if (this.isInCanvas(this.mouseDownCoord)) {
-            let hasFilled = false;
-            const newPosition: Vec2 = { x: this.pathData[0].x, y: this.pathData[0].y };
-            if (event.button === MouseButton.Left) {
-                this.floodFill(this.drawingService.baseCtx, this.pathData);
-                hasFilled = true;
-            } else if (event.button === MouseButton.Right) {
-                this.sameColorFill(this.drawingService.baseCtx);
-                hasFilled = true;
-            }
-            if (hasFilled)
-                this.drawingStateTrackingService.addAction(
-                    this,
-                    new InteractionPaint(
-                        event.button,
-                        newPosition,
-                        this.startR,
-                        this.startG,
-                        this.startB,
-                        this.fillColorR,
-                        this.fillColorG,
-                        this.fillColorB,
-                    ),
-                );
+        let hasFilled = false;
+        const newPosition: Vec2 = { x: this.pathData[0].x, y: this.pathData[0].y };
+        if (event.button === MouseButton.Left) {
+            this.floodFill(this.drawingService.baseCtx, this.pathData);
+            hasFilled = true;
+        } else if (event.button === MouseButton.Right) {
+            this.sameColorFill(this.drawingService.baseCtx);
+            hasFilled = true;
         }
+        if (hasFilled)
+            this.drawingStateTrackingService.addAction(
+                this,
+                new InteractionPaint(
+                    event.button,
+                    newPosition,
+                    this.startR,
+                    this.startG,
+                    this.startB,
+                    this.fillColorR,
+                    this.fillColorG,
+                    this.fillColorB,
+                ),
+            );
     }
 
     private sameColorFill(ctx: CanvasRenderingContext2D): void {
