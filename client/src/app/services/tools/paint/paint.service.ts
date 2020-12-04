@@ -89,15 +89,14 @@ export class PaintService extends Tool {
     private floodFill(ctx: CanvasRenderingContext2D, pathPixel: Vec2[]): void {
         this.setAttribute(ctx);
         this.scanCanvas();
-        // tslint:disable:no-non-null-assertion
         while (pathPixel.length) {
             const pixelPos = pathPixel.pop()!;
             const xPosition = pixelPos.x;
             let yPosition = pixelPos.y;
             // Get current pixel position
             // Go up as long as the color matches and are inside the canvas
-            // tslint:disable-next-line:no-magic-numbers
-            while (yPosition-- > -1 && this.matchStartColor(pixelPos)) {
+            const POINT_BEYOND_CANVAS = -1;
+            while (yPosition-- > POINT_BEYOND_CANVAS && this.matchStartColor(pixelPos)) {
                 pixelPos.y -= 1;
             }
             pixelPos.y += 1;
@@ -149,12 +148,11 @@ export class PaintService extends Tool {
     }
     private matchStartColor(pixelPos: Vec2): boolean {
         const stepSize = 4;
-
         const targetR = this.canvasData[stepSize * (pixelPos.y * this.drawingService.baseCtx.canvas.width + pixelPos.x)];
         const targetG = this.canvasData[stepSize * (pixelPos.y * this.drawingService.baseCtx.canvas.width + pixelPos.x) + 1];
         const targetB = this.canvasData[stepSize * (pixelPos.y * this.drawingService.baseCtx.canvas.width + pixelPos.x) + 2];
-        // tslint:disable-next-line:no-magic-numbers
-        const average = (Math.abs(this.startR - targetR) + Math.abs(this.startG - targetG) + Math.abs(this.startB - targetB)) / 3;
+        const DIVISOR = 3;
+        const average = (Math.abs(this.startR - targetR) + Math.abs(this.startG - targetG) + Math.abs(this.startB - targetB)) / DIVISOR;
 
         if (
             average <= this.toleranceService.getPixelTolerance() &&
