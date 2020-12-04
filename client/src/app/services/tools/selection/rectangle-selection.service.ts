@@ -73,7 +73,9 @@ export class RectangleSelectionService extends SelectionToolService {
             // resizing
         } else if (this.clickOnAnchor && this.localMouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            const temp1 = this.startDownCoord;
             this.getAnchorHit(this.drawingService.previewCtx, MOUSE_POSITION, 2);
+            this.startDownCoord = temp1;
             // creation
         } else if (this.isInCanvas(MOUSE_POSITION) && this.localMouseDown) {
             this.rectangleService.onMouseMove(event);
@@ -115,12 +117,16 @@ export class RectangleSelectionService extends SelectionToolService {
             this.image.src = this.drawingService.baseCtx.canvas.toDataURL(); // save new image with resized selection
             this.pathLastCoord = this.getBottomRightCorner();
             this.addActionTracking(this.pathLastCoord); // Undo redo
-            // remove original ellipse from base
-            this.drawingService.baseCtx.clearRect(this.startDownCoord.x, this.startDownCoord.y, this.selectionSize.x, this.selectionSize.y);
             // draw selection surround
+            const temp1 = this.startDownCoord;
+            // remove original ellipse from base
+            this.drawingService.baseCtx.clearRect(this.startDownCoord.x, this.startDownCoord.y, this.selectionSize.x, this.selectionSize.y); // MOVE AFTER ROTATION WHEN WORKS
+            this.rotateCanvas();
             this.rectangleService.mouseDownCoord = this.startDownCoord;
-            this.pathData.push(this.pathLastCoord);
-            this.drawSelectionSurround();
+            this.pathData.push(this.getBottomRightCorner());
+            this.drawSelectionSurround(); // draw selection box and anchor
+            this.resetCanvasRotation();
+            this.startDownCoord = temp1;
             // set values
             this.firstSelectionCoord = this.startDownCoord; // reset firstSelectionCoord to new place on new image
             this.clickOnAnchor = false;

@@ -117,11 +117,15 @@ export class EllipseSelectionService extends SelectionToolService {
             this.image.src = this.drawingService.baseCtx.canvas.toDataURL(); // save new image with resized selection
             this.pathLastCoord = this.getBottomRightCorner();
             this.addActionTracking(this.pathLastCoord); // Undo redo
-            this.clearCanvasEllipse(); // remove the ellipse from base after the new image saved
+            this.clearCanvasEllipse(); // remove the ellipse from base after the new image saved, MOVE AFTER ROTATION WHEN WORKS
             // draw selection surround
+            const temp1 = this.startDownCoord;
+            this.rotateCanvas();
             this.ellipseService.mouseDownCoord = this.startDownCoord;
-            this.pathData.push(this.pathLastCoord);
+            this.pathData.push(this.getBottomRightCorner());
             this.drawSelectionSurround(); // draw selection box and anchor
+            this.resetCanvasRotation();
+            this.startDownCoord = temp1;
             // set values
             this.firstSelectionCoord = this.startDownCoord; // reset firstSelectionCoord to new place on new image
             this.clickOnAnchor = false;
@@ -202,8 +206,8 @@ export class EllipseSelectionService extends SelectionToolService {
 
     private clearCanvasEllipse(): void {
         this.pathLastCoord = this.getBottomRightCorner();
-        const START = { x: this.startDownCoord.x - 2, y: this.startDownCoord.y - 2 }; // needed to remove the outline after resizing
-        this.pathLastCoord = { x: this.pathLastCoord.x + 2, y: this.pathLastCoord.y + 2 };
+        const START = { x: this.startDownCoord.x - 1, y: this.startDownCoord.y - 1 }; // needed to remove the outline after resizing
+        this.pathLastCoord = { x: this.pathLastCoord.x + 1, y: this.pathLastCoord.y + 1 };
         const PATH = this.getPath(START);
         PATH.closePath();
         this.drawingService.baseCtx.fillStyle = 'white';

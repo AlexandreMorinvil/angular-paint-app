@@ -200,6 +200,8 @@ export abstract class SelectionToolService extends Tool {
     // tslint:disable:cyclomatic-complexity
     // resizing
     protected getAnchorHit(canvas: CanvasRenderingContext2D, mousePosition: Vec2, caller: number): void {
+        //this.rotateCanvas();
+        // const TRANSLATION = { x: this.startDownCoord.x + this.selectionSize.x / 2, y: this.startDownCoord.y + this.selectionSize.y / 2 };
         let adjustStartCoords: Vec2 = this.startDownCoord;
         let adjustOffsetCoords: Vec2 = { x: mousePosition.x - adjustStartCoords.x, y: mousePosition.y - adjustStartCoords.y };
         let scaleX = 1;
@@ -308,7 +310,8 @@ export abstract class SelectionToolService extends Tool {
             default:
                 break;
         }
-        canvas.setTransform(1, 0, 0, 1, 0, 0); // reset canvas transform after mirror effect
+        this.resetCanvasRotation();
+        //canvas.setTransform(1, 0, 0, 1, 0, 0); // reset canvas transform after mirror effect
     }
 
     // Vincenzo va améliorer
