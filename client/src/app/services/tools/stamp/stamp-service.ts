@@ -10,11 +10,12 @@ import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { StampEnum, StampPickerService } from '@app/services/tool-modifier/stamp-picker/stamp-picker.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
 
-const DEFAULT_SIZE_VALUE = 25;
 @Injectable({
     providedIn: 'root',
 })
 export class StampService extends Tool {
+    private readonly DEFAULT_SIZE_VALUE = 25;
+
     private pathData: Vec2[];
     private angleInRadian: number;
     private isAltDown: boolean;
@@ -32,7 +33,7 @@ export class StampService extends Tool {
         this.clearPath();
         this.angleInRadian = 0;
         this.isAltDown = false;
-        this.widthService.setWidth(DEFAULT_SIZE_VALUE);
+        this.widthService.setWidth(this.DEFAULT_SIZE_VALUE);
     }
 
     onAltDown(event: KeyboardEvent): void {

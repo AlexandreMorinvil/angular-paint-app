@@ -9,11 +9,11 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
 
-const DEFAULT_SIZE_VALUE = 2;
 @Injectable({
     providedIn: 'root',
 })
 export class FeatherService extends Tool {
+    private readonly DEFAULT_SIZE_VALUE = 2;
     private pathData: Vec2[];
     private angleInRadian: number;
     private isAltDown: boolean;
@@ -27,7 +27,7 @@ export class FeatherService extends Tool {
         super(drawingService, new Description('plume', 'p', 'feather_icon.png'));
         this.modifiers.push(this.colorService);
         this.modifiers.push(this.widthService);
-        this.widthService.setWidth(DEFAULT_SIZE_VALUE);
+        this.widthService.setWidth(this.DEFAULT_SIZE_VALUE);
 
         this.clearPath();
         this.angleInRadian = 0;
