@@ -167,10 +167,6 @@ export class DrawingCarouselComponent {
     }
 
     deleteDrawingButtonSelected(): void {
-        if (this.drawingSelectedPurpose === PurposeofClick.Load) {
-            this.drawingSelectedPurpose = PurposeofClick.Delete;
-        } else {
-            this.drawingSelectedPurpose = PurposeofClick.Load;
-        }
+        this.drawingSelectedPurpose = this.drawingSelectedPurpose === PurposeofClick.Load ? PurposeofClick.Delete : PurposeofClick.Load;
     }
 }
