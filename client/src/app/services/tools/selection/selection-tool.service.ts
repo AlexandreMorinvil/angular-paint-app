@@ -63,8 +63,8 @@ export abstract class SelectionToolService extends Tool {
         this.hasDoneFirstTranslation = false;
         this.hasDoneFirstRotation = false;
         this.hasDoneResizing = false;
-        this.clearPath();
         this.angle = 0;
+        this.clearPath();
     }
 
     protected drawnAnchor(ctx: CanvasRenderingContext2D, size: Vec2 = this.selectionSize): void {
@@ -125,7 +125,6 @@ export abstract class SelectionToolService extends Tool {
         const BOTTOM_LEFT = this.rotatePoint(this.startDownCoord.x, this.startDownCoord.y + this.selectionSize.y, mouse);
         const BOTTOM_MIDDLE = this.rotatePoint(this.startDownCoord.x + this.selectionSize.x / 2, this.startDownCoord.y + this.selectionSize.y, mouse);
         const BOTTOM_RIGHT = this.rotatePoint(this.startDownCoord.x + this.selectionSize.x, this.startDownCoord.y + this.selectionSize.y, mouse);
-
         switch (true) {
             case DOTSIZE_SQUARE >= TOP_LEFT: // top left corner
                 this.hitAnchor(Anchors.TopLeft);
@@ -309,8 +308,7 @@ export abstract class SelectionToolService extends Tool {
             default:
                 break;
         }
-        // reset canvas transform after mirror effect
-        canvas.setTransform(1, 0, 0, 1, 0, 0);
+        canvas.setTransform(1, 0, 0, 1, 0, 0); // reset canvas transform after mirror effect
     }
 
     // Vincenzo va améliorer
@@ -377,15 +375,12 @@ export abstract class SelectionToolService extends Tool {
             case 'ArrowLeft':
                 this.arrowPress[0] = true;
                 break;
-
             case 'ArrowRight':
                 this.arrowPress[1] = true;
                 break;
-
             case 'ArrowUp':
                 this.arrowPress[2] = true;
                 break;
-
             case 'ArrowDown':
                 this.arrowPress[3] = true;
                 break;
@@ -393,19 +388,10 @@ export abstract class SelectionToolService extends Tool {
                 this.arrowDown = false;
                 break;
         }
-
-        if (this.arrowPress[0]) {
-            this.startDownCoord = { x: this.startDownCoord.x - MOVE, y: this.startDownCoord.y };
-        }
-        if (this.arrowPress[1]) {
-            this.startDownCoord = { x: this.startDownCoord.x + MOVE, y: this.startDownCoord.y };
-        }
-        if (this.arrowPress[2]) {
-            this.startDownCoord = { x: this.startDownCoord.x, y: this.startDownCoord.y - MOVE };
-        }
-        if (this.arrowPress[3]) {
-            this.startDownCoord = { x: this.startDownCoord.x, y: this.startDownCoord.y + MOVE };
-        }
+        this.startDownCoord = this.arrowPress[0] ? { x: this.startDownCoord.x - MOVE, y: this.startDownCoord.y } : this.startDownCoord;
+        this.startDownCoord = this.arrowPress[1] ? { x: this.startDownCoord.x + MOVE, y: this.startDownCoord.y } : this.startDownCoord;
+        this.startDownCoord = this.arrowPress[2] ? { x: this.startDownCoord.x, y: this.startDownCoord.y - MOVE } : this.startDownCoord;
+        this.startDownCoord = this.arrowPress[3] ? { x: this.startDownCoord.x, y: this.startDownCoord.y + MOVE } : this.startDownCoord;
         this.pathLastCoord = this.getBottomRightCorner();
     }
 
@@ -414,15 +400,12 @@ export abstract class SelectionToolService extends Tool {
             case 'ArrowLeft':
                 this.arrowPress[0] = false;
                 break;
-
             case 'ArrowRight':
                 this.arrowPress[1] = false;
                 break;
-
             case 'ArrowUp':
                 this.arrowPress[2] = false;
                 break;
-
             case 'ArrowDown':
                 this.arrowPress[3] = false;
                 break;
@@ -442,10 +425,8 @@ export abstract class SelectionToolService extends Tool {
         const ELLIPSE_PATH = new Path2D();
         const CENTER_X = (this.pathLastCoord.x + startCoord.x) / 2;
         const CENTER_Y = (this.pathLastCoord.y + startCoord.y) / 2;
-
         const RADIUS_X = Math.abs(this.pathLastCoord.x - startCoord.x) / 2;
         const RADIUS_Y = Math.abs(this.pathLastCoord.y - startCoord.y) / 2;
-
         const CONTOUR_RADIUS_X = Math.abs(RADIUS_X - 1 / 2);
         const CONTOUR_RADIUS_Y = Math.abs(RADIUS_Y - 1 / 2);
         ELLIPSE_PATH.ellipse(CENTER_X, CENTER_Y, CONTOUR_RADIUS_X, CONTOUR_RADIUS_Y, 0, 0, Math.PI * 2, false);
@@ -476,15 +457,13 @@ export abstract class SelectionToolService extends Tool {
         return magicWandPath;
     }
 
-    protected getActionTrackingInfo(mousePosition: Vec2): Vec2[] {
+    protected getActionTrackingInfo(mouse: Vec2): Vec2[] {
         const IMAGE_DATA_START = { x: 0, y: 0 };
         const IMAGE_DATA_END = { x: 0, y: 0 };
-        IMAGE_DATA_START.x = this.startSelectionPoint.x < mousePosition.x ? this.startSelectionPoint.x : mousePosition.x;
-        IMAGE_DATA_START.y = this.startSelectionPoint.y < mousePosition.y ? this.startSelectionPoint.y : mousePosition.y;
-        IMAGE_DATA_END.x =
-            this.startSelectionPoint.x > mousePosition.x ? this.startSelectionPoint.x + this.selectionSize.x : mousePosition.x + this.selectionSize.x;
-        IMAGE_DATA_END.y =
-            this.startSelectionPoint.y > mousePosition.y ? this.startSelectionPoint.y + this.selectionSize.y : mousePosition.y + this.selectionSize.y;
+        IMAGE_DATA_START.x = this.startSelectionPoint.x < mouse.x ? this.startSelectionPoint.x : mouse.x;
+        IMAGE_DATA_START.y = this.startSelectionPoint.y < mouse.y ? this.startSelectionPoint.y : mouse.y;
+        IMAGE_DATA_END.x = this.startSelectionPoint.x > mouse.x ? this.startSelectionPoint.x + this.selectionSize.x : mouse.x + this.selectionSize.x;
+        IMAGE_DATA_END.y = this.startSelectionPoint.y > mouse.y ? this.startSelectionPoint.y + this.selectionSize.y : mouse.y + this.selectionSize.y;
         return [IMAGE_DATA_START, IMAGE_DATA_END];
     }
 
@@ -500,12 +479,9 @@ export abstract class SelectionToolService extends Tool {
     }
 
     protected calculateRotation(altDown: boolean, orientation: number): void {
-        let angleVoulue = 0;
-        angleVoulue = altDown ? 1 : 15;
+        let angleVoulue = altDown ? 1 : 15;
         this.angle += orientation * angleVoulue;
-        if (this.angle >= 360) {
-            this.angle -= 360;
-        }
+        this.angle = this.angle >= 360 ? this.angle - 360 : this.angle;
     }
 
     protected getBottomRightCorner(): Vec2 {
@@ -518,11 +494,8 @@ export abstract class SelectionToolService extends Tool {
     }
 
     protected createOnMouseMoveEvent(): MouseEvent {
-        const MOUSE_EVENT = {
-            offsetX: this.pathData[this.pathData.length - 1].x,
-            offsetY: this.pathData[this.pathData.length - 1].y,
-            button: 0,
-        } as MouseEvent;
+        const PATH_LAST = this.pathData.length - 1;
+        const MOUSE_EVENT = { offsetX: this.pathData[PATH_LAST].x, offsetY: this.pathData[PATH_LAST].y, button: 0 } as MouseEvent;
         return MOUSE_EVENT;
     }
 
@@ -533,5 +506,15 @@ export abstract class SelectionToolService extends Tool {
         this.mouseDownCoord = this.getPositionFromMouse(event);
         this.localMouseDown = event.button === MouseButton.Left;
         this.mouseDown = true;
+    }
+
+    protected setValueCreation(event: MouseEvent): void {
+        this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
+        this.angle = 0;
+        this.hasDoneFirstRotation = false;
+        this.hasDoneFirstTranslation = false;
+        this.startDownCoord = this.getPositionFromMouse(event);
+        this.firstSelectionCoord = this.startDownCoord;
+        this.startSelectionPoint = this.startDownCoord;
     }
 }

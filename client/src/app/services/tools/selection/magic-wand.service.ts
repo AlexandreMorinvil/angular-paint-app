@@ -65,22 +65,16 @@ export class MagicWandService extends SelectionToolService {
             this.edgePixelsAllRegions = [];
             this.edgePixelsSplitted = [];
             this.scanCanvas();
-            this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
-
             if (event.button === MouseButton.Left) {
                 pixelsSelected = this.floodFillSelect(this.mouseDownCoord);
             } else {
                 pixelsSelected = this.sameColorSelect();
             }
+            this.setValueCreation(event);
             this.drawRect(pixelsSelected);
             // set variables
             this.selectionCreated = true;
-            this.angle = 0;
-            this.hasDoneFirstRotation = false;
-            this.hasDoneFirstTranslation = false;
             this.localMouseDown = false;
-            this.pathLastCoord = this.getBottomRightCorner();
-            this.startSelectionPoint = this.startDownCoord;
         }
 
         this.mouseDown = true;
@@ -268,6 +262,7 @@ export class MagicWandService extends SelectionToolService {
         this.pathStartCoordReference = this.startDownCoord;
         this.pathLastCoord = this.getBottomRightCorner();
         this.firstSelectionCoord = this.startDownCoord;
+        this.startSelectionPoint = this.startDownCoord;
 
         // Drawing of the preview rectangle and the selection contour
         this.pathData.push({ x: xMax, y: yMax });

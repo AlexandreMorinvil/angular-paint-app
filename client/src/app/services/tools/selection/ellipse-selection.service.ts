@@ -38,34 +38,26 @@ export class EllipseSelectionService extends SelectionToolService {
         // resizing
         if (this.selectionCreated && this.checkHit(this.mouseDownCoord)) {
             this.getAnchorHit(this.drawingService.previewCtx, this.mouseDownCoord, 1);
-            this.pathLastCoord = this.getBottomRightCorner(); // besoin pour le clearCanvas
             this.clearCanvasEllipse();
             // for undo redo
             this.pathData.push(this.firstSelectionCoord);
             this.startSelectionPoint = this.offsetAnchors(this.startDownCoord);
             // translate
         } else if (this.selectionCreated && this.hitSelection(this.mouseDownCoord.x, this.mouseDownCoord.y)) {
-            this.pathLastCoord = this.getBottomRightCorner(); // pour le showSelection
+            this.pathLastCoord = this.getBottomRightCorner(); // for showSelection
             this.draggingImage = true;
             this.rotateCanvas();
             this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
             this.resetCanvasRotation();
             // creation
         } else {
-            // FAIRE QUE UNDO REDO METTE SELECTIONCREATED A FALSE
             if (this.selectionCreated) {
                 this.drawOnBaseCanvas();
                 this.addActionTracking(this.startDownCoord);
             }
             this.ellipseService.onMouseDown(event);
-            this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
-            this.selectionSize = { x: 1, y: 1 };
-            this.angle = 0;
-            this.hasDoneFirstRotation = false;
-            this.hasDoneFirstTranslation = false;
-            this.startDownCoord = this.getPositionFromMouse(event);
-            this.firstSelectionCoord = this.startDownCoord;
-            this.startSelectionPoint = this.startDownCoord;
+            this.setValueCreation(event);
+            this.selectionSize = { x: 1, y: 1 }; // to disable unwanted click
         }
     }
 
@@ -75,7 +67,7 @@ export class EllipseSelectionService extends SelectionToolService {
         if (this.draggingImage && this.localMouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION);
-            this.pathLastCoord = this.getBottomRightCorner(); // besoin pour le showSelection
+            this.pathLastCoord = this.getBottomRightCorner(); // needed for showSelection
             this.rotateCanvas();
             this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
             this.resetCanvasRotation();
@@ -88,7 +80,7 @@ export class EllipseSelectionService extends SelectionToolService {
         } else if (this.isInCanvas(MOUSE_POSITION) && this.localMouseDown) {
             this.ellipseService.onMouseMove(event);
             if (this.startDownCoord.x !== MOUSE_POSITION.x && this.startDownCoord.y !== MOUSE_POSITION.y && this.shiftDown) {
-                const SQUARE = this.getSquaredSize(MOUSE_POSITION); // pk square est un vec2
+                const SQUARE = this.getSquaredSize(MOUSE_POSITION);
                 this.selectionSize = { x: SQUARE.x, y: SQUARE.y };
             } else if (this.startDownCoord.x !== MOUSE_POSITION.x && this.startDownCoord.y !== MOUSE_POSITION.y && !this.shiftDown) {
                 this.selectionSize = { x: Math.abs(this.startDownCoord.x - MOUSE_POSITION.x), y: Math.abs(this.startDownCoord.y - MOUSE_POSITION.y) };
@@ -111,8 +103,8 @@ export class EllipseSelectionService extends SelectionToolService {
             this.pathData.push(this.pathLastCoord);
             this.drawSelectionSurround();
             this.resetCanvasRotation();
-            this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION);
             // set values
+            this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION);
             this.draggingImage = false;
             this.hasDoneFirstTranslation = true;
             // resizing
@@ -126,12 +118,12 @@ export class EllipseSelectionService extends SelectionToolService {
             this.pathLastCoord = this.getBottomRightCorner();
             this.addActionTracking(this.pathLastCoord); // Undo redo
             this.clearCanvasEllipse(); // remove the ellipse from base after the new image saved
-            this.firstSelectionCoord = this.startDownCoord; // reset firstSelectionCoord to new place on new image
             // draw selection surround
             this.ellipseService.mouseDownCoord = this.startDownCoord;
             this.pathData.push(this.pathLastCoord);
             this.drawSelectionSurround(); // draw selection box and anchor
             // set values
+            this.firstSelectionCoord = this.startDownCoord; // reset firstSelectionCoord to new place on new image
             this.clickOnAnchor = false;
             this.hasDoneResizing = true;
             // creation
@@ -150,9 +142,9 @@ export class EllipseSelectionService extends SelectionToolService {
             // put selection on previewCanvas
             this.pathLastCoord = this.getBottomRightCorner();
             this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
-            this.clearCanvasEllipse(); // remove original ellipse from base
-            // draw selection surround
             this.drawSelectionSurround();
+            // remove original ellipse from base
+            this.clearCanvasEllipse();
             // set up values
             this.selectionCreated = true;
         }
@@ -209,6 +201,7 @@ export class EllipseSelectionService extends SelectionToolService {
     }
 
     private clearCanvasEllipse(): void {
+        this.pathLastCoord = this.getBottomRightCorner();
         const START = { x: this.startDownCoord.x - 2, y: this.startDownCoord.y - 2 }; // needed to remove the outline after resizing
         this.pathLastCoord = { x: this.pathLastCoord.x + 2, y: this.pathLastCoord.y + 2 };
         const PATH = this.getPath(START);

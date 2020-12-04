@@ -35,7 +35,6 @@ export class RectangleSelectionService extends SelectionToolService {
         // resizing
         if (this.selectionCreated && this.checkHit(this.mouseDownCoord)) {
             this.getAnchorHit(this.drawingService.previewCtx, this.mouseDownCoord, 2);
-            this.pathLastCoord = this.getBottomRightCorner(); // besoin pour le clearCanvas
             // remove original rect from base
             this.drawingService.baseCtx.clearRect(this.startDownCoord.x, this.startDownCoord.y, this.selectionSize.x, this.selectionSize.y);
             // for undo redo
@@ -43,7 +42,7 @@ export class RectangleSelectionService extends SelectionToolService {
             this.startSelectionPoint = this.offsetAnchors(this.startDownCoord);
             // translate
         } else if (this.selectionCreated && this.hitSelection(this.mouseDownCoord.x, this.mouseDownCoord.y)) {
-            this.pathLastCoord = this.getBottomRightCorner(); // pour le showSelection
+            this.pathLastCoord = this.getBottomRightCorner(); // for showSelection
             this.draggingImage = true;
             this.rotateCanvas();
             this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
@@ -55,14 +54,8 @@ export class RectangleSelectionService extends SelectionToolService {
                 this.addActionTracking(this.startDownCoord);
             }
             this.rectangleService.onMouseDown(event);
-            this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
-            this.selectionSize = { x: 1, y: 1 };
-            this.angle = 0;
-            this.hasDoneFirstRotation = false;
-            this.hasDoneFirstTranslation = false;
-            this.startDownCoord = this.getPositionFromMouse(event);
-            this.firstSelectionCoord = this.startDownCoord;
-            this.startSelectionPoint = this.startDownCoord;
+            this.setValueCreation(event);
+            this.selectionSize = { x: 1, y: 1 }; // to disable unwanted click
         }
     }
 
@@ -72,7 +65,7 @@ export class RectangleSelectionService extends SelectionToolService {
         if (this.draggingImage && this.localMouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION);
-            this.pathLastCoord = this.getBottomRightCorner(); // besoin pour le showSelection
+            this.pathLastCoord = this.getBottomRightCorner(); // needed for showSelection
             this.rotateCanvas();
             this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
             this.resetCanvasRotation();
@@ -102,13 +95,14 @@ export class RectangleSelectionService extends SelectionToolService {
             this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION);
             this.rotateCanvas();
             this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
+            // draw selection surround
             this.rectangleService.mouseDownCoord = this.startDownCoord;
             this.pathLastCoord = this.getBottomRightCorner();
             this.pathData.push(this.pathLastCoord);
             this.drawSelectionSurround();
             this.resetCanvasRotation();
-            this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION);
             // set values
+            this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION);
             this.draggingImage = false;
             this.hasDoneFirstTranslation = true;
             // resizing
@@ -123,12 +117,12 @@ export class RectangleSelectionService extends SelectionToolService {
             this.addActionTracking(this.pathLastCoord); // Undo redo
             // remove original ellipse from base
             this.drawingService.baseCtx.clearRect(this.startDownCoord.x, this.startDownCoord.y, this.selectionSize.x, this.selectionSize.y);
-            this.firstSelectionCoord = this.startDownCoord; // reset firstSelectionCoord to new place on new image
             // draw selection surround
             this.rectangleService.mouseDownCoord = this.startDownCoord;
             this.pathData.push(this.pathLastCoord);
-            this.drawSelectionSurround(); // draw selection box and anchor
+            this.drawSelectionSurround();
             // set values
+            this.firstSelectionCoord = this.startDownCoord; // reset firstSelectionCoord to new place on new image
             this.clickOnAnchor = false;
             this.hasDoneResizing = true;
             // creation
@@ -147,11 +141,9 @@ export class RectangleSelectionService extends SelectionToolService {
             // put selection on previewCanvas
             this.pathLastCoord = this.getBottomRightCorner();
             this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
-            // remove original ellipse from base
-            this.drawingService.baseCtx.clearRect(this.startDownCoord.x, this.startDownCoord.y, this.selectionSize.x, this.selectionSize.y);
-            this.selectionCreated = true;
-            // draw selection surround
             this.drawSelectionSurround();
+            // remove original rectangle from base
+            this.drawingService.baseCtx.clearRect(this.startDownCoord.x, this.startDownCoord.y, this.selectionSize.x, this.selectionSize.y);
             // set up values
             this.selectionCreated = true;
         }
@@ -201,9 +193,7 @@ export class RectangleSelectionService extends SelectionToolService {
     }
 
     private showSelection(canvas: CanvasRenderingContext2D, image: HTMLImageElement, imageStart: Vec2, size: Vec2): void {
-        canvas.save();
         this.drawImage(canvas, image, imageStart, this.selectionSize, this.startDownCoord, size);
-        canvas.restore();
     }
 
     private drawSelectionSurround(): void {
