@@ -3,6 +3,7 @@ import { InteractionSelection } from '@app/classes/action/interaction-selection'
 import { Description } from '@app/classes/description';
 import { MouseButton } from '@app/classes/mouse';
 import { Vec2 } from '@app/classes/vec2';
+import { ClipBoardService } from '@app/services/clipboard/clipboard.service';
 import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MagnetismService } from '@app/services/magnetism/magnetism.service';
@@ -32,9 +33,10 @@ export class MagicWandService extends SelectionToolService {
         private tracingService: TracingService,
         private widthService: WidthService,
         private colorService: ColorService,
-        magnetismService: MagnetismService
+        magnetismService: MagnetismService,
+        clipBoardService: ClipBoardService,
     ) {
-        super(drawingService, colorService, new Description('Baguette magique', 'v', 'magic-wand.png'), magnetismService);
+        super(drawingService, colorService, new Description('Baguette magique', 'v', 'magic-wand.png'), magnetismService, clipBoardService);
         this.image = new Image();
         this.oldImage = new Image();
     }

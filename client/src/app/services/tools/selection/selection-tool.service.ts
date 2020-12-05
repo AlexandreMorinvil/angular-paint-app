@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { ClipBoardService } from '@app/services/clipboard/clipboard.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MagnetismService } from '@app/services/magnetism/magnetism.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
@@ -53,7 +54,13 @@ export abstract class SelectionToolService extends Tool {
     protected image: HTMLImageElement;
     protected edgePixelsSplitted: EdgePixelsOneRegion[] = [];
 
-    constructor(drawingService: DrawingService, private color: ColorService, description: Description, protected magnetismService: MagnetismService) {
+    constructor(
+        drawingService: DrawingService,
+        private color: ColorService,
+        description: Description,
+        protected magnetismService: MagnetismService,
+        clipBoardService: ClipBoardService,
+    ) {
         super(drawingService, description);
         this.mouseDown = false;
         this.selectionCreated = false;

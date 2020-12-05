@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { ClipBoardService } from '@app/services/clipboard/clipboard.service';
 import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MagnetismService } from '@app/services/magnetism/magnetism.service';
@@ -17,6 +18,7 @@ const SIDEBARWIDTH = 95;
     styleUrls: ['./drawing.component.scss'],
 })
 export class DrawingComponent implements AfterViewInit {
+    @ViewChild('clipboardCanvas', { static: false }) clipboardCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('editCanvas', { static: false }) editCanvas: ElementRef<HTMLCanvasElement>;
@@ -27,6 +29,7 @@ export class DrawingComponent implements AfterViewInit {
     private previewCtx: CanvasRenderingContext2D;
     private editCtx: CanvasRenderingContext2D;
     private gridCtx: CanvasRenderingContext2D;
+    private clipboardCtx: CanvasRenderingContext2D;
     hasBeenDrawnOnto: boolean;
 
     constructor(
@@ -37,6 +40,7 @@ export class DrawingComponent implements AfterViewInit {
         private drawingStateTrackerService: DrawingStateTrackerService,
         private gridService: GridService,
         private magnetismService: MagnetismService,
+        private clipboardService: ClipBoardService,
     ) {}
     // tslint:disable:no-magic-numbers
     ngAfterViewInit(): void {
@@ -44,16 +48,19 @@ export class DrawingComponent implements AfterViewInit {
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.editCtx = this.editCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.gridCtx = this.gridCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.clipboardCtx = this.clipboardCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
         this.editCtx.canvas.width = window.innerWidth - TOOL_BOX_WIDTH - SIDEBARWIDTH;
         this.editCtx.canvas.height = window.innerHeight - 5;
-        this.gridCtx.canvas.width = this.editCtx.canvas.width;
-        this.gridCtx.canvas.height = this.editCtx.canvas.height;
+        this.gridCtx.canvas.width = this.baseCtx.canvas.width;
+        this.gridCtx.canvas.height = this.baseCtx.canvas.height;
         this.drawingService.hasBeenDrawnOnto = false;
         this.gridService.gridCtx = this.gridCtx;
         this.gridService.gridCanvas = this.gridCanvas.nativeElement;
+        this.clipboardService.clipboardCtx = this.clipboardCtx;
+        this.clipboardService.canvas = this.clipboardCanvas.nativeElement;
         // Fills the canvas with white
         this.baseCtx.fillStyle = '#FFFFFF';
         this.baseCtx.fillRect(0, 0, this.baseCtx.canvas.width, this.baseCtx.canvas.height);
