@@ -22,6 +22,7 @@ import { AttributeSelectionComponent } from './components/attributes-panel/attri
 import { AttributeSpacingComponent } from './components/attributes-panel/attribute-spacing/attributes-spacing.component';
 import { AttributeSprayDiameterComponent } from './components/attributes-panel/attribute-spray-diameter/attribute-spray-diameter.component';
 import { AttributeSprayDropletDiameterComponent } from './components/attributes-panel/attribute-spray-droplet-diameter/attribute-spray-droplet-diameter.component';
+import { AttributeStampPickerComponent } from './components/attributes-panel/attribute-stamp-picker/attributes-stamp-picker.component';
 import { AttributeStyleComponent } from './components/attributes-panel/attribute-style/attributes-style.component';
 import { AttributeTextureComponent } from './components/attributes-panel/attribute-texture/attributes-texture.component';
 import { AttributeTracingComponent } from './components/attributes-panel/attribute-tracing/attributes-tracing.component';
@@ -40,7 +41,6 @@ import { UserGuideModalComponent } from './components/modal/modal-user-guide/mod
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { TooltipComponent } from './components/tooltip/tooltip.component';
 import { WorkspaceComponent } from './components/workspace/workspace.component';
-
 @NgModule({
     declarations: [
         AppComponent,
@@ -67,6 +67,7 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
         AttributeColorPickerViewerComponent,
         AttributesToleranceComponent,
         AttributeSelectionComponent,
+        AttributeStampPickerComponent,
         ContinueDrawingModalComponent,
         AttributeSprayDiameterComponent,
         AttributeSprayDropletDiameterComponent,

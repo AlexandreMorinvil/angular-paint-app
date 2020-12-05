@@ -72,13 +72,11 @@ export class DrawingComponent implements AfterViewInit {
         event.preventDefault();
         this.resetDrawing();
     }
-    @HostListener('wheel', ['$event'])
-    onMouseScroll(event: WheelEvent): void {
-        if (event.deltaY < 0) {
-            this.toolbox.getCurrentTool().onMouseScrollUp(event);
-        } else if (event.deltaY > 0) {
-            this.toolbox.getCurrentTool().onMouseScrollDown(event);
-        }
+
+    @HostListener('mousewheel', ['$event'])
+    onMousewheel(event: WheelEvent): void {
+        event.preventDefault(); // to prevent key of windows
+        this.toolbox.getCurrentTool().onMouseWheel(event);
     }
 
     @HostListener('mousemove', ['$event'])
