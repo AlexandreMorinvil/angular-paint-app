@@ -40,14 +40,6 @@ export class FeatherService extends Tool {
         this.isAltDown = false;
     }
 
-    onMouseDown(event: MouseEvent): void {
-        this.mouseDown = event.button === MouseButton.Left;
-        if (this.mouseDown) {
-            this.clearPath();
-            this.mouseDownCoord = this.getPositionFromMouse(event);
-            this.pathData.push(this.mouseDownCoord);
-        }
-    }
     onMouseWheel(event: WheelEvent): void {
         const ANGLE_ROTATION_ON_ALT_UP = 15;
         const ANGLE_ROTATION_ON_ALT_DOWN = 1;
@@ -56,6 +48,8 @@ export class FeatherService extends Tool {
         const ORIENTATION = event.deltaY / 100;
 
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.featherDraw(this.drawingService.previewCtx, this.pathData);
+
         if (this.angleInRadian === RESET_ANGLE) {
             if (ORIENTATION < 0) {
                 this.angleInRadian = CIRCLE_ANGLE;
@@ -70,20 +64,26 @@ export class FeatherService extends Tool {
             this.angleInRadian = this.angleInRadian + ANGLE_ROTATION_ON_ALT_UP * ORIENTATION;
         }
     }
+    onMouseDown(event: MouseEvent): void {
+        this.mouseDown = event.button === MouseButton.Left;
+        if (this.mouseDown) {
+            this.clearPath();
+            this.mouseDownCoord = this.getPositionFromMouse(event);
+            this.pathData.push(this.mouseDownCoord);
+            this.featherDraw(this.drawingService.baseCtx, this.pathData);
+        }
+    }
 
     onMouseMove(event: MouseEvent): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-
         const mousePosition = this.getPositionFromMouse(event);
         this.pathData.push(mousePosition);
+        this.featherDraw(this.drawingService.previewCtx, this.pathData);
         if (this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
-            this.pathData.push(mousePosition);
             if (this.isInCanvas(mousePosition)) {
                 this.featherDraw(this.drawingService.baseCtx, this.pathData);
             }
         }
-        this.featherDraw(this.drawingService.previewCtx, this.pathData);
     }
 
     onMouseUp(event: MouseEvent): void {
@@ -105,9 +105,9 @@ export class FeatherService extends Tool {
         ctx.fillStyle = this.colorService.getPrimaryColor();
         const LINE_WIDTH = 1;
         ctx.lineWidth = LINE_WIDTH;
+        const lastPosition: Vec2 = path[path.length - 2];
         const currentPosition: Vec2 = path[path.length - 1];
         if (this.pathData.length > 2) {
-            const lastPosition: Vec2 = path[path.length - 2];
             for (let i = 0; i < this.widthService.getWidth(); i++) {
                 ctx.moveTo(
                     lastPosition.x + Math.sin(this.convertDegreeToRadian(this.angleInRadian)) * i,
@@ -119,7 +119,9 @@ export class FeatherService extends Tool {
                     currentPosition.y - Math.cos(this.convertDegreeToRadian(this.angleInRadian)) * i,
                 );
             }
+            ctx.stroke();
         }
+
         if (this.pathData.length < 2) {
             for (let i = 0; i < this.widthService.getWidth(); i++) {
                 ctx.moveTo(
