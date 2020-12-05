@@ -98,57 +98,53 @@ describe('RectangleService', () => {
         service.onMouseUp(mouseEvent);
         expect(drawRectangleSpy).not.toHaveBeenCalled();
     });
-    /*
+
     it(' onMouseMove should call drawRectangle if mouse was already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
         service.onMouseMove(mouseEvent);
-        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawRectangleSpy).toHaveBeenCalled();
     });
 
     it(' onMouseMove should  call drawRectangle if mouse was already down and shift is pressed down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
-        mouseEvent = { shiftKey: true } as MouseEvent;
+        mouseEvent = { offsetX: 25, offsetY: 25, shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
-        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawRectangleSpy).toHaveBeenCalled();
     });
-*/
+
     it(' onMouseMove should not call drawRectangle if mouse was not already down and shift is not pressed', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = false;
-        mouseEvent = { shiftKey: true } as MouseEvent;
+        mouseEvent = { offsetX: 25, offsetY: 25, shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(drawRectangleSpy).not.toHaveBeenCalled();
     });
-    /*
+
     it(' on Mouse mouve should call setAttribute if mouse was already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
-        mouseEvent = { shiftKey: true } as MouseEvent;
+        mouseEvent = { offsetX: 25, offsetY: 25, shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
-        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(setAttributeSpy).toHaveBeenCalled();
     });
-*/
+
     it(' on Mouse mouve should not call setAttribute if mouse was not already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = false;
-        mouseEvent = { shiftKey: true } as MouseEvent;
+        mouseEvent = { offsetX: 25, offsetY: 25, shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(setAttributeSpy).not.toHaveBeenCalled();
     });
-    /*
+
     it(' should be a square  when drawing rectangle and shift pressed', () => {
         mouseEvent = { offsetX: 30, offsetY: 6, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 10, offsetY: 5, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
-        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(mouseEvent.offsetX === mouseEvent.offsetY);
     });
 
@@ -157,10 +153,9 @@ describe('RectangleService', () => {
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 10, offsetY: 5, button: 0, shiftKey: false } as MouseEvent;
         service.onMouseMove(mouseEvent);
-        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(mouseEvent.offsetX !== mouseEvent.offsetY);
     });
-*/
+
     it(' should set attribute shift Down to true on shift key pressed', () => {
         mouseEvent = { offsetX: 50, offsetY: 60, button: 0 } as MouseEvent;
         service.onMouseDown(mouseEvent);
