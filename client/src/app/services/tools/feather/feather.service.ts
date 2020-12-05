@@ -13,7 +13,7 @@ import { WidthService } from '@app/services/tool-modifier/width/width.service';
     providedIn: 'root',
 })
 export class FeatherService extends Tool {
-    private readonly DEFAULT_SIZE_VALUE = 2;
+    private readonly DEFAULT_SIZE_VALUE: number = 2;
     private pathData: Vec2[];
     private angleInRadian: number;
     private isAltDown: boolean;
@@ -45,7 +45,8 @@ export class FeatherService extends Tool {
         const ANGLE_ROTATION_ON_ALT_DOWN = 1;
         const RESET_ANGLE = 0;
         const CIRCLE_ANGLE = 360;
-        const ORIENTATION = event.deltaY / 100;
+        const ORIENTATION_FACTOR = 100;
+        const ORIENTATION = event.deltaY / ORIENTATION_FACTOR;
 
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.featherDraw(this.drawingService.previewCtx, this.pathData);

@@ -14,7 +14,7 @@ import { WidthService } from '@app/services/tool-modifier/width/width.service';
     providedIn: 'root',
 })
 export class StampService extends Tool {
-    private readonly DEFAULT_SIZE_VALUE = 25;
+    private readonly DEFAULT_SIZE_VALUE: number = 25;
 
     private pathData: Vec2[];
     private angleInRadian: number;
@@ -47,7 +47,8 @@ export class StampService extends Tool {
         const ANGLE_ROTATION_ON_ALT_DOWN = 1;
         const RESET_ANGLE = 0;
         const CIRCLE_ANGLE = 360;
-        const ORIENTATION = event.deltaY / 100;
+        const ORIENTATION_FACTOR = 100;
+        const ORIENTATION = event.deltaY / ORIENTATION_FACTOR;
 
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.previewStamp(this.drawingService.previewCtx, this.pathData);
