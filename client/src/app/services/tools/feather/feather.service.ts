@@ -13,7 +13,7 @@ import { WidthService } from '@app/services/tool-modifier/width/width.service';
     providedIn: 'root',
 })
 export class FeatherService extends Tool {
-    private readonly DEFAULT_SIZE_VALUE = 2;
+    private readonly DEFAULT_SIZE_VALUE: number = 2;
     private pathData: Vec2[];
     private angleInRadian: number;
     private isAltDown: boolean;
@@ -40,22 +40,17 @@ export class FeatherService extends Tool {
         this.isAltDown = false;
     }
 
-    onMouseDown(event: MouseEvent): void {
-        this.mouseDown = event.button === MouseButton.Left;
-        if (this.mouseDown) {
-            this.clearPath();
-            this.mouseDownCoord = this.getPositionFromMouse(event);
-            this.pathData.push(this.mouseDownCoord);
-        }
-    }
     onMouseWheel(event: WheelEvent): void {
         const ANGLE_ROTATION_ON_ALT_UP = 15;
         const ANGLE_ROTATION_ON_ALT_DOWN = 1;
         const RESET_ANGLE = 0;
         const CIRCLE_ANGLE = 360;
-        const ORIENTATION = event.deltaY / 100;
+        const ORIENTATION_FACTOR = 100;
+        const ORIENTATION = event.deltaY / ORIENTATION_FACTOR;
 
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.featherDraw(this.drawingService.previewCtx, this.pathData);
+
         if (this.angleInRadian === RESET_ANGLE) {
             if (ORIENTATION < 0) {
                 this.angleInRadian = CIRCLE_ANGLE;
@@ -70,27 +65,38 @@ export class FeatherService extends Tool {
             this.angleInRadian = this.angleInRadian + ANGLE_ROTATION_ON_ALT_UP * ORIENTATION;
         }
     }
+    onMouseDown(event: MouseEvent): void {
+        this.mouseDown = event.button === MouseButton.Left;
+        if (this.mouseDown) {
+            this.clearPath();
+            this.mouseDownCoord = this.getPositionFromMouse(event);
+            this.pathData.push(this.mouseDownCoord);
+            this.featherDraw(this.drawingService.baseCtx, this.pathData);
+        }
+    }
+
+    onMouseMove(event: MouseEvent): void {
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        const mousePosition = this.getPositionFromMouse(event);
+        this.pathData.push(mousePosition);
+        this.featherDraw(this.drawingService.previewCtx, this.pathData);
+        if (this.mouseDown) {
+            if (this.isInCanvas(mousePosition)) {
+                this.featherDraw(this.drawingService.baseCtx, this.pathData);
+            }
+        }
+    }
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.featherDraw(this.drawingService.baseCtx, this.pathData);
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+
             this.drawingStateTrackingService.addAction(this, new InteractionPath(this.pathData));
         }
         this.mouseDown = false;
         this.clearPath();
-    }
-
-    onMouseMove(event: MouseEvent): void {
-        if (this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
-            this.pathData.push(mousePosition);
-            if (this.isInCanvas(mousePosition)) {
-                this.featherDraw(this.drawingService.baseCtx, this.pathData);
-            }
-        }
     }
 
     private featherDraw(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
@@ -102,17 +108,35 @@ export class FeatherService extends Tool {
         ctx.lineWidth = LINE_WIDTH;
         const lastPosition: Vec2 = path[path.length - 2];
         const currentPosition: Vec2 = path[path.length - 1];
-        for (let i = 0; i < this.widthService.getWidth(); i++) {
-            ctx.moveTo(
-                lastPosition.x + Math.sin(this.convertDegreeToRadian(this.angleInRadian)) * i,
-                lastPosition.y - Math.cos(this.convertDegreeToRadian(this.angleInRadian)) * i,
-            );
-            ctx.lineTo(
-                currentPosition.x + Math.sin(this.convertDegreeToRadian(this.angleInRadian)) * i,
-                currentPosition.y - Math.cos(this.convertDegreeToRadian(this.angleInRadian)) * i,
-            );
+        if (this.pathData.length > 2) {
+            for (let i = 0; i < this.widthService.getWidth(); i++) {
+                ctx.moveTo(
+                    lastPosition.x + Math.sin(this.convertDegreeToRadian(this.angleInRadian)) * i,
+                    lastPosition.y - Math.cos(this.convertDegreeToRadian(this.angleInRadian)) * i,
+                );
+
+                ctx.lineTo(
+                    currentPosition.x + Math.sin(this.convertDegreeToRadian(this.angleInRadian)) * i,
+                    currentPosition.y - Math.cos(this.convertDegreeToRadian(this.angleInRadian)) * i,
+                );
+            }
+            ctx.stroke();
         }
-        ctx.stroke();
+
+        if (this.pathData.length < 2) {
+            for (let i = 0; i < this.widthService.getWidth(); i++) {
+                ctx.moveTo(
+                    currentPosition.x + Math.sin(this.convertDegreeToRadian(this.angleInRadian)) * i,
+                    currentPosition.y - Math.cos(this.convertDegreeToRadian(this.angleInRadian)) * i,
+                );
+
+                ctx.lineTo(
+                    currentPosition.x + 1 + Math.sin(this.convertDegreeToRadian(this.angleInRadian)) * i,
+                    currentPosition.y - Math.cos(this.convertDegreeToRadian(this.angleInRadian)) * i,
+                );
+            }
+            ctx.stroke();
+        }
     }
 
     private convertDegreeToRadian(angleDegre: number): number {

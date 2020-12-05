@@ -6,8 +6,8 @@ import { JunctionService } from '@app/services/tool-modifier/junction/junction.s
 import { NumberSprayTransmissionService } from '@app/services/tool-modifier/numberspraytransmission/numberspraytransmission.service';
 import { SidesService } from '@app/services/tool-modifier/sides/sides.service';
 import { SpacingService } from '@app/services/tool-modifier/spacing/spacing.service';
-import { SprayDiameterService } from '@app/services/tool-modifier/spraydiameter/spray-diameter.service';
-import { SprayDropletDiameterService } from '@app/services/tool-modifier/spraydropletdiameter/spraydropletdiameter.service';
+import { SprayDiameterService } from '@app/services/tool-modifier/spray-diameter/spray-diameter.service';
+import { SprayDropletDiameterService } from '@app/services/tool-modifier/spray-droplet-diameter/spray-droplet-diameter.service';
 import { StampPickerService } from '@app/services/tool-modifier/stamp-picker/stamp-picker.service';
 import { StyleService } from '@app/services/tool-modifier/style/style.service';
 import { TextureService } from '@app/services/tool-modifier/texture/texture.service';

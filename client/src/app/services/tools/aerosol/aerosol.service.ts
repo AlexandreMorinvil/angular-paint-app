@@ -8,9 +8,8 @@ import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { NumberSprayTransmissionService } from '@app/services/tool-modifier/numberspraytransmission/numberspraytransmission.service';
-import { SprayDiameterService } from '@app/services/tool-modifier/spraydiameter/spray-diameter.service';
-import { SprayDropletDiameterService } from '@app/services/tool-modifier/spraydropletdiameter/spraydropletdiameter.service';
-
+import { SprayDiameterService } from '@app/services/tool-modifier/spray-diameter/spray-diameter.service';
+import { SprayDropletDiameterService } from '@app/services/tool-modifier/spray-droplet-diameter/spray-droplet-diameter.service';
 @Injectable({
     providedIn: 'root',
 })

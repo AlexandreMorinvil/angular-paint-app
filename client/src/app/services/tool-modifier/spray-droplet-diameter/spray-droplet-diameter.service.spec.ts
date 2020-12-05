@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { SprayDropletDiameterService } from '@app/services/tool-modifier/spraydropletdiameter/spraydropletdiameter.service';
+import { SprayDropletDiameterService } from '@app/services/tool-modifier/spray-droplet-diameter/spray-droplet-diameter.service';
 import { SprayDropletDiameterModifierState } from './spray-droplet-diameter-state';
 
 // The disablement of the "any" tslint rule is justified in this situation as the prototype

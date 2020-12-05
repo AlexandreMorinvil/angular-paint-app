@@ -5,7 +5,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
-import { RectangleService } from './rectangle-service';
+import { RectangleService } from './rectangle.service';
 // The disablement of the "any" tslint rule is justified in this situation as the prototype
 // of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
 // tslint:disable:no-any

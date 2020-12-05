@@ -287,13 +287,11 @@ export class LineService extends Tool {
 
         if (mouseMoveCoord.y <= mouseDownCoord.y) {
             alignmentAngle = Math.abs(circleAngle - Math.abs(Math.atan2(pointY, pointX) * halfCircleAngle) / Math.PI);
-            const roundedAngle = this.roundToNearestAngle(alignmentAngle);
-            return roundedAngle;
         } else {
             alignmentAngle = Math.abs(Math.atan2(pointY, pointX) * halfCircleAngle) / Math.PI;
-            const roundedAngle = this.roundToNearestAngle(alignmentAngle);
-            return roundedAngle;
         }
+        const roundedAngle = this.roundToNearestAngle(alignmentAngle);
+        return roundedAngle;
     }
 
     private clearPath(): void {
