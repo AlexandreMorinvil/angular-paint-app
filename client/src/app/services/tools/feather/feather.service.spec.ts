@@ -5,7 +5,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { FeatherService } from './feather.service';
 // tslint:disable:no-any
-fdescribe('FeatherService', () => {
+describe('FeatherService', () => {
     let service: FeatherService;
     let mouseEvent: MouseEvent;
     let keyboardEvent: KeyboardEvent;

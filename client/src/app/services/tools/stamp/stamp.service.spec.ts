@@ -6,24 +6,27 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { StampPickerService } from '@app/services/tool-modifier/stamp-picker/stamp-picker.service';
 import { StampService } from './stamp.service';
 // tslint:disable:no-any
-describe('StampService', () => {
+fdescribe('StampService', () => {
     let service: StampService;
     let stampPickerService: StampPickerService;
 
     let mouseEvent: MouseEvent;
     let keyboardEvent: KeyboardEvent;
-    let wheelEvent: WheelEvent;
+    let wheelEventPositive: WheelEvent;
+    let wheelEventNegative: WheelEvent;
 
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     let canvasStub: HTMLCanvasElement;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
-    let onMouseScrollUpSpy: jasmine.Spy<any>;
-    let onMouseScrollDownSpy: jasmine.Spy<any>;
+    let onMouseWheelSpy: jasmine.Spy<any>;
     let applyStampSpy: jasmine.Spy<any>;
     let previewStampSpy: jasmine.Spy<any>;
     let resetBorderSpy: jasmine.Spy<any>;
     let stamp2Spy: jasmine.Spy<any>;
+    let stamp3Spy: jasmine.Spy<any>;
+    let stamp4Spy: jasmine.Spy<any>;
+    let stamp5Spy: jasmine.Spy<any>;
 
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -36,11 +39,14 @@ describe('StampService', () => {
         });
         service = TestBed.inject(StampService);
         stampPickerService = TestBed.inject(StampPickerService);
-        onMouseScrollUpSpy = spyOn<any>(service, 'onMouseScrollUp').and.callThrough();
-        onMouseScrollDownSpy = spyOn<any>(service, 'onMouseScrollDown').and.callThrough();
+        onMouseWheelSpy = spyOn<any>(service, 'onMouseWheel').and.callThrough();
         applyStampSpy = spyOn<any>(service, 'applyStamp').and.callThrough();
         previewStampSpy = spyOn<any>(service, 'previewStamp').and.callThrough();
         stamp2Spy = spyOn<any>(service, 'stamp2').and.callThrough();
+        stamp3Spy = spyOn<any>(service, 'stamp3').and.callThrough();
+        stamp4Spy = spyOn<any>(service, 'stamp4').and.callThrough();
+        stamp5Spy = spyOn<any>(service, 'stamp5').and.callThrough();
+
         resetBorderSpy = spyOn<any>(service, 'resetBorder').and.callThrough();
         const canvasWidth = 1000;
         const canvasHeight = 800;
@@ -58,7 +64,12 @@ describe('StampService', () => {
         (service as any).drawingService.canvas.width = canvasWidth;
         (service as any).drawingService.canvas.height = canvasHeight;
         (service as any).pathData = path;
-
+        wheelEventPositive = {
+            deltaY: 100,
+        } as WheelEvent;
+        wheelEventNegative = {
+            deltaY: -100,
+        } as WheelEvent;
         mouseEvent = {
             offsetX: 25,
             offsetY: 25,
@@ -66,7 +77,7 @@ describe('StampService', () => {
             shiftKey: false,
             movementY: 0,
         } as MouseEvent;
-        wheelEvent = {} as WheelEvent;
+
         keyboardEvent = {} as KeyboardEvent;
     });
 
@@ -78,20 +89,20 @@ describe('StampService', () => {
         (service as any).applyStamp(baseCtxStub, (service as any).pathData);
         expect(stamp2Spy).toHaveBeenCalled();
     });
-    it('should go in case where stamp2 is selected', () => {
+    it('should go in case where stamp3 is selected', () => {
         (service as any).stampPickerService.setStamp('Étampe 3');
         (service as any).applyStamp(baseCtxStub, (service as any).pathData);
-        expect(stamp2Spy).toHaveBeenCalled();
+        expect(stamp3Spy).toHaveBeenCalled();
     });
-    it('should go in case where stamp2 is selected', () => {
+    it('should go in case where stamp4 is selected', () => {
         (service as any).stampPickerService.setStamp('Étampe 4');
         (service as any).applyStamp(baseCtxStub, (service as any).pathData);
-        expect(stamp2Spy).toHaveBeenCalled();
+        expect(stamp4Spy).toHaveBeenCalled();
     });
-    it('should go in case where stamp2 is selected', () => {
+    it('should go in case where stamp5 is selected', () => {
         (service as any).stampPickerService.setStamp('Étampe 5');
         (service as any).applyStamp(baseCtxStub, (service as any).pathData);
-        expect(stamp2Spy).toHaveBeenCalled();
+        expect(stamp5Spy).toHaveBeenCalled();
     });
 
     it(' mouseDown should set mouseDownCoord to correct position', () => {
@@ -110,57 +121,59 @@ describe('StampService', () => {
         expect((service as any).isAltDown).toBeFalse();
     });
 
-    it(' onMouseScrollUp should be called', () => {
-        service.onMouseWheel(wheelEvent);
-        expect(onMouseScrollUpSpy).toHaveBeenCalled();
+    it(' wheelEventPositive should be called', () => {
+        service.onMouseWheel(wheelEventPositive);
+        expect(onMouseWheelSpy).toHaveBeenCalled();
     });
 
-    it(' onMouseScrollUp when alt is not pressed should set angleInRadian correctly ', () => {
-        const arbitraryNumber = 345;
-        service.onMouseWheel(wheelEvent);
-        expect((service as any).angleInRadian).toEqual(arbitraryNumber);
-        expect(onMouseScrollUpSpy).toHaveBeenCalled();
-    });
-
-    it(' onMouseScrollUp when alt is pressed should set angleInRadian correctly ', () => {
-        const arbitraryNumber = 359;
-        (service as any).isAltDown = true;
-        service.onMouseWheel(wheelEvent);
-        expect((service as any).angleInRadian).toEqual(arbitraryNumber);
-        expect(onMouseScrollUpSpy).toHaveBeenCalled();
-    });
-
-    it(' onMouseScrollUp else path when angleInRadian is not equal to resetAngle ', () => {
-        service.onMouseWheel(wheelEvent);
-        service.onMouseWheel(wheelEvent);
-        expect(onMouseScrollUpSpy).toHaveBeenCalled();
-    });
-
-    it(' onMouseScrollDown should be called', () => {
-        service.onMouseWheel(wheelEvent);
-        expect(onMouseScrollDownSpy).toHaveBeenCalled();
-    });
-
-    it(' onMouseScrollDown when alt is not pressed should set angleInRadian correctly ', () => {
+    it(' wheelEventPositive when alt is not pressed should set angleInRadian correctly ', () => {
         const arbitraryNumber = 15;
-        service.onMouseWheel(wheelEvent);
+        service.onMouseWheel(wheelEventPositive);
         expect((service as any).angleInRadian).toEqual(arbitraryNumber);
-        expect(onMouseScrollDownSpy).toHaveBeenCalled();
+        expect(onMouseWheelSpy).toHaveBeenCalled();
     });
 
-    it(' onMouseScrollDown when alt is pressed should set angleInRadian correctly ', () => {
+    it(' wheelEventPositive when alt is pressed should set angleInRadian correctly ', () => {
+        const arbitraryNumber = 1;
         (service as any).isAltDown = true;
-        service.onMouseWheel(wheelEvent);
-        expect((service as any).angleInRadian).toEqual(1);
-        expect(onMouseScrollDownSpy).toHaveBeenCalled();
+        service.onMouseWheel(wheelEventPositive);
+        expect((service as any).angleInRadian).toEqual(arbitraryNumber);
+        expect(onMouseWheelSpy).toHaveBeenCalled();
     });
 
-    it(' onMouseScrollDown else path when angleInRadian is not equal to resetAngle ', () => {
+    it(' wheelEventPositive else path when angleInRadian is not equal to resetAngle ', () => {
+        service.onMouseWheel(wheelEventPositive);
+        service.onMouseWheel(wheelEventPositive);
+        expect(onMouseWheelSpy).toHaveBeenCalled();
+    });
+
+    it(' wheelEventNegative should be called', () => {
+        service.onMouseWheel(wheelEventNegative);
+        expect(onMouseWheelSpy).toHaveBeenCalled();
+    });
+
+    it(' wheelEventNegative when alt is not pressed should set angleInRadian correctly ', () => {
+        const arbitraryNumber = 345;
+        service.onMouseWheel(wheelEventNegative);
+        expect((service as any).angleInRadian).toEqual(arbitraryNumber);
+        expect(onMouseWheelSpy).toHaveBeenCalled();
+    });
+
+    it(' wheelEventNegative when alt is pressed should set angleInRadian correctly ', () => {
+        (service as any).isAltDown = true;
+        service.onMouseWheel(wheelEventNegative);
+        const arbitraryNumber = 359;
+        expect((service as any).angleInRadian).toEqual(arbitraryNumber);
+        expect(onMouseWheelSpy).toHaveBeenCalled();
+    });
+
+    it(' wheelEventNegative else path when angleInRadian is not equal to resetAngle ', () => {
         const nbOfMouseScroll = 25;
+
         for (let i = 0; i < nbOfMouseScroll; i++) {
-            service.onMouseWheel(wheelEvent);
+            service.onMouseWheel(wheelEventNegative);
         }
-        expect(onMouseScrollDownSpy).toHaveBeenCalled();
+        expect(onMouseWheelSpy).toHaveBeenCalled();
     });
 
     it(' onMouseUp should call applyStamp ', () => {
