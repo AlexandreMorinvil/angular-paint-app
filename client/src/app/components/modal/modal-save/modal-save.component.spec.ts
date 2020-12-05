@@ -5,7 +5,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { MatTabsModule } from '@angular/material/tabs';
 import { Router } from '@angular/router';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
-import { ApiDrawingService } from '@app/services/api/api-drawing/api-drawing.service';
+import { ApiDrawingService } from '@app/services/api/api-drawingapi-drawing.service';
 import { SaveService } from '@app/services/save/save.service';
 import { ModalSaveComponent } from './modal-save.component';
 

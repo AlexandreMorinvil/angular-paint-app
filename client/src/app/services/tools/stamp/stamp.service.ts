@@ -73,7 +73,6 @@ export class StampService extends Tool {
             this.clearPath();
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
-            this.previewStamp(this.drawingService.previewCtx, this.pathData);
         }
     }
     onMouseMove(event: MouseEvent): void {

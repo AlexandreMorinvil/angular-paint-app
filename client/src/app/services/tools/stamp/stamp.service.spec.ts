@@ -4,7 +4,7 @@ import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { StampPickerService } from '@app/services/tool-modifier/stamp-picker/stamp-picker.service';
-import { StampService } from './stamp-service';
+import { StampService } from './stamp.service';
 // tslint:disable:no-any
 describe('StampService', () => {
     let service: StampService;
@@ -12,6 +12,7 @@ describe('StampService', () => {
 
     let mouseEvent: MouseEvent;
     let keyboardEvent: KeyboardEvent;
+    let wheelEvent: WheelEvent;
 
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     let canvasStub: HTMLCanvasElement;
@@ -65,6 +66,7 @@ describe('StampService', () => {
             shiftKey: false,
             movementY: 0,
         } as MouseEvent;
+        wheelEvent = {} as WheelEvent;
         keyboardEvent = {} as KeyboardEvent;
     });
 
@@ -109,13 +111,13 @@ describe('StampService', () => {
     });
 
     it(' onMouseScrollUp should be called', () => {
-        service.onMouseScrollUp(mouseEvent);
+        service.onMouseWheel(wheelEvent);
         expect(onMouseScrollUpSpy).toHaveBeenCalled();
     });
 
     it(' onMouseScrollUp when alt is not pressed should set angleInRadian correctly ', () => {
         const arbitraryNumber = 345;
-        service.onMouseScrollUp(mouseEvent);
+        service.onMouseWheel(wheelEvent);
         expect((service as any).angleInRadian).toEqual(arbitraryNumber);
         expect(onMouseScrollUpSpy).toHaveBeenCalled();
     });
@@ -123,32 +125,32 @@ describe('StampService', () => {
     it(' onMouseScrollUp when alt is pressed should set angleInRadian correctly ', () => {
         const arbitraryNumber = 359;
         (service as any).isAltDown = true;
-        service.onMouseScrollUp(mouseEvent);
+        service.onMouseWheel(wheelEvent);
         expect((service as any).angleInRadian).toEqual(arbitraryNumber);
         expect(onMouseScrollUpSpy).toHaveBeenCalled();
     });
 
     it(' onMouseScrollUp else path when angleInRadian is not equal to resetAngle ', () => {
-        service.onMouseScrollUp(mouseEvent);
-        service.onMouseScrollUp(mouseEvent);
+        service.onMouseWheel(wheelEvent);
+        service.onMouseWheel(wheelEvent);
         expect(onMouseScrollUpSpy).toHaveBeenCalled();
     });
 
     it(' onMouseScrollDown should be called', () => {
-        service.onMouseScrollDown(mouseEvent);
+        service.onMouseWheel(wheelEvent);
         expect(onMouseScrollDownSpy).toHaveBeenCalled();
     });
 
     it(' onMouseScrollDown when alt is not pressed should set angleInRadian correctly ', () => {
         const arbitraryNumber = 15;
-        service.onMouseScrollDown(mouseEvent);
+        service.onMouseWheel(wheelEvent);
         expect((service as any).angleInRadian).toEqual(arbitraryNumber);
         expect(onMouseScrollDownSpy).toHaveBeenCalled();
     });
 
     it(' onMouseScrollDown when alt is pressed should set angleInRadian correctly ', () => {
         (service as any).isAltDown = true;
-        service.onMouseScrollDown(mouseEvent);
+        service.onMouseWheel(wheelEvent);
         expect((service as any).angleInRadian).toEqual(1);
         expect(onMouseScrollDownSpy).toHaveBeenCalled();
     });
@@ -156,7 +158,7 @@ describe('StampService', () => {
     it(' onMouseScrollDown else path when angleInRadian is not equal to resetAngle ', () => {
         const nbOfMouseScroll = 25;
         for (let i = 0; i < nbOfMouseScroll; i++) {
-            service.onMouseScrollDown(mouseEvent);
+            service.onMouseWheel(wheelEvent);
         }
         expect(onMouseScrollDownSpy).toHaveBeenCalled();
     });

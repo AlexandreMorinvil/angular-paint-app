@@ -3,19 +3,18 @@ import { InteractionPath } from '@app/classes/action/interaction-path';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { FeatherService } from './feather-service';
+import { FeatherService } from './feather.service';
 // tslint:disable:no-any
 describe('FeatherService', () => {
     let service: FeatherService;
     let mouseEvent: MouseEvent;
     let keyboardEvent: KeyboardEvent;
-
+    let wheelEvent: WheelEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     let canvasStub: HTMLCanvasElement;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
-    let onMouseScrollUpSpy: jasmine.Spy<any>;
-    let onMouseScrollDownSpy: jasmine.Spy<any>;
+    let onMouseWheelSpy: jasmine.Spy<any>;
     let featherDrawSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
@@ -28,8 +27,7 @@ describe('FeatherService', () => {
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         });
         service = TestBed.inject(FeatherService);
-        onMouseScrollUpSpy = spyOn<any>(service, 'onMouseScrollUp').and.callThrough();
-        onMouseScrollDownSpy = spyOn<any>(service, 'onMouseScrollDown').and.callThrough();
+        onMouseWheelSpy = spyOn<any>(service, 'onMouseWheel').and.callThrough();
         featherDrawSpy = spyOn<any>(service, 'featherDraw').and.callThrough();
 
         const canvasWidth = 1000;
@@ -48,7 +46,7 @@ describe('FeatherService', () => {
             shiftKey: false,
             movementY: 0,
         } as MouseEvent;
-
+        wheelEvent = {} as WheelEvent;
         keyboardEvent = {} as KeyboardEvent;
     });
 
@@ -72,58 +70,57 @@ describe('FeatherService', () => {
         expect((service as any).isAltDown).toBeFalse();
     });
 
-    it('onMouseScrollUp should be called', () => {
-        service.onMouseScrollUp(mouseEvent);
-        expect(onMouseScrollUpSpy).toHaveBeenCalled();
+    it('onMouseWheel should be called', () => {
+        service.onMouseWheel(wheelEvent);
+        expect(onMouseWheelSpy).toHaveBeenCalled();
     });
 
     it('onMouseScrollUp when alt is not pressed should set angleInRadian correctly', () => {
         const arbitraryNumber = 345;
-        service.onMouseScrollUp(mouseEvent);
+        service.onMouseWheel(wheelEvent);
         expect((service as any).angleInRadian).toEqual(arbitraryNumber);
-        expect(onMouseScrollUpSpy).toHaveBeenCalled();
+        expect(onMouseWheelSpy).toHaveBeenCalled();
     });
 
     it('onMouseScrollUp when alt is pressed should set angleInRadian correctly', () => {
         const arbitraryNumber = 359;
         (service as any).isAltDown = true;
-        service.onMouseScrollUp(mouseEvent);
+        service.onMouseWheel(wheelEvent);
         expect((service as any).angleInRadian).toEqual(arbitraryNumber);
-        expect(onMouseScrollUpSpy).toHaveBeenCalled();
+        expect(onMouseWheelSpy).toHaveBeenCalled();
     });
 
     it('onMouseScrollUp else path when angleInRadian is not equal to resetAngle', () => {
-        service.onMouseScrollUp(mouseEvent);
-        service.onMouseScrollUp(mouseEvent);
-        expect(onMouseScrollUpSpy).toHaveBeenCalled();
+        service.onMouseWheel(wheelEvent);
+        expect(onMouseWheelSpy).toHaveBeenCalled();
     });
 
     it('onMouseScrollDown should be called', () => {
-        service.onMouseScrollDown(mouseEvent);
-        expect(onMouseScrollDownSpy).toHaveBeenCalled();
+        service.onMouseWheel(wheelEvent);
+        expect(onMouseWheelSpy).toHaveBeenCalled();
     });
 
     it('onMouseScrollDown when alt is not pressed should set angleInRadian correctly', () => {
         (service as any).isAltDown = false;
         const arbitraryNumber = 15;
-        service.onMouseScrollDown(mouseEvent);
+        service.onMouseWheel(wheelEvent);
         expect((service as any).angleInRadian).toEqual(arbitraryNumber);
-        expect(onMouseScrollDownSpy).toHaveBeenCalled();
+        expect(onMouseWheelSpy).toHaveBeenCalled();
     });
 
     it('onMouseScrollDown when alt is pressed should set angleInRadian correctly', () => {
         (service as any).isAltDown = true;
-        service.onMouseScrollDown(mouseEvent);
+        service.onMouseWheel(wheelEvent);
         expect((service as any).angleInRadian).toEqual(1);
-        expect(onMouseScrollDownSpy).toHaveBeenCalled();
+        expect(onMouseWheelSpy).toHaveBeenCalled();
     });
 
     it('onMouseScrollDown else path when angleInRadian is not equal to resetAngle', () => {
         const nbOfMouseScroll = 25;
         for (let i = 0; i < nbOfMouseScroll; i++) {
-            service.onMouseScrollDown(mouseEvent);
+            service.onMouseWheel(wheelEvent);
         }
-        expect(onMouseScrollDownSpy).toHaveBeenCalled();
+        expect(onMouseWheelSpy).toHaveBeenCalled();
     });
 
     it('onMouseUp should call featherDraw', () => {

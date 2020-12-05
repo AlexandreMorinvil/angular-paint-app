@@ -3,47 +3,34 @@ import { InteractionPath } from '@app/classes/action/interaction-path';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { TextureEnum, TextureService } from '@app/services/tool-modifier/texture/texture.service';
-import { BrushService } from './brush-service';
+import { EraserService } from './eraser.service';
 
-// The disablement of the "any" tslint rule is justified in this situation as the prototype
-// of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
 // tslint:disable:no-any
-describe('BrushService', () => {
-    let service: BrushService;
-    let textureService: TextureService;
+describe('EraserService', () => {
+    let service: EraserService;
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
-    let baseCtxStub: CanvasRenderingContext2D;
+
     let canvasStub: HTMLCanvasElement;
+    let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
+
     let drawLineSpy: jasmine.Spy<any>;
-    let shadowTextureSpy: jasmine.Spy<any>;
-    let gradientTextureSpy: jasmine.Spy<any>;
-    let squareTextureSpy: jasmine.Spy<any>;
-    let dashTextureSpy: jasmine.Spy<any>;
-    let zigzagTextureSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         canvasStub = canvasTestHelper.canvas;
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
+
         TestBed.configureTestingModule({
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         });
-        service = TestBed.inject(BrushService);
-        textureService = TestBed.inject(TextureService);
+        service = TestBed.inject(EraserService);
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
-        shadowTextureSpy = spyOn<any>(service, 'shadowTexture').and.callThrough();
-        gradientTextureSpy = spyOn<any>(service, 'gradientTexture').and.callThrough();
-        squareTextureSpy = spyOn<any>(service, 'squareTexture').and.callThrough();
-        dashTextureSpy = spyOn<any>(service, 'dashTexture').and.callThrough();
-        zigzagTextureSpy = spyOn<any>(service, 'zigzagTexture').and.callThrough();
 
         const canvasWidth = 1000;
         const canvasHeight = 800;
-
         (service as any).drawingService.baseCtx = baseCtxStub;
         (service as any).drawingService.previewCtx = previewCtxStub;
         (service as any).drawingService.canvas = canvasStub;
@@ -55,10 +42,6 @@ describe('BrushService', () => {
             offsetY: 25,
             button: 0,
         } as MouseEvent;
-    });
-
-    it('should be created', () => {
-        expect(service).toBeTruthy();
     });
 
     it(' mouseDown should set mouseDownCoord to correct position', () => {
@@ -80,6 +63,15 @@ describe('BrushService', () => {
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);
+    });
+
+    it(' Preview canvas should be empty if the mouse moves out of the canvas', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = false;
+        const mouseEvent2 = { offsetX: -5, offsetY: 0, button: 0 } as MouseEvent;
+
+        service.onMouseMove(mouseEvent2);
+        expect(drawLineSpy).not.toHaveBeenCalled();
     });
 
     it(' onMouseUp should call drawLine if mouse was already down', () => {
@@ -112,48 +104,7 @@ describe('BrushService', () => {
         service.mouseDown = false;
 
         service.onMouseMove(mouseEvent);
-        expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(drawLineSpy).not.toHaveBeenCalled();
-    });
-
-    it(' should call shadowTexture if it is the selected texture', () => {
-        textureService.setTexture(TextureEnum.shadowTexture);
-        service.mouseDownCoord = { x: 0, y: 0 };
-        service.mouseDown = true;
-        service.onMouseUp(mouseEvent);
-        expect(shadowTextureSpy).toHaveBeenCalled();
-    });
-
-    it(' should call gradientTexture if it is the selected texture', () => {
-        textureService.setTexture(TextureEnum.gradientTexture);
-        service.mouseDownCoord = { x: 0, y: 0 };
-        service.mouseDown = true;
-        service.onMouseUp(mouseEvent);
-        expect(gradientTextureSpy).toHaveBeenCalled();
-    });
-
-    it(' should call squareTexture if it is the selected texture', () => {
-        textureService.setTexture(TextureEnum.squareTexture);
-        service.mouseDownCoord = { x: 0, y: 0 };
-        service.mouseDown = true;
-        service.onMouseUp(mouseEvent);
-        expect(squareTextureSpy).toHaveBeenCalled();
-    });
-
-    it(' should call dashTexture if it is the selected texture', () => {
-        textureService.setTexture(TextureEnum.dashTexture);
-        service.mouseDownCoord = { x: 0, y: 0 };
-        service.mouseDown = true;
-        service.onMouseUp(mouseEvent);
-        expect(dashTextureSpy).toHaveBeenCalled();
-    });
-
-    it(' should call zigzagTexture if it is the selected texture', () => {
-        textureService.setTexture(TextureEnum.zigzagTexture);
-        service.mouseDownCoord = { x: 0, y: 0 };
-        service.mouseDown = true;
-        service.onMouseUp(mouseEvent);
-        expect(zigzagTextureSpy).toHaveBeenCalled();
     });
 
     it('should execute and drawLine is called', () => {
