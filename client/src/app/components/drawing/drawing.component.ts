@@ -4,6 +4,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ModalHandlerService } from '@app/services/modal-handler/modal-handler';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
 import { GridService } from '@app/services/tools/grid/grid.service';
+import { TextService } from '@app/services/tools/text/text.service';
 import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzone-size.service';
 
 export const DEFAULT_WIDTH = 1000;
@@ -71,13 +72,11 @@ export class DrawingComponent implements AfterViewInit {
         event.preventDefault();
         this.resetDrawing();
     }
-    @HostListener('wheel', ['$event'])
-    onMouseScroll(event: WheelEvent): void {
-        if (event.deltaY < 0) {
-            this.toolbox.getCurrentTool().onMouseScrollUp(event);
-        } else if (event.deltaY > 0) {
-            this.toolbox.getCurrentTool().onMouseScrollDown(event);
-        }
+
+    @HostListener('mousewheel', ['$event'])
+    onMousewheel(event: WheelEvent): void {
+        event.preventDefault(); // to prevent key of windows
+        this.toolbox.getCurrentTool().onMouseWheel(event);
     }
 
     @HostListener('mousemove', ['$event'])
@@ -108,31 +107,45 @@ export class DrawingComponent implements AfterViewInit {
 
     @HostListener('window:keyup', ['$event'])
     keyEventUp(event: KeyboardEvent): void {
-        if (event.key === 'Shift') {
-            if (this.drawingService.shortcutEnable) {
-                this.toolbox.getCurrentTool().onShiftUp(event);
+        if (this.drawingService.shortcutEnable) {
+            for (const i in this.toolbox.getAvailableTools()) {
+                if (this.toolbox.getAvailableTools()[i].shortcut === event.key.toLowerCase()) {
+                    this.toolbox.setSelectedTool(this.toolbox.getAvailableTools()[i]);
+                }
             }
-            // The deprecation warning is justified in this case because some operating systems
-            // do recognize the keycodes while others will prefere the 'Backspace' reference
-            // tslint:disable-next-line:deprecation
-        } else if (event.key === 'Backspace' || event.keyCode === this.BACKSPACE_KEYCODE) {
-            if (this.drawingService.shortcutEnable) {
-                this.toolbox.getCurrentTool().onBackspaceDown(event);
-            }
-            // tslint:disable:prefer-switch
-        } else if (event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-            this.toolbox.getCurrentTool().onArrowUp(event);
-        } else if (event.key === 'Alt') {
-            event.preventDefault(); // to prevent key of windows
-            this.toolbox.getCurrentTool().onAltUp(event);
-        } else {
-            if (this.drawingService.shortcutEnable) {
+        }
+
+        const keyCode: String = event.key;
+        const SHORT_CUT_ENABLE: boolean = this.drawingService.shortcutEnable;
+        if (!keyCode) {
+            return;
+        }
+
+        switch (keyCode) {
+            case 'Shift':
+                if (SHORT_CUT_ENABLE) {
+                    this.toolbox.getCurrentTool().onShiftUp(event);
+                }
+                break;
+            case 'Backspace' || event.keyCode === this.BACKSPACE_KEYCODE:
+                if (SHORT_CUT_ENABLE) {
+                    this.toolbox.getCurrentTool().onBackspaceDown(event);
+                }
+                break;
+            case 'ArrowLeft' || 'ArrowRight' || 'ArrowUp' || 'ArrowDown':
+                this.toolbox.getCurrentTool().onArrowUp(event);
+                break;
+            case 'Alt':
+                event.preventDefault(); // to prevent key of windows
+                this.toolbox.getCurrentTool().onAltUp(event);
+                break;
+            default:
+                if (!SHORT_CUT_ENABLE) return;
                 for (const i in this.toolbox.getAvailableTools()) {
-                    if (this.toolbox.getAvailableTools()[i].shortcut === event.key.toLowerCase()) {
+                    if (this.toolbox.getAvailableTools()[i].shortcut === keyCode.toLowerCase()) {
                         this.toolbox.setSelectedTool(this.toolbox.getAvailableTools()[i]);
                     }
                 }
-            }
         }
     }
     // The disablement of the "cyclomatic-complexity" tslint rule is justified in this situation
@@ -140,41 +153,68 @@ export class DrawingComponent implements AfterViewInit {
     // tslint:disable:cyclomatic-complexity
     @HostListener('window:keydown', ['$event'])
     onShiftDown(event: KeyboardEvent): void {
-        if (event.key === 'Shift') {
+        if (this.toolbox.getCurrentTool() instanceof TextService) {
+            event.preventDefault();
+            this.toolbox.getCurrentTool().onKeyDown(event);
+        }
+
+        const KEY_CODE: String = event.key;
+        const KEY_CODE_LOWER_CASE = KEY_CODE.toLowerCase();
+        const IS_CTRL_KEY: boolean = event.ctrlKey;
+        const IS_SHIFT_KEY: boolean = event.shiftKey;
+        const SHORT_CUT_ENABLE: boolean = this.drawingService.shortcutEnable;
+        if (!KEY_CODE) {
+            return;
+        }
+
+        if (KEY_CODE === 'Shift') {
             this.toolbox.getCurrentTool().onShiftDown(event);
-        } else if (event.key === 'Escape') {
+        } else if (KEY_CODE === 'Escape') {
             this.toolbox.getCurrentTool().onEscapeDown(event);
             this.hasBeenDrawnOnto = true;
-        } else if (event.key === 'Alt') {
+        } else if (KEY_CODE === 'Alt') {
             event.preventDefault(); // to prevent key of windows
             this.toolbox.getCurrentTool().onAltDown(event);
-        } else if (event.ctrlKey && event.key.toLowerCase() === 's' && this.drawingService.shortcutEnable) {
-            event.preventDefault(); // to prevent key of windows
-            this.modalHandlerService.openSaveDialog();
-        } else if (event.ctrlKey && event.key.toLowerCase() === 'g' && this.drawingService.shortcutEnable) {
-            event.preventDefault(); // to prevent key of windows
-            this.modalHandlerService.openDrawingCarouselDialog();
-        } else if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'z') {
-            event.preventDefault(); // to prevent key of windows
-            this.drawingStateTrackerService.onCtrlShiftZDown();
-        } else if (event.ctrlKey && event.key.toLowerCase() === 'z') {
-            event.preventDefault(); // to prevent key of windows
-            this.drawingStateTrackerService.onCtrlZDown();
-        } else if (event.ctrlKey && event.key.toLowerCase() === 'e' && this.drawingService.shortcutEnable) {
-            event.preventDefault(); // to prevent key of windows
-            this.modalHandlerService.openExportDialog();
-        } else if (event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+        } else if (KEY_CODE === 'ArrowLeft' || KEY_CODE === 'ArrowRight' || KEY_CODE === 'ArrowUp' || KEY_CODE === 'ArrowDown') {
             event.preventDefault(); // to prevent key of windows
             this.toolbox.getCurrentTool().onArrowDown(event);
-        } else if (event.ctrlKey && event.key.toLowerCase() === 'a') {
-            event.preventDefault(); // to prevent key of windows
-            this.toolbox.getCurrentTool().onCtrlADown();
-        } else if (event.key.toLowerCase() === 'g' && this.drawingService.shortcutEnable) {
-            this.gridService.toogleGrid();
-        } else if (event.key.toLowerCase() === '+' && this.drawingService.shortcutEnable) {
-            this.gridService.incrementSpacing();
-        } else if (event.key.toLowerCase() === '-' && this.drawingService.shortcutEnable) {
-            this.gridService.decrementSpacing();
+        }
+
+        if (IS_CTRL_KEY) {
+            if (SHORT_CUT_ENABLE) {
+                if (KEY_CODE_LOWER_CASE === 's') {
+                    event.preventDefault(); // to prevent key of windows
+                    this.modalHandlerService.openSaveDialog();
+                } else if (KEY_CODE_LOWER_CASE === 'g') {
+                    event.preventDefault(); // to prevent key of windows
+                    this.modalHandlerService.openDrawingCarouselDialog();
+                } else if (KEY_CODE_LOWER_CASE === 'e') {
+                    event.preventDefault(); // to prevent key of windows
+                    this.modalHandlerService.openExportDialog();
+                }
+            } else if (IS_SHIFT_KEY) {
+                if (KEY_CODE_LOWER_CASE === 'z') {
+                    event.preventDefault(); // to prevent key of windows
+                    this.drawingStateTrackerService.onCtrlShiftZDown();
+                }
+            } else {
+                if (KEY_CODE_LOWER_CASE === 'z') {
+                    event.preventDefault(); // to prevent key of windows
+                    this.drawingStateTrackerService.onCtrlZDown();
+                } else if (KEY_CODE_LOWER_CASE === 'a') {
+                    event.preventDefault(); // to prevent key of windows
+                    this.toolbox.getCurrentTool().onCtrlADown();
+                }
+            }
+        } else {
+            if (!SHORT_CUT_ENABLE) return;
+            if (KEY_CODE_LOWER_CASE === 'g') {
+                this.gridService.toogleGrid();
+            } else if (KEY_CODE_LOWER_CASE === '+') {
+                this.gridService.incrementSpacing();
+            } else if (KEY_CODE_LOWER_CASE === '-') {
+                this.gridService.decrementSpacing();
+            }
         }
     }
 

@@ -3,17 +3,20 @@ import { InteractionPath } from '@app/classes/action/interaction-path';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { EraserService } from './eraser-service';
+import { PencilService } from './pencil.service';
 
+// The disablement of the "any" tslint rule is justified in this situation as the prototype
+// of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
 // tslint:disable:no-any
-describe('EraserService', () => {
-    let service: EraserService;
+describe('PencilService', () => {
+    let service: PencilService;
     let mouseEvent: MouseEvent;
+    let mouseEvent2: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
-    let canvasStub: HTMLCanvasElement;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
+    let canvasStub: HTMLCanvasElement;
 
     let drawLineSpy: jasmine.Spy<any>;
 
@@ -26,9 +29,10 @@ describe('EraserService', () => {
         TestBed.configureTestingModule({
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         });
-        service = TestBed.inject(EraserService);
+        service = TestBed.inject(PencilService);
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
 
+        // Configuration of spy service
         const canvasWidth = 1000;
         const canvasHeight = 800;
         (service as any).drawingService.baseCtx = baseCtxStub;
@@ -42,6 +46,16 @@ describe('EraserService', () => {
             offsetY: 25,
             button: 0,
         } as MouseEvent;
+
+        mouseEvent2 = {
+            offsetX: 1200,
+            offsetY: 1200,
+            button: 0,
+        } as MouseEvent;
+    });
+
+    it('should be created', () => {
+        expect(service).toBeTruthy();
     });
 
     it(' mouseDown should set mouseDownCoord to correct position', () => {
@@ -65,15 +79,6 @@ describe('EraserService', () => {
         expect(service.mouseDown).toEqual(false);
     });
 
-    it(' Preview canvas should be empty if the mouse moves out of the canvas', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
-        service.mouseDown = false;
-        const mouseEvent2 = { offsetX: -5, offsetY: 0, button: 0 } as MouseEvent;
-
-        service.onMouseMove(mouseEvent2);
-        expect(drawLineSpy).not.toHaveBeenCalled();
-    });
-
     it(' onMouseUp should call drawLine if mouse was already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
@@ -91,9 +96,8 @@ describe('EraserService', () => {
     });
 
     it(' onMouseMove should call drawLine if mouse was already down', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoord = { x: 5, y: 5 };
         service.mouseDown = true;
-
         service.onMouseMove(mouseEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawLineSpy).toHaveBeenCalled();
@@ -104,6 +108,38 @@ describe('EraserService', () => {
         service.mouseDown = false;
 
         service.onMouseMove(mouseEvent);
+        expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
+        expect(drawLineSpy).not.toHaveBeenCalled();
+    });
+
+    it(' drawLine should not draw first pixel ', () => {
+        const expectedResult: Vec2 = { x: 25, y: 25 };
+        const pathData: Vec2[] = [];
+        pathData.push(expectedResult);
+        pathData.push(expectedResult);
+        pathData.push(expectedResult);
+        (service as any).drawLine(previewCtxStub, pathData);
+        expect(pathData.length).not.toEqual(1);
+    });
+
+    it(' should change the pixel of the canvas ', () => {
+        mouseEvent = { offsetX: 0, offsetY: 0, button: 0 } as MouseEvent;
+        service.onMouseDown(mouseEvent);
+        mouseEvent = { offsetX: 1, offsetY: 0, button: 0 } as MouseEvent;
+        service.onMouseUp(mouseEvent);
+
+        const imageData: ImageData = baseCtxStub.getImageData(0, 0, 1, 1);
+        expect(imageData.data[0]).toEqual(0);
+        expect(imageData.data[1]).toEqual(0);
+        expect(imageData.data[2]).toEqual(0);
+    });
+
+    it(' onMouseMove should not call drawLine if mouse is not on canvas', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+
+        service.onMouseMove(mouseEvent2);
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
 
@@ -116,5 +152,25 @@ describe('EraserService', () => {
         } as InteractionPath;
         service.execute(interaction);
         expect(drawLineSpy).toHaveBeenCalled();
+    });
+
+    it(' should change the pixel of the canvas ', () => {
+        mouseEvent = { offsetX: 0, offsetY: 0, button: 0 } as MouseEvent;
+        service.onMouseDown(mouseEvent);
+        mouseEvent = { offsetX: 1, offsetY: 0, button: 0 } as MouseEvent;
+        service.onMouseUp(mouseEvent);
+        const imageData: ImageData = baseCtxStub.getImageData(0, 0, 1, 1);
+        expect(imageData.data[0]).toEqual(0);
+        expect(imageData.data[1]).toEqual(0);
+        expect(imageData.data[2]).toEqual(0);
+    });
+
+    it(' onMouseMove should not call drawLine if mouse is not on canvas', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+
+        service.onMouseMove(mouseEvent2);
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect(drawLineSpy).not.toHaveBeenCalled();
     });
 });

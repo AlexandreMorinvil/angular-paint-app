@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
+import { Bound } from '@app/classes/bound';
 import { ToolModifier } from '@app/classes/tool-modifier';
 import { NumberSprayTransmissionModifierState } from '@app/services/tool-modifier/numberspraytransmission/number-spray-transmission-state';
+import { ModifierHandlerService } from '../modifier-handler/modifier-handler.service';
 
 @Injectable({
     providedIn: 'root',
@@ -11,14 +13,15 @@ export class NumberSprayTransmissionService extends ToolModifier {
     readonly MIN_NUMBER_SPRAY_TRANSMISSION: number = 10;
     private numberSprayTransmission: number = this.DEFAULT_NUMBER_SPRAY_TRANSMISSION;
 
-    constructor() {
+    constructor(private modifierHandlerService: ModifierHandlerService) {
         super();
     }
 
     setNumberSprayTransmission(input: number): void {
-        if (input >= this.MAX_NUMBER_SPRAY_TRANSMISSION) this.numberSprayTransmission = this.MAX_NUMBER_SPRAY_TRANSMISSION;
-        else if (input <= this.MIN_NUMBER_SPRAY_TRANSMISSION) this.numberSprayTransmission = this.MIN_NUMBER_SPRAY_TRANSMISSION;
-        else this.numberSprayTransmission = input;
+        const LIMIT: number = this.modifierHandlerService.clamp(input, this.MAX_NUMBER_SPRAY_TRANSMISSION, this.MIN_NUMBER_SPRAY_TRANSMISSION);
+        if (LIMIT === Bound.upper) this.numberSprayTransmission = this.MAX_NUMBER_SPRAY_TRANSMISSION;
+        else if (LIMIT === Bound.lower) this.numberSprayTransmission = this.MIN_NUMBER_SPRAY_TRANSMISSION;
+        else if (LIMIT === Bound.inside) this.numberSprayTransmission = input;
     }
 
     getNumberSprayTransmission(): number {
