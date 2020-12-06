@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
+import { Bound } from '@app/classes/bound';
 import { ToolModifier } from '@app/classes/tool-modifier';
 import { SprayDiameterModifierState } from '@app/services/tool-modifier/spray-diameter/spray-diameter-state';
+import { ModifierHandlerService } from '../modifier-handler/modifier-handler.service';
 
 @Injectable({
     providedIn: 'root',
@@ -11,13 +13,14 @@ export class SprayDiameterService extends ToolModifier {
     readonly MIN_SPRAY_DIAMETER: number = 10;
     private sprayDiameter: number = this.DEFAULT_SPRAY_DIAMETER;
 
-    constructor() {
+    constructor(private modifierHandlerService: ModifierHandlerService) {
         super();
     }
 
     setSprayDiameter(input: number): void {
-        if (input >= this.MAX_SPRAY_DIAMETER) this.sprayDiameter = this.MAX_SPRAY_DIAMETER;
-        else if (input <= this.MIN_SPRAY_DIAMETER) this.sprayDiameter = this.MIN_SPRAY_DIAMETER;
+        const LIMIT: number = this.modifierHandlerService.clamp(input, this.MAX_SPRAY_DIAMETER, this.MAX_SPRAY_DIAMETER);
+        if (LIMIT === Bound.upper) this.sprayDiameter = this.MAX_SPRAY_DIAMETER;
+        else if (LIMIT === Bound.lower) this.sprayDiameter = this.MIN_SPRAY_DIAMETER;
         else this.sprayDiameter = input;
     }
 

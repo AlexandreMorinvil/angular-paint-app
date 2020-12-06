@@ -54,6 +54,7 @@ export class StampService extends Tool {
         this.previewStamp(this.drawingService.previewCtx, this.pathData);
 
         if (this.angleInRadian === RESET_ANGLE) {
+            //fonction a revoir sofia
             if (ORIENTATION < 0) {
                 this.angleInRadian = CIRCLE_ANGLE;
             }
@@ -84,6 +85,7 @@ export class StampService extends Tool {
         this.previewStamp(this.drawingService.previewCtx, this.pathData);
 
         if (this.mouseDown) {
+            // pk le reste est pas danse le if
             if (!this.isInCanvas(mousePosition) && this.mouseDown) {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
             } else {
@@ -113,7 +115,7 @@ export class StampService extends Tool {
                 break;
             }
             case StampEnum.stamp2: {
-                this.stamp2(ctx, path);
+                this.stamp2(ctx, path); //pk un switch case pour sa
                 break;
             }
             case StampEnum.stamp3: {
@@ -149,6 +151,7 @@ export class StampService extends Tool {
     }
 
     private stamp2(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+        //redondant d<avoir 5 function inutile
         const image = new Image();
         image.src = '/assets/images/certified.png';
         this.drawImage(ctx, path, image);
@@ -160,7 +163,7 @@ export class StampService extends Tool {
     }
     private stamp4(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         const image = new Image();
-        image.src = '/assets/images/crown2.png';
+        image.src = '/assets/images/crown2.png'; //mettre en private readonly
         this.drawImage(ctx, path, image);
     }
     private stamp5(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
