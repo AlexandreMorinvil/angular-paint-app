@@ -10,6 +10,7 @@ import { TracingService } from '@app/services/tool-modifier/tracing/tracing.serv
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
 import { SelectionToolService } from '@app/services/tools/selection/selection-tool.service';
+import { EdgePixelsOneRegion } from './edge-pixel';
 // tslint:disable:max-file-line-count
 @Injectable({
     providedIn: 'root',
@@ -510,6 +511,22 @@ export class MagicWandService extends SelectionToolService {
                 regionIndex--;
             }
         }
+
+        // Also stores the relative position of every edge pixel to be used for resize
+        regionIndex = -1;
+        for (const region of this.edgePixelsSplitted) {
+            regionIndex++;
+            this.edgePixelsSplittedRelativePosition.push({ edgePixels: [] });
+            for (const edge of region.edgePixels) {
+                const relativePosition: Vec2 = {
+                    x: (edge.x - this.startDownCoord.x) / this.selectionSize.x,
+                    y: (edge.y - this.startDownCoord.y) / this.selectionSize.y,
+                };
+                this.edgePixelsSplittedRelativePosition[regionIndex].edgePixels.push(relativePosition);
+            }
+        }
+        console.log(this.edgePixelsSplitted);
+        console.log(this.edgePixelsSplittedRelativePosition);
     }
 
     execute(interaction: InteractionSelection): void {

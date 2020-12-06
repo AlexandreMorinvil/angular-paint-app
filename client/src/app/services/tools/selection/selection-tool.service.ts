@@ -52,6 +52,7 @@ export abstract class SelectionToolService extends Tool {
 
     protected image: HTMLImageElement;
     protected edgePixelsSplitted: EdgePixelsOneRegion[] = [];
+    protected edgePixelsSplittedRelativePosition: EdgePixelsOneRegion[] = [];
 
     constructor(drawingService: DrawingService, private color: ColorService, description: Description) {
         super(drawingService, description);
@@ -64,6 +65,7 @@ export abstract class SelectionToolService extends Tool {
         this.hasDoneFirstRotation = false;
         this.hasDoneResizing = false;
         this.angle = 0;
+
         this.clearPath();
     }
 
@@ -206,6 +208,7 @@ export abstract class SelectionToolService extends Tool {
         let adjustOffsetCoords: Vec2 = { x: mousePosition.x - adjustStartCoords.x, y: mousePosition.y - adjustStartCoords.y };
         let scaleX = 1;
         let scaleY = 1;
+
         // tslint:disable:no-magic-numbers
         switch (this.anchorHit) {
             case Anchors.TopLeft:
@@ -297,6 +300,11 @@ export abstract class SelectionToolService extends Tool {
             }
             mousePosition = { x: adjustOffsetCoords.x + adjustStartCoords.x, y: adjustOffsetCoords.y + adjustStartCoords.y };
         }
+        //console.log(adjustOffsetCoords);
+        //console.log(adjustStartCoords);
+        //console.log(this.startDownCoord);
+        //console.log(this.selectionSize);
+
         switch (caller) {
             case 1: // ellipse is calling
                 this.showSelectionResize(canvas, adjustStartCoords, adjustOffsetCoords, mousePosition, caller);
@@ -311,6 +319,7 @@ export abstract class SelectionToolService extends Tool {
                 break;
         }
         this.resetCanvasRotation();
+
         //canvas.setTransform(1, 0, 0, 1, 0, 0); // reset canvas transform after mirror effect
     }
 
@@ -334,12 +343,42 @@ export abstract class SelectionToolService extends Tool {
             // const MEMORY_START = this.startDownCoord;
             // this.startDownCoord = adjustStartCoords;
             // const DIFF = mousePosition.x *100 / 1;
+            this.adjustEdgePixelCoord(adjustStartCoords, adjustOffsetCoords);
             const PATH = this.getPathToClip();
             // this.startDownCoord = MEMORY_START;
             canvas.clip(PATH);
         }
         this.drawImage(canvas, this.image, this.firstSelectionCoord, this.selectionSize, adjustStartCoords, adjustOffsetCoords);
         canvas.restore();
+    }
+
+    protected adjustEdgePixelCoord(adjustStartCoords: Vec2, adjustOffsetCoords: Vec2) {
+        const magicWandPath = new Path2D();
+        //console.log(this.edgePixelsSplitted);
+        //console.log(this.edgePixelsSplittedRelativePosition);
+        for (let regionIndex = 0; regionIndex < this.edgePixelsSplitted.length; regionIndex++) {
+            for (let edgeIndex = 0; edgeIndex < this.edgePixelsSplitted[regionIndex].edgePixels.length; edgeIndex++) {
+                const relativePositionX = this.edgePixelsSplittedRelativePosition[regionIndex].edgePixels[edgeIndex].x;
+                const relativePositionY = this.edgePixelsSplittedRelativePosition[regionIndex].edgePixels[edgeIndex].y;
+                const edge: Vec2 = this.edgePixelsSplitted[regionIndex].edgePixels[edgeIndex];
+                this.edgePixelsSplitted[regionIndex].edgePixels[edgeIndex].x = Math.round(
+                    relativePositionX * adjustOffsetCoords.x + adjustStartCoords.x,
+                );
+                this.edgePixelsSplitted[regionIndex].edgePixels[edgeIndex].y = Math.round(
+                    relativePositionY * adjustOffsetCoords.y + adjustStartCoords.y,
+                );
+            }
+        }
+        //console.log(this.edgePixelsSplitted);
+        //this.pathStartCoordReference = this.startDownCoord;
+        //resize
+        for (const region of this.edgePixelsSplitted) {
+            magicWandPath.moveTo(region.edgePixels[0].x, region.edgePixels[0].y);
+            for (const edge of region.edgePixels) {
+                magicWandPath.lineTo(edge.x, edge.y);
+            }
+        }
+        return magicWandPath;
     }
 
     protected getRatio(w: number, h: number): number {
@@ -438,6 +477,7 @@ export abstract class SelectionToolService extends Tool {
 
     protected getPathToClip(): Path2D {
         const magicWandPath = new Path2D();
+        //tranlate
         if (!(this.pathStartCoordReference === this.startDownCoord)) {
             const coordDiff = {
                 x: this.startDownCoord.x - this.pathStartCoordReference.x,
@@ -451,6 +491,7 @@ export abstract class SelectionToolService extends Tool {
             }
             this.pathStartCoordReference = this.startDownCoord;
         }
+        //resize
         for (const region of this.edgePixelsSplitted) {
             magicWandPath.moveTo(region.edgePixels[0].x, region.edgePixels[0].y);
             for (const edge of region.edgePixels) {
