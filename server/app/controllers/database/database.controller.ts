@@ -69,7 +69,6 @@ export class DatabaseController {
         });
 
         this.router.post(this.ROUTING_POST, async (req: Request, res: Response, next: NextFunction) => {
-            console.log('post');
             const drawingToDatabase: DrawingToDatabase = {
                 _id: null,
                 name: req.body.name,
