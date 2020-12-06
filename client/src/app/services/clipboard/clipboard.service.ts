@@ -10,7 +10,9 @@ export class ClipBoardService {
     canvas: HTMLCanvasElement;
     private image: HTMLImageElement;
 
-    constructor(private drawingService: DrawingService) {}
+    constructor(private drawingService: DrawingService) {
+        this.image = new Image();
+    }
 
     memorize(startCoord: Vec2, dimension: Vec2): void {
         this.image.src = this.drawingService.baseCtx.canvas.toDataURL();

@@ -60,7 +60,7 @@ export abstract class SelectionToolService extends Tool {
         private color: ColorService,
         description: Description,
         protected magnetismService: MagnetismService,
-        clipBoardService: ClipBoardService,
+        private clipboardService: ClipBoardService,
     ) {
         super(drawingService, description);
         this.mouseDown = false;
@@ -80,6 +80,23 @@ export abstract class SelectionToolService extends Tool {
         if (this.magnetismService.isActivated && isMagnetisc)
             return this.magnetismService.getAdjustedPositionFromCenter(clickCoordinate, this.selectionSize.x, this.selectionSize.y);
         else return clickCoordinate;
+    }
+
+    copy(): void {
+        if (this.selectionCreated) this.clipboardService.memorize(this.startDownCoord, this.selectionSize);
+    }
+
+    paste(): void {
+        console.log('PASTE');
+    }
+
+    delete(): void {
+        console.log('DELETE');
+    }
+    
+    cut(): void {
+        this.copy();
+        this.delete();
     }
 
     protected drawnAnchor(ctx: CanvasRenderingContext2D, size: Vec2 = this.selectionSize): void {

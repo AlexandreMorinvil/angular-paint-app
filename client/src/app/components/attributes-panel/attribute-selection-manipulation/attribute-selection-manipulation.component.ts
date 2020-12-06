@@ -1,25 +1,31 @@
 import { Component } from '@angular/core';
+import { ToolboxService } from '@app/services/toolbox/toolbox.service';
+import { SelectionToolService } from '@app/services/tools/selection/selection-tool.service';
 @Component({
     selector: 'app-attribute-selection-manipulation',
     templateUrl: './attribute-selection-manipulation.component.html',
     styleUrls: ['./attribute-selection-manipulation.component.scss', '../attributes-section.component.scss'],
 })
 export class AttributeSelectionManipulationComponent {
-    constructor() {}
+    constructor(private toolboxService: ToolboxService) {}
 
     copy(): void {
-        console.log('COPY');
+        if (this.toolboxService.getCurrentTool() instanceof SelectionToolService)
+            (this.toolboxService.getCurrentTool() as SelectionToolService).copy();
     }
 
     paste(): void {
-        console.log('PASTE');
+        if (this.toolboxService.getCurrentTool() instanceof SelectionToolService)
+            (this.toolboxService.getCurrentTool() as SelectionToolService).paste();
     }
 
     cut(): void {
-        console.log('CUT');
+        if (this.toolboxService.getCurrentTool() instanceof SelectionToolService)
+            (this.toolboxService.getCurrentTool() as SelectionToolService).cut();
     }
 
     delete(): void {
-        console.log('DELETE');
+        if (this.toolboxService.getCurrentTool() instanceof SelectionToolService)
+            (this.toolboxService.getCurrentTool() as SelectionToolService).delete();
     }
 }
