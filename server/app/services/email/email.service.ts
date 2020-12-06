@@ -6,10 +6,7 @@ import 'reflect-metadata';
 
 @injectable()
 export class EmailService {
-    processRequest(requestBody: any): Promise<number> {
-        const dotenv = require('dotenv');
-        dotenv.config();
-
+    async processRequest(requestBody: any): Promise<number> {
         const email = requestBody.emailAdress;
         const data = requestBody.imageSrc.split(';base64,');
         const base64Image = data.pop();
@@ -20,7 +17,7 @@ export class EmailService {
         return this.sendEmail(email, ext);
     }
 
-    sendEmail(email: string, ext: string): Promise<number> {
+    async sendEmail(email: string, ext: string): Promise<number> {
         const form = new FormData();
         form.append('to', email);
         const file = fs.createReadStream('temp.' + ext);
@@ -31,7 +28,7 @@ export class EmailService {
             path: '/email',
             headers: {
                 'content-type': 'multipart/form-data; boundary=' + form.getBoundary(),
-                'X-Team-Key': process.env.API_KEY,
+                'X-Team-Key': '1e2ccc05-3dc7-4da8-8faf-5a2f7b703153',
             },
         });
 
