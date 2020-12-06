@@ -1,15 +1,25 @@
 import { Component } from '@angular/core';
-import { ToolboxService } from '@app/services/toolbox/toolbox.service';
-
 @Component({
-    selector: 'app-attribute-selection',
-    templateUrl: './attribute-selection.component.html',
-    styleUrls: ['./attribute-selection.component.scss', '../attributes-section.component.scss'],
+    selector: 'app-attribute-selection-manipulation',
+    templateUrl: './attribute-selection-manipulation.component.html',
+    styleUrls: ['./attribute-selection-manipulation.component.scss', '../attributes-section.component.scss'],
 })
-export class AttributeSelectionComponent {
-    constructor(private toolboxService: ToolboxService) {}
+export class AttributeSelectionManipulationComponent {
+    constructor() {}
 
-    onClick(): void {
-        this.toolboxService.getCurrentTool().onCtrlADown();
+    copy(): void {
+        console.log('COPY');
+    }
+
+    paste(): void {
+        console.log('PASTE');
+    }
+
+    cut(): void {
+        console.log('CUT');
+    }
+
+    delete(): void {
+        console.log('DELETE');
     }
 }

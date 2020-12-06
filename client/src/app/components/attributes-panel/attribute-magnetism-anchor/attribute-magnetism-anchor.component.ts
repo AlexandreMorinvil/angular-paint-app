@@ -23,7 +23,7 @@ export class AttributeMagnetismAnchorComponent {
         this.anchorMapping.push({ y: MagnetismAnchor.End, x: MagnetismAnchor.End });
     }
 
-    isCheckedAnchor(anchor: Vec2): Boolean {
+    isCheckedAnchor(anchor: Vec2): boolean {
         return this.magnetismService.horizontalAnchorPosition === anchor.x && this.magnetismService.verticalAnchorPosition === anchor.y;
     }
 

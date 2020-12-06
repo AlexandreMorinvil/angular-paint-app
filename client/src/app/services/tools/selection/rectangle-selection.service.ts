@@ -26,7 +26,13 @@ export class RectangleSelectionService extends SelectionToolService {
         magnetismService: MagnetismService,
         clipBoardService: ClipBoardService,
     ) {
-        super(drawingService, colorService, new Description('selection rectangle', 'r', 'rectangle-selection.png'), magnetismService, clipBoardService);
+        super(
+            drawingService,
+            colorService,
+            new Description('selection rectangle', 'r', 'rectangle-selection.png'),
+            magnetismService,
+            clipBoardService,
+        );
         this.image = new Image();
     }
 

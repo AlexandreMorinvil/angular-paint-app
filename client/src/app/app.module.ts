@@ -20,6 +20,7 @@ import { AttributeJunctionComponent } from './components/attributes-panel/attrib
 import { AttributeMagnetismAnchorComponent } from './components/attributes-panel/attribute-magnetism-anchor/attribute-magnetism-anchor.component';
 import { AttributeNumberSprayTransmissionComponent } from './components/attributes-panel/attribute-number-spray-transmission/attribute-number-spray-transmission.component';
 import { AttributeSelectionComponent } from './components/attributes-panel/attribute-selection/attribute-selection.component';
+import { AttributeSelectionManipulationComponent } from './components/attributes-panel/attribute-selection-manipulation/attribute-selection-manipulation.component';
 import { AttributeSpacingComponent } from './components/attributes-panel/attribute-spacing/attributes-spacing.component';
 import { AttributeSprayDiameterComponent } from './components/attributes-panel/attribute-spray-diameter/attribute-spray-diameter.component';
 import { AttributeSprayDropletDiameterComponent } from './components/attributes-panel/attribute-spray-droplet-diameter/attribute-spray-droplet-diameter.component';
@@ -42,6 +43,7 @@ import { UserGuideModalComponent } from './components/modal/modal-user-guide/mod
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { TooltipComponent } from './components/tooltip/tooltip.component';
 import { WorkspaceComponent } from './components/workspace/workspace.component';
+
 @NgModule({
     declarations: [
         AppComponent,
@@ -69,6 +71,7 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
         AttributeColorPickerViewerComponent,
         AttributesToleranceComponent,
         AttributeSelectionComponent,
+        AttributeSelectionManipulationComponent,
         AttributeStampPickerComponent,
         ContinueDrawingModalComponent,
         AttributeSprayDiameterComponent,
