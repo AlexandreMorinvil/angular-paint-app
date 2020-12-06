@@ -72,7 +72,8 @@ export class EraserService extends Tool {
 
     private eraserVisual(event: MouseEvent): void {
         const mousePosition: Vec2 = { x: event.offsetX, y: event.offsetY };
-        if (this.isInCanvas(mousePosition)) {
+        if (!this.isInCanvas(mousePosition)) this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        else {
             const borderColor = '#000000';
             const borderWidth = 1;
             const squareWidth: number = Math.max(this.widthService.getWidth(), this.minWidth);
@@ -94,7 +95,7 @@ export class EraserService extends Tool {
                 squareWidth + 1,
                 squareWidth + 1,
             );
-        } else this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        }
     }
 
     private clearPath(): void {

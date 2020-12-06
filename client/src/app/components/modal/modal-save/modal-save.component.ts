@@ -21,16 +21,13 @@ export class ModalSaveComponent {
     private readonly ERROR_SOURCE_IMAGE: string = "L'image source est invalide";
     private readonly ERROR_NO_DRAWING_NAME: string = 'Les dessins doivent contenir un nom';
     private readonly ERROR_NUMBER_TAG_GREATER_MAXIMUM: string = "Le nombre d'étiquettes est supérieur à la limite de 15";
-    private readonly ERROR_NAME_SPECIAL_CHARACTERS: string = 'Le nom des dessins ne peut pas contenir de caractères spéciaux';
-    private readonly ERROR_TAG_SPECIAL_CHARACTERS: string = 'Le nom des étiquettes ne peut pas contenir de caractères spéciaux';
     private readonly ERROR_NO_TAG_NAME: string = 'Les étiquettes assignées ne peuvent pas être vides';
     private readonly ERROR_MAX_LENGTH_NAME_TAG: string = 'Les étiquettes des dessions doivent contenir un maximum de 25 caractères';
     private readonly ERROR_MAX_LENGTH_NAME_DRAWING: string = 'Les noms des dessions doivent contenir un maximum de 50 caractères';
-    private readonly SUCCESSFUL_CREATION: string = 'Le dessin a été créé avec succès';
     readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
     tags: string[] = [];
-    drawName: FormControl = new FormControl('', Validators.required);
+    drawingName: FormControl = new FormControl('', Validators.required);
     constructor(
         public dialogRef: MatDialogRef<ModalSaveComponent>,
         @Inject(MAT_DIALOG_DATA) public data: DialogData,
@@ -69,7 +66,7 @@ export class ModalSaveComponent {
     }
 
     saveToServer(): void {
-        if (this.validateValue(this.drawName.value, this.tags, this.saveService.imageSource)) {
+        if (this.validateValue(this.drawingName.value, this.tags, this.saveService.imageSource)) {
             this.saveService.saveDraw();
             this.sendMessageToServer();
             (document.getElementById('buttonSaveServer') as HTMLInputElement).disabled = true;
@@ -89,10 +86,6 @@ export class ModalSaveComponent {
             alert(this.ERROR_MAX_LENGTH_NAME_DRAWING);
             return false;
         }
-        if (!/^[0-9a-zA-Z]*$/g.test(name)) {
-            alert(this.ERROR_NAME_SPECIAL_CHARACTERS);
-            return false;
-        }
         return true;
     }
 
@@ -105,11 +98,7 @@ export class ModalSaveComponent {
             alert(this.ERROR_MAX_LENGTH_NAME_TAG);
             return false;
         }
-        if (!/^[0-9a-zA-Z]*$/g.test(name)) {
-            alert(this.ERROR_TAG_SPECIAL_CHARACTERS);
-            return false;
-        }
-        return tag !== '' && tag.length <= this.MAX_LENGHT_NAME_TAG && /^[0-9a-zA-Z]*$/g.test(tag);
+        return tag !== '' && tag.length <= this.MAX_LENGHT_NAME_TAG;
     }
 
     private validateImageSRC(imageSrc: string): boolean {
@@ -133,9 +122,8 @@ export class ModalSaveComponent {
     }
 
     sendMessageToServer(): void {
-        const newDrawingToSend: Drawing = new Drawing('', this.drawName.value, this.tags, this.saveService.imageSource);
-        this.apiDrawingService.save(newDrawingToSend).subscribe(() => {
-            alert(this.SUCCESSFUL_CREATION);
-        });
+        // tslint:disable:no-empty
+        const newDrawingToSend: Drawing = new Drawing('', this.drawingName.value, this.tags, this.saveService.imageSource);
+        this.apiDrawingService.save(newDrawingToSend).subscribe();
     }
 }

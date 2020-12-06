@@ -9,7 +9,7 @@ import { MagnetismService } from '@app/services/magnetism/magnetism.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
-import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
+import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { SelectionToolService } from '@app/services/tools/selection/selection-tool.service';
 // tslint:disable:max-file-line-count
 @Injectable({

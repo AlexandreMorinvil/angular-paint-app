@@ -4,8 +4,8 @@
         <canvas id="export-preview-canvas"></canvas>
         <mat-form-field class="name">
             <mat-label>Nom du Dessin</mat-label>
-            <input matInput [formControl]="drawName" placeholder="Ex. dessin" />
-            <mat-error *ngIf="drawName.invalid"> Entrer un nom de dessin </mat-error>
+            <input matInput [formControl]="drawingName" placeholder="Ex. dessin" />
+            <mat-error *ngIf="drawingName.invalid"> Entrer un nom de dessin </mat-error>
         </mat-form-field>
     </p>
     <mat-form-field appearance="outline" hintLabel="Filtre" class="export-input" id="export-filter-box">

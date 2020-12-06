@@ -77,7 +77,7 @@ describe('ModalExportComponent', () => {
     });
 
     it('should have a valid value', () => {
-        component.drawName.setValue('dessin');
+        component.drawingName.setValue('dessin');
         const val = (component as any).validateValue();
         expect(val).toBeTrue();
     });
@@ -97,7 +97,7 @@ describe('ModalExportComponent', () => {
     });
 
     it('should not have a valid value', () => {
-        component.drawName.setValue('');
+        component.drawingName.setValue('');
         const val = (component as any).validateValue();
         expect(val).toBeFalse();
     });

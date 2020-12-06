@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ToolModifier } from '@app/classes/tool-modifier';
-import { SprayDropletDiameterModifierState } from '@app/services/tool-modifier/spraydropletdiameter/spray-droplet-diameter-state';
+import { SprayDropletDiameterModifierState } from '@app/services/tool-modifier/spray-droplet-diameter/spray-droplet-diameter-state';
 
 @Injectable({
     providedIn: 'root',

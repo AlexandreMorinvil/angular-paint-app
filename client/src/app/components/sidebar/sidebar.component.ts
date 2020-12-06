@@ -55,6 +55,7 @@ export class SidebarComponent {
     }
 
     setCurrentTool(tool: Tool): void {
+        this.drawingService.shortcutEnable = true;
         this.toolboxSevice.setSelectedTool(tool);
     }
 

@@ -30,8 +30,6 @@ export class DatabaseService {
     private readonly ERROR_GET_DRAWING_BY_TAG: string = "Échec lors de la tentative de récupération de tous les dessins ayant l'étiquettes";
     private readonly ERROR_GET_DRAWING_BY_NAME: string = 'Échec lors de la tentative de récupération de tous les dessins nommés';
     private readonly ERROR_NO_IMAGE_SOURCE: string = "Échec lors de la tentative d'ajout il n'y a pas d'image source";
-    private readonly ERROR_NO_ALPHABETIC_NUMERIC_NAME: string = 'Le nom ne doit pas contenir de caractères spéciaux';
-    private readonly ERROR_NO_ALPHABETIC_NUMERIC_TAG: string = 'Le ou les tags ne doivent pas contenir de caractères spéciaux';
     private readonly CONNECTION_ERROR: string = 'CONNECTION ERROR. EXITING PROCESS';
 
     private options: MongoClientOptions = {
@@ -147,19 +145,11 @@ export class DatabaseService {
     private validateName(name: string): void {
         if (name === '') throw new Error(this.ERROR_NO_DRAWING_NAME);
         if (name.length > this.MAX_LENGHT_DRAW_NAME) throw new Error(this.ERROR_MAX_LENGTH_NAME_DRAWING);
-        const valid: boolean = /^[0-9a-zA-Z]*$/g.test(name);
-        if (!valid) {
-            throw new Error(this.ERROR_NO_ALPHABETIC_NUMERIC_NAME);
-        }
     }
 
     private validateTag(tag: string): void {
         if (tag === '') throw new Error(this.ERROR_NO_TAG);
         if (tag.length > this.MAX_LENGHT_NAME_TAG) throw new Error(this.ERROR_MAX_LENGTH_NAME_TAG);
-        const valid: boolean = /^[0-9a-zA-Z]*$/g.test(tag);
-        if (!valid) {
-            throw new Error(this.ERROR_NO_ALPHABETIC_NUMERIC_TAG);
-        }
     }
 
     private validateImageSource(imageSrc: string): void {

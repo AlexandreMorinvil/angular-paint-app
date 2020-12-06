@@ -31,6 +31,14 @@ describe('TagFilterService', () => {
         expect(service.getActiveTags()[0]).toBe(tag);
     });
 
+    it('should clear tags', () => {
+        service.addTag(tag);
+        service.addTag(tag2);
+        service.addTag(tag3);
+        service.clearTags();
+        expect(service.getActiveTags()).toEqual([]);
+    });
+
     it('should filter correctly list', () => {
         const listToFilter: DrawingToDatabase[] = [
             { _id: 1, name: 'test1', tags: [] },
