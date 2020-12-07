@@ -19,6 +19,8 @@ export class ExportComponent implements AfterViewInit {
     drawingName: FormControl = new FormControl('', Validators.required);
     email: FormControl = new FormControl('', Validators.required);
     private readonly SUCCESSFUL_CREATION: string = 'Le dessin a �t� envoyer avec succ�s';
+    private readonly VALIDATE_EMAIL_CHAR: string = '@';
+    private readonly EMAIL_INVALID_ERROR: string = "L'émail est invalide";
 
     constructor(
         private apiDrawingService: ApiDrawingService,
@@ -103,8 +105,13 @@ export class ExportComponent implements AfterViewInit {
     }
 
     private validateEmail(email: string): boolean {
-        const noEmail = '';
-        return email != noEmail && email != undefined;
+        const NO_EMAIL = '';
+        const VALID_EMAIL: boolean = email.includes(this.VALIDATE_EMAIL_CHAR);
+        if (!VALID_EMAIL) {
+            alert(this.EMAIL_INVALID_ERROR);
+            return false;
+        }
+        return email != NO_EMAIL && email != undefined;
     }
     private validateValue(): boolean {
         return this.validateDrawName(this.drawingName.value);
