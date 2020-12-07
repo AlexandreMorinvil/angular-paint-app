@@ -231,8 +231,8 @@ export class RectangleSelectionService extends SelectionToolService {
         );
     }
 
-    // puts selection on baseCanvas
     drawOnBaseCanvas(): void {
+        // puts selection on baseCanvas
         if (this.selectionCreated) {
             if (this.hasDoneFirstRotation) {
                 this.rotateCanvas();

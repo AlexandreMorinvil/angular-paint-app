@@ -10,7 +10,6 @@ import { TracingService } from '@app/services/tool-modifier/tracing/tracing.serv
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
 import { SelectionToolService } from '@app/services/tools/selection/selection-tool.service';
-// import { EdgePixelsOneRegion } from './edge-pixel';
 // tslint:disable:max-file-line-count
 @Injectable({
     providedIn: 'root',
@@ -107,45 +106,44 @@ export class MagicWandService extends SelectionToolService {
             this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION);
             this.rotateCanvas();
             this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
+            // draw selection surround
+            this.rectangleService.mouseDownCoord = this.startDownCoord;
+            this.pathLastCoord = this.getBottomRightCorner();
+            this.pathData.push(this.pathLastCoord);
+            this.drawSelectionSurround();
             this.resetCanvasRotation();
             this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION);
-            // draw selection surround
-            if (this.hasDoneFirstRotation) {
-                // draw selection box bigger if there is rotation
-                const TRANSLATION = { x: this.startDownCoord.x + this.selectionSize.x / 2, y: this.startDownCoord.y + this.selectionSize.y / 2 };
-                const MAX_SIDE = Math.hypot(this.selectionSize.x, this.selectionSize.y);
-                this.drawSelectionSurroundRotation(TRANSLATION, MAX_SIDE);
-                this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION);
-            } else {
-                // draw regular selection box if there is no rotation
-                this.rectangleService.mouseDownCoord = this.startDownCoord;
-                this.pathLastCoord = this.getBottomRightCorner();
-                this.pathData.push(this.pathLastCoord);
-                this.drawSelectionSurround();
-            }
             // set values
             this.draggingImage = false;
             this.hasDoneFirstTranslation = true;
             // resizing
         } else if (this.clickOnAnchor) {
             // tslint:disable:no-magic-numbers
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.getAnchorHit(this.drawingService.previewCtx, MOUSE_POSITION, 3); // draw new image on preview
-            this.getAnchorHit(this.drawingService.baseCtx, MOUSE_POSITION, 3); // draw new image on base for saving image.src
             this.pathData.push({ x: this.resizeStartCoords.x + this.resizeWidth, y: this.resizeStartCoords.y + this.resizeHeight });
-            this.startDownCoord = this.offsetAnchors(this.resizeStartCoords);
-            this.rectangleService.onMouseDown({ offsetX: this.startDownCoord.x, offsetY: this.startDownCoord.y, button: 0 } as MouseEvent);
-            this.selectionSize = { x: Math.abs(this.resizeWidth), y: Math.abs(this.resizeHeight) };
-            this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
+            const START = this.offsetAnchors(this.resizeStartCoords);
+            // saves what is under the selection
+            const UNDER_DATA = this.drawingService.baseCtx.getImageData(START.x, START.y, Math.abs(this.resizeWidth), Math.abs(this.resizeHeight));
+            this.getAnchorHit(this.drawingService.baseCtx, MOUSE_POSITION, 3, 0); // draw new image on base for saving image.src
+            this.startDownCoord = this.offsetAnchors(this.resizeStartCoords); // set new startCoords with the resize
+            this.selectionSize = { x: Math.abs(this.resizeWidth), y: Math.abs(this.resizeHeight) }; // set new size of selection
+            this.image.src = this.drawingService.baseCtx.canvas.toDataURL(); // save new image with resized selection
+            // puts back what was under the selection
+            this.drawingService.baseCtx.putImageData(UNDER_DATA, this.startDownCoord.x, this.startDownCoord.y);
+            this.pathLastCoord = this.getBottomRightCorner();
             this.addActionTracking(this.startDownCoord); // Undo redo
-            this.clearCanvasSelection();
+            // draw selection surround
+            const MEMORY_COORDS = this.startDownCoord;
+            this.rotateCanvas();
+            this.rectangleService.mouseDownCoord = this.startDownCoord;
             this.pathData.push(this.getBottomRightCorner());
-            this.drawSelectionSurround();
-            this.clearPath();
+            this.drawSelectionSurround(); // draw selection box and anchor
+            this.resetCanvasRotation();
+            this.startDownCoord = MEMORY_COORDS;
+            // set values
             this.firstSelectionCoord = this.startDownCoord; // reset firstSelectionCoord to new place on new image
             this.clickOnAnchor = false;
             this.hasDoneResizing = true;
-
             // Creation
         } else {
             this.addActionTracking(this.startDownCoord);
@@ -184,10 +182,12 @@ export class MagicWandService extends SelectionToolService {
             this.addActionTracking({ x: OFFSET_START.x, y: OFFSET_START.y }); // saves undo/redo
             this.selectionSize = MEMORY_COORDS_SIZE; // set back selectionSize to original value
             this.drawingService.baseCtx.putImageData(OLD_IMAGE, OFFSET_START.x, OFFSET_START.y); // reput the old image on base canvas
+            // draw selection surround
+            this.rectangleService.mouseDownCoord = this.startDownCoord;
+            this.pathData.push(this.getBottomRightCorner());
+            this.drawSelectionSurround();
             // reset canvas transform after rotation
             this.resetCanvasRotation();
-            // draw selection surround
-            this.drawSelectionSurroundRotation(TRANSLATION, MAX_SIDE);
             this.hasDoneFirstRotation = this.angle !== 0 ? true : false;
             // reset startDownCoord to original value
             this.startDownCoord = MEMORY_COORDS;
@@ -207,16 +207,6 @@ export class MagicWandService extends SelectionToolService {
         PATH.closePath();
         this.drawingService.baseCtx.fillStyle = 'white';
         this.drawingService.baseCtx.fill(PATH, 'evenodd');
-    }
-
-    private drawSelectionSurroundRotation(TRANSLATION: Vec2, MAX_SIDE: number): void {
-        this.startDownCoord = { x: TRANSLATION.x - MAX_SIDE / 2, y: TRANSLATION.y - MAX_SIDE / 2 };
-        this.pathLastCoord = { x: this.startDownCoord.x + MAX_SIDE, y: this.startDownCoord.y + MAX_SIDE };
-        this.pathData.push(this.pathLastCoord);
-        this.rectangleService.mouseDownCoord = this.startDownCoord;
-        this.rectangleService.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
-        this.drawnAnchor(this.drawingService.previewCtx, { x: MAX_SIDE, y: MAX_SIDE });
-        this.clearPath();
     }
 
     private drawSelectionSurround(): void {
@@ -396,8 +386,8 @@ export class MagicWandService extends SelectionToolService {
         return false;
     }
 
-    // puts selection on baseCanvas
     drawOnBaseCanvas(): void {
+        // puts selection on baseCanvas
         if (this.selectionCreated) {
             if (this.hasDoneFirstRotation) {
                 this.rotateCanvas();
@@ -452,27 +442,18 @@ export class MagicWandService extends SelectionToolService {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             if (this.arrowPress.every((v) => !v)) {
                 this.arrowDown = false;
+                const MEM_COORDS = this.startDownCoord;
                 this.clearPath();
                 this.pathLastCoord = this.getBottomRightCorner();
                 this.pathData.push(this.pathLastCoord);
                 this.rectangleService.mouseDownCoord = this.startDownCoord;
                 this.rotateCanvas();
                 this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
+                this.rectangleService.mouseDownCoord = this.startDownCoord;
+                this.pathData.push(this.getBottomRightCorner());
+                this.drawSelectionSurround();
                 this.resetCanvasRotation();
-                this.startDownCoord = this.rectangleService.mouseDownCoord; // needed because rotateCanvas changes the value
-                if (this.hasDoneFirstRotation) {
-                    // draw selection box bigger if there is rotation
-                    const TRANSLATION = { x: this.startDownCoord.x + this.selectionSize.x / 2, y: this.startDownCoord.y + this.selectionSize.y / 2 };
-                    const MAX_SIDE = Math.max(this.selectionSize.x, this.selectionSize.y);
-                    this.drawSelectionSurroundRotation(TRANSLATION, MAX_SIDE);
-                } else {
-                    // draw regular selection box if there is no rotation
-                    this.rectangleService.mouseDownCoord = this.startDownCoord;
-                    this.pathLastCoord = this.getBottomRightCorner();
-                    this.pathData.push(this.pathLastCoord);
-                    this.drawSelectionSurround();
-                }
-                this.startDownCoord = this.rectangleService.mouseDownCoord;
+                this.startDownCoord = MEM_COORDS; // needed because rotateCanvas changes the value
                 this.hasDoneFirstTranslation = true;
             }
             if (this.arrowDown) {
@@ -512,7 +493,6 @@ export class MagicWandService extends SelectionToolService {
                 regionIndex--;
             }
         }
-
         // Also stores the relative position of every edge pixel to be used for resize
         regionIndex = -1;
         for (const region of this.edgePixelsSplitted) {
