@@ -7,9 +7,7 @@ import 'reflect-metadata';
 
 @injectable()
 export class EmailService {
-    processRequest(requestBody: DrawingToEmail): Promise<number> {
-        const dotenv = require('dotenv');
-        dotenv.config();
+    async processRequest(requestBody: DrawingToEmail): Promise<number> {
         const EMAIL = requestBody.emailAdress;
         const DATA = requestBody.imageSrc.split(';base64,');
         const BASE_64_IMAGE = DATA.pop();
@@ -19,22 +17,22 @@ export class EmailService {
         return this.sendEmail(EMAIL, EXT);
     }
 
-    sendEmail(email: string, ext: string): Promise<number> {
-        const FROM = new FormData();
-        FROM.append('to', email);
+    async sendEmail(email: string, ext: string): Promise<number> {
+        const FORM = new FormData();
+        FORM.append('to', email);
         const FILE = fs.createReadStream('temp.' + ext);
-        FROM.append('payload', FILE);
+        FORM.append('payload', FILE);
         const req = request({
             host: 'log2990.step.polymtl.ca',
             method: 'POST',
             path: '/email',
             headers: {
-                'content-type': 'multipart/form-data; boundary=' + FROM.getBoundary(),
-                'X-Team-Key': process.env.API_KEY,
+                'content-type': 'multipart/form-data; boundary=' + FORM.getBoundary(),
+                'X-Team-Key': '1e2ccc05-3dc7-4da8-8faf-5a2f7b703153',
             },
         });
 
-        FROM.pipe(req);
+        FORM.pipe(req);
 
         let code: number;
         return new Promise<number>((resolve) => {
