@@ -202,55 +202,59 @@ export abstract class SelectionToolService extends Tool {
     }
 
     // resizing
-    protected getAnchorHit(canvas: CanvasRenderingContext2D, mousePosition: Vec2, caller: number): void {
-        // this.rotateCanvas();
-        // const TRANSLATION = { x: this.startDownCoord.x + this.selectionSize.x / 2, y: this.startDownCoord.y + this.selectionSize.y / 2 };
-        // mousePosition = { x: mousePosition.x - TRANSLATION.x, y: mousePosition.y - TRANSLATION.y };
+    protected getAnchorHit(canvas: CanvasRenderingContext2D, mousePosition: Vec2, caller: number, angle: number = this.angle): void {
+        const MEMORY_COORDS = this.startDownCoord; // Saving this value because rotateCanvas() changes it
+        const TRANSLATION = { x: this.startDownCoord.x + this.selectionSize.x / 2, y: this.startDownCoord.y + this.selectionSize.y / 2 };
+        this.rotateCanvas(angle);
+        mousePosition = { x: mousePosition.x - TRANSLATION.x, y: mousePosition.y - TRANSLATION.y };
         let adjustStartCoords: Vec2 = this.startDownCoord;
         let adjustOffsetCoords: Vec2 = { x: mousePosition.x - adjustStartCoords.x, y: mousePosition.y - adjustStartCoords.y };
         switch (this.anchorHit) {
             case Anchors.TopLeft:
                 adjustStartCoords = { x: this.startDownCoord.x + this.selectionSize.x, y: this.startDownCoord.y + this.selectionSize.y };
                 adjustOffsetCoords = { x: mousePosition.x - adjustStartCoords.x, y: mousePosition.y - adjustStartCoords.y };
+                this.resizeStartCoords = { x: MEMORY_COORDS.x + this.selectionSize.x, y: MEMORY_COORDS.y + this.selectionSize.y };
                 break;
             case Anchors.TopMiddle:
                 adjustStartCoords = { x: this.startDownCoord.x, y: this.startDownCoord.y + this.selectionSize.y };
                 adjustOffsetCoords = { x: this.selectionSize.x, y: mousePosition.y - adjustStartCoords.y };
                 mousePosition = { x: this.startDownCoord.x + this.selectionSize.x, y: mousePosition.y };
+                this.resizeStartCoords = { x: MEMORY_COORDS.x, y: MEMORY_COORDS.y + this.selectionSize.y };
                 break;
             case Anchors.TopRight:
                 adjustStartCoords = { x: this.startDownCoord.x, y: this.startDownCoord.y + this.selectionSize.y };
                 adjustOffsetCoords = { x: mousePosition.x - adjustStartCoords.x, y: mousePosition.y - adjustStartCoords.y };
+                this.resizeStartCoords = { x: MEMORY_COORDS.x, y: MEMORY_COORDS.y + this.selectionSize.y };
                 break;
             case Anchors.MiddleLeft:
                 adjustStartCoords = { x: this.startDownCoord.x + this.selectionSize.x, y: this.startDownCoord.y };
                 adjustOffsetCoords = { x: mousePosition.x - adjustStartCoords.x, y: this.selectionSize.y };
                 mousePosition = { x: mousePosition.x, y: this.startDownCoord.y + this.selectionSize.y };
+                this.resizeStartCoords = { x: MEMORY_COORDS.x + this.selectionSize.x, y: MEMORY_COORDS.y };
                 break;
             case Anchors.MiddleRight:
                 adjustOffsetCoords = { x: mousePosition.x - adjustStartCoords.x, y: this.selectionSize.y };
                 mousePosition = { x: mousePosition.x, y: this.startDownCoord.y + this.selectionSize.y };
+                this.resizeStartCoords = MEMORY_COORDS;
                 break;
             case Anchors.BottomLeft:
                 adjustStartCoords = { x: this.startDownCoord.x + this.selectionSize.x, y: this.startDownCoord.y };
                 adjustOffsetCoords = { x: mousePosition.x - adjustStartCoords.x, y: mousePosition.y - adjustStartCoords.y };
+                this.resizeStartCoords = { x: MEMORY_COORDS.x + this.selectionSize.x, y: MEMORY_COORDS.y };
                 break;
             case Anchors.BottomMiddle:
                 adjustOffsetCoords = { x: this.selectionSize.x, y: mousePosition.y - adjustStartCoords.y };
                 mousePosition = { x: this.startDownCoord.x + this.selectionSize.x, y: mousePosition.y };
+                this.resizeStartCoords = MEMORY_COORDS;
                 break;
             case Anchors.BottomRight:
                 adjustOffsetCoords = { x: mousePosition.x - adjustStartCoords.x, y: mousePosition.y - adjustStartCoords.y };
+                this.resizeStartCoords = MEMORY_COORDS;
                 break;
             default:
                 break;
         }
-        // saves value for later use
-        this.resizeWidth = adjustOffsetCoords.x;
-        this.resizeHeight = adjustOffsetCoords.y;
-        this.resizeStartCoords = { x: Math.abs(adjustStartCoords.x), y: Math.abs(adjustStartCoords.y) };
         // mirror effect
-        // this.rotateCanvas();
         const SCALE = this.getScale(adjustOffsetCoords);
         canvas.scale(SCALE.x, SCALE.y);
         adjustStartCoords = { x: SCALE.x * adjustStartCoords.x, y: SCALE.y * adjustStartCoords.y };
@@ -286,14 +290,15 @@ export abstract class SelectionToolService extends Tool {
                 adjustOffsetCoords.y -= yRatio;
                 adjustOffsetCoords.x -= xRatio;
             }
-            this.resizeWidth = SCALE.x * adjustOffsetCoords.x;
-            this.resizeHeight = SCALE.y * adjustOffsetCoords.y;
-            this.resizeStartCoords = { x: Math.abs(adjustStartCoords.x), y: Math.abs(adjustStartCoords.y) };
             mousePosition = { x: adjustOffsetCoords.x + adjustStartCoords.x, y: adjustOffsetCoords.y + adjustStartCoords.y };
         }
-        this.pathLastCoord = mousePosition;
+        this.pathLastCoord = mousePosition; // needed for showSelectionResize
         this.showSelectionResize(canvas, adjustStartCoords, adjustOffsetCoords, caller);
         this.resetCanvasRotation();
+        // saves value for later use
+        this.resizeWidth = SCALE.x * adjustOffsetCoords.x;
+        this.resizeHeight = SCALE.y * adjustOffsetCoords.y;
+        this.startDownCoord = MEMORY_COORDS;
     }
 
     private getScale(offsetCoords: Vec2): Vec2 {
@@ -493,8 +498,8 @@ export abstract class SelectionToolService extends Tool {
         return [IMAGE_DATA_START, IMAGE_DATA_END];
     }
 
-    protected rotateCanvas(): void {
-        const ROTATION = (this.angle * Math.PI) / 180;
+    protected rotateCanvas(angle: number = this.angle): void {
+        const ROTATION = (angle * Math.PI) / 180;
         const TRANSLATION = { x: this.startDownCoord.x + this.selectionSize.x / 2, y: this.startDownCoord.y + this.selectionSize.y / 2 };
         this.drawingService.baseCtx.translate(TRANSLATION.x, TRANSLATION.y);
         this.drawingService.baseCtx.rotate(ROTATION);

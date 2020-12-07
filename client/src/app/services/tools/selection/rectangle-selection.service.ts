@@ -73,9 +73,7 @@ export class RectangleSelectionService extends SelectionToolService {
             // resizing
         } else if (this.clickOnAnchor && this.localMouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            const temp1 = this.startDownCoord;
             this.getAnchorHit(this.drawingService.previewCtx, MOUSE_POSITION, 2);
-            this.startDownCoord = temp1;
             // creation
         } else if (this.isInCanvas(MOUSE_POSITION) && this.localMouseDown) {
             this.rectangleService.onMouseMove(event);
@@ -111,23 +109,26 @@ export class RectangleSelectionService extends SelectionToolService {
             // resizing
         } else if (this.clickOnAnchor) {
             this.getAnchorHit(this.drawingService.previewCtx, MOUSE_POSITION, 2); // draw new image on preview
-            this.getAnchorHit(this.drawingService.baseCtx, MOUSE_POSITION, 2); // draw new image on base for saving image.src
             this.pathData.push({ x: this.resizeStartCoords.x + this.resizeWidth, y: this.resizeStartCoords.y + this.resizeHeight });
+            const START = this.offsetAnchors(this.resizeStartCoords);
+            // saves what is under the selection
+            const UNDER_DATA = this.drawingService.baseCtx.getImageData(START.x, START.y, Math.abs(this.resizeWidth), Math.abs(this.resizeHeight));
+            this.getAnchorHit(this.drawingService.baseCtx, MOUSE_POSITION, 2, 0); // draw new image on base for saving image.src
             this.startDownCoord = this.offsetAnchors(this.resizeStartCoords); // set new startCoords with the resize
-            this.selectionSize = { x: Math.abs(this.resizeWidth), y: Math.abs(this.resizeHeight) };
+            this.selectionSize = { x: Math.abs(this.resizeWidth), y: Math.abs(this.resizeHeight) }; // set new size of selection
             this.image.src = this.drawingService.baseCtx.canvas.toDataURL(); // save new image with resized selection
+            // puts back what was under the selection
+            this.drawingService.baseCtx.putImageData(UNDER_DATA, this.startDownCoord.x, this.startDownCoord.y);
             this.pathLastCoord = this.getBottomRightCorner();
             this.addActionTracking(this.startDownCoord); // Undo redo
             // draw selection surround
-            const temp1 = this.startDownCoord;
-            // remove original rectangle from base
-            this.drawingService.baseCtx.clearRect(this.startDownCoord.x, this.startDownCoord.y, this.selectionSize.x, this.selectionSize.y); // MOVE AFTER ROTATION WHEN WORKS
+            const MEMORY_COORDS = this.startDownCoord;
             this.rotateCanvas();
             this.rectangleService.mouseDownCoord = this.startDownCoord;
             this.pathData.push(this.getBottomRightCorner());
             this.drawSelectionSurround(); // draw selection box and anchor
             this.resetCanvasRotation();
-            this.startDownCoord = temp1;
+            this.startDownCoord = MEMORY_COORDS;
             // set values
             this.firstSelectionCoord = this.startDownCoord; // reset firstSelectionCoord to new place on new image
             this.clickOnAnchor = false;

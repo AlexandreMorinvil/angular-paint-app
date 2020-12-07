@@ -111,22 +111,26 @@ export class EllipseSelectionService extends SelectionToolService {
             // resizing
         } else if (this.clickOnAnchor) {
             this.getAnchorHit(this.drawingService.previewCtx, MOUSE_POSITION, 1); // draw new image on preview
-            this.getAnchorHit(this.drawingService.baseCtx, MOUSE_POSITION, 1); // draw new image on base for saving image.src
             this.pathData.push({ x: this.resizeStartCoords.x + this.resizeWidth, y: this.resizeStartCoords.y + this.resizeHeight });
+            const START = this.offsetAnchors(this.resizeStartCoords);
+            // saves what is under the selection
+            const UNDER_DATA = this.drawingService.baseCtx.getImageData(START.x, START.y, Math.abs(this.resizeWidth), Math.abs(this.resizeHeight));
+            this.getAnchorHit(this.drawingService.baseCtx, MOUSE_POSITION, 1, 0); // draw new image on base for saving image.src
             this.startDownCoord = this.offsetAnchors(this.resizeStartCoords); // set new startCoords with the resize
-            this.selectionSize = { x: Math.abs(this.resizeWidth), y: Math.abs(this.resizeHeight) };
+            this.selectionSize = { x: Math.abs(this.resizeWidth), y: Math.abs(this.resizeHeight) }; // set new size of selection
             this.image.src = this.drawingService.baseCtx.canvas.toDataURL(); // save new image with resized selection
+            // puts back what was under the selection
+            this.drawingService.baseCtx.putImageData(UNDER_DATA, this.startDownCoord.x, this.startDownCoord.y);
             this.pathLastCoord = this.getBottomRightCorner();
             this.addActionTracking(this.startDownCoord); // Undo redo
-            this.clearCanvasEllipse(); // remove the ellipse from base after the new image saved, MOVE AFTER ROTATION WHEN WORKS
             // draw selection surround
-            const temp1 = this.startDownCoord;
+            const MEMORY_COORDS = this.startDownCoord;
             this.rotateCanvas();
             this.ellipseService.mouseDownCoord = this.startDownCoord;
             this.pathData.push(this.getBottomRightCorner());
             this.drawSelectionSurround(); // draw selection box and anchor
             this.resetCanvasRotation();
-            this.startDownCoord = temp1;
+            this.startDownCoord = MEMORY_COORDS;
             // set values
             this.firstSelectionCoord = this.startDownCoord; // reset firstSelectionCoord to new place on new image
             this.clickOnAnchor = false;
