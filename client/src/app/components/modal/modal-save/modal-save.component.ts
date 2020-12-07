@@ -45,23 +45,22 @@ export class ModalSaveComponent {
     }
 
     add(event: MatChipInputEvent): void {
-        const input: HTMLInputElement = event.input;
-        const value: string = event.value;
+        const INPUT: HTMLInputElement = event.input;
+        const VALUE: string = event.value;
 
         // Add the tag
-        if ((value || '').trim() && this.validateTag(value)) {
-            this.tags.push(value.trim());
+        if ((VALUE || '').trim() && this.validateTag(VALUE)) {
+            this.tags.push(VALUE.trim());
         }
 
         // Reset the input value
-        input.value = '';
+        INPUT.value = '';
     }
 
     remove(tag: string): void {
-        const index = this.tags.indexOf(tag);
-
-        if (index >= 0 && this.tags.length > 0 && index < this.tags.length) {
-            this.tags.splice(index, 1);
+        const INDEX = this.tags.indexOf(tag);
+        if (INDEX >= 0 && this.tags.length > 0 && INDEX < this.tags.length) {
+            this.tags.splice(INDEX, 1);
         }
     }
 
@@ -122,8 +121,8 @@ export class ModalSaveComponent {
     }
 
     sendMessageToServer(): void {
-        // tslint:disable:no-empty
-        const newDrawingToSend: Drawing = new Drawing('', this.drawingName.value, this.tags, this.saveService.imageSource);
+        // jai mis sa a null je sais pas si sa marche encore cetait a ""
+        const newDrawingToSend: Drawing = new Drawing(null, this.drawingName.value, this.tags, this.saveService.imageSource);
         this.apiDrawingService.save(newDrawingToSend).subscribe();
     }
 }

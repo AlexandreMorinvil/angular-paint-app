@@ -34,14 +34,14 @@ export class ColorService extends ToolModifier {
     }
 
     intertwineColors(): void {
-        const temporaryColor: string = this.primaryColor;
-        const temporaryOpacity: number = this.primaryColorOpacity;
+        const TEMPORARY_COLOR: string = this.primaryColor;
+        const TEMPORARY_OPACITY: number = this.primaryColorOpacity;
 
         this.primaryColor = this.secondaryColor;
         this.primaryColorOpacity = this.secondaryColorOpacity;
 
-        this.secondaryColor = temporaryColor;
-        this.secondaryColorOpacity = temporaryOpacity;
+        this.secondaryColor = TEMPORARY_COLOR;
+        this.secondaryColorOpacity = TEMPORARY_OPACITY;
     }
 
     getPrimaryColor(): string {
@@ -114,11 +114,11 @@ export class ColorService extends ToolModifier {
 
     private validateColor(input: string): boolean {
         if (!(input.charAt(0) === '#')) return false;
-        const inputNumberPart = input.substring(1);
-        const inputHexadecimalNumber = parseInt(inputNumberPart, 16);
-        if (isNaN(inputHexadecimalNumber)) return false;
-        if (!(inputHexadecimalNumber >= MINIMUM_COLOR_NUMBER)) return false;
-        if (!(inputHexadecimalNumber <= MAXIMUM_COLOR_NUMBER)) return false;
+        const INPUT_NUMBER_PART = input.substring(1);
+        const INPUT_HEXADECIMAL_NUMBER = parseInt(INPUT_NUMBER_PART, 16);
+        if (isNaN(INPUT_HEXADECIMAL_NUMBER)) return false;
+        if (!(INPUT_HEXADECIMAL_NUMBER >= MINIMUM_COLOR_NUMBER)) return false;
+        if (!(INPUT_HEXADECIMAL_NUMBER <= MAXIMUM_COLOR_NUMBER)) return false;
         return true;
     }
 

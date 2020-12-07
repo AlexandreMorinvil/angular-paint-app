@@ -28,7 +28,7 @@ export class TagFilterService {
     }
 
     filterByTag(listToFilter: DrawingToDatabase[]): DrawingToDatabase[] {
-        const filteredDrawings: DrawingToDatabase[] = [];
+        const FILTERED_DRAWINGS: DrawingToDatabase[] = [];
         // No filter need to be applied
         if (this.activeTags.length === 0) {
             return listToFilter;
@@ -38,13 +38,13 @@ export class TagFilterService {
         for (const drawing of listToFilter) {
             for (const tag of this.activeTags) {
                 if (drawing.tags.includes(tag.tagName)) {
-                    filteredDrawings.push(drawing);
+                    FILTERED_DRAWINGS.push(drawing);
                     break;
                 }
             }
         }
 
-        return filteredDrawings;
+        return FILTERED_DRAWINGS;
     }
 
     clearTags(): void {

@@ -14,6 +14,11 @@ import { WidthService } from '@app/services/tool-modifier/width/width.service';
     providedIn: 'root',
 })
 export class StampService extends Tool {
+    private readonly STAMP1_IMAGE_SOURCE: string = '/assets/images/approved.png';
+    private readonly STAMP2_IMAGE_SOURCE: string = '/assets/images/certified.png';
+    private readonly STAMP3_IMAGE_SOURCE: string = '/assets/images/crown.png';
+    private readonly STAMP4_IMAGE_SOURCE: string = '/assets/images/crown2.png';
+    private readonly STAMP5_IMAGE_SOURCE: string = '/assets/images/sealN.png';
     private readonly DEFAULT_SIZE_VALUE: number = 25;
 
     private pathData: Vec2[];
@@ -54,11 +59,9 @@ export class StampService extends Tool {
         this.previewStamp(this.drawingService.previewCtx, this.pathData);
 
         if (this.angleInRadian === RESET_ANGLE) {
-            //fonction a revoir sofia
             if (ORIENTATION < 0) {
                 this.angleInRadian = CIRCLE_ANGLE;
-            }
-            if (ORIENTATION > 0) {
+            } else {
                 this.angleInRadian = 0;
             }
         }
@@ -79,19 +82,18 @@ export class StampService extends Tool {
     }
     onMouseMove(event: MouseEvent): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-
         const mousePosition = this.getPositionFromMouse(event);
         this.pathData.push(mousePosition);
         this.previewStamp(this.drawingService.previewCtx, this.pathData);
 
-        if (this.mouseDown) {
-            // pk le reste est pas danse le if
-            if (!this.isInCanvas(mousePosition) && this.mouseDown) {
-                this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            } else {
-                this.previewStamp(this.drawingService.previewCtx, this.pathData);
-                this.resetBorder();
-            }
+        if (!this.mouseDown) {
+            return;
+        }
+        if (!this.isInCanvas(mousePosition) && this.mouseDown) {
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        } else {
+            this.previewStamp(this.drawingService.previewCtx, this.pathData);
+            this.resetBorder();
         }
     }
 
@@ -109,87 +111,67 @@ export class StampService extends Tool {
     }
 
     private applyStamp(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        switch (this.stampPickerService.getStamp()) {
+        const STAMP_TYPE: string = this.stampPickerService.getStamp();
+        switch (STAMP_TYPE) {
             case StampEnum.stamp1: {
-                this.stamp1(ctx, path);
+                this.stamp(ctx, path, this.STAMP1_IMAGE_SOURCE);
                 break;
             }
             case StampEnum.stamp2: {
-                this.stamp2(ctx, path); //pk un switch case pour sa
+                this.stamp(ctx, path, this.STAMP2_IMAGE_SOURCE);
                 break;
             }
             case StampEnum.stamp3: {
-                this.stamp3(ctx, path);
+                this.stamp(ctx, path, this.STAMP3_IMAGE_SOURCE);
                 break;
             }
             case StampEnum.stamp4: {
-                this.stamp4(ctx, path);
+                this.stamp(ctx, path, this.STAMP4_IMAGE_SOURCE);
                 break;
             }
             case StampEnum.stamp5: {
-                this.stamp5(ctx, path);
+                this.stamp(ctx, path, this.STAMP5_IMAGE_SOURCE);
                 break;
             }
         }
     }
 
     private previewStamp(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        const transparenceValue = 0.4;
-        ctx.globalAlpha = transparenceValue;
+        const TRANSPARENCE_VALUE = 0.4;
+        ctx.globalAlpha = TRANSPARENCE_VALUE;
         this.applyStamp(ctx, path);
     }
 
     private convertDegreeToRad(angleDegre: number): number {
-        // value 180 is used for conversion purposes of degree to rad
-        // tslint:disable:no-magic-numbers
-        return (angleDegre * Math.PI) / 180;
-    }
-    private stamp1(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        const image = new Image();
-        image.src = '/assets/images/approved.png';
-        this.drawImage(ctx, path, image);
+        const HALF_CIRCLE_ANGLE: number = 180;
+        return (angleDegre * Math.PI) / HALF_CIRCLE_ANGLE;
     }
 
-    private stamp2(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        //redondant d<avoir 5 function inutile
-        const image = new Image();
-        image.src = '/assets/images/certified.png';
-        this.drawImage(ctx, path, image);
+    private stamp(ctx: CanvasRenderingContext2D, path: Vec2[], imageSource: string): void {
+        const IMAGE = new Image();
+        IMAGE.src = imageSource;
+        this.drawImage(ctx, path, IMAGE);
     }
-    private stamp3(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        const image = new Image();
-        image.src = '/assets/images/crown.png';
-        this.drawImage(ctx, path, image);
-    }
-    private stamp4(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        const image = new Image();
-        image.src = '/assets/images/crown2.png'; //mettre en private readonly
-        this.drawImage(ctx, path, image);
-    }
-    private stamp5(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        const image = new Image();
-        image.src = '/assets/images/sealN.png';
-        this.drawImage(ctx, path, image);
-    }
+
     private drawImage(ctx: CanvasRenderingContext2D, path: Vec2[], image: HTMLImageElement): void {
-        const lastPostion: Vec2 = path[path.length - 1];
-        const xPosition: number = lastPostion.x;
-        const yPosition: number = lastPostion.y;
+        const LAST_POSITION: Vec2 = path[path.length - 1];
+        const X_POSITION: number = LAST_POSITION.x;
+        const Y_POSITION: number = LAST_POSITION.y;
 
         image.onload = () => {
             ctx.save();
             ctx.fillStyle = this.colorService.getPrimaryColor();
             ctx.beginPath();
-            ctx.arc(xPosition, yPosition, this.widthService.getWidth() / 2, 0, 2 * Math.PI);
+            ctx.arc(X_POSITION, Y_POSITION, this.widthService.getWidth() / 2, 0, 2 * Math.PI);
             ctx.fill();
-            ctx.translate(xPosition, yPosition);
+            ctx.translate(X_POSITION, Y_POSITION);
             ctx.rotate(this.convertDegreeToRad(this.angleInRadian));
-            ctx.translate(-xPosition, -yPosition);
+            ctx.translate(-X_POSITION, -Y_POSITION);
             ctx.globalCompositeOperation = 'destination-out';
             ctx.drawImage(
                 image,
-                xPosition - this.widthService.getWidth() / 2,
-                yPosition - this.widthService.getWidth() / 2,
+                X_POSITION - this.widthService.getWidth() / 2,
+                Y_POSITION - this.widthService.getWidth() / 2,
                 this.widthService.getWidth(),
                 this.widthService.getWidth(),
             );

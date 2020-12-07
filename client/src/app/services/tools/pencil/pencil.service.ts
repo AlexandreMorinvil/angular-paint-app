@@ -40,8 +40,8 @@ export class PencilService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
-            this.pathData.push(mousePosition);
+            const MOUSE_POSITION = this.getPositionFromMouse(event);
+            this.pathData.push(MOUSE_POSITION);
             this.drawLine(this.drawingService.baseCtx, this.pathData);
             this.drawingStateTrackingService.addAction(this, new InteractionPath(this.pathData));
         }
@@ -51,17 +51,18 @@ export class PencilService extends Tool {
     }
 
     onMouseMove(event: MouseEvent): void {
-        if (this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
-            if (this.isInCanvas(mousePosition)) {
-                this.pathData.push(mousePosition);
-                // We draw on the preview canvas and erase it each time the mouse is moved
-                this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                this.drawLine(this.drawingService.previewCtx, this.pathData);
-            } else {
-                this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                this.clearPath();
-            }
+        if (!this.mouseDown) {
+            return;
+        }
+        const MOUSE_POSITION = this.getPositionFromMouse(event);
+        if (this.isInCanvas(MOUSE_POSITION)) {
+            this.pathData.push(MOUSE_POSITION);
+            // We draw on the preview canvas and erase it each time the mouse is moved
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawLine(this.drawingService.previewCtx, this.pathData);
+        } else {
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.clearPath();
         }
     }
 
