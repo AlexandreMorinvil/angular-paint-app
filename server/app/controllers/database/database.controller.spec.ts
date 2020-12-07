@@ -37,7 +37,6 @@ describe('DatabaseController', () => {
     const drawing0 = new Drawing('0', 'alex', new Array<string>('tag1', 'tag2'), 'imagsource');
     const drawing1 = new DrawingToDatabase('1', 'alex', new Array<string>('tag1', 'tag2'));
     const drawing2 = new DrawingToDatabase('2', 'luca', new Array<string>('tag3', 'tag4'));
-    //const drawing4 = new Drawing('4', 'alex', new Array<string>('ta$$g1', 'tag2'), '');
 
     beforeEach(async () => {
         const [container, sandbox] = await testingContainer();

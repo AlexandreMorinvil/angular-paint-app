@@ -15,7 +15,6 @@ export class EmailController {
 
     private configureRouter(): void {
         this.router = Router();
-
         this.router.post(this.ROUTING_EMAIL, async (req: Request, res: Response, next: NextFunction) => {
             this.emailService
                 .processRequest(req.body)
@@ -23,7 +22,7 @@ export class EmailController {
                     res.sendStatus(StatusCodes.OK);
                 })
                 .catch((error: Error) => {
-                    res.status(StatusCodes.NOT_FOUND).send(error.message);
+                    res.status(StatusCodes.BAD_REQUEST).send(error.message);
                 });
         });
     }

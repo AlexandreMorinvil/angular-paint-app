@@ -28,7 +28,7 @@ describe('Database service', () => {
         databaseService.collection = db.collection('test');
 
         testDrawing = { _id: '1', name: 'nomTest', tags: ['tag1', 'tag2'] };
-        databaseService.collection.insertOne(testDrawing);
+        await databaseService.collection.insertOne(testDrawing);
     });
 
     afterEach(async () => {

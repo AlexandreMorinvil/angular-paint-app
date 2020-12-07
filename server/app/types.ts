@@ -7,8 +7,4 @@ export const TYPES = {
 
     DatabaseController: Symbol('DatabaseController'),
     DatabaseService: Symbol('DatabaseService'),
-
-    // PK on a garder sa????????????????????????
-    DateController: Symbol('DateController'),
-    DateService: Symbol('DateService'),
 };
