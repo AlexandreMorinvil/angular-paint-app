@@ -14,6 +14,7 @@ import { SelectionToolService } from '@app/services/tools/selection/selection-to
 @Injectable({
     providedIn: 'root',
 })
+const CALLER_ID = 3;
 export class MagicWandService extends SelectionToolService {
     private startR: number;
     private startG: number;
@@ -43,8 +44,7 @@ export class MagicWandService extends SelectionToolService {
         this.resetTransform();
         // resizing
         if (this.selectionCreated && this.checkHit(this.mouseDownCoord)) {
-            // tslint:disable:no-magic-numbers
-            this.getAnchorHit(this.drawingService.previewCtx, this.mouseDownCoord, 3);
+            this.getAnchorHit(this.drawingService.previewCtx, this.mouseDownCoord, CALLER_ID);
             this.clearCanvasSelection();
             this.pathLastCoord = this.mouseDownCoord;
             this.startSelectionPoint = this.startDownCoord;
@@ -80,7 +80,6 @@ export class MagicWandService extends SelectionToolService {
         this.mouseDown = true;
     }
 
-    // tslint:disable:no-magic-numbers
     onMouseMove(event: MouseEvent): void {
         const MOUSE_POSITION = this.getPositionFromMouse(event);
         // translate
@@ -94,7 +93,7 @@ export class MagicWandService extends SelectionToolService {
             // resizing
         } else if (this.clickOnAnchor && this.localMouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.getAnchorHit(this.drawingService.previewCtx, MOUSE_POSITION, 3);
+            this.getAnchorHit(this.drawingService.previewCtx, MOUSE_POSITION, CALLER_ID);
         }
     }
 
@@ -118,13 +117,12 @@ export class MagicWandService extends SelectionToolService {
             this.hasDoneFirstTranslation = true;
             // resizing
         } else if (this.clickOnAnchor) {
-            // tslint:disable:no-magic-numbers
-            this.getAnchorHit(this.drawingService.previewCtx, MOUSE_POSITION, 3); // draw new image on preview
+            this.getAnchorHit(this.drawingService.previewCtx, MOUSE_POSITION, CALLER_ID); // draw new image on preview
             this.pathData.push({ x: this.resizeStartCoords.x + this.resizeWidth, y: this.resizeStartCoords.y + this.resizeHeight });
             const START = this.offsetAnchors(this.resizeStartCoords);
             // saves what is under the selection
             const UNDER_DATA = this.drawingService.baseCtx.getImageData(START.x, START.y, Math.abs(this.resizeWidth), Math.abs(this.resizeHeight));
-            this.getAnchorHit(this.drawingService.baseCtx, MOUSE_POSITION, 3, 0); // draw new image on base for saving image.src
+            this.getAnchorHit(this.drawingService.baseCtx, MOUSE_POSITION, CALLER_ID, 0); // draw new image on base for saving image.src
             this.startDownCoord = this.offsetAnchors(this.resizeStartCoords); // set new startCoords with the resize
             this.selectionSize = { x: Math.abs(this.resizeWidth), y: Math.abs(this.resizeHeight) }; // set new size of selection
             this.image.src = this.drawingService.baseCtx.canvas.toDataURL(); // save new image with resized selection
@@ -155,6 +153,7 @@ export class MagicWandService extends SelectionToolService {
     }
 
     // tslint:disable:no-magic-numbers
+    // needed for / 100, the point of this division is to get the orientation of the scroll, not the total displacement of the wheel
     onMouseWheel(event: WheelEvent): void {
         if (!this.mouseDown) {
             // if there is a tool change the rotation won't reapply

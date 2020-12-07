@@ -13,9 +13,8 @@ import { SelectionToolService } from '@app/services/tools/selection/selection-to
 @Injectable({
     providedIn: 'root',
 })
+const CALLER_ID = 1;
 export class EllipseSelectionService extends SelectionToolService {
-    pathLastCoord: Vec2;
-
     constructor(
         drawingService: DrawingService,
         private drawingStateTrackingService: DrawingStateTrackerService,
@@ -37,7 +36,7 @@ export class EllipseSelectionService extends SelectionToolService {
         this.resetTransform();
         // resizing
         if (this.selectionCreated && this.checkHit(this.mouseDownCoord)) {
-            this.getAnchorHit(this.drawingService.previewCtx, this.mouseDownCoord, 1);
+            this.getAnchorHit(this.drawingService.previewCtx, this.mouseDownCoord, CALLER_ID);
             this.clearCanvasEllipse();
             // for undo redo
             this.pathData.push(this.firstSelectionCoord);
@@ -75,7 +74,7 @@ export class EllipseSelectionService extends SelectionToolService {
             // resizing
         } else if (this.clickOnAnchor && this.localMouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.getAnchorHit(this.drawingService.previewCtx, MOUSE_POSITION, 1);
+            this.getAnchorHit(this.drawingService.previewCtx, MOUSE_POSITION, CALLER_ID);
             // creation
         } else if (this.isInCanvas(MOUSE_POSITION) && this.localMouseDown) {
             this.ellipseService.onMouseMove(event);
@@ -110,12 +109,12 @@ export class EllipseSelectionService extends SelectionToolService {
             this.hasDoneFirstTranslation = true;
             // resizing
         } else if (this.clickOnAnchor) {
-            this.getAnchorHit(this.drawingService.previewCtx, MOUSE_POSITION, 1); // draw new image on preview
+            this.getAnchorHit(this.drawingService.previewCtx, MOUSE_POSITION, CALLER_ID); // draw new image on preview
             this.pathData.push({ x: this.resizeStartCoords.x + this.resizeWidth, y: this.resizeStartCoords.y + this.resizeHeight });
             const START = this.offsetAnchors(this.resizeStartCoords);
             // saves what is under the selection
             const UNDER_DATA = this.drawingService.baseCtx.getImageData(START.x, START.y, Math.abs(this.resizeWidth), Math.abs(this.resizeHeight));
-            this.getAnchorHit(this.drawingService.baseCtx, MOUSE_POSITION, 1, 0); // draw new image on base for saving image.src
+            this.getAnchorHit(this.drawingService.baseCtx, MOUSE_POSITION, CALLER_ID, 0); // draw new image on base for saving image.src
             this.startDownCoord = this.offsetAnchors(this.resizeStartCoords); // set new startCoords with the resize
             this.selectionSize = { x: Math.abs(this.resizeWidth), y: Math.abs(this.resizeHeight) }; // set new size of selection
             this.image.src = this.drawingService.baseCtx.canvas.toDataURL(); // save new image with resized selection
@@ -162,6 +161,7 @@ export class EllipseSelectionService extends SelectionToolService {
     }
 
     // tslint:disable:no-magic-numbers
+    // needed for / 100, the point of this division is to get the orientation of the scroll, not the total displacement of the wheel
     onMouseWheel(event: WheelEvent): void {
         if (!this.mouseDown) {
             // if there is a tool change the rotation won't reapply
