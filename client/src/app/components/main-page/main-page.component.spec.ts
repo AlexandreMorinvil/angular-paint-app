@@ -54,4 +54,10 @@ describe('MainPageComponent', () => {
         component.openUserGuide();
         expect(openGuideSpy).toHaveBeenCalled();
     });
+
+    it('should call openContinueDrawing', () => {
+        const openContinueDrawingSpy = spyOn<any>(component, 'openContinueDrawing');
+        component.openDrawingCarousel();
+        expect(openContinueDrawingSpy).toHaveBeenCalled();
+    });
 });

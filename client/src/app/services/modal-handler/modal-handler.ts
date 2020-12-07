@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ContinueDrawingModalComponent } from '@app/components/modal/modal-continue-drawing/modal-continue-drawing.component';
 import { DrawingCarouselComponent } from '@app/components/modal/modal-drawing-carousel/modal-drawing-carousel.component';
 import { ExportComponent } from '@app/components/modal/modal-export/modal-export.component';
 import { ModalSaveComponent } from '@app/components/modal/modal-save/modal-save.component';
@@ -12,18 +11,6 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 })
 export class ModalHandlerService {
     constructor(private drawingService: DrawingService, public dialog: MatDialog) {}
-
-    openContinueDrawingDialog(): void {
-        this.drawingService.shortcutEnable = false;
-        const dialogRef = this.dialog.open(ContinueDrawingModalComponent, {
-            width: '800px',
-            height: '800px',
-            data: {},
-        });
-        dialogRef.afterClosed().subscribe(() => {
-            this.drawingService.shortcutEnable = true;
-        });
-    }
 
     openDrawingCarouselDialog(): void {
         this.drawingService.shortcutEnable = false;
