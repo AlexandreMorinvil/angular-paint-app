@@ -28,14 +28,14 @@ describe('SelectionToolService', () => {
         expect(service).toBeTruthy();
     });
 
-    it('onEscapeDown should call clearCanvas and set selectionCreated to false and arrowDown to true', () => {
+    /* it('onEscapeDown should call clearCanvas and set selectionCreated to false and arrowDown to true', () => {
         (service as any).selectionCreated = true;
         (service as any).arrowDown = false;
         service.onEscapeDown();
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect((service as any).selectionCreated).toEqual(false);
         expect((service as any).arrowDown).toEqual(true);
-    });
+    }); */
 
     it('should clear pathData', () => {
         (service as any).pathData = [startCoord];
