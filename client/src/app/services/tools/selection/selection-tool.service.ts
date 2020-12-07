@@ -300,10 +300,6 @@ export abstract class SelectionToolService extends Tool {
             }
             mousePosition = { x: adjustOffsetCoords.x + adjustStartCoords.x, y: adjustOffsetCoords.y + adjustStartCoords.y };
         }
-        //console.log(adjustOffsetCoords);
-        //console.log(adjustStartCoords);
-        //console.log(this.startDownCoord);
-        //console.log(this.selectionSize);
 
         switch (caller) {
             case 1: // ellipse is calling
@@ -361,12 +357,8 @@ export abstract class SelectionToolService extends Tool {
                 const relativePositionX = this.edgePixelsSplittedRelativePosition[regionIndex].edgePixels[edgeIndex].x;
                 const relativePositionY = this.edgePixelsSplittedRelativePosition[regionIndex].edgePixels[edgeIndex].y;
                 const edge: Vec2 = this.edgePixelsSplitted[regionIndex].edgePixels[edgeIndex];
-                this.edgePixelsSplitted[regionIndex].edgePixels[edgeIndex].x = Math.round(
-                    relativePositionX * adjustOffsetCoords.x + adjustStartCoords.x,
-                );
-                this.edgePixelsSplitted[regionIndex].edgePixels[edgeIndex].y = Math.round(
-                    relativePositionY * adjustOffsetCoords.y + adjustStartCoords.y,
-                );
+                edge.x = Math.round(relativePositionX * adjustOffsetCoords.x + adjustStartCoords.x);
+                edge.y = Math.round(relativePositionY * adjustOffsetCoords.y + adjustStartCoords.y);
             }
         }
         //console.log(this.edgePixelsSplitted);

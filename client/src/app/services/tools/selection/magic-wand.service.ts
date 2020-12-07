@@ -94,7 +94,6 @@ export class MagicWandService extends SelectionToolService {
             this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION);
             // resizing
         } else if (this.clickOnAnchor && this.localMouseDown) {
-            // this.pathData.push(this.getBottomRightCorner()); //pas besoin en théorie
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.getAnchorHit(this.drawingService.previewCtx, MOUSE_POSITION, 3);
         }
@@ -131,20 +130,18 @@ export class MagicWandService extends SelectionToolService {
         } else if (this.clickOnAnchor) {
             // tslint:disable:no-magic-numbers
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.getAnchorHit(this.drawingService.baseCtx, MOUSE_POSITION, 3);
-            this.pathData.push(MOUSE_POSITION);
-            this.offsetAnchors(this.startDownCoord);
-            this.clearPath();
+            // this.getAnchorHit(this.drawingService.baseCtx, MOUSE_POSITION, 3);
+            this.getAnchorHit(this.drawingService.previewCtx, MOUSE_POSITION, 3);
+            this.pathData.push({ x: this.resizeStartCoords.x + this.resizeWidth, y: this.resizeStartCoords.y + this.resizeHeight });
+            this.startDownCoord = this.offsetAnchors(this.resizeStartCoords);
+            this.rectangleService.onMouseDown({ offsetX: this.startDownCoord.x, offsetY: this.startDownCoord.y, button: 0 } as MouseEvent);
+            this.selectionSize = { x: Math.abs(this.resizeWidth), y: Math.abs(this.resizeHeight) };
             this.pathData.push({ x: this.startDownCoord.x + this.selectionSize.x, y: this.startDownCoord.y + this.selectionSize.y });
-            // this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.pathData);
-            // this.ellipseService.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
-            this.drawnAnchor(this.drawingService.previewCtx);
+            this.drawSelectionSurround();
             this.clearPath();
             this.clickOnAnchor = false;
             this.hasDoneResizing = true;
-            // const TRACKING_INFO = this.getActionTrackingInfo(MOUSE_POSITION);
-            // this.addActionTracking(TRACKING_INFO);
-            this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
+
             // Creation
         } else {
             this.addActionTracking(this.startDownCoord);
@@ -525,8 +522,6 @@ export class MagicWandService extends SelectionToolService {
                 this.edgePixelsSplittedRelativePosition[regionIndex].edgePixels.push(relativePosition);
             }
         }
-        console.log(this.edgePixelsSplitted);
-        console.log(this.edgePixelsSplittedRelativePosition);
     }
 
     execute(interaction: InteractionSelection): void {
