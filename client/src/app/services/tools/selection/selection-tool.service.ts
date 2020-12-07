@@ -201,76 +201,61 @@ export abstract class SelectionToolService extends Tool {
         canvas.drawImage(image, imageStart.x, imageStart.y, originalSize.x, originalSize.y, destStartCoord.x, destStartCoord.y, newSize.x, newSize.y);
     }
 
-    // tslint:disable:cyclomatic-complexity
     // resizing
     protected getAnchorHit(canvas: CanvasRenderingContext2D, mousePosition: Vec2, caller: number): void {
         // this.rotateCanvas();
         // const TRANSLATION = { x: this.startDownCoord.x + this.selectionSize.x / 2, y: this.startDownCoord.y + this.selectionSize.y / 2 };
+        // mousePosition = { x: mousePosition.x - TRANSLATION.x, y: mousePosition.y - TRANSLATION.y };
         let adjustStartCoords: Vec2 = this.startDownCoord;
         let adjustOffsetCoords: Vec2 = { x: mousePosition.x - adjustStartCoords.x, y: mousePosition.y - adjustStartCoords.y };
-        let scaleX = 1;
-        let scaleY = 1;
-
-        // tslint:disable:no-magic-numbers
-        // tslint necessary for setting value of the scaleX and scaleY variable (-1)
         switch (this.anchorHit) {
             case Anchors.TopLeft:
                 adjustStartCoords = { x: this.startDownCoord.x + this.selectionSize.x, y: this.startDownCoord.y + this.selectionSize.y };
                 adjustOffsetCoords = { x: mousePosition.x - adjustStartCoords.x, y: mousePosition.y - adjustStartCoords.y };
-                scaleX = adjustOffsetCoords.x > 0 ? -1 : 1;
-                scaleY = adjustOffsetCoords.y > 0 ? -1 : 1;
                 break;
             case Anchors.TopMiddle:
                 adjustStartCoords = { x: this.startDownCoord.x, y: this.startDownCoord.y + this.selectionSize.y };
                 adjustOffsetCoords = { x: this.selectionSize.x, y: mousePosition.y - adjustStartCoords.y };
                 mousePosition = { x: this.startDownCoord.x + this.selectionSize.x, y: mousePosition.y };
-                scaleY = adjustOffsetCoords.y > 0 ? -1 : 1;
                 break;
             case Anchors.TopRight:
                 adjustStartCoords = { x: this.startDownCoord.x, y: this.startDownCoord.y + this.selectionSize.y };
                 adjustOffsetCoords = { x: mousePosition.x - adjustStartCoords.x, y: mousePosition.y - adjustStartCoords.y };
-                scaleX = adjustOffsetCoords.x < 0 ? -1 : 1;
-                scaleY = adjustOffsetCoords.y > 0 ? -1 : 1;
                 break;
             case Anchors.MiddleLeft:
                 adjustStartCoords = { x: this.startDownCoord.x + this.selectionSize.x, y: this.startDownCoord.y };
                 adjustOffsetCoords = { x: mousePosition.x - adjustStartCoords.x, y: this.selectionSize.y };
                 mousePosition = { x: mousePosition.x, y: this.startDownCoord.y + this.selectionSize.y };
-                scaleX = adjustOffsetCoords.x > 0 ? -1 : 1;
                 break;
             case Anchors.MiddleRight:
                 adjustOffsetCoords = { x: mousePosition.x - adjustStartCoords.x, y: this.selectionSize.y };
                 mousePosition = { x: mousePosition.x, y: this.startDownCoord.y + this.selectionSize.y };
-                scaleX = adjustOffsetCoords.x < 0 ? -1 : 1;
                 break;
             case Anchors.BottomLeft:
                 adjustStartCoords = { x: this.startDownCoord.x + this.selectionSize.x, y: this.startDownCoord.y };
                 adjustOffsetCoords = { x: mousePosition.x - adjustStartCoords.x, y: mousePosition.y - adjustStartCoords.y };
-                scaleX = adjustOffsetCoords.x > 0 ? -1 : 1;
-                scaleY = adjustOffsetCoords.y < 0 ? -1 : 1;
                 break;
             case Anchors.BottomMiddle:
                 adjustOffsetCoords = { x: this.selectionSize.x, y: mousePosition.y - adjustStartCoords.y };
                 mousePosition = { x: this.startDownCoord.x + this.selectionSize.x, y: mousePosition.y };
-                scaleY = adjustOffsetCoords.y < 0 ? -1 : 1;
                 break;
             case Anchors.BottomRight:
                 adjustOffsetCoords = { x: mousePosition.x - adjustStartCoords.x, y: mousePosition.y - adjustStartCoords.y };
-                scaleX = adjustOffsetCoords.x < 0 ? -1 : 1;
-                scaleY = adjustOffsetCoords.y < 0 ? -1 : 1;
                 break;
             default:
                 break;
         }
-        // set value for later use
+        // saves value for later use
         this.resizeWidth = adjustOffsetCoords.x;
         this.resizeHeight = adjustOffsetCoords.y;
         this.resizeStartCoords = { x: Math.abs(adjustStartCoords.x), y: Math.abs(adjustStartCoords.y) };
         // mirror effect
-        canvas.scale(scaleX, scaleY);
-        adjustStartCoords = { x: scaleX * adjustStartCoords.x, y: scaleY * adjustStartCoords.y };
-        adjustOffsetCoords = { x: scaleX * adjustOffsetCoords.x, y: scaleY * adjustOffsetCoords.y };
-        mousePosition = { x: scaleX * mousePosition.x, y: scaleY * mousePosition.y };
+        // this.rotateCanvas();
+        const SCALE = this.getScale(adjustOffsetCoords);
+        canvas.scale(SCALE.x, SCALE.y);
+        adjustStartCoords = { x: SCALE.x * adjustStartCoords.x, y: SCALE.y * adjustStartCoords.y };
+        adjustOffsetCoords = { x: SCALE.x * adjustOffsetCoords.x, y: SCALE.y * adjustOffsetCoords.y };
+        mousePosition = { x: SCALE.x * mousePosition.x, y: SCALE.y * mousePosition.y };
         // Resizing while keeping the aspect ratio
         if (this.shiftDown) {
             const RATIO_WIDTH = this.selectionSize.x / this.ratio;
@@ -301,14 +286,45 @@ export abstract class SelectionToolService extends Tool {
                 adjustOffsetCoords.y -= yRatio;
                 adjustOffsetCoords.x -= xRatio;
             }
-            this.resizeWidth = scaleX * adjustOffsetCoords.x;
-            this.resizeHeight = scaleY * adjustOffsetCoords.y;
+            this.resizeWidth = SCALE.x * adjustOffsetCoords.x;
+            this.resizeHeight = SCALE.y * adjustOffsetCoords.y;
             this.resizeStartCoords = { x: Math.abs(adjustStartCoords.x), y: Math.abs(adjustStartCoords.y) };
             mousePosition = { x: adjustOffsetCoords.x + adjustStartCoords.x, y: adjustOffsetCoords.y + adjustStartCoords.y };
         }
         this.pathLastCoord = mousePosition;
         this.showSelectionResize(canvas, adjustStartCoords, adjustOffsetCoords, caller);
         this.resetCanvasRotation();
+    }
+
+    private getScale(offsetCoords: Vec2): Vec2 {
+        const SCALE = { x: 1, y: 1 };
+        // tslint:disable:no-magic-numbers
+        // tslint necessary for setting value of the SCALE.x and SCALE.y variable (-1)
+        switch (this.anchorHit) {
+            case Anchors.TopLeft:
+            case Anchors.MiddleLeft:
+            case Anchors.BottomLeft:
+                SCALE.x = offsetCoords.x > 0 ? -1 : 1;
+                break;
+            case Anchors.TopRight:
+            case Anchors.MiddleRight:
+            case Anchors.BottomRight:
+                SCALE.x = offsetCoords.x < 0 ? -1 : 1;
+                break;
+        }
+        switch (this.anchorHit) {
+            case Anchors.TopLeft:
+            case Anchors.TopMiddle:
+            case Anchors.TopRight:
+                SCALE.y = offsetCoords.y > 0 ? -1 : 1;
+                break;
+            case Anchors.BottomLeft:
+            case Anchors.BottomMiddle:
+            case Anchors.BottomRight:
+                SCALE.y = offsetCoords.y < 0 ? -1 : 1;
+                break;
+        }
+        return SCALE;
     }
 
     private showSelectionResize(canvas: CanvasRenderingContext2D, adjustStartCoords: Vec2, adjustOffsetCoords: Vec2, caller: number): void {
@@ -358,7 +374,6 @@ export abstract class SelectionToolService extends Tool {
     protected getSquaredSize(mousePosition: Vec2): Vec2 {
         let width = mousePosition.x - this.startDownCoord.x;
         let height = mousePosition.y - this.startDownCoord.y;
-        // If Shift is pressed should be a square
         const SQUARE_SIZE = Math.abs(Math.min(height, width));
         if (height < 0 && width >= 0) {
             height = -SQUARE_SIZE;
