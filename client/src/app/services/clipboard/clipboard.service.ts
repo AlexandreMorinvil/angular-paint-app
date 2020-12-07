@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
-// import { DrawingService } from '@app/services/drawing/drawing.service';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Injectable({
     providedIn: 'root',
@@ -10,13 +10,13 @@ export class ClipBoardService {
     canvas: HTMLCanvasElement;
     private image: HTMLImageElement;
 
-    constructor(/*private drawingService: DrawingService*/) {
+    constructor(private drawingService: DrawingService) {
         this.image = new Image();
     }
 
     memorize(image: HTMLImageElement, startCoord: Vec2, dimension: Vec2): void {
-        // this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
-        this.image = image;
+        this.image.src = this.drawingService.previewCtx.canvas.toDataURL();
+        // this.image = image;
         this.clearClipboard();
         this.canvas.width = dimension.x;
         this.canvas.height = dimension.y;
