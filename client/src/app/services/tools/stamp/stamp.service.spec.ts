@@ -6,7 +6,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { StampPickerService } from '@app/services/tool-modifier/stamp-picker/stamp-picker.service';
 import { StampService } from './stamp.service';
 // tslint:disable:no-any
-fdescribe('StampService', () => {
+describe('StampService', () => {
     let service: StampService;
     let stampPickerService: StampPickerService;
 
@@ -23,10 +23,7 @@ fdescribe('StampService', () => {
     let applyStampSpy: jasmine.Spy<any>;
     let previewStampSpy: jasmine.Spy<any>;
     let resetBorderSpy: jasmine.Spy<any>;
-    let stamp2Spy: jasmine.Spy<any>;
-    let stamp3Spy: jasmine.Spy<any>;
-    let stamp4Spy: jasmine.Spy<any>;
-    let stamp5Spy: jasmine.Spy<any>;
+    let stampSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -42,10 +39,7 @@ fdescribe('StampService', () => {
         onMouseWheelSpy = spyOn<any>(service, 'onMouseWheel').and.callThrough();
         applyStampSpy = spyOn<any>(service, 'applyStamp').and.callThrough();
         previewStampSpy = spyOn<any>(service, 'previewStamp').and.callThrough();
-        stamp2Spy = spyOn<any>(service, 'stamp2').and.callThrough();
-        stamp3Spy = spyOn<any>(service, 'stamp3').and.callThrough();
-        stamp4Spy = spyOn<any>(service, 'stamp4').and.callThrough();
-        stamp5Spy = spyOn<any>(service, 'stamp5').and.callThrough();
+        stampSpy = spyOn<any>(service, 'stamp').and.callThrough();
 
         resetBorderSpy = spyOn<any>(service, 'resetBorder').and.callThrough();
         const canvasWidth = 1000;
@@ -87,22 +81,22 @@ fdescribe('StampService', () => {
     it('should go in case where stamp2 is selected', () => {
         (service as any).stampPickerService.setStamp('Étampe 2');
         (service as any).applyStamp(baseCtxStub, (service as any).pathData);
-        expect(stamp2Spy).toHaveBeenCalled();
+        expect(stampSpy).toHaveBeenCalled();
     });
     it('should go in case where stamp3 is selected', () => {
         (service as any).stampPickerService.setStamp('Étampe 3');
         (service as any).applyStamp(baseCtxStub, (service as any).pathData);
-        expect(stamp3Spy).toHaveBeenCalled();
+        expect(stampSpy).toHaveBeenCalled();
     });
     it('should go in case where stamp4 is selected', () => {
         (service as any).stampPickerService.setStamp('Étampe 4');
         (service as any).applyStamp(baseCtxStub, (service as any).pathData);
-        expect(stamp4Spy).toHaveBeenCalled();
+        expect(stampSpy).toHaveBeenCalled();
     });
     it('should go in case where stamp5 is selected', () => {
         (service as any).stampPickerService.setStamp('Étampe 5');
         (service as any).applyStamp(baseCtxStub, (service as any).pathData);
-        expect(stamp5Spy).toHaveBeenCalled();
+        expect(stampSpy).toHaveBeenCalled();
     });
 
     it(' mouseDown should set mouseDownCoord to correct position', () => {
