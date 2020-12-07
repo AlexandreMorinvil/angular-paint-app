@@ -16,9 +16,9 @@ import { DrawingToEmail } from '@common/communication/drawing-to-email';
 })
 export class ExportComponent implements AfterViewInit {
     visible: boolean = true;
-    drawName: FormControl = new FormControl('', Validators.required);
+    drawingName: FormControl = new FormControl('', Validators.required);
     email: FormControl = new FormControl('', Validators.required);
-    private readonly SUCCESSFUL_CREATION: string = 'Le dessin a été envoyer avec succès';
+    private readonly SUCCESSFUL_CREATION: string = 'Le dessin a �t� envoyer avec succ�s';
 
     constructor(
         private apiDrawingService: ApiDrawingService,
@@ -48,16 +48,16 @@ export class ExportComponent implements AfterViewInit {
 
     exportToPNG(): void {
         if (this.validateValue()) {
-            const drawName = this.drawName.value;
+            const drawingName = this.drawingName.value;
             const format = 'png';
-            this.exportDrawingService.exportDraw(drawName, format);
+            this.exportDrawingService.exportDraw(drawingName, format);
         }
     }
     exportToJPG(): void {
         if (this.validateValue()) {
-            const drawName = this.drawName.value;
+            const drawingName = this.drawingName.value;
             const format = 'jpeg';
-            this.exportDrawingService.exportDraw(drawName, format);
+            this.exportDrawingService.exportDraw(drawingName, format);
         }
     }
 
@@ -88,9 +88,14 @@ export class ExportComponent implements AfterViewInit {
     }
 
     sendEmailToServer(format: string) {
-        //verifie bon format de l'email
+        // verifie bon format de l'email
         if (this.validateEmail(this.email.value) && this.validateValue()) {
-            const newDrawingToSend: DrawingToEmail = new DrawingToEmail(this.email.value, this.drawName.value, format, this.saveService.imageSource);
+            const newDrawingToSend: DrawingToEmail = new DrawingToEmail(
+                this.email.value,
+                this.drawingName.value,
+                format,
+                this.saveService.imageSource,
+            );
             this.apiDrawingService.sendEmail(newDrawingToSend).subscribe(() => {
                 alert(this.SUCCESSFUL_CREATION);
             });
@@ -102,7 +107,7 @@ export class ExportComponent implements AfterViewInit {
         return email != noEmail && email != undefined;
     }
     private validateValue(): boolean {
-        return this.validateDrawName(this.drawName.value);
+        return this.validateDrawName(this.drawingName.value);
     }
 
     private validateDrawName(name: string): boolean {

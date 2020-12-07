@@ -1,0 +1,13 @@
+<div class="container">
+    <h2>Stamp</h2>
+    <div class="centered">
+        <label for="stamp" style="display: none">Stamp</label>
+        <select name="stamp" [(ngModel)]="stamp">
+            <option *ngFor="let stampName of getListStamps()" [ngValue]="stampName">{{ stampName }}</option>
+        </select>
+    </div>
+    <div class="grid-confirmation" *ngIf="needConfirmation()">
+        <button class="confirmation-button cancel" (click)="revert()">Annuler</button>
+        <button class="confirmation-button confirm" (click)="assign()">Confirmer</button>
+    </div>
+</div>

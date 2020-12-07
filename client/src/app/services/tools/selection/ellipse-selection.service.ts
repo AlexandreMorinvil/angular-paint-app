@@ -8,7 +8,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
-import { EllipseService } from '@app/services/tools/ellipse/ellipse-service';
+import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { SelectionToolService } from '@app/services/tools/selection/selection-tool.service';
 
 @Injectable({

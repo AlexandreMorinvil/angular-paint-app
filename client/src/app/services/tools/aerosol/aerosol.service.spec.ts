@@ -121,6 +121,21 @@ describe('AerosolService', () => {
         expect(setAttributeSpy).toHaveBeenCalled();
     });
 
+    it(' should not call set attribute on spray paint if mouse coordonate is outside the canvas', () => {
+        const path: Vec2[] = [{ x: 2000, y: 2000 }];
+        (service as any).numberSprayTransmissionService.numberSprayTransmissionService = 50;
+        (service as any).sprayDropletService.sprayDropletDiameter = 10;
+        (service as any).sprayService.sprayDiameter = 20;
+        previewCtxStub.lineCap = 'round';
+        previewCtxStub.lineJoin = 'round';
+        colorService.setPrimaryColor('#0000ff');
+        colorService.setSecondaryColor('#0000ff');
+        colorService.setSecondaryColorOpacity(10);
+        colorService.setSecondaryColorOpacity(10);
+        (service as any).sprayPaint(baseCtxStub, path);
+        expect(setAttributeSpy).not.toHaveBeenCalled();
+    });
+
     it(' mouseUp should set mouseDown to false if mouse is already down', () => {
         service.mouseDown = true;
         service.onMouseUp(mouseEvent);
@@ -139,7 +154,7 @@ describe('AerosolService', () => {
         expect(clearPathSpy).toHaveBeenCalled();
     });
 
-    it('should execute and drawL is called', () => {
+    it('should execute and redo spray paint is called', () => {
         const interaction = {
             path: [
                 { x: 0, y: 0 },

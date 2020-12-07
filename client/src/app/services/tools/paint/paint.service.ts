@@ -22,6 +22,7 @@ export class PaintService extends Tool {
     private startR: number;
     private startG: number;
     private startB: number;
+    private canvasData: Uint8ClampedArray;
 
     constructor(
         drawingService: DrawingService,
@@ -38,37 +39,40 @@ export class PaintService extends Tool {
         this.clearPath();
         this.mouseDownCoord = this.getPositionFromMouse(event);
         this.pathData.push(this.mouseDownCoord);
+        // early return if the click is outside the drawing zone
+        if (!this.isInCanvas(this.mouseDownCoord)) {
+            return;
+        }
         this.setStartColor();
         this.setFillColor();
-        if (this.isInCanvas(this.mouseDownCoord)) {
-            let hasFilled = false;
-            const newPosition: Vec2 = { x: this.pathData[0].x, y: this.pathData[0].y };
-            if (event.button === MouseButton.Left) {
-                this.floodFill(this.drawingService.baseCtx, this.pathData);
-                hasFilled = true;
-            } else if (event.button === MouseButton.Right) {
-                this.sameColorFill(this.drawingService.baseCtx);
-                hasFilled = true;
-            }
-            if (hasFilled)
-                this.drawingStateTrackingService.addAction(
-                    this,
-                    new InteractionPaint(
-                        event.button,
-                        newPosition,
-                        this.startR,
-                        this.startG,
-                        this.startB,
-                        this.fillColorR,
-                        this.fillColorG,
-                        this.fillColorB,
-                    ),
-                );
+        let hasFilled = false;
+        const newPosition: Vec2 = { x: this.pathData[0].x, y: this.pathData[0].y };
+        if (event.button === MouseButton.Left) {
+            this.floodFill(this.drawingService.baseCtx, this.pathData);
+            hasFilled = true;
+        } else if (event.button === MouseButton.Right) {
+            this.sameColorFill(this.drawingService.baseCtx);
+            hasFilled = true;
         }
+        if (hasFilled)
+            this.drawingStateTrackingService.addAction(
+                this,
+                new InteractionPaint(
+                    event.button,
+                    newPosition,
+                    this.startR,
+                    this.startG,
+                    this.startB,
+                    this.fillColorR,
+                    this.fillColorG,
+                    this.fillColorB,
+                ),
+            );
     }
 
     private sameColorFill(ctx: CanvasRenderingContext2D): void {
         this.setAttribute(ctx);
+        this.scanCanvas();
         const pixelPos: Vec2 = { x: 0, y: 0 };
         while (pixelPos.y < ctx.canvas.height) {
             while (pixelPos.x < ctx.canvas.width) {
@@ -84,15 +88,15 @@ export class PaintService extends Tool {
 
     private floodFill(ctx: CanvasRenderingContext2D, pathPixel: Vec2[]): void {
         this.setAttribute(ctx);
-        // tslint:disable:no-non-null-assertion
+        this.scanCanvas();
         while (pathPixel.length) {
-            const pixelPos = pathPixel.pop()!;
+            const pixelPos = pathPixel.pop() as Vec2;
             const xPosition = pixelPos.x;
             let yPosition = pixelPos.y;
             // Get current pixel position
             // Go up as long as the color matches and are inside the canvas
-            // tslint:disable-next-line:no-magic-numbers
-            while (yPosition-- > -1 && this.matchStartColor(pixelPos)) {
+            const POINT_BEYOND_CANVAS = -1;
+            while (yPosition-- > POINT_BEYOND_CANVAS && this.matchStartColor(pixelPos)) {
                 pixelPos.y -= 1;
             }
             pixelPos.y += 1;
@@ -142,24 +146,38 @@ export class PaintService extends Tool {
         this.fillColorG = rgb[1];
         this.fillColorB = rgb[2];
     }
-
     private matchStartColor(pixelPos: Vec2): boolean {
-        const imageData: ImageData = this.drawingService.baseCtx.getImageData(pixelPos.x, pixelPos.y, 1, 1);
-
-        const average = // tslint:disable-next-line:no-magic-numbers
-            (Math.abs(this.startR - imageData.data[0]) + Math.abs(this.startG - imageData.data[1]) + Math.abs(this.startB - imageData.data[2])) / 3;
+        const stepSize = 4;
+        const targetR = this.canvasData[stepSize * (pixelPos.y * this.drawingService.baseCtx.canvas.width + pixelPos.x)];
+        const targetG = this.canvasData[stepSize * (pixelPos.y * this.drawingService.baseCtx.canvas.width + pixelPos.x) + 1];
+        const targetB = this.canvasData[stepSize * (pixelPos.y * this.drawingService.baseCtx.canvas.width + pixelPos.x) + 2];
+        const DIVISOR = 3;
+        const average = (Math.abs(this.startR - targetR) + Math.abs(this.startG - targetG) + Math.abs(this.startB - targetB)) / DIVISOR;
 
         if (
             average <= this.toleranceService.getPixelTolerance() &&
-            !(imageData.data[0] === this.fillColorR && imageData.data[1] === this.fillColorG && imageData.data[2] === this.fillColorB)
+            !(targetR === this.fillColorR && targetG === this.fillColorG && targetB === this.fillColorB)
         ) {
             return true; // target to surface within tolerance
         }
         return false;
     }
 
+    private scanCanvas(): void {
+        this.canvasData = this.drawingService.baseCtx.getImageData(
+            0,
+            0,
+            this.drawingService.baseCtx.canvas.width,
+            this.drawingService.baseCtx.canvas.height - 2,
+        ).data;
+    }
+
     private colorPixel(pixelPos: Vec2): void {
         this.drawingService.baseCtx.fillRect(pixelPos.x, pixelPos.y, 1, 1);
+        const stepSize = 4;
+        this.canvasData[stepSize * (pixelPos.y * this.drawingService.baseCtx.canvas.width + pixelPos.x)] = this.fillColorR;
+        this.canvasData[stepSize * (pixelPos.y * this.drawingService.baseCtx.canvas.width + pixelPos.x) + 1] = this.fillColorG;
+        this.canvasData[stepSize * (pixelPos.y * this.drawingService.baseCtx.canvas.width + pixelPos.x) + 2] = this.fillColorB;
     }
 
     private setAttribute(ctx: CanvasRenderingContext2D): void {

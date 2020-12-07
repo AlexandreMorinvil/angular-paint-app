@@ -14,22 +14,22 @@ const HTTPS_STATUS_CODE_OK = StatusCodes.OK;
 const HTTPS_STATUS_CODE_CREATED = StatusCodes.CREATED;
 const HTTPS_STATUS_NO_CONTENT = StatusCodes.NO_CONTENT;
 
-const ERROR_DELETE_DRAWING: string = 'Échec lors de la tentative de suppression du dessin';
-const ERROR_UPDATE_DRAWING: string = 'Échec lors de la tentative de mise à jour du dessin';
-const ERROR_NO_DRAWING_FOUND: string = "Le dessin demandé n'a pas été trouvé";
-const ERROR_GET_ALL_DRAWING: string = 'Échec lors de la tentative de récupération de tous les dessins';
-const ERROR_ADD_DRAWING: string = "Échec lors de l'ajout du dessin";
-const ERROR_GET_DRAWING_BY_TAG: string = "Échec lors de la tentative de récupération de tous les dessins ayant l'étiquettes";
-const ERROR_GET_DRAWING_BY_NAME: string = 'Échec lors de la tentative de récupération de tous les dessins nommés';
+const ERROR_DELETE_DRAWING = 'Échec lors de la tentative de suppression du dessin';
+const ERROR_UPDATE_DRAWING = 'Échec lors de la tentative de mise à jour du dessin';
+const ERROR_NO_DRAWING_FOUND = "Le dessin demandé n'a pas été trouvé";
+const ERROR_GET_ALL_DRAWING = 'Échec lors de la tentative de récupération de tous les dessins';
+const ERROR_ADD_DRAWING = "Échec lors de l'ajout du dessin";
+const ERROR_GET_DRAWING_BY_TAG = "Échec lors de la tentative de récupération de tous les dessins ayant l'étiquettes";
+const ERROR_GET_DRAWING_BY_NAME = 'Échec lors de la tentative de récupération de tous les dessins nommés';
 
 describe('DatabaseController', () => {
-    const ROUTING_GET_ALL: string = '/api/drawing';
-    const ROUTING_POST: string = '/api/drawing';
-    const ROUTING_GET_DRAWING_ID: string = '/api/drawing/:drawingId';
-    const ROUTING_GET_NAME: string = '/api/drawing/name/:name';
-    const ROUTING_GET_TAG: string = '/api/drawing/tag/:tag';
-    const ROUTING_PATCH: string = '/api/drawing/:drawingId';
-    const ROUTING_DELETE: string = '/api/drawing/:drawingId';
+    const ROUTING_GET_ALL = '/api/drawing';
+    const ROUTING_POST = '/api/drawing';
+    const ROUTING_GET_DRAWING_ID = '/api/drawing/:drawingId';
+    const ROUTING_GET_NAME = '/api/drawing/name/:name';
+    const ROUTING_GET_TAG = '/api/drawing/tag/:tag';
+    const ROUTING_PATCH = '/api/drawing/:drawingId';
+    const ROUTING_DELETE = '/api/drawing/:drawingId';
 
     let application: Express.Application;
     let databaseService: Stubbed<DatabaseService>;

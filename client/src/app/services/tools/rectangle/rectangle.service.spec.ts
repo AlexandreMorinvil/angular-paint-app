@@ -5,7 +5,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
-import { RectangleService } from './rectangle-service';
+import { RectangleService } from './rectangle.service';
 // The disablement of the "any" tslint rule is justified in this situation as the prototype
 // of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
 // tslint:disable:no-any
@@ -103,23 +103,21 @@ describe('RectangleService', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
         service.onMouseMove(mouseEvent);
-        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawRectangleSpy).toHaveBeenCalled();
     });
 
     it(' onMouseMove should  call drawRectangle if mouse was already down and shift is pressed down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
-        mouseEvent = { shiftKey: true } as MouseEvent;
+        mouseEvent = { offsetX: 25, offsetY: 25, shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
-        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawRectangleSpy).toHaveBeenCalled();
     });
 
     it(' onMouseMove should not call drawRectangle if mouse was not already down and shift is not pressed', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = false;
-        mouseEvent = { shiftKey: true } as MouseEvent;
+        mouseEvent = { offsetX: 25, offsetY: 25, shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(drawRectangleSpy).not.toHaveBeenCalled();
@@ -128,16 +126,15 @@ describe('RectangleService', () => {
     it(' on Mouse mouve should call setAttribute if mouse was already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
-        mouseEvent = { shiftKey: true } as MouseEvent;
+        mouseEvent = { offsetX: 25, offsetY: 25, shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
-        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(setAttributeSpy).toHaveBeenCalled();
     });
 
     it(' on Mouse mouve should not call setAttribute if mouse was not already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = false;
-        mouseEvent = { shiftKey: true } as MouseEvent;
+        mouseEvent = { offsetX: 25, offsetY: 25, shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(setAttributeSpy).not.toHaveBeenCalled();
@@ -148,7 +145,6 @@ describe('RectangleService', () => {
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 10, offsetY: 5, button: 0, shiftKey: true } as MouseEvent;
         service.onMouseMove(mouseEvent);
-        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(mouseEvent.offsetX === mouseEvent.offsetY);
     });
 
@@ -157,7 +153,6 @@ describe('RectangleService', () => {
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 10, offsetY: 5, button: 0, shiftKey: false } as MouseEvent;
         service.onMouseMove(mouseEvent);
-        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(mouseEvent.offsetX !== mouseEvent.offsetY);
     });
 

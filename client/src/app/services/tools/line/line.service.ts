@@ -77,7 +77,7 @@ export class LineService extends Tool {
 
     onBackspaceDown(): void {
         if (this.undo.length > 1) {
-            if (this.pathDataSaved.length > 0) {
+            if (this.pathDataSaved.length > 1) {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.mouseDownCoord = this.pathDataSaved[this.pathDataSaved.length - 2];
                 this.pathDataSaved.pop();
@@ -116,7 +116,9 @@ export class LineService extends Tool {
                 this.pathData.push(this.mouseDownCoord);
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.drawLine(this.drawingService.baseCtx, this.pathData);
-                this.drawJunction(this.drawingService.baseCtx, this.pathData);
+                if (this.junctionService.getHasJunctionPoint()) {
+                    this.drawJunction(this.drawingService.baseCtx, this.pathData);
+                }
                 this.savedPoints();
                 this.clearPath();
             }
@@ -127,7 +129,9 @@ export class LineService extends Tool {
                 this.drawAlignLine(this.drawingService.baseCtx, this.pathData);
                 this.pathData[0] = this.alignmentCoord;
                 this.mouseDownCoord = this.alignmentCoord;
-                this.drawJunction(this.drawingService.baseCtx, this.pathData);
+                if (this.junctionService.getHasJunctionPoint()) {
+                    this.drawJunction(this.drawingService.baseCtx, this.pathData);
+                }
                 this.savedPoints();
             }
         }
@@ -283,13 +287,11 @@ export class LineService extends Tool {
 
         if (mouseMoveCoord.y <= mouseDownCoord.y) {
             alignmentAngle = Math.abs(circleAngle - Math.abs(Math.atan2(pointY, pointX) * halfCircleAngle) / Math.PI);
-            const roundedAngle = this.roundToNearestAngle(alignmentAngle);
-            return roundedAngle;
         } else {
             alignmentAngle = Math.abs(Math.atan2(pointY, pointX) * halfCircleAngle) / Math.PI;
-            const roundedAngle = this.roundToNearestAngle(alignmentAngle);
-            return roundedAngle;
         }
+        const roundedAngle = this.roundToNearestAngle(alignmentAngle);
+        return roundedAngle;
     }
 
     private clearPath(): void {

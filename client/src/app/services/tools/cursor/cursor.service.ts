@@ -76,19 +76,11 @@ export class CursorService extends Tool {
     }
 
     private moveWidth(mouseDownCoordX: number): void {
-        if (mouseDownCoordX >= minSurfaceSize) {
-            this.drawingService.previewCtx.canvas.width = mouseDownCoordX;
-        } else {
-            this.drawingService.previewCtx.canvas.width = minSurfaceSize;
-        }
+        this.drawingService.previewCtx.canvas.width = mouseDownCoordX >= minSurfaceSize ? mouseDownCoordX : minSurfaceSize;
     }
 
     private moveHeight(mouseDownCoordY: number): void {
-        if (mouseDownCoordY >= minSurfaceSize) {
-            this.drawingService.previewCtx.canvas.height = mouseDownCoordY;
-        } else {
-            this.drawingService.previewCtx.canvas.height = minSurfaceSize;
-        }
+        this.drawingService.previewCtx.canvas.height = mouseDownCoordY >= minSurfaceSize ? mouseDownCoordY : minSurfaceSize;
     }
 
     private drawnAnchor(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement): void {
