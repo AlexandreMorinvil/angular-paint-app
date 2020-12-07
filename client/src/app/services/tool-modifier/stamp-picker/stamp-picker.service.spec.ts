@@ -8,7 +8,7 @@ describe('Service: StampPickerViewerService', () => {
     let service: StampPickerService;
 
     let setStateSpy: jasmine.Spy<any>;
-    let getStateSpy: jasmine.Spy<any>;
+    //let getStateSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -16,7 +16,7 @@ describe('Service: StampPickerViewerService', () => {
         });
         service = TestBed.inject(StampPickerService);
         setStateSpy = spyOn<any>(service, 'setState').and.callThrough();
-        getStateSpy = spyOn<any>(service, 'getState').and.callThrough();
+        //getStateSpy = spyOn<any>(service, 'getState').and.callThrough();
     });
 
     it('should be created', () => {
