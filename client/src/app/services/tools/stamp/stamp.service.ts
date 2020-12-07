@@ -14,11 +14,11 @@ import { WidthService } from '@app/services/tool-modifier/width/width.service';
     providedIn: 'root',
 })
 export class StampService extends Tool {
-    private readonly STAMP1_IMAGE_SOURCE = '/assets/images/approved.png';
-    private readonly STAMP2_IMAGE_SOURCE = '/assets/images/certified.png';
-    private readonly STAMP3_IMAGE_SOURCE = '/assets/images/crown.png';
-    private readonly STAMP4_IMAGE_SOURCE = '/assets/images/crown2.png';
-    private readonly STAMP5_IMAGE_SOURCE = '/assets/images/sealN.png';
+    private readonly STAMP1_IMAGE_SOURCE: string = '/assets/images/approved.png';
+    private readonly STAMP2_IMAGE_SOURCE: string = '/assets/images/certified.png';
+    private readonly STAMP3_IMAGE_SOURCE: string = '/assets/images/crown.png';
+    private readonly STAMP4_IMAGE_SOURCE: string = '/assets/images/crown2.png';
+    private readonly STAMP5_IMAGE_SOURCE: string = '/assets/images/sealN.png';
     private readonly DEFAULT_SIZE_VALUE: number = 25;
 
     private pathData: Vec2[];
