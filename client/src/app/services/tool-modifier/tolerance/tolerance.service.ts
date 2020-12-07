@@ -8,10 +8,9 @@ import { ToleranceModifierState } from './tolerance-state';
     providedIn: 'root',
 })
 export class ToleranceService extends ToolModifier {
-    readonly DEFAULT_TOLERANCE: number = 0;
     readonly MAX_TOLERANCE: number = 100;
     readonly MIN_TOLERANCE: number = 0;
-    private percentTolerance: number = this.DEFAULT_TOLERANCE;
+    private percentTolerance: number = 0;
     private pixelTolerance: number = 0;
 
     constructor(private modifierHandlerService: ModifierHandlerService) {

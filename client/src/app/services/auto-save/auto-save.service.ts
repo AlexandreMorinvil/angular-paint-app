@@ -13,11 +13,11 @@ export class AutoSaveService {
     clearAutoSaveDrawing(): void {
         this.storage.removeItem('drawing');
     }
+
     hasSavedDrawing(): boolean {
         if (this.storage.getItem('drawing')) {
             return true;
         }
-
         return false;
     }
 

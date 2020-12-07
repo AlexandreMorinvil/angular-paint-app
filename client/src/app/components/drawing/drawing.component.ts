@@ -163,6 +163,7 @@ export class DrawingComponent implements AfterViewInit {
         const IS_CTRL_KEY: boolean = event.ctrlKey;
         const IS_SHIFT_KEY: boolean = event.shiftKey;
         const SHORT_CUT_ENABLE: boolean = this.drawingService.shortcutEnable;
+
         if (!KEY_CODE) {
             return;
         }

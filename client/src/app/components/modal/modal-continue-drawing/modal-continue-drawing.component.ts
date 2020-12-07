@@ -29,19 +29,18 @@ export class ContinueDrawingModalComponent implements AfterViewInit {
 
     getAutoSavedDrawings(): void {
         if (this.autoSaveService.hasSavedDrawing()) {
-            const src = this.autoSaveService.getAutoSavedDrawingURL();
-
-            const ctx = this.canvas.nativeElement.getContext('2d');
+            const SOURCE = this.autoSaveService.getAutoSavedDrawingURL();
+            const CONTEXT = this.canvas.nativeElement.getContext('2d');
 
             const image = new Image();
             image.onload = () => {
-                if (ctx) {
+                if (CONTEXT) {
                     this.canvas.nativeElement.width = image.width;
                     this.canvas.nativeElement.height = image.height;
-                    ctx.drawImage(image, 0, 0);
+                    CONTEXT.drawImage(image, 0, 0);
                 }
             };
-            image.src = src;
+            image.src = SOURCE;
         }
     }
 
@@ -49,18 +48,18 @@ export class ContinueDrawingModalComponent implements AfterViewInit {
         if (!this.autoSaveService.hasSavedDrawing()) {
             return;
         }
-        const src = this.autoSaveService.getAutoSavedDrawingURL();
-        const image = new Image();
-        image.onload = () => {
-            this.drawingService.baseCtx.canvas.width = image.width;
-            this.drawingService.baseCtx.canvas.height = image.height;
+        const SOURCE = this.autoSaveService.getAutoSavedDrawingURL();
+        const IMAGE = new Image();
+        IMAGE.onload = () => {
+            this.drawingService.baseCtx.canvas.width = IMAGE.width;
+            this.drawingService.baseCtx.canvas.height = IMAGE.height;
 
-            this.drawingService.previewCtx.canvas.width = image.width;
-            this.drawingService.previewCtx.canvas.height = image.height;
+            this.drawingService.previewCtx.canvas.width = IMAGE.width;
+            this.drawingService.previewCtx.canvas.height = IMAGE.height;
 
-            this.drawingService.baseCtx.drawImage(image, 0, 0);
+            this.drawingService.baseCtx.drawImage(IMAGE, 0, 0);
         };
-        image.src = src;
+        IMAGE.src = SOURCE;
 
         this.router.navigate(['/editor']);
         this.dialogRef.close();

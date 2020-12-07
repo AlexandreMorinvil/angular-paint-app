@@ -17,7 +17,8 @@ export class AerosolService extends Tool {
     private readonly NUMBER_MILLISECONDS_IN_SECOND: number = 1000;
     private readonly FACTOR_TIME_INTERVAL_BETWEEN_SPRAY: number = 100;
     private pathData: Vec2[];
-    private savedPathData: Vec2[]; // Path using for undo redo
+    private savedPathData: Vec2[];
+    // We use any because when we use number for sprayIntervalId it occur an error on compalling
     // tslint:disable:no-any
     private sprayIntervalId: any;
     private sprayDropletDiameter: number;
@@ -69,33 +70,34 @@ export class AerosolService extends Tool {
     }
 
     onMouseMove(event: MouseEvent): void {
-        if (this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
-            this.pathData.push(mousePosition);
+        if (!this.mouseDown) {
+            return;
         }
+        const mousePosition = this.getPositionFromMouse(event);
+        this.pathData.push(mousePosition);
     }
 
     private sprayPaint(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         const mouseMoveCoord: Vec2 = path[path.length - 1];
-        if (this.isInCanvas(mouseMoveCoord)) {
-            this.setAttribute(ctx);
-            const X_POSITION = mouseMoveCoord.x;
-            const Y_POSITION = mouseMoveCoord.y;
-            const numberSprayTransmission =
-                this.numberSprayTransmissionService.getNumberSprayTransmission() / this.FACTOR_TIME_INTERVAL_BETWEEN_SPRAY;
-            for (let i = 0; i < numberSprayTransmission; i++) {
-                ctx.beginPath();
-                const X_VALUE_OFFSET = this.getRandomPoint().x;
-                const Y_VALUE_OFFSET = this.getRandomPoint().y;
-                const X_VALUE = X_POSITION + X_VALUE_OFFSET;
-                const Y_VALUE = Y_POSITION + Y_VALUE_OFFSET;
-                this.sprayDropletDiameter = this.sprayDropletService.getSprayDropletDiameter();
-                const DROPLET_RADIUS = this.sprayDropletDiameter / 2;
-                const SAVED_DATA: Vec2 = { x: X_VALUE, y: Y_VALUE }; // Saving Data For Undo Redo
-                this.savedPathData.push(SAVED_DATA);
-                ctx.arc(X_VALUE, Y_VALUE, DROPLET_RADIUS, 0, 2 * Math.PI, false);
-                ctx.fill();
-            }
+        if (!this.isInCanvas(mouseMoveCoord)) {
+            return;
+        }
+        this.setAttribute(ctx);
+        const X_POSITION = mouseMoveCoord.x;
+        const Y_POSITION = mouseMoveCoord.y;
+        const numberSprayTransmission = this.numberSprayTransmissionService.getNumberSprayTransmission() / this.FACTOR_TIME_INTERVAL_BETWEEN_SPRAY;
+        for (let i = 0; i < numberSprayTransmission; i++) {
+            ctx.beginPath();
+            const X_VALUE_OFFSET = this.getRandomPoint().x;
+            const Y_VALUE_OFFSET = this.getRandomPoint().y;
+            const X_VALUE = X_POSITION + X_VALUE_OFFSET;
+            const Y_VALUE = Y_POSITION + Y_VALUE_OFFSET;
+            this.sprayDropletDiameter = this.sprayDropletService.getSprayDropletDiameter();
+            const DROPLET_RADIUS = this.sprayDropletDiameter / 2;
+            const SAVED_DATA: Vec2 = { x: X_VALUE, y: Y_VALUE }; // Saving Data For Undo Redo
+            this.savedPathData.push(SAVED_DATA);
+            ctx.arc(X_VALUE, Y_VALUE, DROPLET_RADIUS, 0, 2 * Math.PI, false);
+            ctx.fill();
         }
     }
 

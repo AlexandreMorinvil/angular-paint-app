@@ -55,22 +55,22 @@ export class GridService extends Tool {
     }
 
     private drawGrid(): void {
-        const width = this.gridCanvas.width;
-        const height = this.gridCanvas.height;
-        const spacing = this.spacingService.getSpacing();
+        const WIDTH = this.gridCanvas.width;
+        const HEIGHT = this.gridCanvas.height;
+        const SPACING = this.spacingService.getSpacing();
 
         this.setAttribtes();
-        for (let x = spacing; x <= width; x += spacing) {
+        for (let x = SPACING; x <= WIDTH; x += SPACING) {
             this.gridCtx.beginPath();
             this.gridCtx.moveTo(x, 0);
-            this.gridCtx.lineTo(x, height);
+            this.gridCtx.lineTo(x, HEIGHT);
             this.gridCtx.stroke();
             this.gridCtx.closePath();
         }
-        for (let y = spacing; y <= height; y += spacing) {
+        for (let y = SPACING; y <= HEIGHT; y += SPACING) {
             this.gridCtx.beginPath();
             this.gridCtx.moveTo(0, y);
-            this.gridCtx.lineTo(width, y);
+            this.gridCtx.lineTo(WIDTH, y);
             this.gridCtx.stroke();
             this.gridCtx.closePath();
         }

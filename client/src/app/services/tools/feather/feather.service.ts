@@ -54,8 +54,7 @@ export class FeatherService extends Tool {
         if (this.angleInRadian === RESET_ANGLE) {
             if (ORIENTATION < 0) {
                 this.angleInRadian = CIRCLE_ANGLE;
-            }
-            if (ORIENTATION > 0) {
+            } else {
                 this.angleInRadian = 0;
             }
         }
@@ -77,11 +76,11 @@ export class FeatherService extends Tool {
 
     onMouseMove(event: MouseEvent): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        const mousePosition = this.getPositionFromMouse(event);
-        this.pathData.push(mousePosition);
+        const MOUSE_POSITION = this.getPositionFromMouse(event);
+        this.pathData.push(MOUSE_POSITION);
         this.featherDraw(this.drawingService.previewCtx, this.pathData);
         if (this.mouseDown) {
-            if (this.isInCanvas(mousePosition)) {
+            if (this.isInCanvas(MOUSE_POSITION)) {
                 this.featherDraw(this.drawingService.baseCtx, this.pathData);
             }
         }
@@ -89,10 +88,9 @@ export class FeatherService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
-            this.pathData.push(mousePosition);
+            const MOUSE_POSITION = this.getPositionFromMouse(event);
+            this.pathData.push(MOUSE_POSITION);
             this.featherDraw(this.drawingService.baseCtx, this.pathData);
-
             this.drawingStateTrackingService.addAction(this, new InteractionPath(this.pathData));
         }
         this.mouseDown = false;
@@ -106,18 +104,18 @@ export class FeatherService extends Tool {
         ctx.fillStyle = this.colorService.getPrimaryColor();
         const LINE_WIDTH = 1;
         ctx.lineWidth = LINE_WIDTH;
-        const lastPosition: Vec2 = path[path.length - 2];
-        const currentPosition: Vec2 = path[path.length - 1];
+        const LAST_POSITION: Vec2 = path[path.length - 2];
+        const CURRENT_POSITION: Vec2 = path[path.length - 1];
         if (this.pathData.length > 2) {
             for (let i = 0; i < this.widthService.getWidth(); i++) {
                 ctx.moveTo(
-                    lastPosition.x + Math.sin(this.convertDegreeToRadian(this.angleInRadian)) * i,
-                    lastPosition.y - Math.cos(this.convertDegreeToRadian(this.angleInRadian)) * i,
+                    LAST_POSITION.x + Math.sin(this.convertDegreeToRadian(this.angleInRadian)) * i,
+                    LAST_POSITION.y - Math.cos(this.convertDegreeToRadian(this.angleInRadian)) * i,
                 );
 
                 ctx.lineTo(
-                    currentPosition.x + Math.sin(this.convertDegreeToRadian(this.angleInRadian)) * i,
-                    currentPosition.y - Math.cos(this.convertDegreeToRadian(this.angleInRadian)) * i,
+                    CURRENT_POSITION.x + Math.sin(this.convertDegreeToRadian(this.angleInRadian)) * i,
+                    CURRENT_POSITION.y - Math.cos(this.convertDegreeToRadian(this.angleInRadian)) * i,
                 );
             }
             ctx.stroke();
@@ -126,13 +124,13 @@ export class FeatherService extends Tool {
         if (this.pathData.length < 2) {
             for (let i = 0; i < this.widthService.getWidth(); i++) {
                 ctx.moveTo(
-                    currentPosition.x + Math.sin(this.convertDegreeToRadian(this.angleInRadian)) * i,
-                    currentPosition.y - Math.cos(this.convertDegreeToRadian(this.angleInRadian)) * i,
+                    CURRENT_POSITION.x + Math.sin(this.convertDegreeToRadian(this.angleInRadian)) * i,
+                    CURRENT_POSITION.y - Math.cos(this.convertDegreeToRadian(this.angleInRadian)) * i,
                 );
 
                 ctx.lineTo(
-                    currentPosition.x + 1 + Math.sin(this.convertDegreeToRadian(this.angleInRadian)) * i,
-                    currentPosition.y - Math.cos(this.convertDegreeToRadian(this.angleInRadian)) * i,
+                    CURRENT_POSITION.x + 1 + Math.sin(this.convertDegreeToRadian(this.angleInRadian)) * i,
+                    CURRENT_POSITION.y - Math.cos(this.convertDegreeToRadian(this.angleInRadian)) * i,
                 );
             }
             ctx.stroke();
@@ -150,8 +148,8 @@ export class FeatherService extends Tool {
 
     execute(interaction: InteractionPath): void {
         for (let i = 0; i < interaction.path.length - 1; i++) {
-            const pathData: Vec2[] = [interaction.path[i], interaction.path[i + 1]];
-            this.featherDraw(this.drawingService.baseCtx, pathData);
+            const PATH_DATA: Vec2[] = [interaction.path[i], interaction.path[i + 1]];
+            this.featherDraw(this.drawingService.baseCtx, PATH_DATA);
         }
     }
 }

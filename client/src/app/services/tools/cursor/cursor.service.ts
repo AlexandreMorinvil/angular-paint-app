@@ -50,24 +50,24 @@ export class CursorService extends Tool {
     }
 
     onMouseMove(event: MouseEvent): void {
-        if (this.clickOnAnchor && this.mouseDown) {
-            this.mouseDownCoord = this.getPositionFromMouse(event);
-            switch (this.anchorHit) {
-                case 1:
-                    this.moveWidth(this.mouseDownCoord.x);
-                    this.moveHeight(this.mouseDownCoord.y);
-                    break;
-                case 2:
-                    this.moveWidth(this.mouseDownCoord.x);
-                    break;
-                // tslint:disable-next-line:no-magic-numbers
-                case 3:
-                    this.moveHeight(this.mouseDownCoord.y);
-                    break;
-                default:
-                    this.anchorHit = 0;
-                    break;
-            }
+        if (!this.clickOnAnchor || !this.mouseDown) {
+            return;
+        }
+        this.mouseDownCoord = this.getPositionFromMouse(event);
+        switch (this.anchorHit) {
+            case 1:
+                this.moveWidth(this.mouseDownCoord.x);
+                this.moveHeight(this.mouseDownCoord.y);
+                break;
+            case 2:
+                this.moveWidth(this.mouseDownCoord.x);
+                break;
+            case 3:
+                this.moveHeight(this.mouseDownCoord.y);
+                break;
+            default:
+                this.anchorHit = 0;
+                break;
         }
     }
 
@@ -97,25 +97,25 @@ export class CursorService extends Tool {
     private checkHit(mouse: Vec2, canvas: HTMLCanvasElement): void {
         let x: number;
         let y: number;
-        const dotSizeSquare: number = Math.pow(this.dotsize, 2);
+        const DOT_SIZE_SQUARE: number = Math.pow(this.dotsize, 2);
 
         x = Math.pow(mouse.x - canvas.width, 2);
         y = Math.pow(mouse.y - canvas.height, 2);
-        if (x + y <= dotSizeSquare) {
+        if (x + y <= DOT_SIZE_SQUARE) {
             this.clickOnAnchor = true;
             this.anchorHit = 1;
         }
 
         x = Math.pow(mouse.x - canvas.width, 2);
         y = Math.pow(mouse.y - canvas.height / 2, 2);
-        if (x + y <= dotSizeSquare) {
+        if (x + y <= DOT_SIZE_SQUARE) {
             this.clickOnAnchor = true;
             this.anchorHit = 2;
         }
 
         x = Math.pow(mouse.x - canvas.width / 2, 2);
         y = Math.pow(mouse.y - canvas.height, 2);
-        if (x + y <= dotSizeSquare) {
+        if (x + y <= DOT_SIZE_SQUARE) {
             this.clickOnAnchor = true;
             // tslint:disable-next-line:no-magic-numbers
             this.anchorHit = 3;

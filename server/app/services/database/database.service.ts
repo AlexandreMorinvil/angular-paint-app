@@ -56,7 +56,7 @@ export class DatabaseService {
             .then((drawings: DrawingToDatabase[]) => {
                 return drawings;
             })
-            .catch((error: Error) => {
+            .catch(() => {
                 throw new Error(this.ERROR_GET_ALL_DRAWING);
             });
     }
@@ -67,15 +67,15 @@ export class DatabaseService {
             .then((drawing: DrawingToDatabase) => {
                 return drawing;
             })
-            .catch((error: Error) => {
+            .catch(() => {
                 throw new Error(this.ERROR_NO_DRAWING_FOUND);
             });
     }
 
     async getDrawingByName(drawingName: string): Promise<DrawingToDatabase[]> {
-        const filterQuery: FilterQuery<DrawingToDatabase> = { name: drawingName };
+        const FILTER_QUERY: FilterQuery<DrawingToDatabase> = { name: drawingName };
         return this.collection
-            .find(filterQuery)
+            .find(FILTER_QUERY)
             .toArray()
             .then((drawings: DrawingToDatabase[]) => {
                 return drawings;
@@ -86,9 +86,9 @@ export class DatabaseService {
     }
 
     async getDrawingByTags(drawingTag: string): Promise<DrawingToDatabase[]> {
-        const filterQuery: FilterQuery<DrawingToDatabase> = { tags: drawingTag };
+        const FILTER_QUERY: FilterQuery<DrawingToDatabase> = { tags: drawingTag };
         return this.collection
-            .find(filterQuery)
+            .find(FILTER_QUERY)
             .toArray()
             .then((drawing: DrawingToDatabase[]) => {
                 return drawing;
@@ -107,7 +107,7 @@ export class DatabaseService {
                 .then((returnValue) => {
                     this.drawId = returnValue.insertedId.toString();
                 })
-                .catch((error: Error) => {
+                .catch(() => {
                     throw new Error(this.ERROR_ADD_DRAWING);
                 });
         } catch (error) {
@@ -116,12 +116,12 @@ export class DatabaseService {
     }
     // tslint:disable:no-empty
     async updateDrawing(drawingID: string, drawing: DrawingToDatabase): Promise<void> {
-        const filterQuery: FilterQuery<DrawingToDatabase> = { _id: drawingID };
-        const updateQuery: UpdateQuery<DrawingToDatabase> = {
+        const FILTER_QUERY: FilterQuery<DrawingToDatabase> = { _id: drawingID };
+        const UPDATE_QUERY: UpdateQuery<DrawingToDatabase> = {
             $set: { name: drawing.name, tags: drawing.tags },
         };
         this.collection
-            .updateOne(filterQuery, updateQuery)
+            .updateOne(FILTER_QUERY, UPDATE_QUERY)
             .then(() => {})
             .catch(() => {
                 throw new Error(this.ERROR_UPDATE_DRAWING);
@@ -132,7 +132,7 @@ export class DatabaseService {
         return this.collection
             .findOneAndDelete({ _id: drawingID })
             .then(() => {})
-            .catch((error: Error) => {
+            .catch(() => {
                 throw new Error(this.ERROR_DELETE_DRAWING);
             });
     }

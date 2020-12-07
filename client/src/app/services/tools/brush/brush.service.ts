@@ -32,11 +32,12 @@ export class BrushService extends Tool {
 
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
-        if (this.mouseDown) {
-            this.clearPath();
-            this.mouseDownCoord = this.getPositionFromMouse(event);
-            this.pathData.push(this.mouseDownCoord);
+        if (!this.mouseDown) {
+            return;
         }
+        this.clearPath();
+        this.mouseDownCoord = this.getPositionFromMouse(event);
+        this.pathData.push(this.mouseDownCoord);
     }
 
     onMouseUp(event: MouseEvent): void {
@@ -52,14 +53,15 @@ export class BrushService extends Tool {
     }
 
     onMouseMove(event: MouseEvent): void {
-        if (this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
-            this.pathData.push(mousePosition);
-
-            // We draw on the preview canvas and erase it each time the mouse is moved
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawLine(this.drawingService.previewCtx, this.pathData);
+        if (!this.mouseDown) {
+            return;
         }
+        const mousePosition = this.getPositionFromMouse(event);
+        this.pathData.push(mousePosition);
+
+        // We draw on the preview canvas and erase it each time the mouse is moved
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawLine(this.drawingService.previewCtx, this.pathData);
     }
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
@@ -98,15 +100,15 @@ export class BrushService extends Tool {
         ctx.shadowColor = this.colorService.getPrimaryColor();
         ctx.fillStyle = this.colorService.getPrimaryColor();
         ctx.lineWidth = this.widthService.getWidth();
-        const shadowBlur = 5;
-        const noShadowBlur = 0;
-        const startingPointAdjustment = 2;
+        const SHADOW_BLUR = 5;
+        const NO_SHADOW_BLUR = 0;
+        const STARTING_POINT_ADJUSTMENT = 2;
 
-        ctx.shadowBlur = shadowBlur;
+        ctx.shadowBlur = SHADOW_BLUR;
         // First pixel
         ctx.fillRect(
-            path[0].x - this.widthService.getWidth() / startingPointAdjustment,
-            path[0].y - this.widthService.getWidth() / startingPointAdjustment,
+            path[0].x - this.widthService.getWidth() / STARTING_POINT_ADJUSTMENT,
+            path[0].y - this.widthService.getWidth() / STARTING_POINT_ADJUSTMENT,
             this.widthService.getWidth(),
             this.widthService.getWidth(),
         );
@@ -117,7 +119,7 @@ export class BrushService extends Tool {
             ctx.lineTo(point.x, point.y);
         }
         ctx.stroke();
-        ctx.shadowBlur = noShadowBlur;
+        ctx.shadowBlur = NO_SHADOW_BLUR;
     }
 
     private gradientTexture(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
@@ -128,47 +130,47 @@ export class BrushService extends Tool {
         ctx.lineWidth = this.widthService.getWidth();
 
         // loop parameters
-        const normalAlpha = 1;
-        const numberOfLines = 4;
-        const alphaDecreaseRate = 0.25;
-        const aestheticAdjustment = 2;
+        const NORMAL_ALPHA = 1;
+        const NUMBER_OF_LINES = 4;
+        const ALPHA_DECREASE_RATE = 0.25;
+        const AESTHETIC_ADJUSTMENT = 2;
 
         // first pixel
-        for (let i = 0; i < numberOfLines; i++) {
-            ctx.globalAlpha = this.colorService.getPrimaryColorOpacity() * (normalAlpha - alphaDecreaseRate * i);
-            ctx.fillRect(path[0].x, path[0].y + this.widthService.getWidth() * i, 1, this.widthService.getWidth() / aestheticAdjustment);
+        for (let i = 0; i < NUMBER_OF_LINES; i++) {
+            ctx.globalAlpha = this.colorService.getPrimaryColorOpacity() * (NORMAL_ALPHA - ALPHA_DECREASE_RATE * i);
+            ctx.fillRect(path[0].x, path[0].y + this.widthService.getWidth() * i, 1, this.widthService.getWidth() / AESTHETIC_ADJUSTMENT);
         }
 
         // drawing of the line
-        for (let i = 0; i < numberOfLines; i++) {
-            ctx.globalAlpha = this.colorService.getPrimaryColorOpacity() * (normalAlpha - alphaDecreaseRate * i);
+        for (let i = 0; i < NUMBER_OF_LINES; i++) {
+            ctx.globalAlpha = this.colorService.getPrimaryColorOpacity() * (NORMAL_ALPHA - ALPHA_DECREASE_RATE * i);
             ctx.beginPath();
             for (const point of path) ctx.lineTo(point.x, point.y + this.widthService.getWidth() * i);
             ctx.stroke();
         }
-        ctx.globalAlpha = normalAlpha;
+        ctx.globalAlpha = NORMAL_ALPHA;
     }
 
     private squareTexture(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         // parameters of the line
         ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
         ctx.fillStyle = this.colorService.getPrimaryColor();
-        const squareWidthAdjustment = 5;
-        const squareStartingPointAdjustment = 2;
+        const SQUARE_WIDTH_ADJUSTMENT = 5;
+        const SQUARE_STARTING_POINT_ADJUSTMENT = 2;
         // first pixel
         ctx.fillRect(
-            path[0].x - this.widthService.getWidth() / squareStartingPointAdjustment,
-            path[0].y - this.widthService.getWidth() / squareStartingPointAdjustment,
-            this.widthService.getWidth() + squareWidthAdjustment,
-            this.widthService.getWidth() + squareWidthAdjustment,
+            path[0].x - this.widthService.getWidth() / SQUARE_STARTING_POINT_ADJUSTMENT,
+            path[0].y - this.widthService.getWidth() / SQUARE_STARTING_POINT_ADJUSTMENT,
+            this.widthService.getWidth() + SQUARE_WIDTH_ADJUSTMENT,
+            this.widthService.getWidth() + SQUARE_WIDTH_ADJUSTMENT,
         );
         // Drawing of the squares
         for (const point of path) {
             ctx.fillRect(
-                point.x - this.widthService.getWidth() / squareStartingPointAdjustment,
-                point.y - this.widthService.getWidth() / squareStartingPointAdjustment,
-                this.widthService.getWidth() + squareWidthAdjustment,
-                this.widthService.getWidth() + squareWidthAdjustment,
+                point.x - this.widthService.getWidth() / SQUARE_STARTING_POINT_ADJUSTMENT,
+                point.y - this.widthService.getWidth() / SQUARE_STARTING_POINT_ADJUSTMENT,
+                this.widthService.getWidth() + SQUARE_WIDTH_ADJUSTMENT,
+                this.widthService.getWidth() + SQUARE_WIDTH_ADJUSTMENT,
             );
         }
     }
@@ -179,12 +181,12 @@ export class BrushService extends Tool {
         ctx.strokeStyle = this.colorService.getPrimaryColor();
         ctx.fillStyle = this.colorService.getPrimaryColor();
         ctx.lineWidth = this.widthService.getWidth();
-        const dashThickness = 4;
-        const dashSpace = 16;
+        const DASH_THICKNESS = 4;
+        const DASH_SPACE = 16;
 
-        ctx.setLineDash([dashThickness, dashSpace]);
+        ctx.setLineDash([DASH_THICKNESS, DASH_SPACE]);
         // first pixel
-        ctx.fillRect(path[0].x, path[0].y - ctx.lineWidth / 2, dashThickness, ctx.lineWidth);
+        ctx.fillRect(path[0].x, path[0].y - ctx.lineWidth / 2, DASH_THICKNESS, ctx.lineWidth);
 
         // drawing of the line
         ctx.beginPath();
@@ -200,18 +202,18 @@ export class BrushService extends Tool {
         ctx.globalAlpha = this.colorService.getPrimaryColorOpacity();
         ctx.strokeStyle = this.colorService.getPrimaryColor();
         ctx.lineWidth = this.widthService.getWidth();
-        const zigzagWidthMultiplier = 2;
+        const ZIGZAG_WIDTH_MULTIPLIER = 2;
 
         // drawing of the line
         ctx.beginPath();
         for (const point of path) {
             ctx.lineTo(
-                point.x + zigzagWidthMultiplier * this.widthService.getWidth(),
-                point.y - zigzagWidthMultiplier * this.widthService.getWidth(),
+                point.x + ZIGZAG_WIDTH_MULTIPLIER * this.widthService.getWidth(),
+                point.y - ZIGZAG_WIDTH_MULTIPLIER * this.widthService.getWidth(),
             );
             ctx.lineTo(
-                point.x - zigzagWidthMultiplier * this.widthService.getWidth(),
-                point.y + zigzagWidthMultiplier * this.widthService.getWidth(),
+                point.x - ZIGZAG_WIDTH_MULTIPLIER * this.widthService.getWidth(),
+                point.y + ZIGZAG_WIDTH_MULTIPLIER * this.widthService.getWidth(),
             );
         }
         ctx.stroke();
