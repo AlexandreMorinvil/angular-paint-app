@@ -158,6 +158,7 @@ export class RectangleSelectionService extends SelectionToolService {
             this.addActionTracking(MOUSE_POSITION);
             // put selection on previewCanvas
             this.pathLastCoord = this.getBottomRightCorner();
+            this.clipboardHelperImage = this.image;
             this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
             this.drawSelectionSurround();
             // remove original rectangle from base

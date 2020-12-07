@@ -53,6 +53,7 @@ export abstract class SelectionToolService extends Tool {
     protected resizeHeight: number;
 
     protected image: HTMLImageElement;
+    protected clipboardHelperImage: HTMLImageElement;
     protected edgePixelsSplitted: EdgePixelsOneRegion[] = [];
 
     constructor(
@@ -63,6 +64,7 @@ export abstract class SelectionToolService extends Tool {
         private clipboardService: ClipBoardService,
     ) {
         super(drawingService, description);
+        this.clipboardHelperImage = new Image();
         this.mouseDown = false;
         this.selectionCreated = false;
         this.draggingImage = false;
@@ -83,7 +85,7 @@ export abstract class SelectionToolService extends Tool {
     }
 
     copy(): void {
-        if (this.selectionCreated) this.clipboardService.memorize(this.startDownCoord, this.selectionSize);
+        if (this.selectionCreated) this.clipboardService.memorize(this.clipboardHelperImage, this.startDownCoord, this.selectionSize);
     }
 
     paste(): void {
