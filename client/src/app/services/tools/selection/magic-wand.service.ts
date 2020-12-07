@@ -10,7 +10,7 @@ import { TracingService } from '@app/services/tool-modifier/tracing/tracing.serv
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
 import { SelectionToolService } from '@app/services/tools/selection/selection-tool.service';
-//import { EdgePixelsOneRegion } from './edge-pixel';
+// import { EdgePixelsOneRegion } from './edge-pixel';
 // tslint:disable:max-file-line-count
 @Injectable({
     providedIn: 'root',
@@ -130,15 +130,19 @@ export class MagicWandService extends SelectionToolService {
         } else if (this.clickOnAnchor) {
             // tslint:disable:no-magic-numbers
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            // this.getAnchorHit(this.drawingService.baseCtx, MOUSE_POSITION, 3);
-            this.getAnchorHit(this.drawingService.previewCtx, MOUSE_POSITION, 3);
+            this.getAnchorHit(this.drawingService.previewCtx, MOUSE_POSITION, 3); // draw new image on preview
+            this.getAnchorHit(this.drawingService.baseCtx, MOUSE_POSITION, 3); // draw new image on base for saving image.src
             this.pathData.push({ x: this.resizeStartCoords.x + this.resizeWidth, y: this.resizeStartCoords.y + this.resizeHeight });
             this.startDownCoord = this.offsetAnchors(this.resizeStartCoords);
             this.rectangleService.onMouseDown({ offsetX: this.startDownCoord.x, offsetY: this.startDownCoord.y, button: 0 } as MouseEvent);
             this.selectionSize = { x: Math.abs(this.resizeWidth), y: Math.abs(this.resizeHeight) };
-            this.pathData.push({ x: this.startDownCoord.x + this.selectionSize.x, y: this.startDownCoord.y + this.selectionSize.y });
+            this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
+            this.addActionTracking(this.startDownCoord); // Undo redo
+            this.clearCanvasSelection();
+            this.pathData.push(this.getBottomRightCorner());
             this.drawSelectionSurround();
             this.clearPath();
+            this.firstSelectionCoord = this.startDownCoord; // reset firstSelectionCoord to new place on new image
             this.clickOnAnchor = false;
             this.hasDoneResizing = true;
 

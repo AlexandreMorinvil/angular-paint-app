@@ -81,10 +81,11 @@ export class RectangleSelectionService extends SelectionToolService {
             this.rectangleService.onMouseMove(event);
             if (this.startDownCoord.x !== MOUSE_POSITION.x && this.startDownCoord.y !== MOUSE_POSITION.y && this.rectangleService.shiftDown) {
                 const SQUARE = this.getSquaredSize(MOUSE_POSITION);
-                this.selectionSize = { x: SQUARE.x, y: SQUARE.y };
+                this.selectionSize = { x: Math.abs(SQUARE.x), y: Math.abs(SQUARE.y) };
             } else if (this.startDownCoord.x !== MOUSE_POSITION.x && this.startDownCoord.y !== MOUSE_POSITION.y && !this.rectangleService.shiftDown) {
                 this.selectionSize = { x: Math.abs(this.startDownCoord.x - MOUSE_POSITION.x), y: Math.abs(this.startDownCoord.y - MOUSE_POSITION.y) };
             }
+            this.pathData.push(MOUSE_POSITION);
         }
     }
 
@@ -116,10 +117,10 @@ export class RectangleSelectionService extends SelectionToolService {
             this.selectionSize = { x: Math.abs(this.resizeWidth), y: Math.abs(this.resizeHeight) };
             this.image.src = this.drawingService.baseCtx.canvas.toDataURL(); // save new image with resized selection
             this.pathLastCoord = this.getBottomRightCorner();
-            this.addActionTracking(this.pathLastCoord); // Undo redo
+            this.addActionTracking(this.startDownCoord); // Undo redo
             // draw selection surround
             const temp1 = this.startDownCoord;
-            // remove original ellipse from base
+            // remove original rectangle from base
             this.drawingService.baseCtx.clearRect(this.startDownCoord.x, this.startDownCoord.y, this.selectionSize.x, this.selectionSize.y); // MOVE AFTER ROTATION WHEN WORKS
             this.rotateCanvas();
             this.rectangleService.mouseDownCoord = this.startDownCoord;
@@ -143,7 +144,7 @@ export class RectangleSelectionService extends SelectionToolService {
             // Puts startDownCoord at the top left of the selection
             this.startDownCoord = this.offsetAnchors(this.startDownCoord);
             this.firstSelectionCoord = this.startDownCoord;
-            this.addActionTracking(MOUSE_POSITION);
+            this.addActionTracking(this.startDownCoord);
             // put selection on previewCanvas
             this.pathLastCoord = this.getBottomRightCorner();
             this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
@@ -254,8 +255,9 @@ export class RectangleSelectionService extends SelectionToolService {
     onShiftDown(event: KeyboardEvent): void {
         if (!event.ctrlKey) {
             this.shiftDown = true;
-            this.ratio = this.getRatio(this.selectionSize.x, this.selectionSize.y);
-            if (!this.clickOnAnchor) {
+            if (this.clickOnAnchor) {
+                this.ratio = this.getRatio(this.selectionSize.x, this.selectionSize.y);
+            } else {
                 this.rectangleService.shiftDown = true;
                 if (this.localMouseDown) {
                     const MOUSE_EVENT = this.createOnMouseMoveEvent();

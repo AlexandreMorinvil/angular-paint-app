@@ -81,10 +81,11 @@ export class EllipseSelectionService extends SelectionToolService {
             this.ellipseService.onMouseMove(event);
             if (this.startDownCoord.x !== MOUSE_POSITION.x && this.startDownCoord.y !== MOUSE_POSITION.y && this.shiftDown) {
                 const SQUARE = this.getSquaredSize(MOUSE_POSITION);
-                this.selectionSize = { x: SQUARE.x, y: SQUARE.y };
+                this.selectionSize = { x: Math.abs(SQUARE.x), y: Math.abs(SQUARE.y) };
             } else if (this.startDownCoord.x !== MOUSE_POSITION.x && this.startDownCoord.y !== MOUSE_POSITION.y && !this.shiftDown) {
                 this.selectionSize = { x: Math.abs(this.startDownCoord.x - MOUSE_POSITION.x), y: Math.abs(this.startDownCoord.y - MOUSE_POSITION.y) };
             }
+            this.pathData.push(MOUSE_POSITION);
         }
     }
 
@@ -116,7 +117,7 @@ export class EllipseSelectionService extends SelectionToolService {
             this.selectionSize = { x: Math.abs(this.resizeWidth), y: Math.abs(this.resizeHeight) };
             this.image.src = this.drawingService.baseCtx.canvas.toDataURL(); // save new image with resized selection
             this.pathLastCoord = this.getBottomRightCorner();
-            this.addActionTracking(this.pathLastCoord); // Undo redo
+            this.addActionTracking(this.startDownCoord); // Undo redo
             this.clearCanvasEllipse(); // remove the ellipse from base after the new image saved, MOVE AFTER ROTATION WHEN WORKS
             // draw selection surround
             const temp1 = this.startDownCoord;
