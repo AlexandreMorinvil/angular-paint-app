@@ -32,20 +32,19 @@ export class DrawingService {
 
     printCanvas(image: ImageData): void {
         this.clearCanvas(this.baseCtx);
-        // this.baseCtx.globalCompositeOperation = 'destination-over';
         this.baseCtx.fillStyle = 'white';
         this.baseCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.baseCtx.putImageData(image, 0, 0);
     }
 
     resize(width: number, height: number): void {
-        const imageData = this.baseCtx.getImageData(0, 0, this.baseCtx.canvas.width, this.baseCtx.canvas.height);
+        const IMAGE_DATA = this.baseCtx.getImageData(0, 0, this.baseCtx.canvas.width, this.baseCtx.canvas.height);
         this.baseCtx.canvas.width = width;
         this.baseCtx.canvas.height = height;
         this.previewCtx.canvas.width = width;
         this.previewCtx.canvas.height = height;
         this.gridService.resize(width, height);
-        this.printCanvas(imageData);
+        this.printCanvas(IMAGE_DATA);
         this.workzoneSizeService.updateDrawingZoneDimension({ width, height });
     }
 

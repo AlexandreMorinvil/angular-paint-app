@@ -34,8 +34,8 @@ export class AttributeJunctionComponent {
     }
 
     needConfirmation(): boolean {
-        const diameterChanged: boolean = this.diameter !== this.junctionService.getDiameter();
-        const hasJunctionPointChanged: boolean = this.hasJunctionPoint !== this.junctionService.getHasJunctionPoint();
-        return diameterChanged || hasJunctionPointChanged;
+        const IS_DIAMETER_CHANGED: boolean = this.diameter !== this.junctionService.getDiameter();
+        const HAS_JUNCTION_POINT_CHANGED: boolean = this.hasJunctionPoint !== this.junctionService.getHasJunctionPoint();
+        return IS_DIAMETER_CHANGED || HAS_JUNCTION_POINT_CHANGED;
     }
 }

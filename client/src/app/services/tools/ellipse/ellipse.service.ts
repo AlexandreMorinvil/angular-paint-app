@@ -34,7 +34,6 @@ export class EllipseService extends Tool {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.clearPath();
-
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
         }
@@ -88,20 +87,20 @@ export class EllipseService extends Tool {
 
     drawEllipse(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
-        const mouseMoveCoord = path[path.length - 1];
-        const centerX = (mouseMoveCoord.x + this.mouseDownCoord.x) / 2;
-        const centerY = (mouseMoveCoord.y + this.mouseDownCoord.y) / 2;
+        const MOUSE_MOVE_COORD = path[path.length - 1];
+        const CENTER_X = (MOUSE_MOVE_COORD.x + this.mouseDownCoord.x) / 2;
+        const CENTER_Y = (MOUSE_MOVE_COORD.y + this.mouseDownCoord.y) / 2;
 
-        const radiusX = Math.abs(mouseMoveCoord.x - this.mouseDownCoord.x) / 2;
-        const radiusY = Math.abs(mouseMoveCoord.y - this.mouseDownCoord.y) / 2;
+        const RADIUS_X = Math.abs(MOUSE_MOVE_COORD.x - this.mouseDownCoord.x) / 2;
+        const RADIUS_Y = Math.abs(MOUSE_MOVE_COORD.y - this.mouseDownCoord.y) / 2;
 
         if (this.tracingService.getHasContour()) {
-            const contourRadiusX = Math.abs(radiusX - this.widthService.getWidth() / 2);
-            const contourRadiusY = Math.abs(radiusY - this.widthService.getWidth() / 2);
-            ctx.ellipse(centerX, centerY, contourRadiusX, contourRadiusY, 0, 0, Math.PI * 2, false);
+            const CONTOUR_RADIUS_X = Math.abs(RADIUS_X - this.widthService.getWidth() / 2);
+            const CONTOUR_RADIUS_Y = Math.abs(RADIUS_Y - this.widthService.getWidth() / 2);
+            ctx.ellipse(CENTER_X, CENTER_Y, CONTOUR_RADIUS_X, CONTOUR_RADIUS_Y, 0, 0, Math.PI * 2, false);
         }
         if (this.tracingService.getHasFill() && !this.tracingService.getHasContour()) {
-            ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI * 2, false);
+            ctx.ellipse(CENTER_X, CENTER_Y, RADIUS_X, RADIUS_Y, 0, 0, Math.PI * 2, false);
             ctx.lineWidth = this.widthService.getWidth();
         }
         this.drawingService.previewCtx.setLineDash([0]); // set line dash to default when drawing Ellipse
@@ -110,13 +109,13 @@ export class EllipseService extends Tool {
 
     drawPreviewRect(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
-        const mouseMoveCoord = path[path.length - 1];
-        const width = mouseMoveCoord.x - this.mouseDownCoord.x;
-        const height = mouseMoveCoord.y - this.mouseDownCoord.y;
-        const startX = this.mouseDownCoord.x;
-        const startY = this.mouseDownCoord.y;
+        const MOUSE_MOVE_COORD = path[path.length - 1];
+        const WIDTH = MOUSE_MOVE_COORD.x - this.mouseDownCoord.x;
+        const HEIGHT = MOUSE_MOVE_COORD.y - this.mouseDownCoord.y;
+        const START_X = this.mouseDownCoord.x;
+        const START_Y = this.mouseDownCoord.y;
         const lineDashValue = 6;
-        ctx.rect(startX, startY, width, height);
+        ctx.rect(START_X, START_Y, WIDTH, HEIGHT);
         ctx.strokeStyle = 'black';
         ctx.setLineDash([lineDashValue]);
         ctx.lineWidth = 1;
@@ -140,25 +139,25 @@ export class EllipseService extends Tool {
     private drawCircle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
 
-        const mouseMoveCoord = path[path.length - 1];
-        const radius = Math.abs(mouseMoveCoord.y - this.mouseDownCoord.y) / 2;
-        const centerY = (mouseMoveCoord.y + this.mouseDownCoord.y) / 2;
-        const lengthPreview = Math.abs(mouseMoveCoord.x - this.mouseDownCoord.x);
+        const MOUSE_MOVE_COORD = path[path.length - 1];
+        const RADIUS = Math.abs(MOUSE_MOVE_COORD.y - this.mouseDownCoord.y) / 2;
+        const CENTER_Y = (MOUSE_MOVE_COORD.y + this.mouseDownCoord.y) / 2;
+        const LENGHT_PREVIEW = Math.abs(MOUSE_MOVE_COORD.x - this.mouseDownCoord.x);
 
-        if (lengthPreview <= 2 * radius && mouseMoveCoord.x >= this.mouseDownCoord.x) {
-            const radiusX = Math.abs(mouseMoveCoord.x - this.mouseDownCoord.x) / 2;
-            const centerX = Math.abs(mouseMoveCoord.x + this.mouseDownCoord.x) / 2;
-            ctx.arc(centerX, centerY, radiusX, 0, 2 * Math.PI);
-        } else if (lengthPreview <= 2 * radius && mouseMoveCoord.x <= this.mouseDownCoord.x) {
-            const radiusX = Math.abs(mouseMoveCoord.x - this.mouseDownCoord.x) / 2;
-            const centerX = Math.abs(mouseMoveCoord.x + this.mouseDownCoord.x) / 2;
-            ctx.arc(centerX, centerY, radiusX, 0, 2 * Math.PI);
-        } else if (lengthPreview >= 2 * radius && mouseMoveCoord.x <= this.mouseDownCoord.x) {
-            const centerX = this.mouseDownCoord.x - radius;
-            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-        } else if (lengthPreview >= 2 * radius && mouseMoveCoord.x >= this.mouseDownCoord.x) {
-            const centerX = this.mouseDownCoord.x + radius;
-            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+        if (LENGHT_PREVIEW <= 2 * RADIUS && MOUSE_MOVE_COORD.x >= this.mouseDownCoord.x) {
+            const RADIUS_X = Math.abs(MOUSE_MOVE_COORD.x - this.mouseDownCoord.x) / 2;
+            const CENTER_X = Math.abs(MOUSE_MOVE_COORD.x + this.mouseDownCoord.x) / 2;
+            ctx.arc(CENTER_X, CENTER_Y, RADIUS_X, 0, 2 * Math.PI);
+        } else if (LENGHT_PREVIEW <= 2 * RADIUS && MOUSE_MOVE_COORD.x <= this.mouseDownCoord.x) {
+            const radiusX = Math.abs(MOUSE_MOVE_COORD.x - this.mouseDownCoord.x) / 2;
+            const centerX = Math.abs(MOUSE_MOVE_COORD.x + this.mouseDownCoord.x) / 2;
+            ctx.arc(centerX, CENTER_Y, radiusX, 0, 2 * Math.PI);
+        } else if (LENGHT_PREVIEW >= 2 * RADIUS && MOUSE_MOVE_COORD.x <= this.mouseDownCoord.x) {
+            const CENTER_X = this.mouseDownCoord.x - RADIUS;
+            ctx.arc(CENTER_X, CENTER_Y, RADIUS, 0, 2 * Math.PI);
+        } else if (LENGHT_PREVIEW >= 2 * RADIUS && MOUSE_MOVE_COORD.x >= this.mouseDownCoord.x) {
+            const CENTER_X = this.mouseDownCoord.x + RADIUS;
+            ctx.arc(CENTER_X, CENTER_Y, RADIUS, 0, 2 * Math.PI);
         }
 
         ctx.lineWidth = this.widthService.getWidth();

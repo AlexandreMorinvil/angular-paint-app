@@ -15,7 +15,6 @@ export class EraserService extends Tool {
     private pathData: Vec2[];
     private eraserColor: string = '#FFFFFF';
     minWidth: number = 5;
-    // tslint:disable:prettier
     constructor(drawingService: DrawingService, private drawingStateTrackingService: DrawingStateTrackerService, private widthService: WidthService) {
         super(drawingService, new Description('efface', 'e', 'erase_icon.png'));
         this.modifiers.push(this.widthService);
@@ -33,8 +32,8 @@ export class EraserService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
-            this.pathData.push(mousePosition);
+            const MOUSE_POSITION = this.getPositionFromMouse(event);
+            this.pathData.push(MOUSE_POSITION);
             this.drawLine(this.drawingService.baseCtx, this.pathData);
             this.drawingStateTrackingService.addAction(this, new InteractionPath(this.pathData));
         }
@@ -44,8 +43,8 @@ export class EraserService extends Tool {
 
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
-            this.pathData.push(mousePosition);
+            const MOUSE_POSITION = this.getPositionFromMouse(event);
+            this.pathData.push(MOUSE_POSITION);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawLine(this.drawingService.baseCtx, this.pathData);
         }
@@ -56,10 +55,10 @@ export class EraserService extends Tool {
         ctx.lineWidth = Math.max(this.widthService.getWidth(), this.minWidth); // width ajustment
         ctx.strokeStyle = this.eraserColor;
         ctx.fillStyle = this.eraserColor;
-        const startingPointAdjustment = 2;
+        const STARTING_PONT_ADJUSTMENT = 2;
         ctx.fillRect(
-            path[0].x - this.widthService.getWidth() / startingPointAdjustment,
-            path[0].y - this.widthService.getWidth() / startingPointAdjustment,
+            path[0].x - this.widthService.getWidth() / STARTING_PONT_ADJUSTMENT,
+            path[0].y - this.widthService.getWidth() / STARTING_PONT_ADJUSTMENT,
             this.widthService.getWidth(),
             this.widthService.getWidth(),
         );
@@ -71,29 +70,29 @@ export class EraserService extends Tool {
     }
 
     private eraserVisual(event: MouseEvent): void {
-        const mousePosition: Vec2 = { x: event.offsetX, y: event.offsetY };
-        if (!this.isInCanvas(mousePosition)) this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        const MOUSE_POSITION: Vec2 = { x: event.offsetX, y: event.offsetY };
+        if (!this.isInCanvas(MOUSE_POSITION)) this.drawingService.clearCanvas(this.drawingService.previewCtx);
         else {
-            const borderColor = '#000000';
-            const borderWidth = 1;
-            const squareWidth: number = Math.max(this.widthService.getWidth(), this.minWidth);
+            const BORDER_COLOR = '#000000';
+            const BORDER_WIDTH = 1;
+            const SQARE_WIDTH: number = Math.max(this.widthService.getWidth(), this.minWidth);
 
-            this.drawingService.previewCtx.strokeStyle = borderColor;
+            this.drawingService.previewCtx.strokeStyle = BORDER_COLOR;
             this.drawingService.previewCtx.fillStyle = this.eraserColor;
-            this.drawingService.previewCtx.lineWidth = borderWidth;
+            this.drawingService.previewCtx.lineWidth = BORDER_WIDTH;
 
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawingService.previewCtx.strokeRect(
-                event.offsetX - squareWidth / 2,
-                event.offsetY - squareWidth / 2,
-                squareWidth + 1,
-                squareWidth + 1,
+                event.offsetX - SQARE_WIDTH / 2,
+                event.offsetY - SQARE_WIDTH / 2,
+                SQARE_WIDTH + 1,
+                SQARE_WIDTH + 1,
             );
             this.drawingService.previewCtx.fillRect(
-                event.offsetX - squareWidth / 2,
-                event.offsetY - squareWidth / 2,
-                squareWidth + 1,
-                squareWidth + 1,
+                event.offsetX - SQARE_WIDTH / 2,
+                event.offsetY - SQARE_WIDTH / 2,
+                SQARE_WIDTH + 1,
+                SQARE_WIDTH + 1,
             );
         }
     }
