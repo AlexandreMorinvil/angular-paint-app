@@ -74,7 +74,7 @@ export class DrawingComponent implements AfterViewInit {
     }
 
     @HostListener('mousewheel', ['$event'])
-    onMousewheel(event: WheelEvent): void {
+    onMouseWheel(event: WheelEvent): void {
         event.preventDefault(); // to prevent key of windows
         this.toolbox.getCurrentTool().onMouseWheel(event);
     }
@@ -104,7 +104,9 @@ export class DrawingComponent implements AfterViewInit {
     onMouseDblClick(event: MouseEvent): void {
         this.toolbox.getCurrentTool().onMouseDblClick(event);
     }
-
+    // The disablement of the "cyclomatic-complexity" tslint rule is justified in this situation
+    // since it is required for the program to have a number of linearly independents paths that is high
+    // tslint:disable:cyclomatic-complexity
     @HostListener('window:keyup', ['$event'])
     keyEventUp(event: KeyboardEvent): void {
         if (this.drawingService.shortcutEnable) {
@@ -115,7 +117,7 @@ export class DrawingComponent implements AfterViewInit {
             }
         }
 
-        const keyCode: String = event.key;
+        const keyCode: string = event.key;
         const SHORT_CUT_ENABLE: boolean = this.drawingService.shortcutEnable;
         if (!keyCode) {
             return;
@@ -127,7 +129,7 @@ export class DrawingComponent implements AfterViewInit {
                     this.toolbox.getCurrentTool().onShiftUp(event);
                 }
                 break;
-            case 'Backspace' || event.keyCode === this.BACKSPACE_KEYCODE:
+            case 'Backspace': // || event.keyCode === this.BACKSPACE_KEYCODE:
                 if (SHORT_CUT_ENABLE) {
                     this.toolbox.getCurrentTool().onBackspaceDown(event);
                 }
@@ -158,7 +160,7 @@ export class DrawingComponent implements AfterViewInit {
             this.toolbox.getCurrentTool().onKeyDown(event);
         }
 
-        const KEY_CODE: String = event.key;
+        const KEY_CODE: string = event.key;
         const KEY_CODE_LOWER_CASE = KEY_CODE.toLowerCase();
         const IS_CTRL_KEY: boolean = event.ctrlKey;
         const IS_SHIFT_KEY: boolean = event.shiftKey;
@@ -168,30 +170,39 @@ export class DrawingComponent implements AfterViewInit {
             return;
         }
 
-        if (KEY_CODE === 'Shift') {
-            this.toolbox.getCurrentTool().onShiftDown(event);
-        } else if (KEY_CODE === 'Escape') {
-            this.toolbox.getCurrentTool().onEscapeDown(event);
-            this.hasBeenDrawnOnto = true;
-        } else if (KEY_CODE === 'Alt') {
-            event.preventDefault(); // to prevent key of windows
-            this.toolbox.getCurrentTool().onAltDown(event);
-        } else if (KEY_CODE === 'ArrowLeft' || KEY_CODE === 'ArrowRight' || KEY_CODE === 'ArrowUp' || KEY_CODE === 'ArrowDown') {
-            event.preventDefault(); // to prevent key of windows
-            this.toolbox.getCurrentTool().onArrowDown(event);
+        switch (KEY_CODE) {
+            case 'Shift':
+                this.toolbox.getCurrentTool().onShiftDown(event);
+                break;
+            case 'Escape':
+                this.toolbox.getCurrentTool().onEscapeDown(event);
+                this.hasBeenDrawnOnto = true;
+                break;
+            case 'Alt':
+                event.preventDefault(); // to prevent key of windows
+                this.toolbox.getCurrentTool().onAltDown(event);
+                break;
+            case 'ArrowLeft' || 'ArrowRight' || 'ArrowUp' || 'ArrowDown':
+                event.preventDefault(); // to prevent key of windows
+                this.toolbox.getCurrentTool().onArrowDown(event);
+                break;
         }
 
         if (IS_CTRL_KEY) {
             if (SHORT_CUT_ENABLE) {
-                if (KEY_CODE_LOWER_CASE === 's') {
-                    event.preventDefault(); // to prevent key of windows
-                    this.modalHandlerService.openSaveDialog();
-                } else if (KEY_CODE_LOWER_CASE === 'g') {
-                    event.preventDefault(); // to prevent key of windows
-                    this.modalHandlerService.openDrawingCarouselDialog();
-                } else if (KEY_CODE_LOWER_CASE === 'e') {
-                    event.preventDefault(); // to prevent key of windows
-                    this.modalHandlerService.openExportDialog();
+                switch (KEY_CODE_LOWER_CASE) {
+                    case 's':
+                        event.preventDefault(); // to prevent key of windows
+                        this.modalHandlerService.openSaveDialog();
+                        break;
+                    case 'g':
+                        event.preventDefault(); // to prevent key of windows
+                        this.modalHandlerService.openDrawingCarouselDialog();
+                        break;
+                    case 'e':
+                        event.preventDefault(); // to prevent key of windows
+                        this.modalHandlerService.openExportDialog();
+                        break;
                 }
             } else if (IS_SHIFT_KEY) {
                 if (KEY_CODE_LOWER_CASE === 'z') {
@@ -209,12 +220,16 @@ export class DrawingComponent implements AfterViewInit {
             }
         } else {
             if (!SHORT_CUT_ENABLE) return;
-            if (KEY_CODE_LOWER_CASE === 'g') {
-                this.gridService.toogleGrid();
-            } else if (KEY_CODE_LOWER_CASE === '+') {
-                this.gridService.incrementSpacing();
-            } else if (KEY_CODE_LOWER_CASE === '-') {
-                this.gridService.decrementSpacing();
+            switch (KEY_CODE_LOWER_CASE) {
+                case 'g':
+                    this.gridService.toogleGrid();
+                    break;
+                case '+':
+                    this.gridService.incrementSpacing();
+                    break;
+                case '-':
+                    this.gridService.decrementSpacing();
+                    break;
             }
         }
     }

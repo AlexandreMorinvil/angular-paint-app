@@ -5,8 +5,6 @@ import { Bound } from '@app/classes/bound';
     providedIn: 'root',
 })
 export class ModifierHandlerService {
-    constructor() {}
-
     clamp(input: number, maximum: number, minimum: number): number {
         if (input >= maximum) return Bound.upper;
         if (input <= minimum) return Bound.lower;

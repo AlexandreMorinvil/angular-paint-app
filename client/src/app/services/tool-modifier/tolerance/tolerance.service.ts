@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Bound } from '@app/classes/bound';
 import { ToolModifier } from '@app/classes/tool-modifier';
-import { ModifierHandlerService } from '../modifier-handler/modifier-handler.service';
+import { ModifierHandlerService } from '@app/services/tool-modifier/modifier-handler/modifier-handler.service';
 import { ToleranceModifierState } from './tolerance-state';
 
 @Injectable({
@@ -21,7 +21,7 @@ export class ToleranceService extends ToolModifier {
         const LIMIT: number = this.modifierHandlerService.clamp(input, this.MAX_TOLERANCE, this.MIN_TOLERANCE);
         if (LIMIT === Bound.upper) this.percentTolerance = this.MAX_TOLERANCE;
         else if (LIMIT === Bound.lower) this.percentTolerance = this.MIN_TOLERANCE;
-        else if (LIMIT == Bound.inside) this.percentTolerance = input;
+        else this.percentTolerance = input;
         // We use magic number to calculate the convert the percentage limit in pixel
         // tslint:disable:no-magic-numbers
         this.pixelTolerance = Math.round((this.percentTolerance * 255) / 100);

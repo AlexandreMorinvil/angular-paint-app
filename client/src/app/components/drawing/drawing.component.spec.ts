@@ -122,6 +122,15 @@ describe('DrawingComponent', () => {
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
     });
 
+    it('should call the tools mouse wheel when receiving a mouse wheel event', () => {
+        toolboxService.setSelectedTool(toolStub);
+        const event = {} as WheelEvent;
+        const mouseEventSpy = spyOn(toolStub, 'onMouseWheel');
+        component.onMouseWheel(event);
+        expect(mouseEventSpy).toHaveBeenCalled();
+        expect(mouseEventSpy).toHaveBeenCalledWith(event);
+    });
+
     it('should call the tools mouse down when receiving a mouse down event', () => {
         toolboxService.setSelectedTool(toolStub);
         const event = {} as MouseEvent;

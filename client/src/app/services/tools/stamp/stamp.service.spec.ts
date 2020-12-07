@@ -6,7 +6,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { StampPickerService } from '@app/services/tool-modifier/stamp-picker/stamp-picker.service';
 import { StampService } from './stamp.service';
 // tslint:disable:no-any
-fdescribe('StampService', () => {
+describe('StampService', () => {
     let service: StampService;
     let stampPickerService: StampPickerService;
 

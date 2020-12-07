@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Bound } from '@app/classes/bound';
 import { ToolModifier } from '@app/classes/tool-modifier';
+import { ModifierHandlerService } from '@app/services/tool-modifier/modifier-handler/modifier-handler.service';
 import { Subject } from 'rxjs';
-import { ModifierHandlerService } from '../modifier-handler/modifier-handler.service';
 import { SpacingModifierState } from './spacing-state';
 
 @Injectable({
@@ -33,7 +33,7 @@ export class SpacingService extends ToolModifier {
         const LIMIT: number = this.modifierHandlerService.clamp(input, this.MAX_ATTRIBUTE_SPACING, this.MIN_ATTRIBUTE_SPACING);
         if (LIMIT === Bound.upper) this.spacing = this.MAX_ATTRIBUTE_SPACING;
         else if (LIMIT === Bound.lower) this.spacing = this.MIN_ATTRIBUTE_SPACING;
-        else if (LIMIT === Bound.inside) this.spacing = input;
+        else this.spacing = input;
         this.spacingChange.next(this.spacing);
     }
 

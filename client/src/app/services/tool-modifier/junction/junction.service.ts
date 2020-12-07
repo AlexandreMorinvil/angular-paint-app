@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Bound } from '@app/classes/bound';
 import { ToolModifier } from '@app/classes/tool-modifier';
-import { ModifierHandlerService } from '../modifier-handler/modifier-handler.service';
+import { ModifierHandlerService } from '@app/services/tool-modifier/modifier-handler/modifier-handler.service';
 import { JunctionModifierState } from './junction-state';
 
 @Injectable({
@@ -23,7 +23,7 @@ export class JunctionService extends ToolModifier {
         const LIMIT: number = this.modifierHandlerService.clamp(input, this.MAX_JUNCTION_DIAMETER, this.MIN_JUNCTION_DIAMETER);
         if (LIMIT === Bound.upper) this.diameter = this.MAX_JUNCTION_DIAMETER;
         else if (LIMIT === Bound.lower) this.diameter = this.MIN_JUNCTION_DIAMETER;
-        else if (LIMIT === Bound.inside) this.diameter = input;
+        else this.diameter = input;
     }
 
     getDiameter(): number {

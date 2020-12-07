@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Bound } from '@app/classes/bound';
 import { ToolModifier } from '@app/classes/tool-modifier';
+import { ModifierHandlerService } from '@app/services/tool-modifier/modifier-handler/modifier-handler.service';
 import { SprayDropletDiameterModifierState } from '@app/services/tool-modifier/spray-droplet-diameter/spray-droplet-diameter-state';
-import { ModifierHandlerService } from '../modifier-handler/modifier-handler.service';
 
 @Injectable({
     providedIn: 'root',
@@ -21,7 +21,7 @@ export class SprayDropletDiameterService extends ToolModifier {
         const LIMIT: number = this.modifierHandlerService.clamp(input, this.MAX_SPRAY_DROPLET_DIAMETER, this.MIN_SPRAY_DROPLET_DIAMETER);
         if (LIMIT === Bound.upper) this.sprayDropletDiameter = this.MAX_SPRAY_DROPLET_DIAMETER;
         else if (LIMIT === Bound.lower) this.sprayDropletDiameter = this.MIN_SPRAY_DROPLET_DIAMETER;
-        else if (LIMIT === Bound.inside) this.sprayDropletDiameter = input;
+        else this.sprayDropletDiameter = input;
     }
 
     getSprayDropletDiameter(): number {

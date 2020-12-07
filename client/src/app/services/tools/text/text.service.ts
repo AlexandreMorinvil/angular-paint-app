@@ -58,7 +58,7 @@ export class TextService extends Tool {
         if (!this.editingOn) {
             return;
         }
-        const key: String = event.key;
+        const key: string = event.key;
         if (key) {
             if (key === 'Escape') {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -127,7 +127,7 @@ export class TextService extends Tool {
             ctx.fillText(this.text[i], this.textPosition.x - adjustment, this.textPosition.y + this.spaceBetweenLines * i);
     }
 
-    private isLetter(letter: String): boolean {
+    private isLetter(letter: string): boolean {
         return letter.length === 1;
     }
 
