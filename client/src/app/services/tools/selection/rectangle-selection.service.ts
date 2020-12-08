@@ -42,7 +42,6 @@ export class RectangleSelectionService extends SelectionToolService {
             this.onEscapeDown();
         }
         this.resetSelectionPreset(event);
-        this.resetTransform();
         // resizing
         if (this.selectionCreated && this.checkHit(this.mouseDownCoord)) {
             this.getAnchorHit(this.drawingService.previewCtx, this.mouseDownCoord, CALLER_ID);
@@ -68,6 +67,7 @@ export class RectangleSelectionService extends SelectionToolService {
             this.setValueCreation(event);
             this.selectionSize = { x: 1, y: 1 }; // to disable unwanted click
         }
+        this.resetTransform();
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -255,6 +255,8 @@ export class RectangleSelectionService extends SelectionToolService {
             this.showSelection(this.drawingService.baseCtx, this.image, this.firstSelectionCoord, this.selectionSize);
             this.resetCanvasRotation();
         }
+        this.tracingService.setHasFill(true);
+        this.tracingService.setHasContour(true);
         this.selectionCreated = false;
     }
 

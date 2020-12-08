@@ -45,7 +45,6 @@ export class MagicWandService extends SelectionToolService {
             this.onEscapeDown();
         }
         this.resetSelectionPreset(event);
-        this.resetTransform();
         // resizing
         if (this.selectionCreated && this.checkHit(this.mouseDownCoord)) {
             this.getAnchorHit(this.drawingService.previewCtx, this.mouseDownCoord, CALLER_ID);
@@ -80,7 +79,7 @@ export class MagicWandService extends SelectionToolService {
             this.selectionCreated = true;
             this.localMouseDown = false;
         }
-
+        this.resetTransform();
         this.mouseDown = true;
     }
 
@@ -399,6 +398,8 @@ export class MagicWandService extends SelectionToolService {
             this.showSelection(this.drawingService.baseCtx, this.image, this.firstSelectionCoord, this.selectionSize);
             this.resetCanvasRotation();
         }
+        this.tracingService.setHasFill(true);
+        this.tracingService.setHasContour(true);
         this.selectionCreated = false;
     }
 
