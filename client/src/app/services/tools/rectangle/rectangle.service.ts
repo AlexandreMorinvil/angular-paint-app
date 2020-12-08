@@ -42,8 +42,8 @@ export class RectangleService extends Tool {
     onMouseUp(event: MouseEvent): void {
         this.resetBorder();
         if (this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
-            this.pathData.push(mousePosition);
+            const MOUSE_POSITION = this.getPositionFromMouse(event);
+            this.pathData.push(MOUSE_POSITION);
             this.drawRectangle(this.drawingService.baseCtx, this.pathData);
             this.drawingStateTrackingService.addAction(this, new InteractionStartEnd(this.mouseDownCoord, this.pathData, this.shiftDown));
         }
@@ -52,23 +52,24 @@ export class RectangleService extends Tool {
     }
 
     onMouseMove(event: MouseEvent): void {
-        if (this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
-            this.pathData.push(mousePosition);
-            // this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            if (!this.isInCanvas(mousePosition) && this.mouseDown) {
-                if (mousePosition.x >= this.drawingService.baseCtx.canvas.width) {
-                    this.drawingService.previewCtx.canvas.width = mousePosition.x;
-                }
-                if (mousePosition.y >= this.drawingService.baseCtx.canvas.height) {
-                    this.drawingService.previewCtx.canvas.height = mousePosition.y;
-                }
-                this.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
-            } else {
-                this.resetBorder();
-                this.drawRectangle(this.drawingService.previewCtx, this.pathData);
-                this.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
+        if (!this.mouseDown) {
+            return;
+        }
+        const MOUSE_POSITION = this.getPositionFromMouse(event);
+        this.pathData.push(MOUSE_POSITION);
+        // this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        if (!this.isInCanvas(MOUSE_POSITION) && this.mouseDown) {
+            if (MOUSE_POSITION.x >= this.drawingService.baseCtx.canvas.width) {
+                this.drawingService.previewCtx.canvas.width = MOUSE_POSITION.x;
             }
+            if (MOUSE_POSITION.y >= this.drawingService.baseCtx.canvas.height) {
+                this.drawingService.previewCtx.canvas.height = MOUSE_POSITION.y;
+            }
+            this.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
+        } else {
+            this.resetBorder();
+            this.drawRectangle(this.drawingService.previewCtx, this.pathData);
+            this.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
         }
     }
 
@@ -88,29 +89,29 @@ export class RectangleService extends Tool {
 
     private drawRectangle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
-        const lastMouseMoveCoord = path[path.length - 1];
-        const mouseDownCoordX = this.mouseDownCoord.x;
-        const mouseDownCoordY = this.mouseDownCoord.y;
-        let width = lastMouseMoveCoord.x - this.mouseDownCoord.x;
-        let height = lastMouseMoveCoord.y - this.mouseDownCoord.y;
+        const LAST_MOUSE_MOVE_COORD = path[path.length - 1];
+        const MOUSE_DOWN_COORD_X = this.mouseDownCoord.x;
+        const MOUSE_DOWN_COORD_Y = this.mouseDownCoord.y;
+        let width = LAST_MOUSE_MOVE_COORD.x - this.mouseDownCoord.x;
+        let height = LAST_MOUSE_MOVE_COORD.y - this.mouseDownCoord.y;
         if (this.shiftDown) {
             // If Shift is pressed should be a square
-            const squareSide = Math.abs(Math.min(height, width));
+            const SQUARE_SIDE = Math.abs(Math.min(height, width));
             if (height < 0 && width >= 0) {
-                height = -squareSide;
-                width = squareSide;
+                height = -SQUARE_SIDE;
+                width = SQUARE_SIDE;
             } else if (height >= 0 && width < 0) {
-                width = -squareSide;
-                height = squareSide;
+                width = -SQUARE_SIDE;
+                height = SQUARE_SIDE;
             } else if (height < 0 && width < 0) {
-                width = -squareSide;
-                height = -squareSide;
+                width = -SQUARE_SIDE;
+                height = -SQUARE_SIDE;
             } else {
-                width = squareSide;
-                height = squareSide;
+                width = SQUARE_SIDE;
+                height = SQUARE_SIDE;
             }
         }
-        ctx.rect(mouseDownCoordX, mouseDownCoordY, width, height);
+        ctx.rect(MOUSE_DOWN_COORD_X, MOUSE_DOWN_COORD_Y, width, height);
         ctx.setLineDash([0]);
         this.setAttribute(ctx);
     }
@@ -131,25 +132,25 @@ export class RectangleService extends Tool {
 
     drawPreviewRect(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
-        const mouseMoveCoord = path[path.length - 1];
-        let width = mouseMoveCoord.x - this.mouseDownCoord.x;
-        let height = mouseMoveCoord.y - this.mouseDownCoord.y;
+        const MOUSE_MOVE_COORD = path[path.length - 1];
+        let width = MOUSE_MOVE_COORD.x - this.mouseDownCoord.x;
+        let height = MOUSE_MOVE_COORD.y - this.mouseDownCoord.y;
         let startX = this.mouseDownCoord.x;
         let startY = this.mouseDownCoord.y;
         if (this.shiftDown) {
-            const squareSide = Math.abs(Math.min(height, width));
+            const SQUARE_SIDE = Math.abs(Math.min(height, width));
             if (height < 0 && width >= 0) {
-                height = -squareSide;
-                width = squareSide;
+                height = -SQUARE_SIDE;
+                width = SQUARE_SIDE;
             } else if (height >= 0 && width < 0) {
-                width = -squareSide;
-                height = squareSide;
+                width = -SQUARE_SIDE;
+                height = SQUARE_SIDE;
             } else if (height < 0 && width < 0) {
-                width = -squareSide;
-                height = -squareSide;
+                width = -SQUARE_SIDE;
+                height = -SQUARE_SIDE;
             } else {
-                width = squareSide;
-                height = squareSide;
+                width = SQUARE_SIDE;
+                height = SQUARE_SIDE;
             }
         }
         if (this.widthService.getWidth() > 1) {

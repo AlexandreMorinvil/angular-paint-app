@@ -25,7 +25,7 @@ export class DatabaseController {
     private configureRouter(): void {
         this.router = Router();
 
-        this.router.get(this.ROUTING_GET_ALL, async (req: Request, res: Response, next: NextFunction) => {
+        this.router.get(this.ROUTING_GET_ALL, (req: Request, res: Response, next: NextFunction) => {
             this.databaseService
                 .getAllDrawings()
                 .then((drawings: DrawingToDatabase[]) => {
@@ -36,7 +36,7 @@ export class DatabaseController {
                 });
         });
 
-        this.router.get(this.ROUTING_GET_DRAWING_ID, async (req: Request, res: Response, next: NextFunction) => {
+        this.router.get(this.ROUTING_GET_DRAWING_ID, (req: Request, res: Response, next: NextFunction) => {
             this.databaseService
                 .getDrawing(req.params.drawingId)
                 .then((drawing: DrawingToDatabase) => {
@@ -47,7 +47,7 @@ export class DatabaseController {
                 });
         });
 
-        this.router.get(this.ROUTING_GET_NAME, async (req: Request, res: Response, next: NextFunction) => {
+        this.router.get(this.ROUTING_GET_NAME, (req: Request, res: Response, next: NextFunction) => {
             this.databaseService
                 .getDrawingByName(req.params.name)
                 .then((drawing: DrawingToDatabase[]) => {
@@ -58,7 +58,7 @@ export class DatabaseController {
                 });
         });
 
-        this.router.get(this.ROUTING_GET_TAG, async (req: Request, res: Response, next: NextFunction) => {
+        this.router.get(this.ROUTING_GET_TAG, (req: Request, res: Response, next: NextFunction) => {
             this.databaseService
                 .getDrawingByTags(req.params.tag)
                 .then((drawing: DrawingToDatabase[]) => {
@@ -69,7 +69,7 @@ export class DatabaseController {
                 });
         });
 
-        this.router.post(this.ROUTING_POST, async (req: Request, res: Response, next: NextFunction) => {
+        this.router.post(this.ROUTING_POST, (req: Request, res: Response, next: NextFunction) => {
             const drawingToDatabase: DrawingToDatabase = {
                 _id: null,
                 name: req.body.name,
@@ -87,7 +87,7 @@ export class DatabaseController {
                 });
         });
 
-        this.router.patch(this.ROUTING_PATCH, async (req: Request, res: Response, next: NextFunction) => {
+        this.router.patch(this.ROUTING_PATCH, (req: Request, res: Response, next: NextFunction) => {
             this.databaseService
                 .updateDrawing(req.params.drawingId, req.body)
                 .then(() => {
@@ -98,7 +98,7 @@ export class DatabaseController {
                 });
         });
 
-        this.router.delete(this.ROUTING_DELETE, async (req: Request, res: Response, next: NextFunction) => {
+        this.router.delete(this.ROUTING_DELETE, (req: Request, res: Response, next: NextFunction) => {
             this.databaseService
                 .deleteDrawing(req.params.drawingId)
                 .then(() => {
@@ -113,17 +113,15 @@ export class DatabaseController {
     }
 
     private saveDrawIntoImageFolder(imageSource: string, id: string, path: string): void {
-        const nameDirectory = '/' + id + '.png';
+        const NAME_DIRECTORY = '/' + id + '.png';
         let img64 = imageSource.replace('data:image/png;base64,', '');
         img64 = img64.split(/\s/).join('');
-        fs.writeFileSync(path + nameDirectory, img64, { encoding: 'base64' });
+        fs.writeFileSync(path + NAME_DIRECTORY, img64, { encoding: 'base64' });
     }
 
     private deleteDrawIntoImageFolder(id: string): void {
-        // tslint:disable:no-require-imports
-        const fs = require('fs');
-        const path: string = this.PATH_SAVE_IMAGE_TO_SERVER;
-        const pathToUnlink: string = path + '/' + id + '.png';
-        fs.unlinkSync(pathToUnlink);
+        const PATH: string = this.PATH_SAVE_IMAGE_TO_SERVER;
+        const PATH_TO_UNLINK: string = PATH + '/' + id + '.png';
+        fs.unlinkSync(PATH_TO_UNLINK);
     }
 }

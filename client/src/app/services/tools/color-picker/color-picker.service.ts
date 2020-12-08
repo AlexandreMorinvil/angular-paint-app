@@ -41,11 +41,11 @@ export class ColorPickerService extends Tool {
     }
 
     private componentToHex(channel: number): string {
-        const hex = channel.toString(16);
-        if (hex.length === 1) {
-            return '0' + hex;
+        const HEX = channel.toString(16);
+        if (HEX.length === 1) {
+            return '0' + HEX;
         } else {
-            return hex;
+            return HEX;
         }
     }
 
@@ -54,40 +54,38 @@ export class ColorPickerService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        const mousePosition: Vec2 = this.getPositionFromMouse(event);
-
-        const rgbColor: Uint8ClampedArray = this.drawingService.baseCtx.getImageData(mousePosition.x, mousePosition.y, 1, 1).data;
-
-        const colorHEXString = this.rgbColorToHEXString(rgbColor[0], rgbColor[1], rgbColor[2]);
+        const MOUSE_POSITION: Vec2 = this.getPositionFromMouse(event);
+        const RGB_COLOR: Uint8ClampedArray = this.drawingService.baseCtx.getImageData(MOUSE_POSITION.x, MOUSE_POSITION.y, 1, 1).data;
+        const COLOR_HEX_STRING = this.rgbColorToHEXString(RGB_COLOR[0], RGB_COLOR[1], RGB_COLOR[2]);
 
         // left click
         if (event.button === 0) {
-            this.pickedPrimaryColorSource.next(colorHEXString);
-            this.colorService.setPrimaryColor(colorHEXString);
+            this.pickedPrimaryColorSource.next(COLOR_HEX_STRING);
+            this.colorService.setPrimaryColor(COLOR_HEX_STRING);
         }
 
         // right click
         if (event.button === 2) {
-            this.pickedSecondaryColorSource.next(colorHEXString);
-            this.colorService.setSecondaryColor(colorHEXString);
+            this.pickedSecondaryColorSource.next(COLOR_HEX_STRING);
+            this.colorService.setSecondaryColor(COLOR_HEX_STRING);
         }
     }
 
     visualizeColorPixel(event: MouseEvent): void {
-        const mousePosition: Vec2 = this.getPositionFromMouse(event);
+        const MOUSE_POSITION: Vec2 = this.getPositionFromMouse(event);
 
-        const rgbColor: Uint8ClampedArray = this.drawingService.baseCtx.getImageData(mousePosition.x, mousePosition.y, 1, 1).data;
+        const RGB_COLOR: Uint8ClampedArray = this.drawingService.baseCtx.getImageData(MOUSE_POSITION.x, MOUSE_POSITION.y, 1, 1).data;
 
-        const colorHEXString = this.rgbColorToHEXString(rgbColor[0], rgbColor[1], rgbColor[2]);
-        this.colorPickerVisual(event, colorHEXString);
+        const COLOR_HEX_STRING = this.rgbColorToHEXString(RGB_COLOR[0], RGB_COLOR[1], RGB_COLOR[2]);
+        this.colorPickerVisual(event, COLOR_HEX_STRING);
     }
 
     updatePrevisualizationData(event: MouseEvent): void {
-        const mousePosition: Vec2 = this.getPositionFromMouse(event);
+        const MOUSE_POSITION: Vec2 = this.getPositionFromMouse(event);
 
         const previsualisationData: Uint8ClampedArray = this.drawingService.baseCtx.getImageData(
-            mousePosition.x - this.SQUARE_DIM / 2,
-            mousePosition.y - this.SQUARE_DIM / 2,
+            MOUSE_POSITION.x - this.SQUARE_DIM / 2,
+            MOUSE_POSITION.y - this.SQUARE_DIM / 2,
             this.SQUARE_DIM,
             this.SQUARE_DIM,
         ).data;
@@ -97,21 +95,30 @@ export class ColorPickerService extends Tool {
 
     onMouseMove(event: MouseEvent): void {
         this.visualizeColorPixel(event);
-
         this.updatePrevisualizationData(event);
     }
 
     colorPickerVisual(event: MouseEvent, colorHEXString: string): void {
-        const borderColor = colorHEXString;
-        const borderWidth = 1;
-        const squareWidth = 60;
+        const BORDER_COLOR = colorHEXString;
+        const BORDER_WIDTH = 1;
+        const SQUARE_WIDTH = 60;
 
-        this.drawingService.previewCtx.strokeStyle = borderColor;
+        this.drawingService.previewCtx.strokeStyle = BORDER_COLOR;
         this.drawingService.previewCtx.fillStyle = colorHEXString;
-        this.drawingService.previewCtx.lineWidth = borderWidth;
+        this.drawingService.previewCtx.lineWidth = BORDER_WIDTH;
 
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.drawingService.previewCtx.strokeRect(event.offsetX - squareWidth / 2, event.offsetY - squareWidth / 2, squareWidth + 1, squareWidth + 1);
-        this.drawingService.previewCtx.fillRect(event.offsetX - squareWidth / 2, event.offsetY - squareWidth / 2, squareWidth + 1, squareWidth + 1);
+        this.drawingService.previewCtx.strokeRect(
+            event.offsetX - SQUARE_WIDTH / 2,
+            event.offsetY - SQUARE_WIDTH / 2,
+            SQUARE_WIDTH + 1,
+            SQUARE_WIDTH + 1,
+        );
+        this.drawingService.previewCtx.fillRect(
+            event.offsetX - SQUARE_WIDTH / 2,
+            event.offsetY - SQUARE_WIDTH / 2,
+            SQUARE_WIDTH + 1,
+            SQUARE_WIDTH + 1,
+        );
     }
 }

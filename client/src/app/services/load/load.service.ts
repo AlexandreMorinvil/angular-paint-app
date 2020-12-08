@@ -10,11 +10,14 @@ export class LoadService {
     private img: HTMLImageElement;
     private base: CanvasRenderingContext2D;
     private preview: CanvasRenderingContext2D;
+    private readonly IMAGE_SOURCE: string = 'assets/images/nothing.png';
+    private readonly ERROR_NO_DRAWING: string = "Il n'y a pas de dessin ! Veuillez en choisir un autre";
+    private readonly ERROR_ALREADY_DRAWING: string = 'Attention ! Il y a déja un dessin sur le canvas. Voulez-vous continuer ?';
 
     loadDraw(imageSrc: string): void {
         // If the object doesn't contain an image
-        if (imageSrc === 'assets/images/nothing.png') {
-            alert("Il n'y a pas de dessin ! Veuillez en choisir un autre");
+        if (imageSrc === this.IMAGE_SOURCE) {
+            alert(this.ERROR_NO_DRAWING);
             return;
         }
         this.base = this.drawingService.baseCtx;
@@ -26,9 +29,9 @@ export class LoadService {
     }
 
     fillDraw(): void {
-        const whiteRGB = 255;
-        if (!this.base.getImageData(1, 1, this.base.canvas.width - 1, this.base.canvas.height - 1).data.every((x) => x === whiteRGB)) {
-            if (confirm('Attention ! Il y a déja un dessin sur le canvas. Voulez-vous continuer ?')) {
+        const WHITE_RGB = 255;
+        if (!this.base.getImageData(1, 1, this.base.canvas.width - 1, this.base.canvas.height - 1).data.every((x) => x === WHITE_RGB)) {
+            if (confirm(this.ERROR_ALREADY_DRAWING)) {
                 this.modifyCanvas();
             }
         } else {

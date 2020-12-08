@@ -13,10 +13,10 @@ import { StyleService, TextAlignment } from '@app/services/tool-modifier/style/s
 })
 export class TextService extends Tool {
     private text: string[] = [''];
-    private numberOfLines: number = 1;
     private textPosition: Vec2 = { x: 0, y: 0 };
-    private editingOn: boolean = false;
     private cursorPosition: Vec2 = { x: 0, y: 0 };
+    private editingOn: boolean = false;
+    private numberOfLines: number = 1;
     private spaceBetweenLines: number = this.styleService.getFontSize();
 
     constructor(
@@ -38,51 +38,53 @@ export class TextService extends Tool {
         const adjustment = this.findTextPositionAdjustment(this.drawingService.baseCtx);
         this.drawText(this.drawingService.baseCtx, adjustment);
         this.drawingStateTrackingService.addAction(this, new InteractionText(this.text, this.textPosition, adjustment, this.numberOfLines));
-        console.log(this.drawingStateTrackingService);
         this.text = [''];
         this.numberOfLines = 1;
     }
 
     onMouseDown(event: MouseEvent): void {
-        if (!this.editingOn) {
+        if (this.editingOn) {
+            this.confirm();
+        } else {
             this.setAttributes(this.drawingService.previewCtx);
             this.editingOn = true;
             this.drawingService.shortcutEnable = false;
             this.textPosition = this.getPositionFromMouse(event);
             this.cursorPosition = { x: 0, y: 0 };
             this.showCursor();
-        } else {
-            this.confirm();
         }
     }
     onKeyDown(event: KeyboardEvent): void {
-        if (this.editingOn) {
-            if (event.key === 'Escape') {
+        if (!this.editingOn) {
+            return;
+        }
+        const key: string = event.key;
+        if (key) {
+            if (key === 'Escape') {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.editingOn = false;
                 this.text = [''];
                 return;
-            } else if (event.key === 'Enter') {
+            } else if (key === 'Enter') {
                 this.onEnterDown();
-            } else if (event.key === 'Backspace') {
+            } else if (key === 'Backspace') {
                 this.onBackspaceDown();
-            } else if (event.key === 'Delete') {
+            } else if (key === 'Delete') {
                 this.onDeleteDown();
-            } else if (event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+            } else if (key === 'ArrowLeft' || key === 'ArrowRight' || key === 'ArrowUp' || key === 'ArrowDown') {
                 this.onArrowDown(event);
-            } else if (this.isLetter(event.key)) {
+            } else if (this.isLetter(key)) {
                 let beforeCursor = this.text[this.cursorPosition.y].substring(0, this.cursorPosition.x);
                 const afterCursor = this.text[this.cursorPosition.y].substring(this.cursorPosition.x);
                 beforeCursor = beforeCursor.concat(event.key);
                 this.text[this.cursorPosition.y] = beforeCursor.concat(afterCursor);
                 this.cursorPosition.x += 1;
             }
-            console.log(this.cursorPosition);
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            const adjustment = this.findTextPositionAdjustment(this.drawingService.previewCtx);
-            this.drawText(this.drawingService.previewCtx, adjustment);
-            this.showCursor(adjustment);
         }
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        const adjustment = this.findTextPositionAdjustment(this.drawingService.previewCtx);
+        this.drawText(this.drawingService.previewCtx, adjustment);
+        this.showCursor(adjustment);
     }
 
     onAttributeChange(): void {
@@ -149,14 +151,15 @@ export class TextService extends Tool {
     }
 
     private showCursor(adjustement: number = 0): void {
-        const edgeCursor = 5;
-        const cursorTopAdjustment = this.styleService.getFontSize() / 2 + edgeCursor;
-        const cursorBottomAdjustment = edgeCursor;
+        const EDGE_CURSOR = 5;
+        const CURSOR_TOP_ADJUSTEMENT = this.styleService.getFontSize() / 2 + EDGE_CURSOR;
+        const CURSOR_BOTTOM_ADJUSTEMENT = EDGE_CURSOR;
         this.drawingService.previewCtx.strokeStyle = '#000000';
-        let textLength: number = this.drawingService.previewCtx.measureText(this.text[this.cursorPosition.y].substring(0, this.cursorPosition.x))
-            .width;
-        const fullTextLength = this.drawingService.previewCtx.measureText(this.text[this.cursorPosition.y]).width;
-        const halfLength = fullTextLength / 2;
+        const SUB_LINE: string = this.text[this.cursorPosition.y].substring(0, this.cursorPosition.x);
+        let textLength: number = this.drawingService.previewCtx.measureText(SUB_LINE).width;
+        const TEXT_LINE = this.text[this.cursorPosition.y];
+        const FULL_TEXT_LENGTH = this.drawingService.previewCtx.measureText(TEXT_LINE).width;
+        const HALF_LENGTH = FULL_TEXT_LENGTH / 2;
         switch (this.styleService.getAlignment()) {
             case TextAlignment.left: {
                 textLength = textLength;
@@ -164,102 +167,100 @@ export class TextService extends Tool {
             }
             case TextAlignment.center: {
                 if (this.cursorPosition.x > this.text[this.cursorPosition.y].length - 1) {
-                    textLength = textLength - halfLength;
+                    textLength = textLength - HALF_LENGTH;
                 } else {
-                    textLength = -(halfLength - textLength);
+                    textLength = -(HALF_LENGTH - textLength);
                 }
                 break;
             }
             case TextAlignment.right: {
-                textLength = textLength - fullTextLength;
+                textLength = textLength - FULL_TEXT_LENGTH;
                 break;
             }
         }
 
+        const X_CURSOR_POSITION = this.textPosition.x - adjustement + textLength;
+        const Y_CURSOR_POSITION = this.textPosition.y + this.cursorPosition.y * this.spaceBetweenLines;
+
         this.drawingService.previewCtx.beginPath();
-        this.drawingService.previewCtx.lineTo(
-            this.textPosition.x - adjustement + textLength,
-            this.textPosition.y + this.cursorPosition.y * this.spaceBetweenLines - cursorTopAdjustment,
-        );
-        this.drawingService.previewCtx.lineTo(
-            this.textPosition.x - adjustement + textLength,
-            this.textPosition.y + this.cursorPosition.y * this.spaceBetweenLines + cursorBottomAdjustment,
-        );
+        this.drawingService.previewCtx.lineTo(X_CURSOR_POSITION, Y_CURSOR_POSITION - CURSOR_TOP_ADJUSTEMENT);
+        this.drawingService.previewCtx.lineTo(X_CURSOR_POSITION, Y_CURSOR_POSITION + CURSOR_BOTTOM_ADJUSTEMENT);
         this.drawingService.previewCtx.stroke();
     }
 
     private onEnterDown(): void {
-        const beforeCursor = this.text[this.cursorPosition.y].substring(0, this.cursorPosition.x);
-        const afterCursor = this.text[this.cursorPosition.y].substring(this.cursorPosition.x);
-        this.text[this.cursorPosition.y] = beforeCursor;
+        const BEFORE_CURSOR = this.text[this.cursorPosition.y].substring(0, this.cursorPosition.x);
+        const AFTER_CURSOR = this.text[this.cursorPosition.y].substring(this.cursorPosition.x);
+        this.text[this.cursorPosition.y] = BEFORE_CURSOR;
         this.numberOfLines++;
         for (let i = this.numberOfLines - 1; i > this.cursorPosition.y; i--) this.text[i] = this.text[i - 1];
-        this.text[this.cursorPosition.y + 1] = afterCursor;
+        this.text[this.cursorPosition.y + 1] = AFTER_CURSOR;
         this.cursorPosition.x = 0;
         this.cursorPosition.y += 1;
     }
 
     onBackspaceDown(): void {
-        if (this.text[this.cursorPosition.y].substring(0, this.cursorPosition.x) === '' && this.cursorPosition.y === 0) {
-            // dont do anything
-        } else if (this.text[this.cursorPosition.y].substring(0, this.cursorPosition.x) === '') {
-            const afterCursor = this.text[this.cursorPosition.y].substring(this.cursorPosition.x);
+        const TEXT_BEFORE_CURSOR: string = this.text[this.cursorPosition.y].substring(0, this.cursorPosition.x);
+        const EMPTY_TEXT = '';
+        if (TEXT_BEFORE_CURSOR === EMPTY_TEXT && this.cursorPosition.y === 0) {
+            return;
+        } else if (TEXT_BEFORE_CURSOR === EMPTY_TEXT) {
+            const AFTER_CURSOR = this.text[this.cursorPosition.y].substring(this.cursorPosition.x);
             this.numberOfLines--;
             for (let i = this.cursorPosition.y; i < this.numberOfLines; i++) {
                 this.text[i] = this.text[i + 1];
             }
             this.cursorPosition.x = this.text[this.cursorPosition.y - 1].length;
             this.cursorPosition.y = this.cursorPosition.y - 1;
-            this.text[this.cursorPosition.y] = this.text[this.cursorPosition.y].concat(afterCursor);
+            this.text[this.cursorPosition.y] = this.text[this.cursorPosition.y].concat(AFTER_CURSOR);
         } else {
-            const beforeCursor = this.text[this.cursorPosition.y].substring(0, this.cursorPosition.x - 1);
-            const afterCursor = this.text[this.cursorPosition.y].substring(this.cursorPosition.x);
-            this.text[this.cursorPosition.y] = beforeCursor.concat(afterCursor);
+            const BEFORE_CURSOR = this.text[this.cursorPosition.y].substring(0, this.cursorPosition.x - 1);
+            const AFTER_CURSOR = this.text[this.cursorPosition.y].substring(this.cursorPosition.x);
+            this.text[this.cursorPosition.y] = BEFORE_CURSOR.concat(AFTER_CURSOR);
             this.cursorPosition.x -= 1;
         }
     }
 
     private onDeleteDown(): void {
-        if (
-            this.text[this.cursorPosition.y].substring(this.cursorPosition.x, this.text[this.cursorPosition.y].length) === '' &&
-            this.cursorPosition.y === this.numberOfLines - 1
-        ) {
-            // dont do anything
-        } else if (this.text[this.cursorPosition.y].substring(this.cursorPosition.x, this.text[this.cursorPosition.y].length) === '') {
-            const nextline = this.text[this.cursorPosition.y + 1];
+        const TEXT_AFTER_CURSOR: string = this.text[this.cursorPosition.y].substring(this.cursorPosition.x, this.text[this.cursorPosition.y].length);
+        const EMPTY_TEXT = '';
+        if (TEXT_AFTER_CURSOR === EMPTY_TEXT && this.cursorPosition.y === this.numberOfLines - 1) {
+            return;
+        } else if (TEXT_AFTER_CURSOR === EMPTY_TEXT) {
+            const NEXT_LINE = this.text[this.cursorPosition.y + 1];
             this.numberOfLines--;
             for (let i = this.cursorPosition.y + 1; i < this.numberOfLines; i++) {
                 this.text[i] = this.text[i + 1];
             }
-            this.text[this.cursorPosition.y] = this.text[this.cursorPosition.y].concat(nextline);
+            this.text[this.cursorPosition.y] = this.text[this.cursorPosition.y].concat(NEXT_LINE);
         } else {
-            const beforeCursor = this.text[this.cursorPosition.y].substring(0, this.cursorPosition.x);
-            const afterCursor = this.text[this.cursorPosition.y].substring(this.cursorPosition.x + 1);
-            this.text[this.cursorPosition.y] = beforeCursor.concat(afterCursor);
+            const BEFORE_CURSOR = this.text[this.cursorPosition.y].substring(0, this.cursorPosition.x);
+            const AFTER_CURSOR = this.text[this.cursorPosition.y].substring(this.cursorPosition.x + 1);
+            this.text[this.cursorPosition.y] = BEFORE_CURSOR.concat(AFTER_CURSOR);
         }
     }
-    // Since the behaviors of the arrows needs to account for a lot of differents scenarios, the tslint:disable is justified
+
     // tslint:disable:cyclomatic-complexity
     onArrowDown(event: KeyboardEvent): void {
+        const LAST_LINE_POSITION: number = this.numberOfLines - 1;
         switch (event.key) {
             case 'ArrowUp': {
                 if (this.cursorPosition.y === 0) {
-                    // dont do anything
+                    return;
+                }
+                this.cursorPosition.y -= 1;
+                if (this.styleService.getAlignment() !== TextAlignment.right) {
+                    if (this.cursorPosition.x > this.text[this.cursorPosition.y].length)
+                        this.cursorPosition.x = this.text[this.cursorPosition.y].length;
                 } else {
-                    this.cursorPosition.y -= 1;
-                    if (this.styleService.getAlignment() !== TextAlignment.right) {
-                        if (this.cursorPosition.x > this.text[this.cursorPosition.y].length)
-                            this.cursorPosition.x = this.text[this.cursorPosition.y].length;
-                    } else {
-                        this.cursorPosition.x =
-                            this.cursorPosition.x - this.text[this.cursorPosition.y + 1].length + this.text[this.cursorPosition.y].length;
-                    }
+                    this.cursorPosition.x =
+                        this.cursorPosition.x - this.text[this.cursorPosition.y + 1].length + this.text[this.cursorPosition.y].length;
                 }
                 break;
             }
             case 'ArrowRight': {
-                if (this.cursorPosition.x === this.text[this.cursorPosition.y].length && this.cursorPosition.y === this.numberOfLines - 1) {
-                    // dont do anything
+                if (this.cursorPosition.x === this.text[this.cursorPosition.y].length && this.cursorPosition.y === LAST_LINE_POSITION) {
+                    return;
                 } else if (this.cursorPosition.x === this.text[this.cursorPosition.y].length) {
                     this.cursorPosition.x = 0;
                     this.cursorPosition.y += 1;
@@ -269,23 +270,22 @@ export class TextService extends Tool {
                 break;
             }
             case 'ArrowDown': {
-                if (this.cursorPosition.y === this.numberOfLines - 1) {
-                    // dont do anything
+                if (this.cursorPosition.y === LAST_LINE_POSITION) {
+                    return;
+                }
+                this.cursorPosition.y += 1;
+                if (this.styleService.getAlignment() !== TextAlignment.right) {
+                    if (this.cursorPosition.x > this.text[this.cursorPosition.y].length)
+                        this.cursorPosition.x = this.text[this.cursorPosition.y].length;
                 } else {
-                    this.cursorPosition.y += 1;
-                    if (this.styleService.getAlignment() !== TextAlignment.right) {
-                        if (this.cursorPosition.x > this.text[this.cursorPosition.y].length)
-                            this.cursorPosition.x = this.text[this.cursorPosition.y].length;
-                    } else {
-                        this.cursorPosition.x =
-                            this.cursorPosition.x - this.text[this.cursorPosition.y - 1].length + this.text[this.cursorPosition.y].length;
-                    }
+                    this.cursorPosition.x =
+                        this.cursorPosition.x - this.text[this.cursorPosition.y - 1].length + this.text[this.cursorPosition.y].length;
                 }
                 break;
             }
             case 'ArrowLeft': {
                 if (this.cursorPosition.x === 0 && this.cursorPosition.y === 0) {
-                    // dont do anything
+                    return;
                 } else if (this.cursorPosition.x === 0) {
                     this.cursorPosition.y -= 1;
                     this.cursorPosition.x = this.text[this.cursorPosition.y].length;

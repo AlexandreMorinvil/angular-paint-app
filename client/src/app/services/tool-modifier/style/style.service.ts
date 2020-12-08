@@ -20,18 +20,13 @@ export enum TextFont {
     providedIn: 'root',
 })
 export class StyleService extends ToolModifier {
-    readonly DEFAULT_ALIGNEMENT: string = TextAlignment.left;
     private listAlignments: string[];
     private alignment: string = TextAlignment.left;
-    readonly DEFAULT_FONT: string = TextFont.serif;
     private listFonts: string[];
     private font: string = TextFont.serif;
-    readonly DEFAULT_HAS_BOLD: boolean = false;
-    readonly DEFAULT_HAS_ITALIC: boolean = false;
-    private hasBold: boolean = this.DEFAULT_HAS_BOLD;
-    private hasItalic: boolean = this.DEFAULT_HAS_ITALIC;
-    readonly DEFAULT_FONT_SIZE: number = 10;
-    private fontSize: number = this.DEFAULT_FONT_SIZE;
+    private hasBold: boolean = false;
+    private hasItalic: boolean = false;
+    private fontSize: number = 10;
 
     constructor() {
         super();

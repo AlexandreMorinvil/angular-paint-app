@@ -14,7 +14,6 @@ export enum StampEnum {
     providedIn: 'root',
 })
 export class StampPickerService extends ToolModifier {
-    readonly DEFAULT_STAMP: string = StampEnum.stamp1;
     private listStamps: string[];
     private stamp: string = StampEnum.stamp1;
 
