@@ -41,16 +41,19 @@ export class AttributeColorComponent {
 
         this.secondaryColor = this.colorService.getSecondaryColor();
         this.secondaryOpacity = this.colorService.getSecondaryColorOpacity();
+        this.toolbox.getCurrentTool().onAttributeChange();
     }
 
     selectPrimaryColorsQuick(color: string): void {
         this.colorService.setPrimaryColor(color);
         this.primaryColor = this.colorService.getPrimaryColor();
+        this.toolbox.getCurrentTool().onAttributeChange();
     }
 
     selectSecondaryColorQuick(color: string): void {
         this.colorService.setSecondaryColor(color);
         this.secondaryColor = this.colorService.getSecondaryColor();
+        this.toolbox.getCurrentTool().onAttributeChange();
     }
 
     assign(): void {
@@ -70,6 +73,7 @@ export class AttributeColorComponent {
         this.secondaryColor = this.colorService.getSecondaryColor();
         this.primaryOpacity = this.colorService.getPrimaryColorOpacity();
         this.secondaryOpacity = this.colorService.getSecondaryColorOpacity();
+        this.toolbox.getCurrentTool().onAttributeChange();
     }
 
     needConfirmation(): boolean {
