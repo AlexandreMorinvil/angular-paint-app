@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { InteractionSelection } from '@app/classes/action/interaction-selection';
 import { Description } from '@app/classes/description';
 import { Vec2 } from '@app/classes/vec2';
-import { ClipBoardService } from '@app/services/clipboard/clipboard.service';
+// import { ClipBoardService } from '@app/services/clipboard/clipboard.service';
 import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { MagnetismService } from '@app/services/magnetism/magnetism.service';
+// import { MagnetismService } from '@app/services/magnetism/magnetism.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
@@ -23,16 +23,14 @@ export class RectangleSelectionService extends SelectionToolService {
         private rectangleService: RectangleService,
         private tracingService: TracingService,
         private colorService: ColorService,
-        private widthService: WidthService,
-        magnetismService: MagnetismService,
-        clipBoardService: ClipBoardService,
+        private widthService: WidthService, // magnetismService: MagnetismService, // clipBoardService: ClipBoardService,
     ) {
         super(
             drawingService,
             colorService,
             new Description('selection rectangle', 'r', 'rectangle-selection.png'),
-            magnetismService,
-            clipBoardService,
+            // magnetismService,
+            // clipBoardService,
         );
         this.image = new Image();
     }
@@ -42,6 +40,7 @@ export class RectangleSelectionService extends SelectionToolService {
             this.onEscapeDown();
         }
         this.resetSelectionPreset(event);
+        this.resetTransform();
         // resizing
         if (this.selectionCreated && this.checkHit(this.mouseDownCoord)) {
             this.getAnchorHit(this.drawingService.previewCtx, this.mouseDownCoord, CALLER_ID);
@@ -67,7 +66,6 @@ export class RectangleSelectionService extends SelectionToolService {
             this.setValueCreation(event);
             this.selectionSize = { x: 1, y: 1 }; // to disable unwanted click
         }
-        this.resetTransform();
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -254,8 +252,6 @@ export class RectangleSelectionService extends SelectionToolService {
             this.showSelection(this.drawingService.baseCtx, this.image, this.firstSelectionCoord, this.selectionSize);
             this.resetCanvasRotation();
         }
-        this.tracingService.setHasFill(true);
-        this.tracingService.setHasContour(true);
         this.selectionCreated = false;
     }
 

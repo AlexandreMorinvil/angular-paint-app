@@ -2,9 +2,9 @@ import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Description } from '@app/classes/description';
 import { Vec2 } from '@app/classes/vec2';
-import { ClipBoardService } from '@app/services/clipboard/clipboard.service';
+// import { ClipBoardService } from '@app/services/clipboard/clipboard.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { MagnetismService } from '@app/services/magnetism/magnetism.service';
+// import { MagnetismService } from '@app/services/magnetism/magnetism.service';
 import { SelectionToolService } from './selection-tool.service';
 // tslint:disable:no-any
 // tslint:disable:no-magic-numbers
@@ -26,27 +26,27 @@ fdescribe('SelectionToolService', () => {
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     // tslint:disable-next-line:prefer-const
     let descriptionSpy: jasmine.SpyObj<Description>;
-    let magnetismServiceSpy: jasmine.SpyObj<MagnetismService>;
+    // let magnetismServiceSpy: jasmine.SpyObj<MagnetismService>;
     // tslint:disable-next-line:prefer-const
-    let clipBoardServiceSpy: jasmine.SpyObj<ClipBoardService>;
+    // let clipBoardServiceSpy: jasmine.SpyObj<ClipBoardService>;
     const startCoord: Vec2 = { x: 10, y: 10 };
-    magnetismServiceSpy = jasmine.createSpyObj('MagnetismService', [
+    /*magnetismServiceSpy = jasmine.createSpyObj('MagnetismService', [
         'getAdjustedPositionFromCenter',
         'getGridHorizontalJumpDistance',
         'getVerticalJumpDistance',
-    ]);
+    ]);*/
     beforeEach(() => {
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
         TestBed.configureTestingModule({
             providers: [
                 { provide: DrawingService, useValue: drawServiceSpy },
                 { provide: Description, useValue: descriptionSpy },
-                { provide: MagnetismService, useValue: magnetismServiceSpy },
-                { provide: ClipBoardService, useValue: clipBoardServiceSpy },
+                // { provide: MagnetismService, useValue: magnetismServiceSpy },
+                // { provide: ClipBoardService, useValue: clipBoardServiceSpy },
             ],
         });
         service = TestBed.inject(SelectionToolService);
-        (service as any).magnetismService.isActivated = false;
+        //(service as any).magnetismService.isActivated = false;
         (service as any).shiftDown = false;
         (service as any).hasDoneFirstRotation = false;
         (service as any).hasDoneFirstTranslation = false;

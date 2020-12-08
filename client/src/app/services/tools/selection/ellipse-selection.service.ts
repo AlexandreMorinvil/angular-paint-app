@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { InteractionSelection } from '@app/classes/action/interaction-selection';
 import { Description } from '@app/classes/description';
 import { Vec2 } from '@app/classes/vec2';
-import { ClipBoardService } from '@app/services/clipboard/clipboard.service';
+// import { ClipBoardService } from '@app/services/clipboard/clipboard.service';
 import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { MagnetismService } from '@app/services/magnetism/magnetism.service';
+// import { MagnetismService } from '@app/services/magnetism/magnetism.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
@@ -23,11 +23,13 @@ export class EllipseSelectionService extends SelectionToolService {
         private ellipseService: EllipseService,
         private tracingService: TracingService,
         private colorService: ColorService,
-        private widthService: WidthService,
-        magnetismService: MagnetismService,
-        clipBoardService: ClipBoardService,
+        private widthService: WidthService, // magnetismService: MagnetismService, // clipBoardService: ClipBoardService,
     ) {
-        super(drawingService, colorService, new Description('selection ellipse', 's', 'ellipse-selection.png'), magnetismService, clipBoardService);
+        super(
+            drawingService,
+            colorService,
+            new Description('selection ellipse', 's', 'ellipse-selection.png') /* magnetismService, clipBoardService*/,
+        );
         this.image = new Image();
     }
 
@@ -37,6 +39,7 @@ export class EllipseSelectionService extends SelectionToolService {
             this.onEscapeDown();
         }
         this.resetSelectionPreset(event);
+        this.resetTransform();
         // resizing
         if (this.selectionCreated && this.checkHit(this.mouseDownCoord)) {
             this.getAnchorHit(this.drawingService.previewCtx, this.mouseDownCoord, CALLER_ID);
@@ -61,7 +64,6 @@ export class EllipseSelectionService extends SelectionToolService {
             this.setValueCreation(event);
             this.selectionSize = { x: 1, y: 1 }; // to disable unwanted click
         }
-        this.resetTransform();
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -121,7 +123,7 @@ export class EllipseSelectionService extends SelectionToolService {
             // saves what is under the selection
             const UNDER_DATA = this.drawingService.baseCtx.getImageData(START.x, START.y, Math.abs(this.resizeWidth), Math.abs(this.resizeHeight));
             this.getAnchorHit(this.drawingService.baseCtx, MOUSE_POSITION, CALLER_ID, 0); // draw new image on base for saving image.src
-            this.startDownCoord = START; // set new startCoords with the resize
+            this.startDownCoord = this.offsetAnchors(this.resizeStartCoords); // set new startCoords with the resize
             this.selectionSize = { x: Math.abs(this.resizeWidth), y: Math.abs(this.resizeHeight) }; // set new size of selection
             this.image.src = this.drawingService.baseCtx.canvas.toDataURL(); // save new image with resized selection
             // puts back what was under the selection
@@ -263,8 +265,6 @@ export class EllipseSelectionService extends SelectionToolService {
             this.showSelection(this.drawingService.baseCtx, this.image, this.firstSelectionCoord, this.selectionSize);
             this.resetCanvasRotation();
         }
-        this.tracingService.setHasFill(true);
-        this.tracingService.setHasContour(true);
         this.selectionCreated = false;
     }
 

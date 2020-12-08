@@ -3,10 +3,10 @@ import { InteractionSelection } from '@app/classes/action/interaction-selection'
 import { Description } from '@app/classes/description';
 import { MouseButton } from '@app/classes/mouse';
 import { Vec2 } from '@app/classes/vec2';
-import { ClipBoardService } from '@app/services/clipboard/clipboard.service';
+// import { ClipBoardService } from '@app/services/clipboard/clipboard.service';
 import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { MagnetismService } from '@app/services/magnetism/magnetism.service';
+// import { MagnetismService } from '@app/services/magnetism/magnetism.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
@@ -31,11 +31,9 @@ export class MagicWandService extends SelectionToolService {
         private rectangleService: RectangleService,
         private tracingService: TracingService,
         private widthService: WidthService,
-        private colorService: ColorService,
-        magnetismService: MagnetismService,
-        clipBoardService: ClipBoardService,
+        private colorService: ColorService, // magnetismService: MagnetismService, // clipBoardService: ClipBoardService,
     ) {
-        super(drawingService, colorService, new Description('Baguette magique', 'v', 'magic-wand.png'), magnetismService, clipBoardService);
+        super(drawingService, colorService, new Description('Baguette magique', 'v', 'magic-wand.png') /* magnetismService, clipBoardService*/);
         this.image = new Image();
     }
 
@@ -45,6 +43,7 @@ export class MagicWandService extends SelectionToolService {
             this.onEscapeDown();
         }
         this.resetSelectionPreset(event);
+        this.resetTransform();
         // resizing
         if (this.selectionCreated && this.checkHit(this.mouseDownCoord)) {
             this.getAnchorHit(this.drawingService.previewCtx, this.mouseDownCoord, CALLER_ID);
@@ -79,7 +78,7 @@ export class MagicWandService extends SelectionToolService {
             this.selectionCreated = true;
             this.localMouseDown = false;
         }
-        this.resetTransform();
+
         this.mouseDown = true;
     }
 
@@ -398,8 +397,6 @@ export class MagicWandService extends SelectionToolService {
             this.showSelection(this.drawingService.baseCtx, this.image, this.firstSelectionCoord, this.selectionSize);
             this.resetCanvasRotation();
         }
-        this.tracingService.setHasFill(true);
-        this.tracingService.setHasContour(true);
         this.selectionCreated = false;
     }
 
