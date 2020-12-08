@@ -274,6 +274,7 @@ export class EllipseSelectionService extends SelectionToolService {
             this.addActionTracking(this.startDownCoord);
         }
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.selectionCreated = false;
         this.arrowDown = true;
     }
 
