@@ -2,14 +2,14 @@ import { Injectable } from '@angular/core';
 import { InteractionSelection } from '@app/classes/action/interaction-selection';
 import { Description } from '@app/classes/description';
 import { Vec2 } from '@app/classes/vec2';
-// import { ClipBoardService } from '@app/services/clipboard/clipboard.service';
+import { ClipBoardService } from '@app/services/clipboard/clipboard.service';
 import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-// import { MagnetismService } from '@app/services/magnetism/magnetism.service';
+import { MagnetismService } from '@app/services/magnetism/magnetism.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
-import { EllipseService } from '@app/services/tools/ellipse/ellipse-service';
+import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
 import { SelectionToolService } from '@app/services/tools/selection/selection-tool.service';
 // tslint:disable:max-file-line-count
 const CALLER_ID = 1;
@@ -23,13 +23,11 @@ export class EllipseSelectionService extends SelectionToolService {
         private ellipseService: EllipseService,
         private tracingService: TracingService,
         private colorService: ColorService,
-        private widthService: WidthService, // magnetismService: MagnetismService, // clipBoardService: ClipBoardService,
+        private widthService: WidthService,
+        magnetismService: MagnetismService,
+        clipBoardService: ClipBoardService,
     ) {
-        super(
-            drawingService,
-            colorService,
-            new Description('selection ellipse', 's', 'ellipse-selection.png') /* magnetismService, clipBoardService*/,
-        );
+        super(drawingService, colorService, new Description('selection ellipse', 's', 'ellipse-selection.png'), magnetismService, clipBoardService);
         this.image = new Image();
     }
 

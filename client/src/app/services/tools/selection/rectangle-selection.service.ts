@@ -2,14 +2,14 @@ import { Injectable } from '@angular/core';
 import { InteractionSelection } from '@app/classes/action/interaction-selection';
 import { Description } from '@app/classes/description';
 import { Vec2 } from '@app/classes/vec2';
-// import { ClipBoardService } from '@app/services/clipboard/clipboard.service';
+import { ClipBoardService } from '@app/services/clipboard/clipboard.service';
 import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-// import { MagnetismService } from '@app/services/magnetism/magnetism.service';
+import { MagnetismService } from '@app/services/magnetism/magnetism.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
-import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
+import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { SelectionToolService } from '@app/services/tools/selection/selection-tool.service';
 // tslint:disable:max-file-line-count
 const CALLER_ID = 2;
@@ -23,14 +23,16 @@ export class RectangleSelectionService extends SelectionToolService {
         private rectangleService: RectangleService,
         private tracingService: TracingService,
         private colorService: ColorService,
-        private widthService: WidthService, // magnetismService: MagnetismService, // clipBoardService: ClipBoardService,
+        private widthService: WidthService,
+        magnetismService: MagnetismService,
+        clipBoardService: ClipBoardService,
     ) {
         super(
             drawingService,
             colorService,
             new Description('selection rectangle', 'r', 'rectangle-selection.png'),
-            // magnetismService,
-            // clipBoardService,
+            magnetismService,
+            clipBoardService,
         );
         this.image = new Image();
     }
@@ -159,6 +161,7 @@ export class RectangleSelectionService extends SelectionToolService {
             this.addActionTracking(this.startDownCoord);
             // put selection on previewCanvas
             this.pathLastCoord = this.getBottomRightCorner();
+            this.clipboardHelperImage = this.image;
             this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
             this.drawSelectionSurround();
             // remove original rectangle from base

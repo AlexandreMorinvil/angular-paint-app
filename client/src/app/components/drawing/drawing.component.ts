@@ -1,9 +1,12 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { ClipBoardService } from '@app/services/clipboard/clipboard.service';
 import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MagnetismService } from '@app/services/magnetism/magnetism.service';
 import { ModalHandlerService } from '@app/services/modal-handler/modal-handler';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
 import { GridService } from '@app/services/tools/grid/grid.service';
+import { TextService } from '@app/services/tools/text/text.service';
 import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzone-size.service';
 
 export const DEFAULT_WIDTH = 1000;
@@ -16,6 +19,7 @@ const SIDEBARWIDTH = 95;
     styleUrls: ['./drawing.component.scss'],
 })
 export class DrawingComponent implements AfterViewInit {
+    @ViewChild('clipboardCanvas', { static: false }) clipboardCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('editCanvas', { static: false }) editCanvas: ElementRef<HTMLCanvasElement>;
@@ -26,6 +30,7 @@ export class DrawingComponent implements AfterViewInit {
     private previewCtx: CanvasRenderingContext2D;
     private editCtx: CanvasRenderingContext2D;
     private gridCtx: CanvasRenderingContext2D;
+    private clipboardCtx: CanvasRenderingContext2D;
     hasBeenDrawnOnto: boolean;
 
     constructor(
@@ -35,6 +40,8 @@ export class DrawingComponent implements AfterViewInit {
         private workzoneSizeService: WorkzoneSizeService,
         private drawingStateTrackerService: DrawingStateTrackerService,
         private gridService: GridService,
+        private magnetismService: MagnetismService,
+        private clipboardService: ClipBoardService,
     ) {}
     // tslint:disable:no-magic-numbers
     ngAfterViewInit(): void {
@@ -42,16 +49,19 @@ export class DrawingComponent implements AfterViewInit {
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.editCtx = this.editCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.gridCtx = this.gridCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.clipboardCtx = this.clipboardCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
         this.editCtx.canvas.width = window.innerWidth - TOOL_BOX_WIDTH - SIDEBARWIDTH;
         this.editCtx.canvas.height = window.innerHeight - 5;
-        this.gridCtx.canvas.width = this.editCtx.canvas.width;
-        this.gridCtx.canvas.height = this.editCtx.canvas.height;
+        this.gridCtx.canvas.width = this.baseCtx.canvas.width;
+        this.gridCtx.canvas.height = this.baseCtx.canvas.height;
         this.drawingService.hasBeenDrawnOnto = false;
         this.gridService.gridCtx = this.gridCtx;
         this.gridService.gridCanvas = this.gridCanvas.nativeElement;
+        this.clipboardService.clipboardCtx = this.clipboardCtx;
+        this.clipboardService.canvas = this.clipboardCanvas.nativeElement;
         // Fills the canvas with white
         this.baseCtx.fillStyle = '#FFFFFF';
         this.baseCtx.fillRect(0, 0, this.baseCtx.canvas.width, this.baseCtx.canvas.height);
@@ -73,6 +83,12 @@ export class DrawingComponent implements AfterViewInit {
     createNewDrawingKeyboardEvent(event: KeyboardEvent): void {
         event.preventDefault();
         this.resetDrawing();
+    }
+
+    @HostListener('mousewheel', ['$event'])
+    onMousewheel(event: WheelEvent): void {
+        event.preventDefault(); // to prevent key of windows
+        this.toolbox.getCurrentTool().onMouseWheel(event);
     }
 
     @HostListener('mousemove', ['$event'])
@@ -135,7 +151,10 @@ export class DrawingComponent implements AfterViewInit {
     // tslint:disable:cyclomatic-complexity
     @HostListener('window:keydown', ['$event'])
     onShiftDown(event: KeyboardEvent): void {
-        if (event.key === 'Shift') {
+        if (this.toolbox.getCurrentTool() instanceof TextService) {
+            event.preventDefault();
+            this.toolbox.getCurrentTool().onKeyDown(event);
+        } else if (event.key === 'Shift') {
             this.toolbox.getCurrentTool().onShiftDown(event);
         } else if (event.key === 'Escape') {
             this.toolbox.getCurrentTool().onEscapeDown(event);
@@ -170,13 +189,9 @@ export class DrawingComponent implements AfterViewInit {
             this.gridService.incrementSpacing();
         } else if (event.key.toLowerCase() === '-' && this.drawingService.shortcutEnable) {
             this.gridService.decrementSpacing();
+        } else if (event.key.toLowerCase() === 'm' && this.drawingService.shortcutEnable) {
+            this.magnetismService.toogleMagnetism();
         }
-    }
-
-    @HostListener('mousewheel', ['$event'])
-    onMousewheel(event: WheelEvent): void {
-        event.preventDefault(); // to prevent key of windows
-        this.toolbox.getCurrentTool().onMouseWheel(event);
     }
 
     get width(): number {

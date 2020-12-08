@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { SprayDiameterService } from '@app/services/tool-modifier/spraydiameter/spray-diameter.service';
+import { SprayDiameterService } from '@app/services/tool-modifier/spray-diameter/spray-diameter.service';
 
 @Component({
     selector: 'app-attribute-spray-diameter',

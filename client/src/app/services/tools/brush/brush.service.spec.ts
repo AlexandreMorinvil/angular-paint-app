@@ -4,7 +4,7 @@ import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { TextureEnum, TextureService } from '@app/services/tool-modifier/texture/texture.service';
-import { BrushService } from './brush-service';
+import { BrushService } from './brush.service';
 
 // The disablement of the "any" tslint rule is justified in this situation as the prototype
 // of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"

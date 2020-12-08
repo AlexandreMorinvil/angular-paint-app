@@ -6,14 +6,16 @@ import { JunctionService } from '@app/services/tool-modifier/junction/junction.s
 import { NumberSprayTransmissionService } from '@app/services/tool-modifier/numberspraytransmission/numberspraytransmission.service';
 import { SidesService } from '@app/services/tool-modifier/sides/sides.service';
 import { SpacingService } from '@app/services/tool-modifier/spacing/spacing.service';
-import { SprayDiameterService } from '@app/services/tool-modifier/spraydiameter/spray-diameter.service';
-import { SprayDropletDiameterService } from '@app/services/tool-modifier/spraydropletdiameter/spraydropletdiameter.service';
+import { SprayDiameterService } from '@app/services/tool-modifier/spray-diameter/spray-diameter.service';
+import { SprayDropletDiameterService } from '@app/services/tool-modifier/spray-droplet-diameter/spray-droplet-diameter.service';
 import { StampPickerService } from '@app/services/tool-modifier/stamp-picker/stamp-picker.service';
+import { StyleService } from '@app/services/tool-modifier/style/style.service';
 import { TextureService } from '@app/services/tool-modifier/texture/texture.service';
 import { ToleranceService } from '@app/services/tool-modifier/tolerance/tolerance.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
+import { SelectionToolService } from '@app/services/tools/selection/selection-tool.service';
 
 @Component({
     selector: 'app-attributes-panel',
@@ -30,6 +32,7 @@ export class AttributesPanelComponent {
         private sideService: SidesService,
         private sprayService: SprayDiameterService,
         private sprayDropletService: SprayDropletDiameterService,
+        private styleService: StyleService,
         private numberSprayTransmissionService: NumberSprayTransmissionService,
         private textureService: TextureService,
         private tracingService: TracingService,
@@ -78,6 +81,9 @@ export class AttributesPanelComponent {
     needsSprayDropletDiameterAttribute(): boolean {
         return this.currentTool.needsModifierManager(this.sprayDropletService);
     }
+    needsStyleAttribute(): boolean {
+        return this.currentTool.needsModifierManager(this.styleService);
+    }
     needsNumberSprayTransmissionAttribute(): boolean {
         return this.currentTool.needsModifierManager(this.numberSprayTransmissionService);
     }
@@ -94,7 +100,7 @@ export class AttributesPanelComponent {
     }
 
     needsSelectionAttribute(): boolean {
-        return this.currentTool.name === 'selection rectangle' || this.currentTool.name === 'selection ellipse';
+        return this.currentTool instanceof SelectionToolService;
     }
 
     needsGridDisplayAttribute(): boolean {

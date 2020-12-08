@@ -5,13 +5,13 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
-import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
+import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { MagicWandService } from './magic-wand.service';
 // tslint:disable:max-file-line-count
 // tslint:disable:no-any
 // tslint:disable:no-magic-numbers
 
-fdescribe('MagicWandService', () => {
+describe('MagicWandService', () => {
     let service: MagicWandService;
     let tracingService: TracingService;
     let colorService: ColorService;

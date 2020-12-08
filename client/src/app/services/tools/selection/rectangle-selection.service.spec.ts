@@ -6,12 +6,12 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
-import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
+import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { RectangleSelectionService } from './rectangle-selection.service';
 // Illogical to seperate test in different file for the same service
 // tslint:disable:max-file-line-count
 // tslint:disable:no-any
-fdescribe('RectangleSelectionService', () => {
+describe('RectangleSelectionService', () => {
     let service: RectangleSelectionService;
     let tracingService: TracingService;
     let colorService: ColorService;
