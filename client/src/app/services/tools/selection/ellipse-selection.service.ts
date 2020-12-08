@@ -2,18 +2,20 @@ import { Injectable } from '@angular/core';
 import { InteractionSelection } from '@app/classes/action/interaction-selection';
 import { Description } from '@app/classes/description';
 import { Vec2 } from '@app/classes/vec2';
+import { ClipBoardService } from '@app/services/clipboard/clipboard.service';
 import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MagnetismService } from '@app/services/magnetism/magnetism.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
 import { EllipseService } from '@app/services/tools/ellipse/ellipse-service';
 import { SelectionToolService } from '@app/services/tools/selection/selection-tool.service';
 // tslint:disable:max-file-line-count
+const CALLER_ID = 1;
 @Injectable({
     providedIn: 'root',
 })
-const CALLER_ID = 1;
 export class EllipseSelectionService extends SelectionToolService {
     constructor(
         drawingService: DrawingService,
@@ -22,8 +24,10 @@ export class EllipseSelectionService extends SelectionToolService {
         private tracingService: TracingService,
         private colorService: ColorService,
         private widthService: WidthService,
+        magnetismService: MagnetismService,
+        clipBoardService: ClipBoardService,
     ) {
-        super(drawingService, colorService, new Description('selection ellipse', 's', 'ellipse-selection.png'));
+        super(drawingService, colorService, new Description('selection ellipse', 's', 'ellipse-selection.png'), magnetismService, clipBoardService);
         this.image = new Image();
     }
 
@@ -33,7 +37,6 @@ export class EllipseSelectionService extends SelectionToolService {
             this.onEscapeDown();
         }
         this.resetSelectionPreset(event);
-        this.resetTransform();
         // resizing
         if (this.selectionCreated && this.checkHit(this.mouseDownCoord)) {
             this.getAnchorHit(this.drawingService.previewCtx, this.mouseDownCoord, CALLER_ID);
@@ -58,19 +61,21 @@ export class EllipseSelectionService extends SelectionToolService {
             this.setValueCreation(event);
             this.selectionSize = { x: 1, y: 1 }; // to disable unwanted click
         }
+        this.resetTransform();
     }
 
     onMouseMove(event: MouseEvent): void {
         const MOUSE_POSITION = this.getPositionFromMouse(event);
         // translate
         if (this.draggingImage && this.localMouseDown) {
+            const MOUSE_POSITION_MAGNETIC = this.getPositionFromMouse(event, true); // For adjusting postion to magnetism
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION);
+            this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION_MAGNETIC);
             this.pathLastCoord = this.getBottomRightCorner(); // needed for showSelection
             this.rotateCanvas();
             this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
             this.resetCanvasRotation();
-            this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION);
+            this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION_MAGNETIC);
             // resizing
         } else if (this.clickOnAnchor && this.localMouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -93,8 +98,9 @@ export class EllipseSelectionService extends SelectionToolService {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         // translate
         if (this.draggingImage) {
+            const MOUSE_POSITION_MAGNETIC = this.getPositionFromMouse(event, true); // For adjusting postion to magnetism
             // put selection on previewCanvas
-            this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION);
+            this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION_MAGNETIC);
             this.rotateCanvas();
             this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
             // draw selection box
@@ -104,7 +110,7 @@ export class EllipseSelectionService extends SelectionToolService {
             this.drawSelectionSurround();
             this.resetCanvasRotation();
             // set values
-            this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION);
+            this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION_MAGNETIC);
             this.draggingImage = false;
             this.hasDoneFirstTranslation = true;
             // resizing
@@ -115,7 +121,7 @@ export class EllipseSelectionService extends SelectionToolService {
             // saves what is under the selection
             const UNDER_DATA = this.drawingService.baseCtx.getImageData(START.x, START.y, Math.abs(this.resizeWidth), Math.abs(this.resizeHeight));
             this.getAnchorHit(this.drawingService.baseCtx, MOUSE_POSITION, CALLER_ID, 0); // draw new image on base for saving image.src
-            this.startDownCoord = this.offsetAnchors(this.resizeStartCoords); // set new startCoords with the resize
+            this.startDownCoord = START; // set new startCoords with the resize
             this.selectionSize = { x: Math.abs(this.resizeWidth), y: Math.abs(this.resizeHeight) }; // set new size of selection
             this.image.src = this.drawingService.baseCtx.canvas.toDataURL(); // save new image with resized selection
             // puts back what was under the selection
@@ -257,6 +263,8 @@ export class EllipseSelectionService extends SelectionToolService {
             this.showSelection(this.drawingService.baseCtx, this.image, this.firstSelectionCoord, this.selectionSize);
             this.resetCanvasRotation();
         }
+        this.tracingService.setHasFill(true);
+        this.tracingService.setHasContour(true);
         this.selectionCreated = false;
     }
 

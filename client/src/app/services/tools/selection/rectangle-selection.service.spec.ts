@@ -11,7 +11,7 @@ import { RectangleSelectionService } from './rectangle-selection.service';
 // Illogical to seperate test in different file for the same service
 // tslint:disable:max-file-line-count
 // tslint:disable:no-any
-describe('RectangleSelectionService', () => {
+fdescribe('RectangleSelectionService', () => {
     let service: RectangleSelectionService;
     let tracingService: TracingService;
     let colorService: ColorService;
@@ -284,10 +284,19 @@ describe('RectangleSelectionService', () => {
         (service as any).localMouseDown = false;
         (service as any).clickOnAnchor = true;
 
-        service.onMouseUp(mouseEvent);
+        (service as any).resizeStartCoords = { x: 25, y: 25 };
+        (service as any).resizeWidth = 0;
+        (service as any).resizeHeight = 0;
 
-        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        service.onMouseDown(mouseEvent);
+        service.onMouseMove(mouseEvent50);
+        service.onMouseUp(mouseEvent50);
+
+        expect((service as any).mouseDown).toBeTrue();
+        expect(clearPathSpy).toHaveBeenCalled();
         expect(getAnchorHitSpy).toHaveBeenCalled();
+        expect((service as any).clickOnAnchor).toBeFalse();
+        expect((service as any).hasDoneResizing).toBeTrue();
     });
 
     it('should on shiftDown', () => {

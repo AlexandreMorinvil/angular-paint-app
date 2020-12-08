@@ -3,18 +3,20 @@ import { InteractionSelection } from '@app/classes/action/interaction-selection'
 import { Description } from '@app/classes/description';
 import { MouseButton } from '@app/classes/mouse';
 import { Vec2 } from '@app/classes/vec2';
+import { ClipBoardService } from '@app/services/clipboard/clipboard.service';
 import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MagnetismService } from '@app/services/magnetism/magnetism.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
 import { SelectionToolService } from '@app/services/tools/selection/selection-tool.service';
 // tslint:disable:max-file-line-count
+const CALLER_ID = 3;
 @Injectable({
     providedIn: 'root',
 })
-const CALLER_ID = 3;
 export class MagicWandService extends SelectionToolService {
     private startR: number;
     private startG: number;
@@ -30,8 +32,10 @@ export class MagicWandService extends SelectionToolService {
         private tracingService: TracingService,
         private widthService: WidthService,
         private colorService: ColorService,
+        magnetismService: MagnetismService,
+        clipBoardService: ClipBoardService,
     ) {
-        super(drawingService, colorService, new Description('Baguette magique', 'v', 'magic-wand.png'));
+        super(drawingService, colorService, new Description('Baguette magique', 'v', 'magic-wand.png'), magnetismService, clipBoardService);
         this.image = new Image();
     }
 
@@ -41,7 +45,6 @@ export class MagicWandService extends SelectionToolService {
             this.onEscapeDown();
         }
         this.resetSelectionPreset(event);
-        this.resetTransform();
         // resizing
         if (this.selectionCreated && this.checkHit(this.mouseDownCoord)) {
             this.getAnchorHit(this.drawingService.previewCtx, this.mouseDownCoord, CALLER_ID);
@@ -76,7 +79,7 @@ export class MagicWandService extends SelectionToolService {
             this.selectionCreated = true;
             this.localMouseDown = false;
         }
-
+        this.resetTransform();
         this.mouseDown = true;
     }
 
@@ -84,12 +87,13 @@ export class MagicWandService extends SelectionToolService {
         const MOUSE_POSITION = this.getPositionFromMouse(event);
         // translate
         if (this.draggingImage && this.localMouseDown) {
+            const MOUSE_POSITION_MAGNETIC = this.getPositionFromMouse(event, true);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION);
+            this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION_MAGNETIC);
             this.rotateCanvas();
             this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
             this.resetCanvasRotation();
-            this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION);
+            this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION_MAGNETIC);
             // resizing
         } else if (this.clickOnAnchor && this.localMouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -101,8 +105,9 @@ export class MagicWandService extends SelectionToolService {
         const MOUSE_POSITION = this.getPositionFromMouse(event);
         // translate
         if (this.draggingImage) {
+            const MOUSE_POSITION_MAGNETIC = this.getPositionFromMouse(event, true);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION);
+            this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION_MAGNETIC);
             this.rotateCanvas();
             this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
             // draw selection surround
@@ -361,7 +366,6 @@ export class MagicWandService extends SelectionToolService {
             this.canvasData[stepSize * (pixelPos.y * this.drawingService.baseCtx.canvas.width + pixelPos.x) + 2] === this.startB
         );
     }
-
     private isSelected(pixelsSelected: boolean[], pixelPos: Vec2): boolean {
         return pixelsSelected[pixelPos.y * this.drawingService.baseCtx.canvas.width + pixelPos.x];
     }
@@ -394,6 +398,8 @@ export class MagicWandService extends SelectionToolService {
             this.showSelection(this.drawingService.baseCtx, this.image, this.firstSelectionCoord, this.selectionSize);
             this.resetCanvasRotation();
         }
+        this.tracingService.setHasFill(true);
+        this.tracingService.setHasContour(true);
         this.selectionCreated = false;
     }
 
@@ -454,9 +460,6 @@ export class MagicWandService extends SelectionToolService {
                 this.resetCanvasRotation();
                 this.startDownCoord = MEM_COORDS; // needed because rotateCanvas changes the value
                 this.hasDoneFirstTranslation = true;
-            }
-            if (this.arrowDown) {
-                this.onArrowDown({} as KeyboardEvent);
             }
         }
     }

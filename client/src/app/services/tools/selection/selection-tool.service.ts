@@ -3,7 +3,9 @@ import { Description } from '@app/classes/description';
 import { MouseButton } from '@app/classes/mouse';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { ClipBoardService } from '@app/services/clipboard/clipboard.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MagnetismService } from '@app/services/magnetism/magnetism.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { EdgePixelsOneRegion } from './edge-pixel';
 
@@ -54,7 +56,13 @@ export abstract class SelectionToolService extends Tool {
     protected edgePixelsSplitted: EdgePixelsOneRegion[] = [];
     protected edgePixelsSplittedRelativePosition: EdgePixelsOneRegion[] = [];
 
-    constructor(drawingService: DrawingService, private color: ColorService, description: Description) {
+    constructor(
+        drawingService: DrawingService,
+        private color: ColorService,
+        description: Description,
+        protected magnetismService: MagnetismService,
+        private clipboardService: ClipBoardService,
+    ) {
         super(drawingService, description);
         this.mouseDown = false;
         this.selectionCreated = false;
@@ -67,6 +75,30 @@ export abstract class SelectionToolService extends Tool {
         this.angle = 0;
 
         this.clearPath();
+    }
+
+    getPositionFromMouse(event: MouseEvent, isMagnetisc: boolean = false): Vec2 {
+        const clickCoordinate: Vec2 = { x: event.offsetX, y: event.offsetY } as Vec2;
+        if (this.magnetismService.isActivated && isMagnetisc)
+            return this.magnetismService.getAdjustedPositionFromCenter(clickCoordinate, this.selectionSize.x, this.selectionSize.y);
+        else return clickCoordinate;
+    }
+
+    copy(): void {
+        if (this.selectionCreated) this.clipboardService.memorize(this.startDownCoord, this.selectionSize);
+    }
+
+    paste(): void {
+        console.log('PASTE');
+    }
+
+    delete(): void {
+        console.log('DELETE');
+    }
+
+    cut(): void {
+        this.copy();
+        this.delete();
     }
 
     protected drawnAnchor(ctx: CanvasRenderingContext2D, size: Vec2 = this.selectionSize): void {
@@ -417,10 +449,47 @@ export abstract class SelectionToolService extends Tool {
                 this.arrowDown = false;
                 break;
         }
-        this.startDownCoord = this.arrowPress[0] ? { x: this.startDownCoord.x - MOVE, y: this.startDownCoord.y } : this.startDownCoord;
-        this.startDownCoord = this.arrowPress[1] ? { x: this.startDownCoord.x + MOVE, y: this.startDownCoord.y } : this.startDownCoord;
-        this.startDownCoord = this.arrowPress[2] ? { x: this.startDownCoord.x, y: this.startDownCoord.y - MOVE } : this.startDownCoord;
-        this.startDownCoord = this.arrowPress[3] ? { x: this.startDownCoord.x, y: this.startDownCoord.y + MOVE } : this.startDownCoord;
+
+        if (this.arrowPress[0]) {
+            this.startDownCoord = {
+                x:
+                    this.startDownCoord.x -
+                    (this.magnetismService.isActivated
+                        ? this.magnetismService.getGridHorizontalJumpDistance(this.startDownCoord.x, this.selectionSize.x, false)
+                        : MOVE),
+                y: this.startDownCoord.y,
+            };
+        }
+        if (this.arrowPress[1]) {
+            this.startDownCoord = {
+                x:
+                    this.startDownCoord.x +
+                    (this.magnetismService.isActivated
+                        ? this.magnetismService.getGridHorizontalJumpDistance(this.startDownCoord.x, this.selectionSize.x, true)
+                        : MOVE),
+                y: this.startDownCoord.y,
+            };
+        }
+        if (this.arrowPress[2]) {
+            this.startDownCoord = {
+                x: this.startDownCoord.x,
+                y:
+                    this.startDownCoord.y -
+                    (this.magnetismService.isActivated
+                        ? this.magnetismService.getVerticalJumpDistance(this.startDownCoord.y, this.selectionSize.y, false)
+                        : MOVE),
+            };
+        }
+        if (this.arrowPress[3]) {
+            this.startDownCoord = {
+                x: this.startDownCoord.x,
+                y:
+                    this.startDownCoord.y +
+                    (this.magnetismService.isActivated
+                        ? this.magnetismService.getVerticalJumpDistance(this.startDownCoord.y, this.selectionSize.y, true)
+                        : MOVE),
+            };
+        }
         this.pathLastCoord = this.getBottomRightCorner();
     }
 

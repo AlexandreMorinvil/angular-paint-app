@@ -11,7 +11,7 @@ import { MagicWandService } from './magic-wand.service';
 // tslint:disable:no-any
 // tslint:disable:no-magic-numbers
 
-describe('MagicWandService', () => {
+fdescribe('MagicWandService', () => {
     let service: MagicWandService;
     let tracingService: TracingService;
     let colorService: ColorService;
@@ -34,6 +34,8 @@ describe('MagicWandService', () => {
     let showSelectionSpy: jasmine.Spy<any>;
     let executeSpy: jasmine.Spy<any>;
     let rotateCanvasSpy: jasmine.Spy<any>;
+    let clearCanvasSelectionSpy: jasmine.Spy<any>;
+    let checkHitSpy: jasmine.Spy<any>;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     let rectangleServiceSpy: jasmine.SpyObj<RectangleService>;
 
@@ -64,11 +66,12 @@ describe('MagicWandService', () => {
         setStartColorSpy = spyOn<any>(service, 'setStartColor').and.callThrough();
         floodFillSelectSpy = spyOn<any>(service, 'floodFillSelect').and.callThrough();
         sameColorSelectSpy = spyOn<any>(service, 'sameColorSelect').and.callThrough();
-        showSelectionSpy = spyOn<any>(service, 'showSelection').and.callFake(function () {});
+        showSelectionSpy = spyOn<any>(service, 'showSelection').and.callThrough();
         drawRectSpy = spyOn<any>(service, 'drawRect').and.callThrough();
         onMouseDownSpy = spyOn<any>(service, 'onMouseDown').and.callThrough();
         executeSpy = spyOn<any>(service, 'execute').and.callThrough();
-        rotateCanvasSpy = spyOn<any>(service, 'rotateCanvas').and.callFake(function () {});
+        clearCanvasSelectionSpy = spyOn<any>(service, 'clearCanvasSelection').and.callThrough();
+        rotateCanvasSpy = spyOn<any>(service, 'rotateCanvas');
 
         const canvasWidth = 200;
         const canvasHeight = 100;
@@ -244,7 +247,13 @@ describe('MagicWandService', () => {
 
     it('should draw selection on canvas when pressing escape ', () => {
         service.onMouseDown(mouseEventInRegionLeftClick);
+        service.onEscapeDown();
         expect(showSelectionSpy).toHaveBeenCalled();
+        expect((service as any).draggingImage).toBe(false);
+    });
+    it('should not do anything on canvas when pressing escape if no selection was created ', () => {
+        service.onEscapeDown();
+        expect(showSelectionSpy).not.toHaveBeenCalled();
         expect((service as any).draggingImage).toBe(false);
     });
 
@@ -300,7 +309,6 @@ describe('MagicWandService', () => {
         magicWandPath.lineTo(5, 6);
         expect((service as any).getPathToClip()).toEqual(magicWandPath);
     });
-
     it('should start execute and put image data and clear canvas', () => {
         const interaction = {
             startSelectionPoint: { x: 0, y: 0 },
@@ -311,23 +319,47 @@ describe('MagicWandService', () => {
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
     });
 
-    it('should not draw on canvas', () => {
-        (service as any).drawOnBaseCanvas();
-        expect(showSelectionSpy).not.toHaveBeenCalled();
-        expect((service as any).selectionCreated).toBe(false);
-    });
+    it('should rotate selection on mouse wheel', () => {
+        service.onMouseDown(mouseEventInRegionLeftClick);
+        service.onMouseDown(mouseEventInRegionLeftClick);
+        const wheelEvent = {
+            deltaY: 100,
+        } as WheelEvent;
+        service.onMouseWheel(wheelEvent);
 
-    it('should draw on canvas', () => {
-        (service as any).selectionCreated = true;
-        (service as any).drawOnBaseCanvas();
-        expect(showSelectionSpy).toHaveBeenCalled();
-    });
-
-    it('should draw on canvas and rotate', () => {
-        (service as any).selectionCreated = true;
-        (service as any).hasDoneFirstRotation = true;
-        (service as any).drawOnBaseCanvas();
-        expect(showSelectionSpy).toHaveBeenCalled();
         expect(rotateCanvasSpy).toHaveBeenCalled();
+    });
+
+    it('should clear canvas on mouse click on anchor', () => {
+        checkHitSpy = spyOn<any>(service, 'checkHit').and.returnValue(true);
+        service.onMouseDown(mouseEventInRegionLeftClick);
+        service.onMouseDown(mouseEvent25);
+        expect(checkHitSpy).toHaveBeenCalled();
+        expect(clearCanvasSelectionSpy).toHaveBeenCalled();
+    });
+    /*
+  it('should draw selection on canvas if a new selection is created', () => {
+    service.onMouseDown(mouseEventInRegionLeftClick);
+    service.onMouseUp(mouseEventInRegionLeftClick);
+    service.onMouseDown(mouseEvent120);
+    expect(drawOnBaseCanvasSpy).toHaveBeenCalled();
+});
+*/
+
+    it('should resize correctly', () => {
+        checkHitSpy = spyOn<any>(service, 'checkHit').and.returnValue(true);
+        (service as any).clickOnAnchor = true;
+        (service as any).draggingImage = false;
+        (service as any).mouseDown = false;
+        (service as any).localMouseDown = false;
+        (service as any).shiftDown = false;
+        (service as any).resizeStartCoords = { x: 25, y: 25 };
+        (service as any).resizeWidth = 95;
+        (service as any).resizeHeight = 95;
+        service.onMouseDown(mouseEvent25);
+        service.onMouseMove(mouseEvent120);
+        service.onMouseUp(mouseEvent120);
+        expect((service as any).selectionSize).toEqual({ x: 20, y: 71.5 });
+        expect((service as any).startDownCoord).toEqual({ x: 25, y: 25 });
     });
 });

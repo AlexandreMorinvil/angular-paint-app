@@ -11,7 +11,7 @@ import { EllipseSelectionService } from './ellipse-selection.service';
 // Illogical to seperate test in different file for the same service
 // tslint:disable:max-file-line-count
 // tslint:disable:no-any
-describe('EllipseSelectionService', () => {
+fdescribe('EllipseSelectionService', () => {
     let service: EllipseSelectionService;
     let tracingService: TracingService;
     let colorService: ColorService;
@@ -347,12 +347,19 @@ describe('EllipseSelectionService', () => {
         (service as any).mouseDown = false;
         (service as any).localMouseDown = false;
         (service as any).shiftDown = false;
+        (service as any).resizeStartCoords = { x: 25, y: 25 };
+        (service as any).resizeWidth = 0;
+        (service as any).resizeHeight = 0;
+
         service.onMouseDown(mouseEvent25);
         service.onMouseMove(mouseEvent50);
         service.onMouseUp(mouseEvent50);
 
         expect((service as any).mouseDown).toBeTrue();
         expect(clearPathSpy).toHaveBeenCalled();
+        expect(getAnchorHitSpy).toHaveBeenCalled();
+        expect((service as any).clickOnAnchor).toBeFalse();
+        expect((service as any).hasDoneResizing).toBeTrue();
     });
 
     it('should set attribute for selection when on mouse up', () => {
