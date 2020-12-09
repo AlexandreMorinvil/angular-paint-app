@@ -240,6 +240,7 @@ export class TextService extends Tool {
         }
     }
 
+    // tslint:disable:cyclomatic-complexity
     onArrowDown(event: KeyboardEvent): void {
         const LAST_LINE_POSITION: number = this.numberOfLines - 1;
         switch (event.key) {

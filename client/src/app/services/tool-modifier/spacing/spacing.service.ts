@@ -10,7 +10,7 @@ import { SpacingModifierState } from './spacing-state';
 })
 export class SpacingService extends ToolModifier {
     spacingChange: Subject<number> = new Subject<number>();
-    readonly MAX_ATTRIBUTE_SPACING: number = 50;
+    readonly MAX_ATTRIBUTE_SPACING: number = 100;
     readonly MIN_ATTRIBUTE_SPACING: number = 5;
     readonly STEP_SIZE: number = 5;
     private spacing: number = 20;

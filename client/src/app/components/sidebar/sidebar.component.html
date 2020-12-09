@@ -7,6 +7,10 @@
     </div>
     
     <div class="buttons-group to-bottom">
+        <button (click)="toogleMagnetism()" class="to-bottom has-tooltip double-width" [class.turned-on]="magnetismService.isActivated">
+            <img src="assets/images/icon/magnet_icon.png" />
+            <app-tooltip [text]="messageMagnet" class="tooltip"></app-tooltip>
+        </button>
         <button (click)="undo()" class="to-bottom has-tooltip">
             <img src="assets/images/undo.png" />
             <app-tooltip [text]="messageUndo" class="tooltip"></app-tooltip>

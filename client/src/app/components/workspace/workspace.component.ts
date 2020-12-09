@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzone-size.service';
-
+const TOOL_BOX_WIDTH = 313;
+const SIDEBARWIDTH = 95;
 @Component({
     selector: 'app-workspace',
     templateUrl: './workspace.component.html',
@@ -12,8 +13,8 @@ export class WorkspaceComponent implements AfterViewInit {
 
     ngAfterViewInit(): void {
         this.workZoneSizeService.currentWorkzoneDimension.subscribe((dimension) => {
-            this.workzoneContainer.nativeElement.style.width = dimension.width.toString() + 'px';
-            this.workzoneContainer.nativeElement.style.height = dimension.height.toString() + 'px';
+            this.workzoneContainer.nativeElement.style.width = (window.innerWidth - TOOL_BOX_WIDTH - SIDEBARWIDTH).toString() + 'px';
+            this.workzoneContainer.nativeElement.style.height = window.innerHeight.toString() + 'px';
         });
     }
 }
