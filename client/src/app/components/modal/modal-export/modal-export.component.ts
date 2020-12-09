@@ -65,7 +65,7 @@ export class ExportComponent implements AfterViewInit {
 
     sendEmailToPNG() {
         this.saveImageSRC('png');
-        let sourceBase64 = this.saveService.imageSource.replace('data:image/png;base64,', '');
+        let sourceBase64 = this.saveService.imageSourceWithFilter(this.exportDrawingService.currentFilter).replace('data:image/png;base64,', ''); //this.saveService.imageSource.replace('data:image/png;base64,', '');
         sourceBase64 = sourceBase64.split(/\s/).join('');
         const firstPNGnumber = sourceBase64.substring(0, 11);
         if (firstPNGnumber == 'iVBORw0KGgo') {
@@ -96,7 +96,8 @@ export class ExportComponent implements AfterViewInit {
                 this.email.value,
                 this.drawingName.value,
                 format,
-                this.saveService.imageSource,
+                // this.saveService.imageSource,
+                this.saveService.imageSourceWithFilter(this.exportDrawingService.currentFilter),
             );
             this.apiDrawingService.sendEmail(newDrawingToSend).subscribe(() => {
                 alert(this.SUCCESSFUL_CREATION);
