@@ -24,6 +24,7 @@ export class DrawingComponent implements AfterViewInit {
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('editCanvas', { static: false }) editCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('gridCanvas', { static: false }) gridCanvas: ElementRef<HTMLCanvasElement>;
+    @ViewChild('selectionCanvas', { static: false }) selectionCanvas: ElementRef<HTMLCanvasElement>;
 
     readonly BACKSPACE_KEYCODE: number = 32;
     private baseCtx: CanvasRenderingContext2D;
@@ -31,6 +32,7 @@ export class DrawingComponent implements AfterViewInit {
     private editCtx: CanvasRenderingContext2D;
     private gridCtx: CanvasRenderingContext2D;
     private clipboardCtx: CanvasRenderingContext2D;
+    private selectionCtx: CanvasRenderingContext2D;
     hasBeenDrawnOnto: boolean;
 
     constructor(
@@ -50,8 +52,10 @@ export class DrawingComponent implements AfterViewInit {
         this.editCtx = this.editCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.gridCtx = this.gridCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.clipboardCtx = this.clipboardCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.selectionCtx = this.selectionCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
+        this.drawingService.selectionCtx = this.selectionCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
         this.editCtx.canvas.width = window.innerWidth - TOOL_BOX_WIDTH - SIDEBARWIDTH;
         this.editCtx.canvas.height = window.innerHeight - 5;

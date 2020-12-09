@@ -91,7 +91,7 @@ export abstract class SelectionToolService extends Tool {
     }
 
     paste(): void {
-        console.log('PASTE');
+        this.image = this.clipboardService.provide();
     }
 
     delete(): void {
@@ -605,6 +605,7 @@ export abstract class SelectionToolService extends Tool {
         this.arrowPress = [false, false, false, false];
         this.arrowDown = false;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawingService.clearCanvas(this.drawingService.selectionCtx);
         this.mouseDownCoord = this.getPositionFromMouse(event);
         this.localMouseDown = event.button === MouseButton.Left;
         this.mouseDown = true;
