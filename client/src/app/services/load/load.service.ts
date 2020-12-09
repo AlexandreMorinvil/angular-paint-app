@@ -10,9 +10,9 @@ export class LoadService {
     private img: HTMLImageElement;
     private base: CanvasRenderingContext2D;
     private preview: CanvasRenderingContext2D;
-    private readonly IMAGE_SOURCE = 'assets/images/nothing.png';
-    private readonly ERROR_NO_DRAWING = "Il n'y a pas de dessin ! Veuillez en choisir un autre";
-    private readonly ERROR_ALREADY_DRAWING = 'Attention ! Il y a déja un dessin sur le canvas. Voulez-vous continuer ?';
+    private readonly IMAGE_SOURCE: string = 'assets/images/nothing.png';
+    private readonly ERROR_NO_DRAWING: string = "Il n'y a pas de dessin ! Veuillez en choisir un autre";
+    private readonly ERROR_ALREADY_DRAWING: string = 'Attention ! Il y a déja un dessin sur le canvas. Voulez-vous continuer ?';
 
     loadDraw(imageSrc: string): void {
         // If the object doesn't contain an image

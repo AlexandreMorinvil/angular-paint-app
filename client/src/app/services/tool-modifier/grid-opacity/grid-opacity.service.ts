@@ -21,7 +21,7 @@ export class GridOpacityService extends ToolModifier {
         const LIMIT: number = this.modifierHandlerService.clamp(input, this.MAX_ATTRIBUTE_GRID_OPACITY, this.MIN_ATTRIBUTE_GRID_OPACITY);
         if (LIMIT === Bound.upper) this.gridOpacity = this.MAX_ATTRIBUTE_GRID_OPACITY;
         else if (LIMIT === Bound.lower) this.gridOpacity = this.MIN_ATTRIBUTE_GRID_OPACITY;
-        else if (LIMIT === Bound.inside) this.gridOpacity = input;
+        else this.gridOpacity = input;
     }
 
     getGridOpacity(): number {

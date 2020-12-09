@@ -26,8 +26,8 @@ export class DrawingCarouselComponent {
     readonly NOTHING_IMAGE_LOCATION: string = 'assets/images/nothing.png';
     private drawingSelectedPurpose: PurposeofClick = PurposeofClick.Load;
     readonly separatorKeysCodes: number[] = [ENTER, COMMA];
-    private readonly DRAWING_SEARCH_ERROR = "Erreur ! Votre dessin n'est pas sur le serveur";
-    private readonly IMAGE_SOURCE = 'assets/images/nothing.png';
+    private readonly DRAWING_SEARCH_ERROR: string = "Erreur ! Votre dessin n'est pas sur le serveur";
+    private readonly IMAGE_SOURCE: string = 'assets/images/nothing.png';
 
     constructor(
         public memoryService: RemoteMemoryService,

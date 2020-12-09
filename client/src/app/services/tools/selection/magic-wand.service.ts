@@ -1,16 +1,19 @@
 import { Injectable } from '@angular/core';
-import { InteractionSelectionEllipse } from '@app/classes/action/interaction-selection-ellipse';
+import { InteractionSelection } from '@app/classes/action/interaction-selection';
 import { Description } from '@app/classes/description';
 import { MouseButton } from '@app/classes/mouse';
 import { Vec2 } from '@app/classes/vec2';
+import { ClipBoardService } from '@app/services/clipboard/clipboard.service';
 import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MagnetismService } from '@app/services/magnetism/magnetism.service';
 import { ColorService } from '@app/services/tool-modifier/color/color.service';
 import { TracingService } from '@app/services/tool-modifier/tracing/tracing.service';
 import { WidthService } from '@app/services/tool-modifier/width/width.service';
 import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { SelectionToolService } from '@app/services/tools/selection/selection-tool.service';
-import { EdgePixelsOneRegion } from './edge-pixel';
+// tslint:disable:max-file-line-count
+const CALLER_ID = 3;
 @Injectable({
     providedIn: 'root',
 })
@@ -18,12 +21,7 @@ export class MagicWandService extends SelectionToolService {
     private startR: number;
     private startG: number;
     private startB: number;
-    private edgePixelsSplitted: EdgePixelsOneRegion[] = [];
     private edgePixelsAllRegions: Vec2[] = [];
-    protected image: HTMLImageElement;
-    protected oldImage: HTMLImageElement;
-    private pathStartCoordReference: Vec2;
-    protected firstMagicCoord: Vec2;
     protected pathLastCoord: Vec2;
     private canvasData: Uint8ClampedArray;
 
@@ -34,116 +32,214 @@ export class MagicWandService extends SelectionToolService {
         private tracingService: TracingService,
         private widthService: WidthService,
         private colorService: ColorService,
+        magnetismService: MagnetismService,
+        clipBoardService: ClipBoardService,
     ) {
-        super(drawingService, colorService, new Description('Baguette magique', 'v', 'magic-wand.png'));
+        super(drawingService, colorService, new Description('Baguette magique', 'v', 'magic-wand.png'), magnetismService, clipBoardService);
         this.image = new Image();
-        this.oldImage = new Image();
-        this.arrowPress = [false, false, false, false];
-        this.arrowDown = false;
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.mouseDownCoord = this.getPositionFromMouse(event);
-        this.localMouseDown = event.button === MouseButton.Left;
-        this.resetTransform();
-
-        // translate
-        if (this.selectionCreated && this.hitSelection(this.mouseDownCoord.x, this.mouseDownCoord.y)) {
-            // Puts back what was under the selection
-            if (this.hasDoneFirstTranslation) {
-                this.startSelectionPoint = this.startDownCoord;
-                this.deleteUnderSelection(this.drawingService.baseCtx);
-
-                this.showSelection(
-                    this.drawingService.baseCtx,
-                    this.oldImage,
-                    { x: this.imageData.width, y: this.imageData.height },
-                    this.startDownCoord,
-                );
-            }
-
-            // Puts a space on selection original placement
-            else {
-                this.deleteUnderSelection(this.drawingService.baseCtx);
-            }
-            // draw selection on preview
-            this.showSelection(
-                this.drawingService.previewCtx,
-                this.image,
-                { x: this.imageData.width, y: this.imageData.height },
-                this.firstMagicCoord,
-            );
-            // set variables
+        if (!this.mouseDown) {
+            // if there is a tool change the selection won't reapply
+            this.onEscapeDown();
+        }
+        this.resetSelectionPreset(event);
+        // resizing
+        if (this.selectionCreated && this.checkHit(this.mouseDownCoord)) {
+            this.getAnchorHit(this.drawingService.previewCtx, this.mouseDownCoord, CALLER_ID);
+            this.clearCanvasSelection();
+            this.pathLastCoord = this.mouseDownCoord;
+            this.startSelectionPoint = this.startDownCoord;
+            // translate
+        } else if (this.selectionCreated && this.hitSelection(this.mouseDownCoord.x, this.mouseDownCoord.y)) {
             this.draggingImage = true;
-            this.mouseDown = true;
-            // this.startDownCoord = this.evenImageStartCoord(this.mouseDownCoord);
+            this.rotateCanvas();
+            this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
+            this.resetCanvasRotation();
+            // Creation
         } else {
-            this.image.src = this.drawingService.baseCtx.canvas.toDataURL();
-            this.oldImage.src = this.drawingService.baseCtx.canvas.toDataURL();
+            if (this.selectionCreated) {
+                this.drawOnBaseCanvas();
+                this.addActionTracking(this.startDownCoord);
+            }
             let pixelsSelected: Vec2[];
             this.setStartColor();
             this.edgePixelsAllRegions = [];
             this.edgePixelsSplitted = [];
             this.scanCanvas();
-
-            if (event.button === MouseButton.Left) pixelsSelected = this.floodFillSelect(this.mouseDownCoord);
-            else pixelsSelected = this.sameColorSelect();
-
+            if (event.button === MouseButton.Left) {
+                pixelsSelected = this.floodFillSelect(this.mouseDownCoord);
+            } else {
+                pixelsSelected = this.sameColorSelect();
+            }
+            this.setValueCreation(event);
             this.drawRect(pixelsSelected);
-
-            // For the path that will be form the clip
-            this.pathStartCoordReference = this.startDownCoord;
-
             // set variables
-            this.firstMagicCoord = this.startDownCoord;
             this.selectionCreated = true;
-            this.hasDoneFirstTranslation = false;
             this.localMouseDown = false;
-            this.pathLastCoord = this.pathData[this.pathData.length - 1];
-            this.startSelectionPoint = this.startDownCoord;
         }
+        this.resetTransform();
+        this.mouseDown = true;
     }
 
     onMouseMove(event: MouseEvent): void {
-        const mousePosition = this.getPositionFromMouse(event);
-
+        const MOUSE_POSITION = this.getPositionFromMouse(event);
         // translate
         if (this.draggingImage && this.localMouseDown) {
+            const MOUSE_POSITION_MAGNETIC = this.getPositionFromMouse(event, true);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-
-            this.showSelection(
-                this.drawingService.previewCtx,
-                this.image,
-                { x: this.imageData.width, y: this.imageData.height },
-                this.firstMagicCoord,
-            );
-            this.startDownCoord = this.evenImageStartCoord(mousePosition);
-            this.pathLastCoord = { x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y + this.imageData.height };
+            this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION_MAGNETIC);
+            this.rotateCanvas();
+            this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
+            this.resetCanvasRotation();
+            this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION_MAGNETIC);
+            // resizing
+        } else if (this.clickOnAnchor && this.localMouseDown) {
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.getAnchorHit(this.drawingService.previewCtx, MOUSE_POSITION, CALLER_ID);
         }
     }
 
-    onMouseUp(): void {
+    onMouseUp(event: MouseEvent): void {
+        const MOUSE_POSITION = this.getPositionFromMouse(event);
         // translate
         if (this.draggingImage) {
+            const MOUSE_POSITION_MAGNETIC = this.getPositionFromMouse(event, true);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            // saves what was under the selection
-
-            this.oldImage.src = this.drawingService.baseCtx.canvas.toDataURL();
-            this.showSelection(this.drawingService.baseCtx, this.image, { x: this.imageData.width, y: this.imageData.height }, this.firstMagicCoord);
-            this.addActionTracking();
-            this.drawingService.previewCtx.beginPath();
-            this.drawingService.previewCtx.rect(this.startDownCoord.x, this.startDownCoord.y, this.imageData.width, this.imageData.height);
-            this.drawingService.previewCtx.stroke();
-            this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
-            this.drawSelectionCoutour();
+            this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION_MAGNETIC);
+            this.rotateCanvas();
+            this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
+            // draw selection surround
+            this.rectangleService.mouseDownCoord = this.startDownCoord;
+            this.pathLastCoord = this.getBottomRightCorner();
+            this.pathData.push(this.pathLastCoord);
+            this.drawSelectionSurround();
+            this.resetCanvasRotation();
+            this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION);
+            // set values
             this.draggingImage = false;
             this.hasDoneFirstTranslation = true;
+            // resizing
+        } else if (this.clickOnAnchor) {
+            this.getAnchorHit(this.drawingService.previewCtx, MOUSE_POSITION, CALLER_ID); // draw new image on preview
+            this.pathData.push({ x: this.resizeStartCoords.x + this.resizeWidth, y: this.resizeStartCoords.y + this.resizeHeight });
+            const START = this.offsetAnchors(this.resizeStartCoords);
+            // saves what is under the selection
+            const UNDER_DATA = this.drawingService.baseCtx.getImageData(START.x, START.y, Math.abs(this.resizeWidth), Math.abs(this.resizeHeight));
+            this.getAnchorHit(this.drawingService.baseCtx, MOUSE_POSITION, CALLER_ID, 0); // draw new image on base for saving image.src
+            this.startDownCoord = this.offsetAnchors(this.resizeStartCoords); // set new startCoords with the resize
+            this.selectionSize = { x: Math.abs(this.resizeWidth), y: Math.abs(this.resizeHeight) }; // set new size of selection
+            this.image.src = this.drawingService.baseCtx.canvas.toDataURL(); // save new image with resized selection
+            // puts back what was under the selection
+            this.drawingService.baseCtx.putImageData(UNDER_DATA, this.startDownCoord.x, this.startDownCoord.y);
+            this.pathLastCoord = this.getBottomRightCorner();
+            this.addActionTracking(this.startDownCoord); // Undo redo
+            // draw selection surround
+            const MEMORY_COORDS = this.startDownCoord;
+            this.rotateCanvas();
+            this.rectangleService.mouseDownCoord = this.startDownCoord;
+            this.pathData.push(this.getBottomRightCorner());
+            this.drawSelectionSurround(); // draw selection box and anchor
+            this.resetCanvasRotation();
+            this.startDownCoord = MEMORY_COORDS;
+            // set values
+            this.firstSelectionCoord = this.startDownCoord; // reset firstSelectionCoord to new place on new image
+            this.clickOnAnchor = false;
+            this.hasDoneResizing = true;
+            // Creation
+        } else {
+            this.addActionTracking(this.startDownCoord);
+            this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
+            this.clearCanvasSelection();
         }
-
         this.localMouseDown = false;
         this.clearPath();
     }
+
+    // tslint:disable:no-magic-numbers
+    // needed for / 100, the point of this division is to get the orientation of the scroll, not the total displacement of the wheel
+    onMouseWheel(event: WheelEvent): void {
+        if (!this.mouseDown) {
+            // if there is a tool change the rotation won't reapply
+            this.onEscapeDown();
+        }
+        if (this.selectionCreated) {
+            // Setting up the constants
+            const MEMORY_COORDS = this.startDownCoord;
+            const MEMORY_COORDS_SIZE = this.selectionSize;
+            const TRANSLATION = { x: this.startDownCoord.x + this.selectionSize.x / 2, y: this.startDownCoord.y + this.selectionSize.y / 2 };
+            const MAX_SIDE = Math.hypot(this.selectionSize.x, this.selectionSize.y);
+            const OFFSET_START = { x: TRANSLATION.x - MAX_SIDE / 2, y: TRANSLATION.y - MAX_SIDE / 2 };
+            // for undo redo
+            const OLD_IMAGE: ImageData = this.drawingService.baseCtx.getImageData(OFFSET_START.x, OFFSET_START.y, MAX_SIDE, MAX_SIDE);
+            // calculate desire angle for canvas rotation
+            this.calculateRotation(event.altKey, event.deltaY / 100);
+            // clearing canvas for rotation
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            // does translation and rotation of the canvas
+            this.rotateCanvas();
+            this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize); // draw new image on preview
+            // draw new image on base for saving for undo/redo
+            this.showSelection(this.drawingService.baseCtx, this.image, this.firstSelectionCoord, this.selectionSize);
+            this.selectionSize = { x: MAX_SIDE, y: MAX_SIDE }; // set selectionSize to new value for addActionTracking
+            this.addActionTracking({ x: OFFSET_START.x, y: OFFSET_START.y }); // saves undo/redo
+            this.selectionSize = MEMORY_COORDS_SIZE; // set back selectionSize to original value
+            this.drawingService.baseCtx.putImageData(OLD_IMAGE, OFFSET_START.x, OFFSET_START.y); // reput the old image on base canvas
+            // draw selection surround
+            this.rectangleService.mouseDownCoord = this.startDownCoord;
+            this.pathData.push(this.getBottomRightCorner());
+            this.drawSelectionSurround();
+            // reset canvas transform after rotation
+            this.resetCanvasRotation();
+            this.hasDoneFirstRotation = this.angle !== 0 ? true : false;
+            // reset startDownCoord to original value
+            this.startDownCoord = MEMORY_COORDS;
+        }
+    }
+
+    private showSelection(canvas: CanvasRenderingContext2D, image: HTMLImageElement, imageStart: Vec2, size: Vec2): void {
+        canvas.save();
+        const path = this.getPathToClip();
+        canvas.clip(path);
+        this.drawImage(canvas, image, imageStart, this.selectionSize, this.startDownCoord, size);
+        canvas.restore();
+    }
+
+    private clearCanvasSelection(): void {
+        const PATH = this.getPathToClip();
+        PATH.closePath();
+        this.drawingService.baseCtx.fillStyle = 'white';
+        this.drawingService.baseCtx.fill(PATH, 'evenodd');
+    }
+
+    private drawSelectionSurround(): void {
+        this.rectangleService.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
+        this.drawnAnchor(this.drawingService.previewCtx);
+    }
+
+    private resetTransform(): void {
+        this.widthService.setWidth(1);
+        this.colorService.setPrimaryColor('#000000');
+        this.colorService.setSecondaryColor('#000000');
+        this.tracingService.setHasFill(false);
+        this.tracingService.setHasContour(true);
+    }
+
+    private addActionTracking(position: Vec2): void {
+        const TRACKING_INFO = this.getActionTrackingInfo(position);
+        const IMAGE_DATA_SELECTION = this.drawingService.baseCtx.getImageData(
+            TRACKING_INFO[0].x,
+            TRACKING_INFO[0].y,
+            TRACKING_INFO[1].x - TRACKING_INFO[0].x,
+            TRACKING_INFO[1].y - TRACKING_INFO[0].y,
+        );
+        this.drawingStateTrackingService.addAction(
+            this,
+            new InteractionSelection({ x: TRACKING_INFO[0].x, y: TRACKING_INFO[0].y }, IMAGE_DATA_SELECTION),
+        );
+    }
+
     private drawRect(pixelsSelected: Vec2[]): void {
         let xMin = pixelsSelected[0].x;
         let xMax = pixelsSelected[0].x;
@@ -156,36 +252,21 @@ export class MagicWandService extends SelectionToolService {
             if (pixel.y > yMax) yMax = pixel.y;
         }
 
-        // Save the rectangle delimited by the same color pixels
+        // Save the position of the rectangle delimited by the same color pixels
         this.startDownCoord = { x: xMin, y: yMin };
-        this.imageData = this.drawingService.baseCtx.getImageData(
-            this.startDownCoord.x,
-            this.startDownCoord.y,
-            xMax - this.startDownCoord.x,
-            yMax - this.startDownCoord.y,
-        );
+        this.selectionSize = { x: xMax - xMin, y: yMax - yMin };
+        this.pathStartCoordReference = this.startDownCoord;
+        this.pathLastCoord = this.getBottomRightCorner();
+        this.firstSelectionCoord = this.startDownCoord;
+        this.startSelectionPoint = this.startDownCoord;
 
         // Drawing of the preview rectangle and the selection contour
-
         this.pathData.push({ x: xMax, y: yMax });
-        this.rectangleService.mouseDownCoord = { x: xMin, y: yMin };
-        this.rectangleService.drawRectangle(this.drawingService.previewCtx, this.pathData);
-        this.drawnAnchor(this.drawingService.previewCtx, this.drawingService.canvas);
-
+        this.rectangleService.mouseDownCoord = this.startDownCoord;
         this.splitAndSortEdgeArray();
-        this.drawSelectionCoutour();
-
-        // this.drawingService.previewCtx.putImageData(this.imageData, this.startDownCoord.x, this.startDownCoord.y);
-        // this.showSelection(this.drawingService.previewCtx, this.image, { x: this.imageData.width, y: this.imageData.height }, this.startDownCoord);
+        this.drawSelectionSurround();
     }
 
-    private resetTransform(): void {
-        this.widthService.setWidth(1);
-        this.colorService.setPrimaryColor('#000000');
-        this.colorService.setSecondaryColor('#000000');
-        this.tracingService.setHasFill(false);
-        this.tracingService.setHasContour(true);
-    }
     // tslint:disable:cyclomatic-complexity
     private floodFillSelect(pixelClicked: Vec2): Vec2[] {
         this.edgePixelsAllRegions = [];
@@ -268,54 +349,6 @@ export class MagicWandService extends SelectionToolService {
         return pixelSelected;
     }
 
-    splitAndSortEdgeArray(): void {
-        const distanceBetweenEdgePixels = 1;
-        let regionIndex = -1;
-        while (this.edgePixelsAllRegions.length) {
-            regionIndex++;
-            const newRegion: Vec2[] = [this.edgePixelsAllRegions[0]];
-            this.edgePixelsAllRegions.splice(0, 1);
-            for (const value of newRegion) {
-                for (let j = 0; j < this.edgePixelsAllRegions.length; j++) {
-                    if (
-                        ((value.x - this.edgePixelsAllRegions[j].x === distanceBetweenEdgePixels ||
-                            value.x - this.edgePixelsAllRegions[j].x === -distanceBetweenEdgePixels) &&
-                            value.y - this.edgePixelsAllRegions[j].y === 0) ||
-                        ((value.y - this.edgePixelsAllRegions[j].y === distanceBetweenEdgePixels ||
-                            value.y - this.edgePixelsAllRegions[j].y === -distanceBetweenEdgePixels) &&
-                            value.x - this.edgePixelsAllRegions[j].x === 0)
-                    ) {
-                        newRegion.push(this.edgePixelsAllRegions[j]);
-                        this.edgePixelsAllRegions.splice(j, 1);
-                        break;
-                    }
-                }
-            }
-            // Prevents unlinked edge pixel to form regions
-            if (!(newRegion.length === 1)) {
-                this.edgePixelsSplitted.push({ edgePixels: [] });
-                this.edgePixelsSplitted[regionIndex].edgePixels = newRegion;
-            } else {
-                regionIndex--;
-            }
-        }
-    }
-
-    private drawSelectionCoutour(): void {
-        this.drawingService.previewCtx.strokeStyle = '#777777';
-        this.drawingService.previewCtx.lineWidth = 2;
-        // tslint:disable-next-line:no-magic-numbers
-        this.drawingService.previewCtx.setLineDash([8, 4]);
-        for (const region of this.edgePixelsSplitted) {
-            this.drawingService.previewCtx.beginPath();
-            for (const edge of region.edgePixels) {
-                this.drawingService.previewCtx.lineTo(edge.x, edge.y);
-            }
-            this.drawingService.previewCtx.stroke();
-        }
-        this.drawingService.previewCtx.lineWidth = 1;
-        this.drawingService.previewCtx.setLineDash([]);
-    }
     private scanCanvas(): void {
         this.canvasData = this.drawingService.baseCtx.getImageData(
             0,
@@ -355,132 +388,131 @@ export class MagicWandService extends SelectionToolService {
         }
         return false;
     }
-    private showSelection(canvas: CanvasRenderingContext2D, image: HTMLImageElement, size: Vec2, imageStart: Vec2): void {
-        canvas.save();
-        const path = this.getPathToClip();
-        canvas.clip(path);
 
-        this.drawImage(
-            canvas,
-            this.startDownCoord,
-            imageStart,
-            {
-                x: this.imageData.width,
-                y: this.imageData.height,
-            },
-            image,
-            size,
-        );
-        canvas.restore();
-    }
-    private deleteUnderSelection(canvas: CanvasRenderingContext2D): void {
-        canvas.save();
-        const path = this.getPathToClip();
-        canvas.clip(path);
-        canvas.fillStyle = '#FFFFFF';
-        canvas.fillRect(this.startDownCoord.x, this.startDownCoord.y, this.imageData.width, this.imageData.height);
-        canvas.restore();
-    }
-    private getPathToClip(): Path2D {
-        const magicWandPath = new Path2D();
-        if (!(this.pathStartCoordReference === this.startDownCoord)) {
-            const coordDiff = {
-                x: this.startDownCoord.x - this.pathStartCoordReference.x,
-                y: this.startDownCoord.y - this.pathStartCoordReference.y,
-            };
-            for (const region of this.edgePixelsSplitted) {
-                for (const edge of region.edgePixels) {
-                    edge.x = edge.x + coordDiff.x;
-                    edge.y = edge.y + coordDiff.y;
-                }
+    drawOnBaseCanvas(): void {
+        // puts selection on baseCanvas
+        if (this.selectionCreated) {
+            if (this.hasDoneFirstRotation) {
+                this.rotateCanvas();
             }
-            this.pathStartCoordReference = this.startDownCoord;
+            this.showSelection(this.drawingService.baseCtx, this.image, this.firstSelectionCoord, this.selectionSize);
+            this.resetCanvasRotation();
         }
-        for (const region of this.edgePixelsSplitted) {
-            magicWandPath.moveTo(region.edgePixels[0].x, region.edgePixels[0].y);
-            for (const edge of region.edgePixels) {
-                magicWandPath.lineTo(edge.x, edge.y);
-            }
-        }
-        return magicWandPath;
+        this.tracingService.setHasFill(true);
+        this.tracingService.setHasContour(true);
+        this.selectionCreated = false;
     }
+
+    onEscapeDown(): void {
+        if (this.selectionCreated) {
+            this.drawOnBaseCanvas();
+            this.addActionTracking(this.startDownCoord);
+        }
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.selectionCreated = false;
+        this.arrowDown = true;
+    }
+
+    onShiftDown(event: KeyboardEvent): void {
+        if (!event.ctrlKey) {
+            this.shiftDown = true;
+            this.ratio = this.getRatio(this.selectionSize.x, this.selectionSize.y);
+        }
+    }
+
+    onShiftUp(event: KeyboardEvent): void {
+        if (!event.ctrlKey) {
+            this.shiftDown = false;
+        }
+    }
+
     onArrowDown(event: KeyboardEvent): void {
         if (!this.arrowDown) {
-            this.arrowCoord = { x: this.startDownCoord.x + this.imageData.width, y: this.startDownCoord.y + this.imageData.height };
-            if (this.hasDoneFirstTranslation) {
-                this.deleteUnderSelection(this.drawingService.baseCtx);
-                this.showSelection(
-                    this.drawingService.baseCtx,
-                    this.oldImage,
-                    { x: this.imageData.width, y: this.imageData.height },
-                    this.startDownCoord,
-                );
-            }
-            // Puts a white rectangle on selection original placement
-            else {
-                this.deleteUnderSelection(this.drawingService.baseCtx);
-            }
-            this.startSelectionPoint = { x: this.startDownCoord.x, y: this.startDownCoord.y };
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
         if (this.selectionCreated) {
-            this.checkArrowHit(event);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.showSelection(
-                this.drawingService.previewCtx,
-                this.image,
-                { x: this.imageData.width, y: this.imageData.height },
-                this.firstMagicCoord,
-            );
-            this.draggingImage = false;
+            this.checkArrowHit(event);
+            const TEMP = this.startDownCoord; // needed because rotateCanvas changes the value
+            this.rotateCanvas();
+            this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
+            this.resetCanvasRotation();
+            this.startDownCoord = TEMP; // reset value
         }
     }
 
     onArrowUp(event: KeyboardEvent): void {
         if (this.selectionCreated) {
             this.checkArrowUnhit(event);
-            if (this.arrowPress.every((v) => v === false)) {
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            if (this.arrowPress.every((v) => !v)) {
                 this.arrowDown = false;
-                this.draggingImage = true;
+                const MEM_COORDS = this.startDownCoord;
                 this.clearPath();
+                this.pathLastCoord = this.getBottomRightCorner();
                 this.pathData.push(this.pathLastCoord);
-                this.clearPath();
-                this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                this.onMouseUp();
-                this.draggingImage = false;
+                this.rectangleService.mouseDownCoord = this.startDownCoord;
+                this.rotateCanvas();
+                this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
+                this.rectangleService.mouseDownCoord = this.startDownCoord;
+                this.pathData.push(this.getBottomRightCorner());
+                this.drawSelectionSurround();
+                this.resetCanvasRotation();
+                this.startDownCoord = MEM_COORDS; // needed because rotateCanvas changes the value
                 this.hasDoneFirstTranslation = true;
             }
         }
     }
-    private addActionTracking(): void {
-        const imageDataStart: Vec2 = { x: 0, y: 0 };
-        const imageDataEnd: Vec2 = { x: 0, y: 0 };
-        imageDataStart.x = this.startSelectionPoint.x < this.startDownCoord.x ? this.startSelectionPoint.x : this.startDownCoord.x;
-        imageDataStart.y = this.startSelectionPoint.y < this.startDownCoord.y ? this.startSelectionPoint.y : this.startDownCoord.y;
-        imageDataEnd.x =
-            this.startSelectionPoint.x > this.startDownCoord.x
-                ? this.startSelectionPoint.x + this.imageData.width
-                : this.startDownCoord.x + this.imageData.width;
-        imageDataEnd.y =
-            this.startSelectionPoint.y > this.startDownCoord.y
-                ? this.startSelectionPoint.y + this.imageData.height
-                : this.startDownCoord.y + this.imageData.height;
 
-        const imageDataSelection: ImageData = this.drawingService.baseCtx.getImageData(
-            imageDataStart.x,
-            imageDataStart.y,
-            imageDataEnd.x - imageDataStart.x,
-            imageDataEnd.y - imageDataStart.y,
-        );
-
-        this.drawingStateTrackingService.addAction(
-            this,
-            new InteractionSelectionEllipse({ x: imageDataStart.x, y: imageDataStart.y }, imageDataSelection),
-        );
+    splitAndSortEdgeArray(): void {
+        const distanceBetweenEdgePixels = 1;
+        let regionIndex = -1;
+        while (this.edgePixelsAllRegions.length) {
+            regionIndex++;
+            const newRegion: Vec2[] = [this.edgePixelsAllRegions[0]];
+            this.edgePixelsAllRegions.splice(0, 1);
+            for (const value of newRegion) {
+                for (let j = 0; j < this.edgePixelsAllRegions.length; j++) {
+                    if (
+                        ((value.x - this.edgePixelsAllRegions[j].x === distanceBetweenEdgePixels ||
+                            value.x - this.edgePixelsAllRegions[j].x === -distanceBetweenEdgePixels) &&
+                            value.y - this.edgePixelsAllRegions[j].y === 0) ||
+                        ((value.y - this.edgePixelsAllRegions[j].y === distanceBetweenEdgePixels ||
+                            value.y - this.edgePixelsAllRegions[j].y === -distanceBetweenEdgePixels) &&
+                            value.x - this.edgePixelsAllRegions[j].x === 0)
+                    ) {
+                        newRegion.push(this.edgePixelsAllRegions[j]);
+                        this.edgePixelsAllRegions.splice(j, 1);
+                        break;
+                    }
+                }
+            }
+            // Prevents unlinked edge pixel to form regions
+            if (!(newRegion.length === 1)) {
+                this.edgePixelsSplitted.push({ edgePixels: [] });
+                this.edgePixelsSplitted[regionIndex].edgePixels = newRegion;
+            } else {
+                regionIndex--;
+            }
+        }
+        // Also stores the relative position of every edge pixel to be used for resize
+        regionIndex = -1;
+        for (const region of this.edgePixelsSplitted) {
+            regionIndex++;
+            this.edgePixelsSplittedRelativePosition.push({ edgePixels: [] });
+            for (const edge of region.edgePixels) {
+                const relativePosition: Vec2 = {
+                    x: (edge.x - this.startDownCoord.x) / this.selectionSize.x,
+                    y: (edge.y - this.startDownCoord.y) / this.selectionSize.y,
+                };
+                this.edgePixelsSplittedRelativePosition[regionIndex].edgePixels.push(relativePosition);
+            }
+        }
     }
-    execute(interaction: InteractionSelectionEllipse): void {
-        this.putImageData(interaction.startSelectionPoint, this.drawingService.baseCtx, interaction.selection);
+
+    execute(interaction: InteractionSelection): void {
+        this.selectionCreated = false;
+        this.drawingService.baseCtx.putImageData(interaction.selection, interaction.startSelectionPoint.x, interaction.startSelectionPoint.y);
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 }
-
-// tslint:disable:max-file-line-count
