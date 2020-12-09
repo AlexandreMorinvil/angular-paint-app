@@ -16,9 +16,8 @@ export class AttributeSelectionManipulationComponent {
     }
 
     paste(): void {
-        if (this.toolboxService.getCurrentTool() instanceof SelectionToolService)
-            this.toolboxService.setSelectedTool(this.rectangleSelectionService);
-            (this.toolboxService.getCurrentTool() as SelectionToolService).paste();
+        if (this.toolboxService.getCurrentTool() instanceof SelectionToolService) this.toolboxService.setSelectedTool(this.rectangleSelectionService);
+        (this.toolboxService.getCurrentTool() as SelectionToolService).paste();
     }
 
     cut(): void {
@@ -29,11 +28,5 @@ export class AttributeSelectionManipulationComponent {
     delete(): void {
         if (this.toolboxService.getCurrentTool() instanceof SelectionToolService)
             (this.toolboxService.getCurrentTool() as SelectionToolService).delete();
-    }
-
-    isAvailable(): boolean {
-        if (this.toolboxService.getCurrentTool() instanceof SelectionToolService)
-            return (this.toolboxService.getCurrentTool() as SelectionToolService).selectionCreated;
-        return false;
     }
 }

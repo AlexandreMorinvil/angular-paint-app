@@ -32,11 +32,20 @@ export class ClipBoardService {
         });
     }
 
-    memorize(startCoord: Vec2, dimension: Vec2): void {
-        this.startCoord.x = startCoord.x;
-        this.startCoord.y = startCoord.y;
-        this.canvas.width = dimension.x;
-        this.canvas.height = dimension.y;
+    memorize(startCoord: Vec2, dimensions: Vec2, angle: number): void {
+        // this.startCoord.x = startCoord.x;
+        // this.startCoord.y = startCoord.y;
+        // this.canvas.width = dimensions.x;
+        // this.canvas.height = dimensions.y;
+
+        const INITIAL_CENTER_POSITION: Vec2 = this.computeCenter(startCoord, dimensions);
+        const NEW_DIMENSIONS: Vec2 = this.computeDimensions(dimensions, angle);
+        const NEW_STARTDOWN_COORD: Vec2 = this.computeUpperLeftCorner(INITIAL_CENTER_POSITION, NEW_DIMENSIONS);
+
+        this.canvas.width = NEW_DIMENSIONS.x;
+        this.canvas.height = NEW_DIMENSIONS.y;
+        this.startCoord.x = NEW_STARTDOWN_COORD.x;
+        this.startCoord.y = NEW_STARTDOWN_COORD.y;
         this.clearClipboard();
         this.canvasImage.src = this.drawingService.previewCtx.canvas.toDataURL();
     }
@@ -55,5 +64,33 @@ export class ClipBoardService {
 
     private clearClipboard(): void {
         this.clipboardCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    private computeDimensions(dimensions: Vec2, angle: number): Vec2 {
+        const HYPOTENUSE = Math.sqrt((dimensions.x / 2) ** 2 + (dimensions.y / 2) ** 2);
+        const INITIAL_ANGLE = Math.atan(dimensions.y / dimensions.x);
+        const ANGLE = (angle * Math.PI) / 180;
+
+        const ANGLE_1 = INITIAL_ANGLE + ANGLE;
+        const ANGLE_2 = Math.PI / 2 - INITIAL_ANGLE + ANGLE;
+
+        return {
+            x: Math.abs(2 * HYPOTENUSE * Math.max(Math.cos(ANGLE_1), Math.sin(ANGLE_2))),
+            y: Math.abs(2 * HYPOTENUSE * Math.max(Math.sin(ANGLE_1), Math.cos(ANGLE_2))),
+        };
+    }
+
+    private computeCenter(startCoord: Vec2, dimensions: Vec2): Vec2 {
+        return {
+            x: startCoord.x + dimensions.x / 2,
+            y: startCoord.y + dimensions.y / 2,
+        };
+    }
+
+    private computeUpperLeftCorner(oldCenter: Vec2, newDimentsions: Vec2): Vec2 {
+        return {
+            x: oldCenter.x - newDimentsions.x / 2,
+            y: oldCenter.y - newDimentsions.y / 2,
+        };
     }
 }

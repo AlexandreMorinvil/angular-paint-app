@@ -219,24 +219,34 @@ export class DrawingComponent implements AfterViewInit {
                     this.drawingStateTrackerService.onCtrlShiftZDown();
                 }
             } else {
-                if (KEY_CODE_LOWER_CASE === 'z') {
-                    event.preventDefault(); // to prevent key of windows
-                    this.drawingStateTrackerService.onCtrlZDown();
-                } else if (KEY_CODE_LOWER_CASE === 'a') {
-                    event.preventDefault(); // to prevent key of windows
-                    this.toolbox.getCurrentTool().onCtrlADown();
-                } else if (KEY_CODE_LOWER_CASE === 'c') {
-                    event.preventDefault(); // to prevent key of windows
-                    if (this.toolbox.getCurrentTool() instanceof SelectionToolService) (this.toolbox.getCurrentTool() as SelectionToolService).copy();
-                } else if (KEY_CODE_LOWER_CASE === 'x') {
-                    event.preventDefault(); // to prevent key of windows
-                    if (this.toolbox.getCurrentTool() instanceof SelectionToolService) (this.toolbox.getCurrentTool() as SelectionToolService).cut();
-                } else if (KEY_CODE_LOWER_CASE === 'v') {
-                    event.preventDefault(); // to prevent key of windows
-                    if (this.toolbox.getCurrentTool() instanceof SelectionToolService) {
-                        this.toolbox.setSelectedTool(this.rectangleSelectionService);
-                        (this.toolbox.getCurrentTool() as SelectionToolService).paste();
-                    }
+                switch (KEY_CODE_LOWER_CASE) {
+                    case 'z':
+                        event.preventDefault(); // to prevent key of windows
+                        this.drawingStateTrackerService.onCtrlZDown();
+                        break;
+                    case 'a':
+                        event.preventDefault(); // to prevent key of windows
+                        this.toolbox.getCurrentTool().onCtrlADown();
+                        break;
+                    case 'c':
+                        event.preventDefault(); // to prevent key of windows
+                        if (this.toolbox.getCurrentTool() instanceof SelectionToolService)
+                            (this.toolbox.getCurrentTool() as SelectionToolService).copy();
+                        break;
+                    case 'x':
+                        event.preventDefault(); // to prevent key of windows
+                        if (this.toolbox.getCurrentTool() instanceof SelectionToolService)
+                            (this.toolbox.getCurrentTool() as SelectionToolService).cut();
+                        break;
+                    case 'v':
+                        event.preventDefault(); // to prevent key of windows
+                        if (this.toolbox.getCurrentTool() instanceof SelectionToolService) {
+                            this.toolbox.setSelectedTool(this.rectangleSelectionService);
+                            (this.toolbox.getCurrentTool() as SelectionToolService).paste();
+                        }
+                        break;
+                    default:
+                        break;
                 }
                 if (SHORT_CUT_ENABLE) {
                     switch (KEY_CODE_LOWER_CASE) {

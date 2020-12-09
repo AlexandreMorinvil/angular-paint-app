@@ -87,7 +87,7 @@ export abstract class SelectionToolService extends Tool {
     }
 
     copy(): void {
-        if (this.selectionCreated) this.clipboardService.memorize(this.startDownCoord, this.selectionSize);
+        if (this.selectionCreated) this.clipboardService.memorize(this.startDownCoord, this.selectionSize, this.angle);
     }
 
     paste(): void {
@@ -105,6 +105,7 @@ export abstract class SelectionToolService extends Tool {
         this.clearPath();
         this.pathData.push(this.pathLastCoord);
         this.selectionCreated = true;
+        this.angle = 0;
         this.pasteManipulation();
     }
 
@@ -112,7 +113,6 @@ export abstract class SelectionToolService extends Tool {
         this.selectionCreated = false;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawingService.clearCanvas(this.drawingService.selectionCtx);
-        this.mouseDown = true;
     }
 
     cut(): void {
