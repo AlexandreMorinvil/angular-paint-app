@@ -30,4 +30,10 @@ export class AttributeSelectionManipulationComponent {
         if (this.toolboxService.getCurrentTool() instanceof SelectionToolService)
             (this.toolboxService.getCurrentTool() as SelectionToolService).delete();
     }
+
+    isAvailable(): boolean {
+        if (this.toolboxService.getCurrentTool() instanceof SelectionToolService)
+            return (this.toolboxService.getCurrentTool() as SelectionToolService).selectionCreated;
+        return false;
+    }
 }

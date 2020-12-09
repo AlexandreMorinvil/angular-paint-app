@@ -39,8 +39,6 @@ export class ClipBoardService {
         this.canvas.height = dimension.y;
         this.clearClipboard();
         this.canvasImage.src = this.drawingService.previewCtx.canvas.toDataURL();
-        // this.clipboardCtx.drawImage(this.image, startCoord.x, startCoord.y, dimension.x, dimension.y, 0, 0, dimension.x, dimension.y);
-        // console.log(this.image.src);
     }
 
     provide(): string {

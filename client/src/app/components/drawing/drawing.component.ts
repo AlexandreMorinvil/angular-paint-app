@@ -6,6 +6,8 @@ import { MagnetismService } from '@app/services/magnetism/magnetism.service';
 import { ModalHandlerService } from '@app/services/modal-handler/modal-handler';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
 import { GridService } from '@app/services/tools/grid/grid.service';
+import { RectangleSelectionService } from '@app/services/tools/selection/rectangle-selection.service';
+import { SelectionToolService } from '@app/services/tools/selection/selection-tool.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzone-size.service';
 
@@ -44,6 +46,7 @@ export class DrawingComponent implements AfterViewInit {
         private gridService: GridService,
         private magnetismService: MagnetismService,
         private clipboardService: ClipBoardService,
+        private rectangleSelectionService: RectangleSelectionService,
     ) {}
     // tslint:disable:no-magic-numbers
     ngAfterViewInit(): void {
@@ -125,7 +128,8 @@ export class DrawingComponent implements AfterViewInit {
     // tslint:disable:cyclomatic-complexity
     @HostListener('window:keyup', ['$event'])
     keyEventUp(event: KeyboardEvent): void {
-        if (this.drawingService.shortcutEnable) {
+        const IS_CTRL_KEY: boolean = event.ctrlKey;
+        if (this.drawingService.shortcutEnable && !IS_CTRL_KEY) {
             for (const i in this.toolbox.getAvailableTools()) {
                 if (this.toolbox.getAvailableTools()[i].shortcut === event.key.toLowerCase()) {
                     this.toolbox.setSelectedTool(this.toolbox.getAvailableTools()[i]);
@@ -150,7 +154,10 @@ export class DrawingComponent implements AfterViewInit {
                     this.toolbox.getCurrentTool().onBackspaceDown(event);
                 }
                 break;
-            case 'ArrowLeft' || 'ArrowRight' || 'ArrowUp' || 'ArrowDown':
+            case 'ArrowLeft':
+            case 'ArrowRight':
+            case 'ArrowUp':
+            case 'ArrowDown':
                 this.toolbox.getCurrentTool().onArrowUp(event);
                 break;
             case 'Alt':
@@ -158,12 +165,7 @@ export class DrawingComponent implements AfterViewInit {
                 this.toolbox.getCurrentTool().onAltUp(event);
                 break;
             default:
-                if (!SHORT_CUT_ENABLE) return;
-                for (const i in this.toolbox.getAvailableTools()) {
-                    if (this.toolbox.getAvailableTools()[i].shortcut === keyCode.toLowerCase()) {
-                        this.toolbox.setSelectedTool(this.toolbox.getAvailableTools()[i]);
-                    }
-                }
+                return;
         }
     }
     // The disablement of the "cyclomatic-complexity" tslint rule is justified in this situation
@@ -197,7 +199,14 @@ export class DrawingComponent implements AfterViewInit {
                 event.preventDefault(); // to prevent key of windows
                 this.toolbox.getCurrentTool().onAltDown(event);
                 break;
-            case 'ArrowLeft' || 'ArrowRight' || 'ArrowUp' || 'ArrowDown':
+            case 'Delete':
+                event.preventDefault(); // to prevent key of windows
+                if (this.toolbox.getCurrentTool() instanceof SelectionToolService) (this.toolbox.getCurrentTool() as SelectionToolService).delete();
+                break;
+            case 'ArrowLeft':
+            case 'ArrowRight':
+            case 'ArrowUp':
+            case 'ArrowDown':
                 event.preventDefault(); // to prevent key of windows
                 this.toolbox.getCurrentTool().onArrowDown(event);
                 break;
@@ -216,6 +225,18 @@ export class DrawingComponent implements AfterViewInit {
                 } else if (KEY_CODE_LOWER_CASE === 'a') {
                     event.preventDefault(); // to prevent key of windows
                     this.toolbox.getCurrentTool().onCtrlADown();
+                } else if (KEY_CODE_LOWER_CASE === 'c') {
+                    event.preventDefault(); // to prevent key of windows
+                    if (this.toolbox.getCurrentTool() instanceof SelectionToolService) (this.toolbox.getCurrentTool() as SelectionToolService).copy();
+                } else if (KEY_CODE_LOWER_CASE === 'x') {
+                    event.preventDefault(); // to prevent key of windows
+                    if (this.toolbox.getCurrentTool() instanceof SelectionToolService) (this.toolbox.getCurrentTool() as SelectionToolService).cut();
+                } else if (KEY_CODE_LOWER_CASE === 'v') {
+                    event.preventDefault(); // to prevent key of windows
+                    if (this.toolbox.getCurrentTool() instanceof SelectionToolService) {
+                        this.toolbox.setSelectedTool(this.rectangleSelectionService);
+                        (this.toolbox.getCurrentTool() as SelectionToolService).paste();
+                    }
                 }
                 if (SHORT_CUT_ENABLE) {
                     switch (KEY_CODE_LOWER_CASE) {

@@ -36,7 +36,7 @@ export abstract class SelectionToolService extends Tool {
     protected arrowCoord: Vec2;
     protected pathData: Vec2[];
 
-    protected selectionCreated: boolean;
+    selectionCreated: boolean;
     protected hasDoneFirstTranslation: boolean;
     protected hasDoneFirstRotation: boolean;
     protected hasDoneResizing: boolean;
@@ -87,13 +87,10 @@ export abstract class SelectionToolService extends Tool {
     }
 
     copy(): void {
-        if (this.selectionCreated) 
-            this.clipboardService.memorize(this.startDownCoord, this.selectionSize);
+        if (this.selectionCreated) this.clipboardService.memorize(this.startDownCoord, this.selectionSize);
     }
 
     paste(): void {
-        // Cancelling a selection in progress
-
         // Pasting the selection at the upper left corner
         this.arrowPress = [false, false, false, false];
         this.arrowDown = false;
@@ -112,7 +109,10 @@ export abstract class SelectionToolService extends Tool {
     }
 
     delete(): void {
-        console.log('DELETE');
+        this.selectionCreated = false;
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawingService.clearCanvas(this.drawingService.selectionCtx);
+        this.mouseDown = true;
     }
 
     cut(): void {
@@ -121,7 +121,6 @@ export abstract class SelectionToolService extends Tool {
     }
 
     protected pasteManipulation(): void {}
-    protected deleteManipulation(): void {}
 
     protected drawnAnchor(ctx: CanvasRenderingContext2D, size: Vec2 = this.selectionSize): void {
         this.color.setPrimaryColor('#000000');

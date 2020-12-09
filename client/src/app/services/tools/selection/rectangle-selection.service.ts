@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { InteractionSelection } from '@app/classes/action/interaction-selection';
 import { Description } from '@app/classes/description';
+import { MouseButton } from '@app/classes/mouse';
 import { Vec2 } from '@app/classes/vec2';
 import { ClipBoardService } from '@app/services/clipboard/clipboard.service';
 import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
@@ -45,6 +46,7 @@ export class RectangleSelectionService extends SelectionToolService {
     }
 
     onMouseDown(event: MouseEvent): void {
+        this.mouseDown = event.button === MouseButton.Left;
         if (!this.mouseDown) {
             this.onEscapeDown();
         }
@@ -361,12 +363,6 @@ export class RectangleSelectionService extends SelectionToolService {
             offsetY: this.drawingService.baseCtx.canvas.height,
             button: 0,
         } as MouseEvent;
-        /*this.imageData = this.drawingService.baseCtx.getImageData(
-            this.startDownCoord.x,
-            this.startDownCoord.y,
-            this.drawingService.baseCtx.canvas.width,
-            this.drawingService.baseCtx.canvas.height,
-        );*/
         this.onMouseUp(MOUSE_EVENT);
     }
 
