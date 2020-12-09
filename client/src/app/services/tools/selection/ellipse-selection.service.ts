@@ -257,9 +257,7 @@ export class EllipseSelectionService extends SelectionToolService {
     drawOnBaseCanvas(): void {
         // puts selection on baseCanvas
         if (this.selectionCreated) {
-            if (this.hasDoneFirstRotation) {
-                this.rotateCanvas();
-            }
+            this.rotateCanvas();
             this.showSelection(this.drawingService.baseCtx, this.image, this.firstSelectionCoord, this.selectionSize);
             this.resetCanvasRotation();
         }

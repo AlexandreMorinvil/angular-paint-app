@@ -55,7 +55,7 @@ export class RectangleSelectionService extends SelectionToolService {
         if (this.selectionCreated && this.checkHit(this.mouseDownCoord)) {
             this.getAnchorHit(this.drawingService.previewCtx, this.mouseDownCoord, CALLER_ID);
             // remove original rect from base
-            this.drawingService.baseCtx.clearRect(this.startDownCoord.x, this.startDownCoord.y, this.selectionSize.x, this.selectionSize.y);
+            this.removeCanvasRect();
             // for undo redo
             this.pathData.push(this.firstSelectionCoord);
             this.startSelectionPoint = this.offsetAnchors(this.startDownCoord);
@@ -176,7 +176,7 @@ export class RectangleSelectionService extends SelectionToolService {
             this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
             this.drawSelectionSurround();
             // remove original rectangle from base
-            this.drawingService.baseCtx.clearRect(this.startDownCoord.x, this.startDownCoord.y, this.selectionSize.x, this.selectionSize.y);
+            this.removeCanvasRect();
             // set up values
             this.selectionCreated = true;
         }
@@ -244,6 +244,15 @@ export class RectangleSelectionService extends SelectionToolService {
         this.tracingService.setHasContour(true);
     }
 
+    private removeCanvasRect(): void {
+        this.widthService.setWidth(1);
+        this.tracingService.setHasFill(true);
+        this.tracingService.setHasContour(true);
+        this.drawingService.baseCtx.fillStyle = 'white';
+        this.drawingService.baseCtx.fillRect(this.startDownCoord.x, this.startDownCoord.y, this.selectionSize.x, this.selectionSize.y);
+        this.resetTransform();
+    }
+
     private addActionTracking(position: Vec2): void {
         const TRACKING_INFO = this.getActionTrackingInfo(position);
         const IMAGE_DATA_SELECTION = this.drawingService.baseCtx.getImageData(
@@ -261,9 +270,7 @@ export class RectangleSelectionService extends SelectionToolService {
     drawOnBaseCanvas(): void {
         // puts selection on baseCanvas
         if (this.selectionCreated) {
-            if (this.hasDoneFirstRotation) {
-                this.rotateCanvas();
-            }
+            this.rotateCanvas();
             this.showSelection(this.drawingService.baseCtx, this.image, this.firstSelectionCoord, this.selectionSize);
             this.resetCanvasRotation();
         }
