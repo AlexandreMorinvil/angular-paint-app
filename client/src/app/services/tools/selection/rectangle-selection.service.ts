@@ -37,6 +37,13 @@ export class RectangleSelectionService extends SelectionToolService {
         this.image = new Image();
     }
 
+    pasteManipulation(): void {
+        this.resetTransform();
+        this.rectangleService.mouseDownCoord = this.startDownCoord;
+        this.drawSelectionSurround();
+        this.showSelection(this.drawingService.selectionCtx, this.image, this.firstSelectionCoord, this.selectionSize);
+    }
+
     onMouseDown(event: MouseEvent): void {
         if (!this.mouseDown) {
             this.onEscapeDown();
@@ -164,7 +171,6 @@ export class RectangleSelectionService extends SelectionToolService {
             this.addActionTracking(this.startDownCoord);
             // put selection on previewCanvas
             this.pathLastCoord = this.getBottomRightCorner();
-            this.clipboardHelperImage = this.image;
             this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
             this.drawSelectionSurround();
             // remove original rectangle from base

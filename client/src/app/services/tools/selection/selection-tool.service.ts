@@ -53,7 +53,6 @@ export abstract class SelectionToolService extends Tool {
     protected resizeHeight: number;
 
     protected image: HTMLImageElement;
-    protected clipboardHelperImage: HTMLImageElement;
     protected edgePixelsSplitted: EdgePixelsOneRegion[] = [];
     protected edgePixelsSplittedRelativePosition: EdgePixelsOneRegion[] = [];
 
@@ -65,7 +64,6 @@ export abstract class SelectionToolService extends Tool {
         private clipboardService: ClipBoardService,
     ) {
         super(drawingService, description);
-        this.clipboardHelperImage = new Image();
         this.mouseDown = false;
         this.selectionCreated = false;
         this.draggingImage = false;
@@ -75,6 +73,8 @@ export abstract class SelectionToolService extends Tool {
         this.hasDoneFirstRotation = false;
         this.hasDoneResizing = false;
         this.angle = 0;
+
+        this.image = new Image();
 
         this.clearPath();
     }
@@ -87,11 +87,28 @@ export abstract class SelectionToolService extends Tool {
     }
 
     copy(): void {
-        if (this.selectionCreated) this.clipboardService.memorize(this.clipboardHelperImage, this.startDownCoord, this.selectionSize);
+        if (this.selectionCreated) 
+            this.clipboardService.memorize(this.startDownCoord, this.selectionSize);
     }
 
     paste(): void {
-        this.image = this.clipboardService.provide();
+        // Cancelling a selection in progress
+
+        // Pasting the selection at the upper left corner
+        this.arrowPress = [false, false, false, false];
+        this.arrowDown = false;
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawingService.clearCanvas(this.drawingService.selectionCtx);
+        this.image.src = this.clipboardService.provide();
+        this.mouseDownCoord = { x: 0, y: 0 };
+        this.startDownCoord = { x: 0, y: 0 };
+        this.firstSelectionCoord = this.startDownCoord;
+        this.selectionSize = { x: this.clipboardService.getWidth(), y: this.clipboardService.getHeight() };
+        this.pathLastCoord = this.getBottomRightCorner();
+        this.clearPath();
+        this.pathData.push(this.pathLastCoord);
+        this.selectionCreated = true;
+        this.pasteManipulation();
     }
 
     delete(): void {
@@ -102,6 +119,9 @@ export abstract class SelectionToolService extends Tool {
         this.copy();
         this.delete();
     }
+
+    protected pasteManipulation(): void {}
+    protected deleteManipulation(): void {}
 
     protected drawnAnchor(ctx: CanvasRenderingContext2D, size: Vec2 = this.selectionSize): void {
         this.color.setPrimaryColor('#000000');
@@ -576,6 +596,8 @@ export abstract class SelectionToolService extends Tool {
         this.drawingService.baseCtx.rotate(ROTATION);
         this.drawingService.previewCtx.translate(TRANSLATION.x, TRANSLATION.y);
         this.drawingService.previewCtx.rotate(ROTATION);
+        this.drawingService.selectionCtx.translate(TRANSLATION.x, TRANSLATION.y);
+        this.drawingService.selectionCtx.rotate(ROTATION);
         this.startDownCoord = { x: -this.selectionSize.x / 2, y: -this.selectionSize.y / 2 };
         this.pathLastCoord = { x: this.selectionSize.x / 2, y: this.selectionSize.y / 2 };
     }
@@ -593,6 +615,7 @@ export abstract class SelectionToolService extends Tool {
     protected resetCanvasRotation(): void {
         this.drawingService.baseCtx.setTransform(1, 0, 0, 1, 0, 0);
         this.drawingService.previewCtx.setTransform(1, 0, 0, 1, 0, 0);
+        this.drawingService.selectionCtx.setTransform(1, 0, 0, 1, 0, 0);
     }
 
     protected createOnMouseMoveEvent(): MouseEvent {
