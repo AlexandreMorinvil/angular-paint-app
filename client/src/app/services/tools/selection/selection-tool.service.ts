@@ -120,6 +120,8 @@ export abstract class SelectionToolService extends Tool {
         this.delete();
     }
 
+    // This function is to be implemented by the children classes
+    // tslint:disable-next-line:no-empty
     protected pasteManipulation(): void {}
 
     protected drawnAnchor(ctx: CanvasRenderingContext2D, size: Vec2 = this.selectionSize): void {
