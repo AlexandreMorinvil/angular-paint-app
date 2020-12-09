@@ -46,7 +46,7 @@ export class RectangleSelectionService extends SelectionToolService {
         if (this.selectionCreated && this.checkHit(this.mouseDownCoord)) {
             this.getAnchorHit(this.drawingService.previewCtx, this.mouseDownCoord, CALLER_ID);
             // remove original rect from base
-            this.drawingService.baseCtx.clearRect(this.startDownCoord.x, this.startDownCoord.y, this.selectionSize.x, this.selectionSize.y);
+            this.removeCanvasRect();
             // for undo redo
             this.pathData.push(this.firstSelectionCoord);
             this.startSelectionPoint = this.offsetAnchors(this.startDownCoord);
@@ -165,7 +165,7 @@ export class RectangleSelectionService extends SelectionToolService {
             this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
             this.drawSelectionSurround();
             // remove original rectangle from base
-            this.drawingService.baseCtx.clearRect(this.startDownCoord.x, this.startDownCoord.y, this.selectionSize.x, this.selectionSize.y);
+            this.removeCanvasRect();
             // set up values
             this.selectionCreated = true;
         }
@@ -230,6 +230,15 @@ export class RectangleSelectionService extends SelectionToolService {
         this.colorService.setSecondaryColor('#000000');
         this.tracingService.setHasFill(false);
         this.tracingService.setHasContour(true);
+    }
+
+    private removeCanvasRect(): void {
+        this.widthService.setWidth(1);
+        this.tracingService.setHasFill(true);
+        this.tracingService.setHasContour(true);
+        this.drawingService.baseCtx.fillStyle = 'white';
+        this.drawingService.baseCtx.fillRect(this.startDownCoord.x, this.startDownCoord.y, this.selectionSize.x, this.selectionSize.y);
+        this.resetTransform();
     }
 
     private addActionTracking(position: Vec2): void {
@@ -345,12 +354,6 @@ export class RectangleSelectionService extends SelectionToolService {
             offsetY: this.drawingService.baseCtx.canvas.height,
             button: 0,
         } as MouseEvent;
-        /*this.imageData = this.drawingService.baseCtx.getImageData(
-            this.startDownCoord.x,
-            this.startDownCoord.y,
-            this.drawingService.baseCtx.canvas.width,
-            this.drawingService.baseCtx.canvas.height,
-        );*/
         this.onMouseUp(MOUSE_EVENT);
     }
 
