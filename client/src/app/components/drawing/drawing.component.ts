@@ -1,6 +1,8 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { ClipBoardService } from '@app/services/clipboard/clipboard.service';
 import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MagnetismService } from '@app/services/magnetism/magnetism.service';
 import { ModalHandlerService } from '@app/services/modal-handler/modal-handler';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
 import { GridService } from '@app/services/tools/grid/grid.service';
@@ -9,12 +11,15 @@ import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzon
 
 export const DEFAULT_WIDTH = 1000;
 export const DEFAULT_HEIGHT = 800;
+const TOOL_BOX_WIDTH = 313;
+const SIDEBARWIDTH = 95;
 @Component({
     selector: 'app-drawing',
     templateUrl: './drawing.component.html',
     styleUrls: ['./drawing.component.scss'],
 })
 export class DrawingComponent implements AfterViewInit {
+    @ViewChild('clipboardCanvas', { static: false }) clipboardCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('editCanvas', { static: false }) editCanvas: ElementRef<HTMLCanvasElement>;
@@ -25,7 +30,7 @@ export class DrawingComponent implements AfterViewInit {
     private previewCtx: CanvasRenderingContext2D;
     private editCtx: CanvasRenderingContext2D;
     private gridCtx: CanvasRenderingContext2D;
-    private TOOL_BOX_WIDTH: number = 313;
+    private clipboardCtx: CanvasRenderingContext2D;
     hasBeenDrawnOnto: boolean;
 
     constructor(
@@ -35,21 +40,28 @@ export class DrawingComponent implements AfterViewInit {
         private workzoneSizeService: WorkzoneSizeService,
         private drawingStateTrackerService: DrawingStateTrackerService,
         private gridService: GridService,
+        private magnetismService: MagnetismService,
+        private clipboardService: ClipBoardService,
     ) {}
-
+    // tslint:disable:no-magic-numbers
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.editCtx = this.editCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.gridCtx = this.gridCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.clipboardCtx = this.clipboardCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
-        this.editCtx.canvas.width = window.innerWidth - this.TOOL_BOX_WIDTH;
-        this.editCtx.canvas.height = window.innerHeight;
+        this.editCtx.canvas.width = window.innerWidth - TOOL_BOX_WIDTH - SIDEBARWIDTH;
+        this.editCtx.canvas.height = window.innerHeight - 5;
+        this.gridCtx.canvas.width = this.baseCtx.canvas.width;
+        this.gridCtx.canvas.height = this.baseCtx.canvas.height;
         this.drawingService.hasBeenDrawnOnto = false;
         this.gridService.gridCtx = this.gridCtx;
         this.gridService.gridCanvas = this.gridCanvas.nativeElement;
+        this.clipboardService.clipboardCtx = this.clipboardCtx;
+        this.clipboardService.canvas = this.clipboardCanvas.nativeElement;
         // Fills the canvas with white
         this.baseCtx.fillStyle = '#FFFFFF';
         this.baseCtx.fillRect(0, 0, this.baseCtx.canvas.width, this.baseCtx.canvas.height);
@@ -63,7 +75,7 @@ export class DrawingComponent implements AfterViewInit {
     @HostListener('window:resize', ['$event'])
     onResize(event: Event): void {
         this.workzoneSizeService.onResize();
-        this.editCtx.canvas.width = window.innerWidth - this.TOOL_BOX_WIDTH;
+        this.editCtx.canvas.width = window.innerWidth - TOOL_BOX_WIDTH - SIDEBARWIDTH;
         this.editCtx.canvas.height = window.innerHeight;
     }
 
@@ -74,7 +86,7 @@ export class DrawingComponent implements AfterViewInit {
     }
 
     @HostListener('mousewheel', ['$event'])
-    onMousewheel(event: WheelEvent): void {
+    onMouseWheel(event: WheelEvent): void {
         event.preventDefault(); // to prevent key of windows
         this.toolbox.getCurrentTool().onMouseWheel(event);
     }
@@ -104,7 +116,9 @@ export class DrawingComponent implements AfterViewInit {
     onMouseDblClick(event: MouseEvent): void {
         this.toolbox.getCurrentTool().onMouseDblClick(event);
     }
-
+    // The disablement of the "cyclomatic-complexity" tslint rule is justified in this situation
+    // since it is required for the program to have a number of linearly independents paths that is high
+    // tslint:disable:cyclomatic-complexity
     @HostListener('window:keyup', ['$event'])
     keyEventUp(event: KeyboardEvent): void {
         if (this.drawingService.shortcutEnable) {
@@ -115,7 +129,7 @@ export class DrawingComponent implements AfterViewInit {
             }
         }
 
-        const keyCode: String = event.key;
+        const keyCode: string = event.key;
         const SHORT_CUT_ENABLE: boolean = this.drawingService.shortcutEnable;
         if (!keyCode) {
             return;
@@ -127,7 +141,7 @@ export class DrawingComponent implements AfterViewInit {
                     this.toolbox.getCurrentTool().onShiftUp(event);
                 }
                 break;
-            case 'Backspace' || event.keyCode === this.BACKSPACE_KEYCODE:
+            case 'Backspace': // || event.keyCode === this.BACKSPACE_KEYCODE:
                 if (SHORT_CUT_ENABLE) {
                     this.toolbox.getCurrentTool().onBackspaceDown(event);
                 }
@@ -157,8 +171,7 @@ export class DrawingComponent implements AfterViewInit {
             event.preventDefault();
             this.toolbox.getCurrentTool().onKeyDown(event);
         }
-
-        const KEY_CODE: String = event.key;
+        const KEY_CODE: string = event.key;
         const KEY_CODE_LOWER_CASE = KEY_CODE.toLowerCase();
         const IS_CTRL_KEY: boolean = event.ctrlKey;
         const IS_SHIFT_KEY: boolean = event.shiftKey;
@@ -168,32 +181,26 @@ export class DrawingComponent implements AfterViewInit {
             return;
         }
 
-        if (KEY_CODE === 'Shift') {
-            this.toolbox.getCurrentTool().onShiftDown(event);
-        } else if (KEY_CODE === 'Escape') {
-            this.toolbox.getCurrentTool().onEscapeDown(event);
-            this.hasBeenDrawnOnto = true;
-        } else if (KEY_CODE === 'Alt') {
-            event.preventDefault(); // to prevent key of windows
-            this.toolbox.getCurrentTool().onAltDown(event);
-        } else if (KEY_CODE === 'ArrowLeft' || KEY_CODE === 'ArrowRight' || KEY_CODE === 'ArrowUp' || KEY_CODE === 'ArrowDown') {
-            event.preventDefault(); // to prevent key of windows
-            this.toolbox.getCurrentTool().onArrowDown(event);
+        switch (KEY_CODE) {
+            case 'Shift':
+                this.toolbox.getCurrentTool().onShiftDown(event);
+                break;
+            case 'Escape':
+                this.toolbox.getCurrentTool().onEscapeDown(event);
+                this.hasBeenDrawnOnto = true;
+                break;
+            case 'Alt':
+                event.preventDefault(); // to prevent key of windows
+                this.toolbox.getCurrentTool().onAltDown(event);
+                break;
+            case 'ArrowLeft' || 'ArrowRight' || 'ArrowUp' || 'ArrowDown':
+                event.preventDefault(); // to prevent key of windows
+                this.toolbox.getCurrentTool().onArrowDown(event);
+                break;
         }
 
         if (IS_CTRL_KEY) {
-            if (SHORT_CUT_ENABLE) {
-                if (KEY_CODE_LOWER_CASE === 's') {
-                    event.preventDefault(); // to prevent key of windows
-                    this.modalHandlerService.openSaveDialog();
-                } else if (KEY_CODE_LOWER_CASE === 'g') {
-                    event.preventDefault(); // to prevent key of windows
-                    this.modalHandlerService.openDrawingCarouselDialog();
-                } else if (KEY_CODE_LOWER_CASE === 'e') {
-                    event.preventDefault(); // to prevent key of windows
-                    this.modalHandlerService.openExportDialog();
-                }
-            } else if (IS_SHIFT_KEY) {
+            if (IS_SHIFT_KEY) {
                 if (KEY_CODE_LOWER_CASE === 'z') {
                     event.preventDefault(); // to prevent key of windows
                     this.drawingStateTrackerService.onCtrlShiftZDown();
@@ -206,15 +213,37 @@ export class DrawingComponent implements AfterViewInit {
                     event.preventDefault(); // to prevent key of windows
                     this.toolbox.getCurrentTool().onCtrlADown();
                 }
+                if (SHORT_CUT_ENABLE) {
+                    switch (KEY_CODE_LOWER_CASE) {
+                        case 's':
+                            event.preventDefault(); // to prevent key of windows
+                            this.modalHandlerService.openSaveDialog();
+                            break;
+                        case 'g':
+                            event.preventDefault(); // to prevent key of windows
+                            this.modalHandlerService.openDrawingCarouselDialog();
+                            break;
+                        case 'e':
+                            event.preventDefault(); // to prevent key of windows
+                            this.modalHandlerService.openExportDialog();
+                            break;
+                    }
+                }
             }
         } else {
             if (!SHORT_CUT_ENABLE) return;
-            if (KEY_CODE_LOWER_CASE === 'g') {
-                this.gridService.toogleGrid();
-            } else if (KEY_CODE_LOWER_CASE === '+') {
-                this.gridService.incrementSpacing();
-            } else if (KEY_CODE_LOWER_CASE === '-') {
-                this.gridService.decrementSpacing();
+            switch (KEY_CODE_LOWER_CASE) {
+                case 'g':
+                    this.gridService.toogleGrid();
+                    break;
+                case '+':
+                    this.gridService.incrementSpacing();
+                    break;
+                case '-':
+                    this.gridService.decrementSpacing();
+                    break;
+                case 'm':
+                    this.magnetismService.toogleMagnetism();
             }
         }
     }

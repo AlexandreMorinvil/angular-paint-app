@@ -135,7 +135,7 @@ export class StampService extends Tool {
             }
         }
     }
-
+    // tslint:disable:no-magic-numbers
     private previewStamp(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         const TRANSPARENCE_VALUE = 0.4;
         ctx.globalAlpha = TRANSPARENCE_VALUE;
@@ -143,7 +143,7 @@ export class StampService extends Tool {
     }
 
     private convertDegreeToRad(angleDegre: number): number {
-        const HALF_CIRCLE_ANGLE: number = 180;
+        const HALF_CIRCLE_ANGLE = 180;
         return (angleDegre * Math.PI) / HALF_CIRCLE_ANGLE;
     }
 

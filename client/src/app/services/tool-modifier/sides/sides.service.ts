@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Bound } from '@app/classes/bound';
 import { ToolModifier } from '@app/classes/tool-modifier';
-import { ModifierHandlerService } from '../modifier-handler/modifier-handler.service';
+import { ModifierHandlerService } from '@app/services/tool-modifier/modifier-handler/modifier-handler.service';
 import { SidesModifierState } from './sides-state';
 
 @Injectable({
@@ -21,7 +21,7 @@ export class SidesService extends ToolModifier {
         const LIMIT: number = this.modifierHandlerService.clamp(input, this.MAX_POLYGON_SIDE, this.MIN_POLYGON_SIDE);
         if (LIMIT === Bound.upper) this.numberSides = this.MAX_POLYGON_SIDE;
         else if (LIMIT === Bound.lower) this.numberSides = this.MIN_POLYGON_SIDE;
-        else if (LIMIT === Bound.inside) this.numberSides = input;
+        else this.numberSides = input;
     }
 
     getSide(): number {

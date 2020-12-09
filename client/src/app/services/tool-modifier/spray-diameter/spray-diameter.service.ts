@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Bound } from '@app/classes/bound';
 import { ToolModifier } from '@app/classes/tool-modifier';
+import { ModifierHandlerService } from '@app/services/tool-modifier/modifier-handler/modifier-handler.service';
 import { SprayDiameterModifierState } from '@app/services/tool-modifier/spray-diameter/spray-diameter-state';
-import { ModifierHandlerService } from '../modifier-handler/modifier-handler.service';
 
 @Injectable({
     providedIn: 'root',
