@@ -40,7 +40,7 @@ describe('SaveService', () => {
     });
 
     it('should save the imgSource on saveDraw', () => {
-        service.saveDraw();
+        service.saveDraw('png');
         expect(service.imageSource).not.toBeNull();
         expect(baseCtxStub.globalCompositeOperation).toEqual('source-over');
         expect(baseCtxStub.fillStyle).toEqual('#000000');

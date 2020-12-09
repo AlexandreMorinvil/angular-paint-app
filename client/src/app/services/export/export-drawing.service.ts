@@ -96,11 +96,20 @@ export class ExportDrawingService {
         this.downloadImage(drawingName, format, NEW_CANVAS);
     }
 
+<<<<<<< HEAD
+    private downloadImage(drawName: string, format: string, newCanvas: HTMLCanvasElement): void {
+        const link = document.createElement('a');
+        link.href = newCanvas.toDataURL('image/' + format);
+        this.drawLink = link.href;
+        link.download = drawName + '.' + format;
+        link.click();
+=======
     private downloadImage(drawingName: string, format: string, newCanvas: HTMLCanvasElement): void {
         const LINK = document.createElement('a');
         LINK.href = newCanvas.toDataURL('image/' + format);
         this.drawingLink = LINK.href;
         LINK.download = drawingName + '.' + format;
         LINK.click();
+>>>>>>> integration/development
     }
 }
