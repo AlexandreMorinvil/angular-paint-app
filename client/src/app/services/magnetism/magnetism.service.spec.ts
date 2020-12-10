@@ -25,10 +25,11 @@ describe('MagnetismService', () => {
     });
 
     it('should give the possition that is closest relative to the upper left corner', () => {
-        (spacingService as any).spacing = 50;
+        const SPACING = 50;
+        (spacingService as any).spacing = SPACING;
         const POSITION: Vec2 = { x: 10, y: 10 };
-        const WIDTH: number = 10;
-        const HEIGHT: number = 10;
+        const WIDTH = 10;
+        const HEIGHT = 10;
 
         const CLOSEST_POSITION: Vec2 = service.getAdjustedPositionFromCenter(POSITION, WIDTH, HEIGHT);
 
@@ -37,67 +38,73 @@ describe('MagnetismService', () => {
     });
 
     it('should determine the left size jump distance to the clossest horizontal grid line', () => {
-        (spacingService as any).spacing = 50;
-        const X_POSITION: number = 20;
-        const WIDTH: number = 10;
+        const SPACING = 50;
+        (spacingService as any).spacing = SPACING;
+        const X_POSITION = 20;
+        const WIDTH = 10;
 
         const CLOSEST_POSITION: number = service.getGridHorizontalJumpDistance(X_POSITION, WIDTH, false);
-        const EXPECT_POSITION: number = 25;
+        const EXPECT_POSITION = 25;
 
         expect(CLOSEST_POSITION).toBe(EXPECT_POSITION);
     });
 
     it('should determine the right size jump distance to the clossest horizontal grid line', () => {
-        (spacingService as any).spacing = 50;
-        const X_POSITION: number = 20;
-        const WIDTH: number = 10;
+        const SPACING = 50;
+        (spacingService as any).spacing = SPACING;
+        const X_POSITION = 20;
+        const WIDTH = 10;
 
         const CLOSEST_POSITION: number = service.getGridHorizontalJumpDistance(X_POSITION, WIDTH, true);
-        const EXPECT_POSITION: number = 25;
+        const EXPECT_POSITION = 25;
 
         expect(CLOSEST_POSITION).toBe(EXPECT_POSITION);
     });
 
     it('should determine the up size jump distance to the clossest horizontal grid line', () => {
-        (spacingService as any).spacing = 50;
-        const Y_POSITION: number = 20;
-        const HEIGHT: number = 10;
+        const SPACING = 50;
+        (spacingService as any).spacing = SPACING;
+        const Y_POSITION = 20;
+        const HEIGHT = 10;
 
         const CLOSEST_POSITION: number = service.getVerticalJumpDistance(Y_POSITION, HEIGHT, false);
-        const EXPECT_POSITION: number = 25;
+        const EXPECT_POSITION = 25;
 
         expect(CLOSEST_POSITION).toBe(EXPECT_POSITION);
     });
 
     it('should determine the bottom size jump distance to the clossest horizontal grid line', () => {
-        (spacingService as any).spacing = 50;
+        const SPACING = 50;
+        (spacingService as any).spacing = SPACING;
         const Y_POSITION: number = 20;
-        const HEIGHT: number = 10;
+        const HEIGHT = 10;
 
         const CLOSEST_POSITION: number = service.getVerticalJumpDistance(Y_POSITION, HEIGHT, true);
-        const EXPECT_POSITION: number = 25;
+        const EXPECT_POSITION = 25;
 
         expect(CLOSEST_POSITION).toBe(EXPECT_POSITION);
     });
 
     it('should jump a fill grid spacing horizontally if it is already on a grid line', () => {
-        (spacingService as any).spacing = 50;
-        const X_POSITION: number = 45;
-        const WIDTH: number = 10;
+        const SPACING = 50;
+        (spacingService as any).spacing = SPACING;
+        const X_POSITION = 45;
+        const WIDTH = 10;
 
         const CLOSEST_POSITION: number = service.getGridHorizontalJumpDistance(X_POSITION, WIDTH, true);
-        const EXPECT_POSITION: number = 50;
+        const EXPECT_POSITION = SPACING;
 
         expect(CLOSEST_POSITION).toBe(EXPECT_POSITION);
     });
 
     it('should jump a fill grid spacing horizontally if it is already on a grid line', () => {
-        (spacingService as any).spacing = 50;
-        const Y_POSITION: number = 45;
-        const HEIGHT: number = 10;
+        const SPACING = 50;
+        (spacingService as any).spacing = SPACING;
+        const Y_POSITION = 45;
+        const HEIGHT = 10;
 
         const CLOSEST_POSITION: number = service.getVerticalJumpDistance(Y_POSITION, HEIGHT, false);
-        const EXPECT_POSITION: number = 50;
+        const EXPECT_POSITION = SPACING;
 
         expect(CLOSEST_POSITION).toBe(EXPECT_POSITION);
     });

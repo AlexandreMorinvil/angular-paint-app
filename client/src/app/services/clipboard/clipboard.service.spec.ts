@@ -1,79 +1,61 @@
-// import { TestBed } from '@angular/core/testing';
-// import { canvasTestHelper } from '@app/classes/canvas-test-helper';
-// import { SpacingService } from '@app/services/tool-modifier/spacing/spacing.service';
-// import { MagnetismService } from './magnetism.service';
+import { TestBed } from '@angular/core/testing';
+import { canvasTestHelper } from '@app/classes/canvas-test-helper';
+import { Vec2 } from '@app/classes/vec2';
+import { DrawingService } from '../drawing/drawing.service';
+// import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ClipBoardService } from './clipboard.service';
 
-// // tslint:disable:no-any
-// describe('MagnetismService', () => {
-//     let service: MagnetismService;
-//     let spacingService: SpacingService;
-//     let resetGridSpy: jasmine.Spy<any>;
+// tslint:disable:no-any
+describe('ClipBoardService', () => {
+    let service: ClipBoardService;
+    let drawingService: DrawingService;
+    let computeDimensionsSpy: jasmine.Spy<any>;
+    let computeCenterSpy: jasmine.Spy<any>;
+    let computeUpperLeftCornerSpy: jasmine.Spy<any>;
 
-//     beforeEach(() => {
-//         TestBed.configureTestingModule({});
-//         service = TestBed.inject(MagnetismService);
-//         spacingService = TestBed.inject(SpacingService);
-//         service.gridCanvas = canvasTestHelper.canvas;
-//         service.gridCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
-//         resetGridSpy = spyOn<any>(service, 'resetGrid').and.callThrough();
-//     });
+    beforeEach(() => {
+        TestBed.configureTestingModule({});
+        service = TestBed.inject(ClipBoardService);
 
-//     it('should be created', () => {
-//         expect(service).toBeTruthy();
-//     });
+        drawingService = TestBed.inject(DrawingService);
+        drawingService.canvas = canvasTestHelper.canvas;
+        drawingService.baseCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+        drawingService.previewCtx = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        drawingService.selectionCtx = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
 
-//     it('should draw the grid if the grid is activated', () => {
-//         const drawGridSpy = spyOn<any>(service, 'drawGrid').and.callThrough();
-//         const setAttributesGridSpy = spyOn<any>(service, 'setAttribtes').and.callThrough();
-//         (service as any).isGridOn = true;
-//         service.resetGrid();
-//         expect(drawGridSpy).toHaveBeenCalled();
-//         expect(setAttributesGridSpy).toHaveBeenCalled();
-//     });
+        (service as any).drawingService.previewCtx = drawingService.previewCtx;
+        service.canvas = canvasTestHelper.drawCanvas;
+        service.clipboardCtx = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+    });
 
-//     it('should not draw the grid if the grid is deactivated', () => {
-//         const drawGridSpy = spyOn<any>(service, 'drawGrid').and.callThrough();
-//         const setAttributesGridSpy = spyOn<any>(service, 'setAttribtes').and.callThrough();
-//         (service as any).isGridOn = false;
-//         service.resetGrid();
-//         expect(drawGridSpy).not.toHaveBeenCalled();
-//         expect(setAttributesGridSpy).not.toHaveBeenCalled();
-//     });
+    fit('should be created', () => {
+        expect(service).toBeTruthy();
+    });
 
-//     it('should turn the grid from on to off', () => {
-//         (service as any).isGridOn = true;
-//         service.toogleGrid();
-//         expect(service.isGridActivated()).toBe(false);
-//         expect(resetGridSpy).toHaveBeenCalled();
-//     });
+    fit('should store the image procided with the right selection size', () => {
+        computeDimensionsSpy = spyOn<any>(service, 'computeDimensions').and.callThrough();
+        computeCenterSpy = spyOn<any>(service, 'computeCenter').and.callThrough();
+        computeUpperLeftCornerSpy = spyOn<any>(service, 'computeUpperLeftCorner').and.callThrough();
 
-//     it('should turn the grid from off to on', () => {
-//         (service as any).isGridOn = false;
-//         service.toogleGrid();
-//         expect(service.isGridActivated()).toBe(true);
-//         expect(resetGridSpy).toHaveBeenCalled();
-//     });
+        const START_COORD: Vec2 = { x: 10, y: 10 };
+        const DIMENSIONS: Vec2 = { x: 20, y: 20 };
+        const ANGLE = 20;
+        service.memorize(START_COORD, DIMENSIONS, ANGLE);
 
-//     it(' should increment the spacing of the grid', () => {
-//         const spacingServiceSpy = spyOn<any>(spacingService, 'stepUp').and.callThrough();
-//         service.incrementSpacing();
-//         expect(spacingServiceSpy).toHaveBeenCalled();
-//         expect(resetGridSpy).toHaveBeenCalled();
-//     });
+        expect(computeDimensionsSpy).toHaveBeenCalled();
+        expect(computeCenterSpy).toHaveBeenCalled();
+        expect(computeUpperLeftCornerSpy).toHaveBeenCalled();
+    });
 
-//     it(' should decrement the spacing of the grid', () => {
-//         const spacingServiceSpy = spyOn<any>(spacingService, 'stepDown').and.callThrough();
-//         service.decrementSpacing();
-//         expect(spacingServiceSpy).toHaveBeenCalled();
-//         expect(resetGridSpy).toHaveBeenCalled();
-//     });
+    fit('should return the data URL of the data stored', () => {
+        expect(service.provide()).toBe((new Image()).src);
+    });
 
-//     it('should call resetDrawingWithWarning and ask before delete with answer true', () => {
-//         const newWidth = 222;
-//         const newHeight = 333;
-//         service.resize(newWidth, newHeight);
-//         expect(service.gridCanvas.width).toBe(newWidth);
-//         expect(service.gridCanvas.height).toBe(newHeight);
-//         expect(resetGridSpy).toHaveBeenCalled();
-//     });
-// });
+    fit('should return the height of the image stored', () => {
+        expect(service.getHeight()).toBe(service.canvas.height);
+    });
+
+    fit('should return the width of the image stored', () => {
+        expect(service.getWidth()).toBe(service.canvas.width);
+    });
+});

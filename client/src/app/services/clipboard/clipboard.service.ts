@@ -7,8 +7,8 @@ const HALF_CIRCLE_IN_DEGREES = 180;
     providedIn: 'root',
 })
 export class ClipBoardService {
-    clipboardCtx: CanvasRenderingContext2D;
     canvas: HTMLCanvasElement;
+    clipboardCtx: CanvasRenderingContext2D;
     private canvasImage: HTMLImageElement;
     private image: HTMLImageElement;
     private startCoord: Vec2;
