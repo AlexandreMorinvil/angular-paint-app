@@ -12,7 +12,7 @@ export class ExportDrawingService {
     private ctx: CanvasRenderingContext2D;
 
     constructor(private drawingService: DrawingService, public dialog: MatDialog) {
-        this.FILTERS = ['aucun', 'blur', 'grayscale', 'sepia', 'saturate', 'invert']; // SOFIA
+        this.FILTERS = ['aucun', 'blur', 'grayscale', 'sepia', 'saturate', 'invert'];
         this.currentFilter = 'Aucun';
     }
 

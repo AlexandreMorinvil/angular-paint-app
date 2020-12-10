@@ -283,28 +283,30 @@ export class EllipseSelectionService extends SelectionToolService {
 
     onShiftDown(event: KeyboardEvent): void {
         if (!event.ctrlKey) {
-            this.shiftDown = true;
-            if (this.clickOnAnchor) {
-                this.ratio = this.getRatio(this.selectionSize.x, this.selectionSize.y);
-            } else {
-                this.ellipseService.shiftDown = true;
-                if (this.localMouseDown) {
-                    const MOUSE_EVENT = this.createOnMouseMoveEvent();
-                    this.onMouseMove(MOUSE_EVENT);
-                }
+            return;
+        }
+        this.shiftDown = true;
+        if (this.clickOnAnchor) {
+            this.ratio = this.getRatio(this.selectionSize.x, this.selectionSize.y);
+        } else {
+            this.ellipseService.shiftDown = true;
+            if (this.localMouseDown) {
+                const MOUSE_EVENT = this.createOnMouseMoveEvent();
+                this.onMouseMove(MOUSE_EVENT);
             }
         }
     }
 
     onShiftUp(event: KeyboardEvent): void {
-        if (!event.ctrlKey) {
-            this.shiftDown = false;
-            if (!this.clickOnAnchor) {
-                this.ellipseService.shiftDown = false;
-                if (this.localMouseDown) {
-                    const MOUSE_EVENT = this.createOnMouseMoveEvent();
-                    this.onMouseMove(MOUSE_EVENT);
-                }
+        if (event.ctrlKey) {
+            return;
+        }
+        this.shiftDown = false;
+        if (!this.clickOnAnchor) {
+            this.ellipseService.shiftDown = false;
+            if (this.localMouseDown) {
+                const MOUSE_EVENT = this.createOnMouseMoveEvent();
+                this.onMouseMove(MOUSE_EVENT);
             }
         }
     }

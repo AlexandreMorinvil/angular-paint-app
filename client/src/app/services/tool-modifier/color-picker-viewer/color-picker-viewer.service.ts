@@ -14,5 +14,5 @@ export class ColorPickerViewerService extends ToolModifier {
         return new ColorPickerViewerModifierState();
     }
     // tslint:disable:no-empty
-    setState(state: ColorPickerViewerModifierState): void {} // SOFIA
+    setState(state: ColorPickerViewerModifierState): void {}
 }
