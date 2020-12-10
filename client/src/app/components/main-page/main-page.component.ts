@@ -29,16 +29,11 @@ export class MainPageComponent {
         const src = this.autoSaveService.getAutoSavedDrawingURL();
         const image = new Image();
         image.onload = () => {
-            this.drawingService.baseCtx.canvas.width = image.width;
-            this.drawingService.baseCtx.canvas.height = image.height;
-
-            this.drawingService.previewCtx.canvas.width = image.width;
-            this.drawingService.previewCtx.canvas.height = image.height;
-
+            this.drawingService.baseCtx.canvas.width = this.drawingService.previewCtx.canvas.width = image.width;
+            this.drawingService.baseCtx.canvas.height = this.drawingService.previewCtx.canvas.height = image.height;
             this.drawingService.baseCtx.drawImage(image, 0, 0);
         };
         image.src = src;
-
         this.router.navigate(['/editor']);
     }
 
