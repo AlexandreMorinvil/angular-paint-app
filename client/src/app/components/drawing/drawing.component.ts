@@ -199,37 +199,24 @@ export class DrawingComponent implements AfterViewInit {
             case 'Alt':
                 this.toolbox.getCurrentTool().onAltDown(event);
                 break;
-<<<<<<< HEAD
-=======
             case 'Delete':
                 event.preventDefault(); // to prevent key of windows
                 if (this.toolbox.getCurrentTool() instanceof SelectionToolService) (this.toolbox.getCurrentTool() as SelectionToolService).delete();
                 break;
->>>>>>> ea27f8ecf14d5b87b017de281423cab3667ec181
             case 'ArrowLeft':
             case 'ArrowRight':
             case 'ArrowUp':
             case 'ArrowDown':
-<<<<<<< HEAD
-=======
                 event.preventDefault(); // to prevent key of windows
->>>>>>> ea27f8ecf14d5b87b017de281423cab3667ec181
                 this.toolbox.getCurrentTool().onArrowDown(event);
                 break;
         }
-
         if (IS_CTRL_KEY) {
             if (IS_SHIFT_KEY) {
                 if (KEY_CODE_LOWER_CASE === 'z') {
                     this.drawingStateTrackerService.onCtrlShiftZDown();
                 }
             } else {
-<<<<<<< HEAD
-                if (KEY_CODE_LOWER_CASE === 'z') {
-                    this.drawingStateTrackerService.onCtrlZDown();
-                } else if (KEY_CODE_LOWER_CASE === 'a') {
-                    this.toolbox.getCurrentTool().onCtrlADown();
-=======
                 switch (KEY_CODE_LOWER_CASE) {
                     case 'z':
                         event.preventDefault(); // to prevent key of windows
@@ -258,7 +245,6 @@ export class DrawingComponent implements AfterViewInit {
                         break;
                     default:
                         break;
->>>>>>> ea27f8ecf14d5b87b017de281423cab3667ec181
                 }
                 if (SHORT_CUT_ENABLE) {
                     switch (KEY_CODE_LOWER_CASE) {
