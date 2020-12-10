@@ -1,10 +1,9 @@
 <div class="container">
-    <h1 class="title">PolyDessin</h1>
+    <h1 class="title">PolyDessin 2</h1>
     <button class="button1" routerLink="/editor" routerLinkActive="active">Créer un nouveau dessin</button>
+    <button class="button4" (click)="openContinueDrawing()" *ngIf="hasSavedDrawing()">Continuer un dessin</button>
     <button class="button2" (click)="openDrawingCarousel()">Ouvrir le carrousel de dessins</button>
     <button class="button3" (click)="openUserGuide()">Afficher le Guide d'utilisation</button>
-    <button class="button4">Continuer un dessin</button>
-
     <div class="footer-item">
         <p>
             © 2020 Polytechnique de Montréal, Sofia Marsou, Alexandre Morinvil, DatPhi Tran, Vincenzo Pucci-Barbeau, Christophe Bellemare, Aimé

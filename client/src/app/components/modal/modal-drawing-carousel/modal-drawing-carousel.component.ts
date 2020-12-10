@@ -26,6 +26,8 @@ export class DrawingCarouselComponent {
     readonly NOTHING_IMAGE_LOCATION: string = 'assets/images/nothing.png';
     private drawingSelectedPurpose: PurposeofClick = PurposeofClick.Load;
     readonly separatorKeysCodes: number[] = [ENTER, COMMA];
+    private readonly DRAWING_SEARCH_ERROR: string = "Erreur ! Votre dessin n'est pas sur le serveur";
+    private readonly IMAGE_SOURCE: string = 'assets/images/nothing.png';
 
     constructor(
         public memoryService: RemoteMemoryService,
@@ -77,24 +79,24 @@ export class DrawingCarouselComponent {
     // Handler in case the server doesnt send image
 
     onImgError(event: ErrorEvent, drawing: DrawingToDatabase): void {
-        (event.target as HTMLImageElement).src = 'assets/images/nothing.png';
-        drawing.name = "Erreur ! Votre dessin n'est pas sur le serveur";
+        (event.target as HTMLImageElement).src = this.IMAGE_SOURCE;
+        drawing.name = this.DRAWING_SEARCH_ERROR;
         drawing.tags = [];
     }
 
     // Tag functions
 
     addTag(event: MatChipInputEvent): void {
-        const input = event.input;
-        const value = event.value;
+        const INPUT = event.input;
+        const VALUE = event.value;
 
         // Add the tag
-        if ((value || '').trim()) {
-            this.tagFilterService.addTag({ tagName: value.trim() });
+        if ((VALUE || '').trim()) {
+            this.tagFilterService.addTag({ tagName: VALUE.trim() });
         }
 
         // Reset the input value
-        input.value = '';
+        INPUT.value = '';
 
         // Update the carousel
         this.setCurrentDrawings();
@@ -126,7 +128,6 @@ export class DrawingCarouselComponent {
 
     moveNext(): void {
         // If we have below three drawings, dont do anything
-
         if (this.currentDrawings[0]._id === null || this.currentDrawings[1]._id === null || this.currentDrawings[2]._id === null) return;
 
         for (let i = 0; i < this.currentDrawings.length; i++) {
@@ -142,11 +143,12 @@ export class DrawingCarouselComponent {
 
     @HostListener('window:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
-        if (event.ctrlKey && event.key.toLowerCase() === 'g') {
+        const KEY: string = event.key;
+        if (event.ctrlKey && KEY.toLowerCase() === 'g') {
             event.preventDefault(); // to prevent key of windows
-        } else if (event.key === 'ArrowRight') {
+        } else if (KEY === 'ArrowRight') {
             this.moveNext();
-        } else if (event.key === 'ArrowLeft') {
+        } else if (KEY === 'ArrowLeft') {
             this.movePrevious();
         }
     }
@@ -156,7 +158,8 @@ export class DrawingCarouselComponent {
     drawingClicked(drawing: DrawingToDatabase): void {
         if (this.drawingSelectedPurpose === PurposeofClick.Load) {
             this.loadService.loadDraw(this.getDrawingUrl(drawing));
-        } /* this.drawingSelectedPurpose === PurposeofClick.Delete */ else {
+            this.tagFilterService.clearTags();
+        } else {
             this.memoryService.deleteFromDatabase(drawing._id).then(() => {
                 this.memoryService.getAllFromDatabase().then(() => {
                     this.setCurrentDrawings();
@@ -167,10 +170,6 @@ export class DrawingCarouselComponent {
     }
 
     deleteDrawingButtonSelected(): void {
-        if (this.drawingSelectedPurpose === PurposeofClick.Load) {
-            this.drawingSelectedPurpose = PurposeofClick.Delete;
-        } /*(this.drawingSelectedPurpose === PurposeofClick.Delete) */ else {
-            this.drawingSelectedPurpose = PurposeofClick.Load;
-        }
+        this.drawingSelectedPurpose = this.drawingSelectedPurpose === PurposeofClick.Load ? PurposeofClick.Delete : PurposeofClick.Load;
     }
 }

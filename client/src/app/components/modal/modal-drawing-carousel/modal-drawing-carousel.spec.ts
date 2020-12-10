@@ -17,6 +17,7 @@ describe('DrawingCarouselComponent', () => {
     let testData: DrawingToDatabase[];
     let testData2: DrawingToDatabase[];
     let tagAdded: MatChipInputEvent;
+
     testData = [
         { _id: '0', name: 'test1', tags: [] },
         { _id: '1', name: 'test2', tags: ['tag'] },
@@ -39,6 +40,7 @@ describe('DrawingCarouselComponent', () => {
                 filterByTag: testData,
                 addTag: {},
                 removeTag: {},
+                clearTags: {},
             });
             loadServiceSpy = jasmine.createSpyObj('LoadService', {
                 loadDraw: {},

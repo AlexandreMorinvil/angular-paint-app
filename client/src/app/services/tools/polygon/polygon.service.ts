@@ -65,23 +65,24 @@ export class PolygonService extends Tool {
     }
 
     onMouseMove(event: MouseEvent): void {
-        if (this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
-            this.pathData.push(mousePosition);
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            if (!this.isInCanvas(mousePosition) && this.mouseDown) {
-                if (mousePosition.x >= this.drawingService.baseCtx.canvas.width) {
-                    this.drawingService.previewCtx.canvas.width = mousePosition.x;
-                }
-                if (mousePosition.y >= this.drawingService.baseCtx.canvas.height) {
-                    this.drawingService.previewCtx.canvas.height = mousePosition.y;
-                }
-            } else {
-                this.resetBorder();
-            }
-            this.drawPolygon(this.drawingService.previewCtx, this.pathData);
-            this.drawPreviewCircle(this.drawingService.previewCtx, this.pathData);
+        if (!this.mouseDown) {
+            return;
         }
+        const MOUSE_POSITION = this.getPositionFromMouse(event);
+        this.pathData.push(MOUSE_POSITION);
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        if (!this.isInCanvas(MOUSE_POSITION) && this.mouseDown) {
+            if (this.drawingService.baseCtx.canvas.width < MOUSE_POSITION.x) {
+                this.drawingService.previewCtx.canvas.width = MOUSE_POSITION.x;
+            }
+            if (this.drawingService.baseCtx.canvas.height < MOUSE_POSITION.y) {
+                this.drawingService.previewCtx.canvas.height = MOUSE_POSITION.y;
+            }
+        } else {
+            this.resetBorder();
+        }
+        this.drawPolygon(this.drawingService.previewCtx, this.pathData);
+        this.drawPreviewCircle(this.drawingService.previewCtx);
     }
 
     setAttribute(ctx: CanvasRenderingContext2D): void {
@@ -100,15 +101,15 @@ export class PolygonService extends Tool {
 
     private drawPolygon(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         this.savedData = [];
-        const lastMouseMoveCoord = path[path.length - 1];
-        const radius = Math.sqrt(
-            Math.pow(this.mouseDownCoord.x - lastMouseMoveCoord.x, 2) + Math.pow(this.mouseDownCoord.y - lastMouseMoveCoord.y, 2),
+        const LAST_MOUSE_MOVE_COORD = path[path.length - 1];
+        const RADIUS = Math.sqrt(
+            Math.pow(this.mouseDownCoord.x - LAST_MOUSE_MOVE_COORD.x, 2) + Math.pow(this.mouseDownCoord.y - LAST_MOUSE_MOVE_COORD.y, 2),
         );
-        this.radius = radius;
+        this.radius = RADIUS;
         for (let i = 0; i < this.sidesService.getSide(); i++) {
             this.savedData.push({
-                x: this.mouseDownCoord.x + radius * Math.cos(this.angle),
-                y: this.mouseDownCoord.y - radius * Math.sin(this.angle),
+                x: this.mouseDownCoord.x + RADIUS * Math.cos(this.angle),
+                y: this.mouseDownCoord.y - RADIUS * Math.sin(this.angle),
             });
             this.angle += (2 * Math.PI) / this.sidesService.getSide();
         }
@@ -123,39 +124,39 @@ export class PolygonService extends Tool {
         this.setAttribute(ctx);
     }
 
-    drawPreviewCircle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    drawPreviewCircle(ctx: CanvasRenderingContext2D): void {
         ctx.beginPath();
-        const centerX = this.mouseDownCoord.x;
-        const centerY = this.mouseDownCoord.y;
-        const numberMinSide = 5;
-        const numberSquareSide = 4;
-        const numberTriangleSide = 3;
-        const halfCircleAngle = 180;
-        const circleAngle = 360;
+        const CENTER_X = this.pathData[0].x;
+        const CENTER_Y = this.pathData[0].y;
+        const NUMBER_MIN_SIDE = 5;
+        const NUMBER_SQUARE_SIDE = 4;
+        const NUMBER_TRIANGLE_SIDE = 3;
+        const HALF_CIRCLE_ANGLE = 180;
+        const CIRCLE_ANGLE = 360;
         // Leave the calculation in full so as not to have a space due to calculation imprecision
-        if (this.tracingService.getHasContour() === true && this.sidesService.getSide() >= numberMinSide) {
+        if (this.tracingService.getHasContour() && this.sidesService.getSide() >= NUMBER_MIN_SIDE) {
             this.radius = this.radius - this.widthService.getWidth() / 2;
-            const spaceBetweenTwoPolygon =
-                (2 * this.radius * Math.cos((((halfCircleAngle - circleAngle / this.sidesService.getSide()) / 2) * Math.PI) / halfCircleAngle) +
+            const SPACE_BETWEEN_TWO_POLYGON =
+                (2 * this.radius * Math.cos((((HALF_CIRCLE_ANGLE - CIRCLE_ANGLE / this.sidesService.getSide()) / 2) * Math.PI) / HALF_CIRCLE_ANGLE) +
                     (2 * this.widthService.getWidth()) /
-                        Math.tan((((halfCircleAngle - circleAngle / this.sidesService.getSide()) / 2) * Math.PI) / halfCircleAngle)) /
-                (2 * Math.cos((((halfCircleAngle - circleAngle / this.sidesService.getSide()) / 2) * Math.PI) / halfCircleAngle));
-            this.radius = spaceBetweenTwoPolygon;
-        } else if (this.tracingService.getHasContour() === true && this.sidesService.getSide() === numberSquareSide) {
-            const spaceBetweenTwoSquare = Math.sqrt(Math.pow(this.widthService.getWidth(), 2) + Math.pow(this.widthService.getWidth(), 2));
-            this.radius = this.radius - spaceBetweenTwoSquare / 2;
-            this.radius = this.radius + spaceBetweenTwoSquare;
+                        Math.tan((((HALF_CIRCLE_ANGLE - CIRCLE_ANGLE / this.sidesService.getSide()) / 2) * Math.PI) / HALF_CIRCLE_ANGLE)) /
+                (2 * Math.cos((((HALF_CIRCLE_ANGLE - CIRCLE_ANGLE / this.sidesService.getSide()) / 2) * Math.PI) / HALF_CIRCLE_ANGLE));
+            this.radius = SPACE_BETWEEN_TWO_POLYGON;
+        } else if (this.tracingService.getHasContour() && this.sidesService.getSide() === NUMBER_SQUARE_SIDE) {
+            const SPACE_BETWEEN_TWO_SQUARE = Math.sqrt(Math.pow(this.widthService.getWidth(), 2) + Math.pow(this.widthService.getWidth(), 2));
+            this.radius = this.radius - SPACE_BETWEEN_TWO_SQUARE / 2;
+            this.radius = this.radius + SPACE_BETWEEN_TWO_SQUARE;
         } else {
             this.radius = this.radius - this.widthService.getWidth();
-            const spaceBetweenTwoTriangle =
-                this.widthService.getWidth() / Math.sin(((halfCircleAngle / numberTriangleSide / 2) * Math.PI) / halfCircleAngle);
-            this.radius = this.radius + spaceBetweenTwoTriangle;
+            const SPACE_BETWEEN_TWO_TRIANGLE =
+                this.widthService.getWidth() / Math.sin(((HALF_CIRCLE_ANGLE / NUMBER_TRIANGLE_SIDE / 2) * Math.PI) / HALF_CIRCLE_ANGLE);
+            this.radius = this.radius + SPACE_BETWEEN_TWO_TRIANGLE;
         }
-        const angleCircle = 2 * Math.PI;
-        ctx.arc(centerX, centerY, this.radius, 0, angleCircle);
-        const lineDashValue = 6;
+        const ANGLE_CIRCLE = 2 * Math.PI;
+        ctx.arc(CENTER_X, CENTER_Y, this.radius, 0, ANGLE_CIRCLE);
+        const LINE_DASH_VALUE = 6;
         ctx.strokeStyle = 'black';
-        ctx.setLineDash([lineDashValue]);
+        ctx.setLineDash([LINE_DASH_VALUE]);
         ctx.lineWidth = 1;
         ctx.stroke();
     }

@@ -27,6 +27,7 @@ describe('AttributesPanelComponent', () => {
     let tracingService: TracingService;
     let widthService: WidthService;
     let previewCtxStub: CanvasRenderingContext2D;
+    let selectionCtxStub: CanvasRenderingContext2D;
     let canvasStub: HTMLCanvasElement;
 
     beforeEach(
@@ -39,6 +40,7 @@ describe('AttributesPanelComponent', () => {
     );
 
     beforeEach(() => {
+        selectionCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         canvasStub = canvasTestHelper.canvas;
         fixture = TestBed.createComponent(AttributesPanelComponent);
@@ -50,6 +52,7 @@ describe('AttributesPanelComponent', () => {
         textureService = TestBed.inject(TextureService);
         tracingService = TestBed.inject(TracingService);
         widthService = TestBed.inject(WidthService);
+        (toolBoxService as any).drawingService.selectionCtx = selectionCtxStub;
         (toolBoxService as any).drawingService.previewCtx = previewCtxStub;
         (toolBoxService as any).drawingService.canvas = canvasStub;
         (toolBoxService as any).drawingService.canvas.width = canvasWidth;

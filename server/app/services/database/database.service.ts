@@ -30,8 +30,6 @@ export class DatabaseService {
     private readonly ERROR_GET_DRAWING_BY_TAG: string = "Échec lors de la tentative de récupération de tous les dessins ayant l'étiquettes";
     private readonly ERROR_GET_DRAWING_BY_NAME: string = 'Échec lors de la tentative de récupération de tous les dessins nommés';
     private readonly ERROR_NO_IMAGE_SOURCE: string = "Échec lors de la tentative d'ajout il n'y a pas d'image source";
-    private readonly ERROR_NO_ALPHABETIC_NUMERIC_NAME: string = 'Le nom ne doit pas contenir de caractères spéciaux';
-    private readonly ERROR_NO_ALPHABETIC_NUMERIC_TAG: string = 'Le ou les tags ne doivent pas contenir de caractères spéciaux';
     private readonly CONNECTION_ERROR: string = 'CONNECTION ERROR. EXITING PROCESS';
 
     private options: MongoClientOptions = {
@@ -58,7 +56,7 @@ export class DatabaseService {
             .then((drawings: DrawingToDatabase[]) => {
                 return drawings;
             })
-            .catch((error: Error) => {
+            .catch(() => {
                 throw new Error(this.ERROR_GET_ALL_DRAWING);
             });
     }
@@ -69,15 +67,15 @@ export class DatabaseService {
             .then((drawing: DrawingToDatabase) => {
                 return drawing;
             })
-            .catch((error: Error) => {
+            .catch(() => {
                 throw new Error(this.ERROR_NO_DRAWING_FOUND);
             });
     }
 
     async getDrawingByName(drawingName: string): Promise<DrawingToDatabase[]> {
-        const filterQuery: FilterQuery<DrawingToDatabase> = { name: drawingName };
+        const FILTER_QUERY: FilterQuery<DrawingToDatabase> = { name: drawingName };
         return this.collection
-            .find(filterQuery)
+            .find(FILTER_QUERY)
             .toArray()
             .then((drawings: DrawingToDatabase[]) => {
                 return drawings;
@@ -88,9 +86,9 @@ export class DatabaseService {
     }
 
     async getDrawingByTags(drawingTag: string): Promise<DrawingToDatabase[]> {
-        const filterQuery: FilterQuery<DrawingToDatabase> = { tags: drawingTag };
+        const FILTER_QUERY: FilterQuery<DrawingToDatabase> = { tags: drawingTag };
         return this.collection
-            .find(filterQuery)
+            .find(FILTER_QUERY)
             .toArray()
             .then((drawing: DrawingToDatabase[]) => {
                 return drawing;
@@ -109,7 +107,7 @@ export class DatabaseService {
                 .then((returnValue) => {
                     this.drawId = returnValue.insertedId.toString();
                 })
-                .catch((error: Error) => {
+                .catch(() => {
                     throw new Error(this.ERROR_ADD_DRAWING);
                 });
         } catch (error) {
@@ -118,12 +116,12 @@ export class DatabaseService {
     }
     // tslint:disable:no-empty
     async updateDrawing(drawingID: string, drawing: DrawingToDatabase): Promise<void> {
-        const filterQuery: FilterQuery<DrawingToDatabase> = { _id: drawingID };
-        const updateQuery: UpdateQuery<DrawingToDatabase> = {
+        const FILTER_QUERY: FilterQuery<DrawingToDatabase> = { _id: drawingID };
+        const UPDATE_QUERY: UpdateQuery<DrawingToDatabase> = {
             $set: { name: drawing.name, tags: drawing.tags },
         };
         this.collection
-            .updateOne(filterQuery, updateQuery)
+            .updateOne(FILTER_QUERY, UPDATE_QUERY)
             .then(() => {})
             .catch(() => {
                 throw new Error(this.ERROR_UPDATE_DRAWING);
@@ -134,7 +132,7 @@ export class DatabaseService {
         return this.collection
             .findOneAndDelete({ _id: drawingID })
             .then(() => {})
-            .catch((error: Error) => {
+            .catch(() => {
                 throw new Error(this.ERROR_DELETE_DRAWING);
             });
     }
@@ -147,19 +145,11 @@ export class DatabaseService {
     private validateName(name: string): void {
         if (name === '') throw new Error(this.ERROR_NO_DRAWING_NAME);
         if (name.length > this.MAX_LENGHT_DRAW_NAME) throw new Error(this.ERROR_MAX_LENGTH_NAME_DRAWING);
-        const valid: boolean = /^[0-9a-zA-Z]*$/g.test(name);
-        if (!valid) {
-            throw new Error(this.ERROR_NO_ALPHABETIC_NUMERIC_NAME);
-        }
     }
 
     private validateTag(tag: string): void {
         if (tag === '') throw new Error(this.ERROR_NO_TAG);
         if (tag.length > this.MAX_LENGHT_NAME_TAG) throw new Error(this.ERROR_MAX_LENGTH_NAME_TAG);
-        const valid: boolean = /^[0-9a-zA-Z]*$/g.test(tag);
-        if (!valid) {
-            throw new Error(this.ERROR_NO_ALPHABETIC_NUMERIC_TAG);
-        }
     }
 
     private validateImageSource(imageSrc: string): void {

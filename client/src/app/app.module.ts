@@ -14,8 +14,18 @@ import { AppComponent } from './components/app/app.component';
 import { AttributeColorPickerViewerComponent } from './components/attributes-panel/attribute-color-picker-viewer/attribute-color-picker-viewer.component';
 // Attribute components
 import { AttributeColorComponent } from './components/attributes-panel/attribute-color/attributes-color.component';
+import { AttributeGridDisplayComponent } from './components/attributes-panel/attribute-grid-display/attribute-grid-display.component';
+import { AttributeGridOpacityComponent } from './components/attributes-panel/attribute-grid-opacity/attributes-grid-opacity.component';
 import { AttributeJunctionComponent } from './components/attributes-panel/attribute-junction/attributes-junction.component';
+import { AttributeMagnetismAnchorComponent } from './components/attributes-panel/attribute-magnetism-anchor/attribute-magnetism-anchor.component';
+import { AttributeNumberSprayTransmissionComponent } from './components/attributes-panel/attribute-number-spray-transmission/attribute-number-spray-transmission.component';
+import { AttributeSelectionManipulationComponent } from './components/attributes-panel/attribute-selection-manipulation/attribute-selection-manipulation.component';
 import { AttributeSelectionComponent } from './components/attributes-panel/attribute-selection/attribute-selection.component';
+import { AttributeSpacingComponent } from './components/attributes-panel/attribute-spacing/attributes-spacing.component';
+import { AttributeSprayDiameterComponent } from './components/attributes-panel/attribute-spray-diameter/attribute-spray-diameter.component';
+import { AttributeSprayDropletDiameterComponent } from './components/attributes-panel/attribute-spray-droplet-diameter/attribute-spray-droplet-diameter.component';
+import { AttributeStampPickerComponent } from './components/attributes-panel/attribute-stamp-picker/attributes-stamp-picker.component';
+import { AttributeStyleComponent } from './components/attributes-panel/attribute-style/attributes-style.component';
 import { AttributeTextureComponent } from './components/attributes-panel/attribute-texture/attributes-texture.component';
 import { AttributeTracingComponent } from './components/attributes-panel/attribute-tracing/attributes-tracing.component';
 import { AttributeWidthComponent } from './components/attributes-panel/attribute-width/attributes-width.component';
@@ -37,6 +47,10 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
     declarations: [
         AppComponent,
         AttributesPanelComponent,
+        AttributeMagnetismAnchorComponent,
+        AttributeSpacingComponent,
+        AttributeGridDisplayComponent,
+        AttributeGridOpacityComponent,
         AttributeJunctionComponent,
         AttributeTextureComponent,
         AttributeTracingComponent,
@@ -56,6 +70,12 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
         AttributeColorPickerViewerComponent,
         AttributesToleranceComponent,
         AttributeSelectionComponent,
+        AttributeSelectionManipulationComponent,
+        AttributeStampPickerComponent,
+        AttributeSprayDiameterComponent,
+        AttributeSprayDropletDiameterComponent,
+        AttributeNumberSprayTransmissionComponent,
+        AttributeStyleComponent,
     ],
 
     exports: [MatChipsModule],

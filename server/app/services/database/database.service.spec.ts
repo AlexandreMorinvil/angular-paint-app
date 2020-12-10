@@ -28,7 +28,7 @@ describe('Database service', () => {
         databaseService.collection = db.collection('test');
 
         testDrawing = { _id: '1', name: 'nomTest', tags: ['tag1', 'tag2'] };
-        databaseService.collection.insertOne(testDrawing);
+        await databaseService.collection.insertOne(testDrawing);
     });
 
     afterEach(async () => {
@@ -272,15 +272,6 @@ describe('Database service', () => {
         }
     });
 
-    it('validate  draw tag should throw error if the tag has special character', () => {
-        const tag = '!@^ahs';
-        try {
-            (databaseService as any).validateTag(tag);
-        } catch (error) {
-            expect(error).to.not.be.undefined;
-        }
-    });
-
     it('validate  draw name should not throw error if the name is valid', () => {
         const name = 'valid';
         try {
@@ -301,15 +292,6 @@ describe('Database service', () => {
 
     it('validate  draw name should throw error if the tag lenght is bigger than max', () => {
         const name = 'alsoergdhtryejdklstegreddhudalsoergdhtryejdklstegreddhudamskedjrh';
-        try {
-            (databaseService as any).validateName(name);
-        } catch (error) {
-            expect(error).to.not.be.undefined;
-        }
-    });
-
-    it('validate  draw name should throw error  if the name has special character', () => {
-        const name = 'a!!@^name';
         try {
             (databaseService as any).validateName(name);
         } catch (error) {

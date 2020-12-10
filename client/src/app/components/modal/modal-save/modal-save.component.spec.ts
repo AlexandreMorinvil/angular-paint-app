@@ -59,11 +59,12 @@ describe('ModalSaveComponent', () => {
         // tslint:disable:no-magic-numbers
         (component as any).saveService.drawingService.canvas.width = 1000;
         (component as any).saveService.drawingService.canvas.height = 800;
+        (component as any).saveService.imageSource = 'IMAGESOURCE';
 
         pushSpy = spyOn(component.tags, 'push').and.callThrough();
+        (component as any).saveService.imageSource = 'IMAGESOURCE';
         saveDrawSpy = spyOn<any>((component as any).saveService, 'saveDraw').and.callThrough();
         sendMessageToServerSpy = spyOn<any>(component, 'sendMessageToServer').and.callThrough();
-        (component as any).saveService.imageSource = 'IMAGESOURCE';
         basicPostSpy = spyOn<any>((component as any).apiDrawingService, 'save').and.callThrough();
     });
 
@@ -113,12 +114,6 @@ describe('ModalSaveComponent', () => {
         expect(result).toBeFalse();
     });
 
-    it('validate  a tag should return false if the tag has special character', () => {
-        const tag = '!@^ahs';
-        const result = (component as any).validateTag(tag);
-        expect(result).toBeFalse();
-    });
-
     it('validate  a name should return true if the name is valid', () => {
         const name = 'valid';
         const result = (component as any).validateDrawName(name);
@@ -133,12 +128,6 @@ describe('ModalSaveComponent', () => {
 
     it('validate  a tag should return false if the tag lenght is bigger than max', () => {
         const name = 'alsoergdhtryejdklstegreddhudalsoergdhtryejdklstegreddhudamskedjrh';
-        const result = (component as any).validateDrawName(name);
-        expect(result).toBeFalse();
-    });
-
-    it('validate  a name should return false if the name has special character', () => {
-        const name = 'a!!@^name';
         const result = (component as any).validateDrawName(name);
         expect(result).toBeFalse();
     });
@@ -162,7 +151,7 @@ describe('ModalSaveComponent', () => {
     it('validate value should return false if the tags is invalid', () => {
         const name = 'valid';
         const imageSource = 'KEJDHTERTGSU';
-        const tags: string[] = ['@a1!', '!!ml'];
+        const tags: string[] = ['', ''];
         const result = (component as any).validateValue(name, tags, imageSource);
         expect(result).toBeFalse();
     });
@@ -210,13 +199,12 @@ describe('ModalSaveComponent', () => {
     });
 
     it('send message to server should call basic post', () => {
-        (component as any).drawName.value = 'name';
+        (component as any).drawingName.value = 'name';
         (component as any).tags = ['tag1', 'tag2'];
-        component.saveService.saveDraw();
+        component.saveService.saveDraw('png');
         component.sendMessageToServer();
         expect(basicPostSpy).toHaveBeenCalled();
     });
-
     it('should prevent defaut key on Ctrl+S pressed', () => {
         const event = new KeyboardEvent('keydown', { ctrlKey: true, key: 's' });
         const spy = spyOn(event, 'preventDefault');
@@ -232,16 +220,16 @@ describe('ModalSaveComponent', () => {
     });
 
     it('should save message to server when validate value is true', () => {
-        (component as any).drawName.value = 'name';
+        (component as any).drawingName.value = 'name';
         (component as any).tags = ['tag1', 'tag2'];
-        component.saveService.saveDraw();
+        component.saveService.saveDraw('png');
         component.saveToServer();
         expect(saveDrawSpy).toHaveBeenCalled();
         expect(sendMessageToServerSpy).toHaveBeenCalled();
     });
 
     it('should not save message to server when validate value is false', () => {
-        (component as any).drawName.value = '';
+        (component as any).drawingName.value = '';
         (component as any).tags = ['tag1', 'tag2'];
         component.saveToServer();
         expect(saveDrawSpy).not.toHaveBeenCalled();

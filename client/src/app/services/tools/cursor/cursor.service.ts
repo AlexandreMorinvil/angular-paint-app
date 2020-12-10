@@ -7,7 +7,12 @@ import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 const minSurfaceSize = 250;
-
+export enum Anchors {
+    Default = 0,
+    BottomRight = 1,
+    MiddleRight = 2,
+    BottomMiddle = 3,
+}
 @Injectable({
     providedIn: 'root',
 })
@@ -50,24 +55,24 @@ export class CursorService extends Tool {
     }
 
     onMouseMove(event: MouseEvent): void {
-        if (this.clickOnAnchor && this.mouseDown) {
-            this.mouseDownCoord = this.getPositionFromMouse(event);
-            switch (this.anchorHit) {
-                case 1:
-                    this.moveWidth(this.mouseDownCoord.x);
-                    this.moveHeight(this.mouseDownCoord.y);
-                    break;
-                case 2:
-                    this.moveWidth(this.mouseDownCoord.x);
-                    break;
-                // tslint:disable-next-line:no-magic-numbers
-                case 3:
-                    this.moveHeight(this.mouseDownCoord.y);
-                    break;
-                default:
-                    this.anchorHit = 0;
-                    break;
-            }
+        if (!this.clickOnAnchor || !this.mouseDown) {
+            return;
+        }
+        this.mouseDownCoord = this.getPositionFromMouse(event);
+        switch (this.anchorHit) {
+            case Anchors.BottomRight:
+                this.moveWidth(this.mouseDownCoord.x);
+                this.moveHeight(this.mouseDownCoord.y);
+                break;
+            case Anchors.MiddleRight:
+                this.moveWidth(this.mouseDownCoord.x);
+                break;
+            case Anchors.BottomMiddle:
+                this.moveHeight(this.mouseDownCoord.y);
+                break;
+            default:
+                this.anchorHit = Anchors.Default;
+                break;
         }
     }
 
@@ -76,19 +81,11 @@ export class CursorService extends Tool {
     }
 
     private moveWidth(mouseDownCoordX: number): void {
-        if (mouseDownCoordX >= minSurfaceSize) {
-            this.drawingService.previewCtx.canvas.width = mouseDownCoordX;
-        } else {
-            this.drawingService.previewCtx.canvas.width = minSurfaceSize;
-        }
+        this.drawingService.previewCtx.canvas.width = mouseDownCoordX >= minSurfaceSize ? mouseDownCoordX : minSurfaceSize;
     }
 
     private moveHeight(mouseDownCoordY: number): void {
-        if (mouseDownCoordY >= minSurfaceSize) {
-            this.drawingService.previewCtx.canvas.height = mouseDownCoordY;
-        } else {
-            this.drawingService.previewCtx.canvas.height = minSurfaceSize;
-        }
+        this.drawingService.previewCtx.canvas.height = mouseDownCoordY >= minSurfaceSize ? mouseDownCoordY : minSurfaceSize;
     }
 
     private drawnAnchor(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement): void {
@@ -105,33 +102,32 @@ export class CursorService extends Tool {
     private checkHit(mouse: Vec2, canvas: HTMLCanvasElement): void {
         let x: number;
         let y: number;
-        const dotSizeSquare: number = Math.pow(this.dotsize, 2);
+        const DOT_SIZE_SQUARE: number = Math.pow(this.dotsize, 2);
 
         x = Math.pow(mouse.x - canvas.width, 2);
         y = Math.pow(mouse.y - canvas.height, 2);
-        if (x + y <= dotSizeSquare) {
+        if (x + y <= DOT_SIZE_SQUARE) {
             this.clickOnAnchor = true;
-            this.anchorHit = 1;
+            this.anchorHit = Anchors.BottomRight;
         }
 
         x = Math.pow(mouse.x - canvas.width, 2);
         y = Math.pow(mouse.y - canvas.height / 2, 2);
-        if (x + y <= dotSizeSquare) {
+        if (x + y <= DOT_SIZE_SQUARE) {
             this.clickOnAnchor = true;
-            this.anchorHit = 2;
+            this.anchorHit = Anchors.MiddleRight;
         }
 
         x = Math.pow(mouse.x - canvas.width / 2, 2);
         y = Math.pow(mouse.y - canvas.height, 2);
-        if (x + y <= dotSizeSquare) {
+        if (x + y <= DOT_SIZE_SQUARE) {
             this.clickOnAnchor = true;
-            // tslint:disable-next-line:no-magic-numbers
-            this.anchorHit = 3;
+            this.anchorHit = Anchors.BottomMiddle;
         }
 
         if (!this.clickOnAnchor) {
             this.clickOnAnchor = false;
-            this.anchorHit = 0;
+            this.anchorHit = Anchors.Default;
         }
     }
 

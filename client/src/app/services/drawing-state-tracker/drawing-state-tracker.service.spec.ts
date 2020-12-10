@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
-import { PencilService } from '@app/services/tools/pencil/pencil-service';
+import { GridService } from '@app/services/tools/grid/grid.service';
+import { PencilService } from '@app/services/tools/pencil/pencil.service';
 import { DrawingStateTrackerService } from './drawing-state-tracker.service';
 // The disablement of the "any" tslint rule is justified in this situation as the prototype
 // of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
@@ -8,6 +9,7 @@ import { DrawingStateTrackerService } from './drawing-state-tracker.service';
 describe('DrawingStateTrackerService', () => {
     let service: DrawingStateTrackerService;
     let servicePencil: PencilService;
+    let gridService: GridService;
     let onCtrlZDownSpy: jasmine.Spy<any>;
     let onCtrlShiftZDownSpy: jasmine.Spy<any>;
     let undoSpy: jasmine.Spy<any>;
@@ -16,6 +18,7 @@ describe('DrawingStateTrackerService', () => {
     let reconstituteCanvasSpy: jasmine.Spy<any>;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
+    let selectionCtxStub: CanvasRenderingContext2D;
     let canvasStub: HTMLCanvasElement;
 
     beforeEach(() => {
@@ -23,8 +26,13 @@ describe('DrawingStateTrackerService', () => {
         service = TestBed.inject(DrawingStateTrackerService);
         servicePencil = TestBed.inject(PencilService);
 
+        gridService = TestBed.inject(GridService);
+        gridService.gridCanvas = canvasTestHelper.canvas;
+        gridService.gridCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        selectionCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         canvasStub = canvasTestHelper.canvas;
 
         onCtrlZDownSpy = spyOn<any>(service, 'onCtrlZDown').and.callThrough();
@@ -38,9 +46,11 @@ describe('DrawingStateTrackerService', () => {
         const canvasHeight = 800;
         (service as any).drawingService.baseCtx = baseCtxStub;
         (service as any).drawingService.previewCtx = previewCtxStub;
+        (service as any).drawingService.selectionCtx = selectionCtxStub;
         (service as any).drawingService.canvas = canvasStub;
         (service as any).drawingService.canvas.width = canvasWidth;
         (service as any).drawingService.canvas.height = canvasHeight;
+        (gridService as any).gridCtx = previewCtxStub;
     });
 
     it('should be created', () => {

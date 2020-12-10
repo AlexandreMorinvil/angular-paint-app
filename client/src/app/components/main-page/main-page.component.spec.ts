@@ -12,6 +12,7 @@ describe('MainPageComponent', () => {
     let fixture: ComponentFixture<MainPageComponent>;
     let modalHandlerService: ModalHandlerService;
     let openGuideSpy: jasmine.Spy<any>;
+    let openContinueDrawingSpy: jasmine.Spy<any>;
     let modalHandlerServiceSpy: jasmine.Spy<any>;
     const dialogSpy: jasmine.SpyObj<MatDialog> = jasmine.createSpyObj('MatDialog', ['open']);
     const dialogRefSpy: jasmine.SpyObj<MatDialogRef<MainPageComponent, any>> = jasmine.createSpyObj('MatDialogRef', ['afterClosed']);
@@ -37,6 +38,7 @@ describe('MainPageComponent', () => {
         modalHandlerService = TestBed.inject(ModalHandlerService);
         component = fixture.componentInstance;
         openGuideSpy = spyOn<any>((component as any).modalHandler, 'openUserGuide');
+        openContinueDrawingSpy = spyOn<any>(component, 'openContinueDrawing').and.callThrough();
         fixture.detectChanges();
     });
 
@@ -53,5 +55,10 @@ describe('MainPageComponent', () => {
     it('should call openUserGuide', () => {
         component.openUserGuide();
         expect(openGuideSpy).toHaveBeenCalled();
+    });
+
+    it('should call openContinueDrawing', () => {
+        component.openContinueDrawing();
+        expect(openContinueDrawingSpy).toHaveBeenCalled();
     });
 });

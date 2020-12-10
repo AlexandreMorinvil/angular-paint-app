@@ -26,11 +26,10 @@ export class ModalSaveComponent {
     private readonly ERROR_NO_TAG_NAME: string = 'Les étiquettes assignées ne peuvent pas être vides';
     private readonly ERROR_MAX_LENGTH_NAME_TAG: string = 'Les étiquettes des dessions doivent contenir un maximum de 25 caractères';
     private readonly ERROR_MAX_LENGTH_NAME_DRAWING: string = 'Les noms des dessions doivent contenir un maximum de 50 caractères';
-    private readonly SUCCESSFUL_CREATION: string = 'Le dessin a été créé avec succès';
     readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
     tags: string[] = [];
-    drawName: FormControl = new FormControl('', Validators.required);
+    drawingName: FormControl = new FormControl('', Validators.required);
     constructor(
         public dialogRef: MatDialogRef<ModalSaveComponent>,
         @Inject(MAT_DIALOG_DATA) public data: DialogData,
@@ -48,29 +47,28 @@ export class ModalSaveComponent {
     }
 
     add(event: MatChipInputEvent): void {
-        const input: HTMLInputElement = event.input;
-        const value: string = event.value;
+        const INPUT: HTMLInputElement = event.input;
+        const VALUE: string = event.value;
 
         // Add the tag
-        if ((value || '').trim() && this.validateTag(value)) {
-            this.tags.push(value.trim());
+        if ((VALUE || '').trim() && this.validateTag(VALUE)) {
+            this.tags.push(VALUE.trim());
         }
 
         // Reset the input value
-        input.value = '';
+        INPUT.value = '';
     }
 
     remove(tag: string): void {
-        const index = this.tags.indexOf(tag);
-
-        if (index >= 0 && this.tags.length > 0 && index < this.tags.length) {
-            this.tags.splice(index, 1);
+        const INDEX = this.tags.indexOf(tag);
+        if (INDEX >= 0 && this.tags.length > 0 && INDEX < this.tags.length) {
+            this.tags.splice(INDEX, 1);
         }
     }
 
     saveToServer(): void {
-        if (this.validateValue(this.drawName.value, this.tags, this.saveService.imageSource)) {
-            this.saveService.saveDraw();
+        if (this.validateValue(this.drawingName.value, this.tags, this.saveService.imageSource)) {
+            this.saveService.saveDraw('png');
             this.sendMessageToServer();
             (document.getElementById('buttonSaveServer') as HTMLInputElement).disabled = true;
         }
@@ -133,9 +131,7 @@ export class ModalSaveComponent {
     }
 
     sendMessageToServer(): void {
-        const newDrawingToSend: Drawing = new Drawing('', this.drawName.value, this.tags, this.saveService.imageSource);
-        this.apiDrawingService.save(newDrawingToSend).subscribe(() => {
-            alert(this.SUCCESSFUL_CREATION);
-        });
+        const newDrawingToSend: Drawing = new Drawing(null, this.drawingName.value, this.tags, this.saveService.imageSource);
+        this.apiDrawingService.save(newDrawingToSend).subscribe();
     }
 }

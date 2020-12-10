@@ -4,6 +4,13 @@
     grid-template-columns: 3fr 1fr;
     justify-content: center;
 }
+.grid-input-value-2 {
+    display: grid;
+    grid-row-gap: 10px;
+    grid-template-columns: 2fr 2fr;
+    justify-content: center;
+    margin-top: 10px;
+}
 
 .grid-confirmation {
     display: grid;
@@ -40,6 +47,17 @@ input[type='checkbox'] {
     margin: 0;
 }
 
+.vertical {
+    display: flex;
+    flex-direction: column;
+}
+
+.title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+}
 .confirmation-button,
 .action-button {
     color: white;

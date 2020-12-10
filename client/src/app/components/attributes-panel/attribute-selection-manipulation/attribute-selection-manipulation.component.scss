@@ -1,0 +1,25 @@
+.grid-selection-manipulation {
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+        'copy   paste'
+        'cut    delete';
+    justify-content: center;
+}
+
+.area-copy {
+    grid-area: copy;
+}
+
+.area-paste {
+    grid-area: paste;
+}
+
+.area-cut {
+    grid-area: cut;
+}
+
+.area-delete {
+    grid-area: delete;
+}

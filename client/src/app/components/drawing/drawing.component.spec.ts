@@ -5,26 +5,33 @@ import { Description } from '@app/classes/description';
 import { Tool } from '@app/classes/tool';
 import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MagnetismService } from '@app/services/magnetism/magnetism.service';
 import { ModalHandlerService } from '@app/services/modal-handler/modal-handler';
+import { GridOpacityService } from '@app/services/tool-modifier/grid-opacity/grid-opacity.service';
+import { SpacingService } from '@app/services/tool-modifier/spacing/spacing.service';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
-import { BrushService } from '@app/services/tools/brush/brush-service';
+import { BrushService } from '@app/services/tools/brush/brush.service';
 import { CursorService } from '@app/services/tools/cursor/cursor.service';
-import { EllipseService } from '@app/services/tools/ellipse/ellipse-service';
-import { EraserService } from '@app/services/tools/eraser/eraser-service';
-import { LineService } from '@app/services/tools/line/line-service';
-import { PencilService } from '@app/services/tools/pencil/pencil-service';
-import { RectangleService } from '@app/services/tools/rectangle/rectangle-service';
+import { EllipseService } from '@app/services/tools/ellipse/ellipse.service';
+import { EraserService } from '@app/services/tools/eraser/eraser.service';
+import { GridService } from '@app/services/tools/grid/grid.service';
+import { LineService } from '@app/services/tools/line/line.service';
+import { PencilService } from '@app/services/tools/pencil/pencil.service';
+import { RectangleService } from '@app/services/tools/rectangle/rectangle.service';
 import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzone-size.service';
 import { DrawingComponent } from './drawing.component';
 class ToolStub extends Tool {}
 // tslint:disable:no-any
+// tslint:disable:max-file-line-count
 describe('DrawingComponent', () => {
     let component: DrawingComponent;
     let fixture: ComponentFixture<DrawingComponent>;
     let toolStub: ToolStub;
+    let gridStub: GridService;
     let drawingStub: DrawingService;
     let toolboxService: ToolboxService;
     let modalHandlerService: ModalHandlerService;
+    let magnetismService: MagnetismService;
     let tracker: DrawingStateTrackerService;
     let cursor: CursorService;
     let pencil: PencilService;
@@ -38,7 +45,9 @@ describe('DrawingComponent', () => {
     let onShiftDownSpy: jasmine.Spy<any>;
     let onShiftUpSpy: jasmine.Spy<any>;
     let onEscapeDownSpy: jasmine.Spy<any>;
+    let onAltDownSpy: jasmine.Spy<any>;
     let onBackspaceDownSpy: jasmine.Spy<any>;
+    let onAltUpSpy: jasmine.Spy<any>;
     let onResizeSpy: jasmine.Spy<any>;
     let onArrowDownSpy: jasmine.Spy<any>;
     let onCtrlADownSpy: jasmine.Spy<any>;
@@ -52,13 +61,15 @@ describe('DrawingComponent', () => {
     beforeEach(
         waitForAsync(() => {
             toolStub = new ToolStub({} as DrawingService, {} as Description);
-            drawingStub = new DrawingService({} as WorkzoneSizeService);
+            drawingStub = new DrawingService({} as WorkzoneSizeService, {} as GridService);
+            gridStub = new GridService({} as SpacingService, {} as GridOpacityService);
 
             TestBed.configureTestingModule({
                 declarations: [DrawingComponent],
                 imports: [MatDialogModule],
                 providers: [
                     { provide: DrawingService, useValue: drawingStub },
+                    { provide: GridService, useValue: gridStub },
                     PencilService,
                     BrushService,
                     RectangleService,
@@ -85,6 +96,7 @@ describe('DrawingComponent', () => {
         ellipse = TestBed.inject(EllipseService);
         cursor = TestBed.inject(CursorService);
         eraser = TestBed.inject(EraserService);
+        magnetismService = TestBed.inject(MagnetismService);
         line = TestBed.inject(LineService);
         toolboxService = TestBed.inject(ToolboxService);
         modalHandlerService = TestBed.inject(ModalHandlerService);
@@ -106,13 +118,21 @@ describe('DrawingComponent', () => {
         expect(currentTool).toEqual(toolStub);
     });
 
-    it('should call the tools mouse move when receiving a mouse move event', () => {
+    it('should call the tool mouse move when receiving a mouse move event', () => {
         toolboxService.setSelectedTool(toolStub);
         const event = {} as MouseEvent;
         const mouseEventSpy = spyOn(toolStub, 'onMouseMove');
         component.onMouseMove(event);
         expect(mouseEventSpy).toHaveBeenCalled();
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
+    });
+
+    it('should call the tool mouse wheel when receiving a mouse wheel event', () => {
+        toolboxService.setSelectedTool(toolStub);
+        const event = {} as WheelEvent;
+        const mouseEventSpy = spyOn(toolStub, 'onMouseWheel');
+        component.onMouseWheel(event);
+        expect(mouseEventSpy).toHaveBeenCalled();
     });
 
     it('should call the tools mouse down when receiving a mouse down event', () => {
@@ -167,6 +187,14 @@ describe('DrawingComponent', () => {
         expect(onShiftDownSpy).toHaveBeenCalled();
     });
 
+    it('should call onAltDown', () => {
+        toolboxService.setSelectedTool(toolStub);
+        onAltDownSpy = spyOn<any>(toolStub, 'onAltDown');
+        const event = new KeyboardEvent('keydown', { key: 'Alt' });
+        component.onShiftDown(event);
+        expect(onAltDownSpy).toHaveBeenCalled();
+    });
+
     it('should call onEscapeDown', () => {
         toolboxService.setSelectedTool(toolStub);
         onEscapeDownSpy = spyOn<any>(toolStub, 'onEscapeDown');
@@ -185,7 +213,7 @@ describe('DrawingComponent', () => {
         expect(onShiftDownSpy).not.toHaveBeenCalled();
     });
 
-    it('should not call onArrowDown', () => {
+    it('should call onArrowDown', () => {
         toolboxService.setSelectedTool(toolStub);
         onArrowDownSpy = spyOn<any>(toolStub, 'onArrowDown');
         const event = new KeyboardEvent('keydown', { key: 'ArrowLeft' });
@@ -233,6 +261,24 @@ describe('DrawingComponent', () => {
         expect(onCtrlZDownSpy).toHaveBeenCalled();
     });
 
+    it('should return nothing on b key and ctrlkey press and short cut enable on shift down', () => {
+        toolboxService.setSelectedTool(toolStub);
+        onCtrlZDownSpy = spyOn<any>(tracker, 'onCtrlZDown');
+        (component as any).drawingService.shortcutEnable = false;
+        const event = new KeyboardEvent('keydown', { key: 'b', ctrlKey: true });
+        const result = component.onShiftDown(event);
+        expect(result).toBe(undefined);
+    });
+
+    it('should return nothing on b key and ctrlkey press and short cut enable on shift down', () => {
+        toolboxService.setSelectedTool(toolStub);
+        onCtrlZDownSpy = spyOn<any>(tracker, 'onCtrlZDown');
+        (component as any).drawingService.shortcutEnable = false;
+        const event = new KeyboardEvent('keydown', { key: 'b', ctrlKey: false });
+        const result = component.onShiftDown(event);
+        expect(result).toBe(undefined);
+    });
+
     it('should not call onCtrlShiftZDown', () => {
         toolboxService.setSelectedTool(toolStub);
         onCtrlShiftZDownSpy = spyOn<any>(tracker, 'onCtrlShiftZDown');
@@ -241,12 +287,64 @@ describe('DrawingComponent', () => {
         expect(onCtrlShiftZDownSpy).toHaveBeenCalled();
     });
 
+    it('should return nothing ig ctrl key and shift key and key a onCtrlShiftZDown', () => {
+        toolboxService.setSelectedTool(toolStub);
+        onCtrlShiftZDownSpy = spyOn<any>(tracker, 'onCtrlShiftZDown');
+        const event = new KeyboardEvent('keydown', { key: 'a', ctrlKey: true, shiftKey: true });
+        const result = component.onShiftDown(event);
+        expect(result).toBe(undefined);
+    });
+
     it('should call the tool onBackspaceDown', () => {
         toolboxService.setSelectedTool(toolStub);
         onBackspaceDownSpy = spyOn<any>(toolStub, 'onBackspaceDown');
         const event = new KeyboardEvent('keydown', { key: 'Backspace' });
         component.keyEventUp(event);
         expect(onBackspaceDownSpy).toHaveBeenCalled();
+    });
+
+    it('should return undefined on shift key and shutcut disable on keyEventUp event', () => {
+        toolboxService.setSelectedTool(toolStub);
+        onShiftDownSpy = spyOn<any>(toolStub, 'onShiftDown');
+        const eventShift = new KeyboardEvent('keyup', { key: 'Shift' });
+        (component as any).drawingService.shortcutEnable = false;
+        const result = component.keyEventUp(eventShift);
+        expect(result).toBe(undefined);
+    });
+
+    it('should return undefined on backspace and shutcut disable onShiftDown event', () => {
+        toolboxService.setSelectedTool(toolStub);
+        onShiftDownSpy = spyOn<any>(toolStub, 'onShiftDown');
+        const eventBackspace = new KeyboardEvent('keyup', { key: 'Backspace' });
+        (component as any).drawingService.shortcutEnable = false;
+        const result = component.keyEventUp(eventBackspace);
+        expect(result).toBe(undefined);
+    });
+
+    it('should return undefined if key in undefined on shiftDoen event', () => {
+        toolboxService.setSelectedTool(toolStub);
+        onShiftDownSpy = spyOn<any>(toolStub, 'onShiftDown');
+        const eventShift = new KeyboardEvent('keyup');
+        (component as any).drawingService.shortcutEnable = false;
+        const result = component.onShiftDown(eventShift);
+        expect(result).toBe(undefined);
+    });
+
+    it('should return undefined on tab and shutcut disable onShiftDown event', () => {
+        toolboxService.setSelectedTool(toolStub);
+        onShiftDownSpy = spyOn<any>(toolStub, 'onShiftDown');
+        const eventBackspace = new KeyboardEvent('keyup', { key: 'Tab' });
+        (component as any).drawingService.shortcutEnable = false;
+        const result = component.keyEventUp(eventBackspace);
+        expect(result).toBe(undefined);
+    });
+
+    it('should call the tool onAltUp', () => {
+        toolboxService.setSelectedTool(toolStub);
+        onAltUpSpy = spyOn<any>(toolStub, 'onAltUp');
+        const event = new KeyboardEvent('keyup', { key: 'Alt' });
+        component.keyEventUp(event);
+        expect(onAltUpSpy).toHaveBeenCalled();
     });
 
     it('should call the tool onArrowUp', () => {
@@ -261,6 +359,34 @@ describe('DrawingComponent', () => {
         const event = new KeyboardEvent('keyup', { key: 'C' });
         component.keyEventUp(event);
         expect(toolboxService.getCurrentTool()).toBe(pencil);
+    });
+
+    it('should toogle the grid when pressing the key G', () => {
+        const toggleGridSpy: jasmine.Spy<any> = spyOn<any>(gridStub, 'toogleGrid');
+        const event = new KeyboardEvent('keydown', { key: 'G' });
+        component.onShiftDown(event);
+        expect(toggleGridSpy).toHaveBeenCalled();
+    });
+
+    it('should call the increment the spacing of the grid when pressing the key +', () => {
+        const incrementSpacingSpy: jasmine.Spy<any> = spyOn<any>(gridStub, 'incrementSpacing');
+        const event = new KeyboardEvent('keydown', { key: '+' });
+        component.onShiftDown(event);
+        expect(incrementSpacingSpy).toHaveBeenCalled();
+    });
+
+    it('should call toogle magnetism when pressing the key m', () => {
+        const toogleMagnetismSpy: jasmine.Spy<any> = spyOn<any>(magnetismService, 'toogleMagnetism');
+        const event = new KeyboardEvent('keydown', { key: 'm' });
+        component.onShiftDown(event);
+        expect(toogleMagnetismSpy).toHaveBeenCalled();
+    });
+
+    it('should call the decrementSpacing the spacing of the grid when pressing the key +', () => {
+        const decrementSpacingSpy: jasmine.Spy<any> = spyOn<any>(gridStub, 'decrementSpacing');
+        const event = new KeyboardEvent('keydown', { key: '-' });
+        component.onShiftDown(event);
+        expect(decrementSpacingSpy).toHaveBeenCalled();
     });
 
     it('should call the tool cursor when pressing the key Y', () => {
@@ -285,6 +411,13 @@ describe('DrawingComponent', () => {
         const event = new KeyboardEvent('keyup', { key: 'W' });
         component.keyEventUp(event);
         expect(toolboxService.getCurrentTool()).toBe(brush);
+    });
+
+    it('should return null if event keyCode is false', () => {
+        const event = new KeyboardEvent('keyup');
+        (component as any).drawingService.shortcutEnable = false;
+        const result = component.keyEventUp(event);
+        expect(result).toBe(undefined);
     });
 
     it('should call the tool rectangle when pressing the key 1', () => {

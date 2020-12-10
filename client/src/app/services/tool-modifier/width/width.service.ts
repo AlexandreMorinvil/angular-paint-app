@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
+import { Bound } from '@app/classes/bound';
 import { ToolModifier } from '@app/classes/tool-modifier';
+import { ModifierHandlerService } from '@app/services/tool-modifier/modifier-handler/modifier-handler.service';
 import { WidthModifierState } from './width-state';
 
 @Injectable({
@@ -10,13 +12,14 @@ export class WidthService extends ToolModifier {
     readonly MIN_ATTRIBUTE_WIDTH: number = 1;
     private width: number = this.MIN_ATTRIBUTE_WIDTH;
 
-    constructor() {
+    constructor(private modifierHandlerService: ModifierHandlerService) {
         super();
     }
 
     setWidth(input: number): void {
-        if (input >= this.MAX_ATTRIBUTE_WIDTH) this.width = this.MAX_ATTRIBUTE_WIDTH;
-        else if (input <= this.MIN_ATTRIBUTE_WIDTH) this.width = this.MIN_ATTRIBUTE_WIDTH;
+        const LIMIT: number = this.modifierHandlerService.clamp(input, this.MAX_ATTRIBUTE_WIDTH, this.MIN_ATTRIBUTE_WIDTH);
+        if (LIMIT === Bound.upper) this.width = this.MAX_ATTRIBUTE_WIDTH;
+        else if (LIMIT === Bound.lower) this.width = this.MIN_ATTRIBUTE_WIDTH;
         else this.width = input;
     }
 
