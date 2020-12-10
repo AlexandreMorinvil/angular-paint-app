@@ -57,7 +57,9 @@ describe('MainPageComponent', () => {
 
     it('should call openContinueDrawing', () => {
         const openContinueDrawingSpy = spyOn<any>(component, 'openContinueDrawing');
+        const spySave = spyOn<any>((component as any).autoSaveService, 'getAutoSavedDrawingURL');
         component.openDrawingCarousel();
         expect(openContinueDrawingSpy).toHaveBeenCalled();
+        expect(spySave).toHaveBeenCalled();
     });
 });

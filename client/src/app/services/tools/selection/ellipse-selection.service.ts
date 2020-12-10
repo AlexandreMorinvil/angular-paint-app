@@ -278,28 +278,30 @@ export class EllipseSelectionService extends SelectionToolService {
 
     onShiftDown(event: KeyboardEvent): void {
         if (!event.ctrlKey) {
-            this.shiftDown = true;
-            if (this.clickOnAnchor) {
-                this.ratio = this.getRatio(this.selectionSize.x, this.selectionSize.y);
-            } else {
-                this.ellipseService.shiftDown = true;
-                if (this.localMouseDown) {
-                    const MOUSE_EVENT = this.createOnMouseMoveEvent();
-                    this.onMouseMove(MOUSE_EVENT);
-                }
+            return;
+        }
+        this.shiftDown = true;
+        if (this.clickOnAnchor) {
+            this.ratio = this.getRatio(this.selectionSize.x, this.selectionSize.y);
+        } else {
+            this.ellipseService.shiftDown = true;
+            if (this.localMouseDown) {
+                const MOUSE_EVENT = this.createOnMouseMoveEvent();
+                this.onMouseMove(MOUSE_EVENT);
             }
         }
     }
 
     onShiftUp(event: KeyboardEvent): void {
-        if (!event.ctrlKey) {
-            this.shiftDown = false;
-            if (!this.clickOnAnchor) {
-                this.ellipseService.shiftDown = false;
-                if (this.localMouseDown) {
-                    const MOUSE_EVENT = this.createOnMouseMoveEvent();
-                    this.onMouseMove(MOUSE_EVENT);
-                }
+        if (event.ctrlKey) {
+            return;
+        }
+        this.shiftDown = false;
+        if (!this.clickOnAnchor) {
+            this.ellipseService.shiftDown = false;
+            if (this.localMouseDown) {
+                const MOUSE_EVENT = this.createOnMouseMoveEvent();
+                this.onMouseMove(MOUSE_EVENT);
             }
         }
     }
@@ -320,28 +322,29 @@ export class EllipseSelectionService extends SelectionToolService {
     }
 
     onArrowUp(event: KeyboardEvent): void {
-        if (this.selectionCreated) {
-            this.checkArrowUnhit(event);
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            if (this.arrowPress.every((v) => !v)) {
-                this.arrowDown = false;
-                const MEM_COORDS = this.startDownCoord;
-                this.clearPath();
-                this.pathLastCoord = this.getBottomRightCorner();
-                this.pathData.push(this.pathLastCoord);
-                this.rotateCanvas();
-                this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
-                // draw selection box
-                this.ellipseService.mouseDownCoord = this.startDownCoord;
-                this.pathData.push(this.getBottomRightCorner());
-                this.drawSelectionSurround();
-                this.resetCanvasRotation();
-                this.startDownCoord = MEM_COORDS; // needed because rotateCanvas changes the value
-                this.hasDoneFirstTranslation = true;
-            }
-            if (this.arrowDown) {
-                this.onArrowDown({} as KeyboardEvent);
-            }
+        if (!this.selectionCreated) {
+            return;
+        }
+        this.checkArrowUnhit(event);
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        if (this.arrowPress.every((v) => !v)) {
+            this.arrowDown = false;
+            const MEM_COORDS = this.startDownCoord;
+            this.clearPath();
+            this.pathLastCoord = this.getBottomRightCorner();
+            this.pathData.push(this.pathLastCoord);
+            this.rotateCanvas();
+            this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
+            // draw selection box
+            this.ellipseService.mouseDownCoord = this.startDownCoord;
+            this.pathData.push(this.getBottomRightCorner());
+            this.drawSelectionSurround();
+            this.resetCanvasRotation();
+            this.startDownCoord = MEM_COORDS; // needed because rotateCanvas changes the value
+            this.hasDoneFirstTranslation = true;
+        }
+        if (this.arrowDown) {
+            this.onArrowDown({} as KeyboardEvent);
         }
     }
 

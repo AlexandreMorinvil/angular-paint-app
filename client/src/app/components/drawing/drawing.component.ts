@@ -87,7 +87,6 @@ export class DrawingComponent implements AfterViewInit {
 
     @HostListener('mousewheel', ['$event'])
     onMouseWheel(event: WheelEvent): void {
-        event.preventDefault(); // to prevent key of windows
         this.toolbox.getCurrentTool().onMouseWheel(event);
     }
 
@@ -167,8 +166,8 @@ export class DrawingComponent implements AfterViewInit {
     // tslint:disable:cyclomatic-complexity
     @HostListener('window:keydown', ['$event'])
     onShiftDown(event: KeyboardEvent): void {
+        event.preventDefault(); // to prevent key of windows
         if (this.toolbox.getCurrentTool() instanceof TextService) {
-            event.preventDefault();
             this.toolbox.getCurrentTool().onKeyDown(event);
         }
         const KEY_CODE: string = event.key;
@@ -190,11 +189,12 @@ export class DrawingComponent implements AfterViewInit {
                 this.hasBeenDrawnOnto = true;
                 break;
             case 'Alt':
-                event.preventDefault(); // to prevent key of windows
                 this.toolbox.getCurrentTool().onAltDown(event);
                 break;
-            case 'ArrowLeft' || 'ArrowRight' || 'ArrowUp' || 'ArrowDown':
-                event.preventDefault(); // to prevent key of windows
+            case 'ArrowLeft':
+            case 'ArrowRight':
+            case 'ArrowUp':
+            case 'ArrowDown':
                 this.toolbox.getCurrentTool().onArrowDown(event);
                 break;
         }
@@ -202,29 +202,23 @@ export class DrawingComponent implements AfterViewInit {
         if (IS_CTRL_KEY) {
             if (IS_SHIFT_KEY) {
                 if (KEY_CODE_LOWER_CASE === 'z') {
-                    event.preventDefault(); // to prevent key of windows
                     this.drawingStateTrackerService.onCtrlShiftZDown();
                 }
             } else {
                 if (KEY_CODE_LOWER_CASE === 'z') {
-                    event.preventDefault(); // to prevent key of windows
                     this.drawingStateTrackerService.onCtrlZDown();
                 } else if (KEY_CODE_LOWER_CASE === 'a') {
-                    event.preventDefault(); // to prevent key of windows
                     this.toolbox.getCurrentTool().onCtrlADown();
                 }
                 if (SHORT_CUT_ENABLE) {
                     switch (KEY_CODE_LOWER_CASE) {
                         case 's':
-                            event.preventDefault(); // to prevent key of windows
                             this.modalHandlerService.openSaveDialog();
                             break;
                         case 'g':
-                            event.preventDefault(); // to prevent key of windows
                             this.modalHandlerService.openDrawingCarouselDialog();
                             break;
                         case 'e':
-                            event.preventDefault(); // to prevent key of windows
                             this.modalHandlerService.openExportDialog();
                             break;
                     }

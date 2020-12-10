@@ -121,7 +121,6 @@ export class ModalSaveComponent {
     }
 
     sendMessageToServer(): void {
-        // jai mis sa a null je sais pas si sa marche encore cetait a ""
         const newDrawingToSend: Drawing = new Drawing(null, this.drawingName.value, this.tags, this.saveService.imageSource);
         this.apiDrawingService.save(newDrawingToSend).subscribe();
     }
