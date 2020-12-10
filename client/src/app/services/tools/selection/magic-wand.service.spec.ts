@@ -340,14 +340,6 @@ describe('MagicWandService', () => {
         expect(checkHitSpy).toHaveBeenCalled();
         expect(clearCanvasSelectionSpy).toHaveBeenCalled();
     });
-    /*
-  it('should draw selection on canvas if a new selection is created', () => {
-    service.onMouseDown(mouseEventInRegionLeftClick);
-    service.onMouseUp(mouseEventInRegionLeftClick);
-    service.onMouseDown(mouseEvent120);
-    expect(drawOnBaseCanvasSpy).toHaveBeenCalled();
-});
-*/
 
     it('should resize correctly', () => {
         checkHitSpy = spyOn<any>(service, 'checkHit').and.returnValue(true);

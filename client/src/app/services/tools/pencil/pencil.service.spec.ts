@@ -39,6 +39,7 @@ describe('PencilService', () => {
         (service as any).drawingService.canvas = canvasStub;
         (service as any).drawingService.canvas.width = canvasWidth;
         (service as any).drawingService.canvas.height = canvasHeight;
+        (service as any).mouseDown = false;
 
         mouseEvent = {
             offsetX: 25,
@@ -158,7 +159,7 @@ describe('PencilService', () => {
     });
 
     it(' should change the pixel of the canvas ', () => {
-      drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
+        drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
         mouseEvent = { offsetX: 0, offsetY: 0, button: 0 } as MouseEvent;
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 1, offsetY: 0, button: 0 } as MouseEvent;
