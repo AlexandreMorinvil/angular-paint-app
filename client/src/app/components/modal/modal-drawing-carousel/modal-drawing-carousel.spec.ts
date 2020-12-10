@@ -40,6 +40,7 @@ describe('DrawingCarouselComponent', () => {
                 filterByTag: testData,
                 addTag: {},
                 removeTag: {},
+                clearTags: {},
             });
             loadServiceSpy = jasmine.createSpyObj('LoadService', {
                 loadDraw: {},
@@ -182,4 +183,5 @@ describe('DrawingCarouselComponent', () => {
         component.onKeyDown(event);
         expect(drawings[1]).toBe(component.getCurrentDrawings()[1]);
     });
+
 });
