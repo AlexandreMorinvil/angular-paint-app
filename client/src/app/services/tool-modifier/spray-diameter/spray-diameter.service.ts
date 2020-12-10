@@ -18,10 +18,18 @@ export class SprayDiameterService extends ToolModifier {
     }
 
     setSprayDiameter(input: number): void {
-        const LIMIT: number = this.modifierHandlerService.clamp(input, this.MAX_SPRAY_DIAMETER, this.MAX_SPRAY_DIAMETER);
-        if (LIMIT === Bound.upper) this.sprayDiameter = this.MAX_SPRAY_DIAMETER;
-        else if (LIMIT === Bound.lower) this.sprayDiameter = this.MIN_SPRAY_DIAMETER;
-        else this.sprayDiameter = input;
+        const LIMIT: number = this.modifierHandlerService.clamp(input, this.MAX_SPRAY_DIAMETER, this.MIN_SPRAY_DIAMETER);
+        switch (LIMIT) {
+            case Bound.upper:
+                this.sprayDiameter = this.MAX_SPRAY_DIAMETER;
+                break;
+            case Bound.lower:
+                this.sprayDiameter = this.MIN_SPRAY_DIAMETER;
+                break;
+            case Bound.inside:
+                this.sprayDiameter = input;
+                break;
+        }
     }
 
     getSprayDiameter(): number {
