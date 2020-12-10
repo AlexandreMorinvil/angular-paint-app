@@ -365,21 +365,6 @@ describe('EllipseSelectionService', () => {
         expect((service as any).mouseDown).toBeFalse();
         expect(clearPathSpy).toHaveBeenCalled();
     });
-
-    it('should on set attribute shiftDown to true on shiftDown', () => {
-        const keyboardEvent = {} as KeyboardEvent;
-        (service as any).clickOnAnchor = true;
-
-        service.onShiftDown(keyboardEvent);
-        expect((service as any).shiftDown).toBeTrue();
-    });
-    it('should on shiftDown with clickOnAnchor set to true and localMouseDown is also set to true', () => {
-        const keyboardEvent = {} as KeyboardEvent;
-        (service as any).clickOnAnchor = false;
-        (service as any).localMouseDown = true;
-        service.onShiftDown(keyboardEvent);
-        expect(createOnMouseMoveEventSpy).toHaveBeenCalled();
-    });
     it('should on shiftDown with clickOnAnchor set to true and localMouseDown is also set to false', () => {
         const keyboardEvent = {} as KeyboardEvent;
         (service as any).clickOnAnchor = false;
