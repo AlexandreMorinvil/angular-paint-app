@@ -1,10 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { DrawingToDatabase } from '@common/communication/drawing-to-database';
+import { DrawingToEmail } from '@common/communication/drawing-to-email';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 export const BASE_URL = 'http://localhost:3000/api/drawing/';
+export const EMAIL_BASE_URL = 'http://localhost:3000/api/email/';
 export const FILE_SERVER_BASE_URL = 'http://localhost:3000/files/';
 
 @Injectable({
@@ -31,6 +33,10 @@ export class ApiDrawingService {
 
     save(drawingtodatabase: DrawingToDatabase): Observable<void> {
         return this.http.post<void>(BASE_URL, drawingtodatabase).pipe(catchError(this.handleError<void>('save')));
+    }
+
+    sendEmail(drawingtoemail: DrawingToEmail): Observable<void> {
+        return this.http.post<void>(EMAIL_BASE_URL, drawingtoemail).pipe(catchError(this.handleError<void>('email')));
     }
 
     delete(id: string): Observable<string> {

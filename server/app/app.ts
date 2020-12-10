@@ -4,7 +4,8 @@ import * as cors from 'cors';
 import * as express from 'express';
 import { inject, injectable } from 'inversify';
 import * as logger from 'morgan';
-import { DatabaseController } from './controllers/database.controller';
+import { DatabaseController } from './controllers/database/database.controller';
+import { EmailController } from './controllers/database/email/email.controller';
 import { TYPES } from './types';
 
 @injectable()
@@ -13,7 +14,7 @@ export class Application {
     app: express.Application;
 
     constructor(
-        // @inject(TYPES.IndexController) private indexController: IndexController,
+        @inject(TYPES.EmailController) private emailController: EmailController,
         @inject(TYPES.DatabaseController) private databaseController: DatabaseController,
     ) {
         this.app = express();
@@ -36,6 +37,7 @@ export class Application {
         // Notre application utilise le routeur de notre API `Index`
         this.app.use('/files', express.static(__dirname + '/../drawings/images/'));
         this.app.use('/api/drawing', this.databaseController.router);
+        this.app.use('/api/email', this.emailController.router);
         this.errorHandling();
     }
 
