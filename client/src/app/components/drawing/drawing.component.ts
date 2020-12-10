@@ -47,6 +47,7 @@ export class DrawingComponent implements AfterViewInit {
         private magnetismService: MagnetismService,
         private clipboardService: ClipBoardService,
         private rectangleSelectionService: RectangleSelectionService,
+        private drawingStateTrackingService: DrawingStateTrackerService,
     ) {}
     // tslint:disable:no-magic-numbers
     ngAfterViewInit(): void {
@@ -76,6 +77,7 @@ export class DrawingComponent implements AfterViewInit {
     }
 
     resetDrawing(): void {
+        this.drawingStateTrackingService.reset();
         this.drawingService.resetDrawingWithWarning();
     }
 
@@ -148,7 +150,7 @@ export class DrawingComponent implements AfterViewInit {
                     this.toolbox.getCurrentTool().onShiftUp(event);
                 }
                 break;
-            case 'Backspace': // || event.keyCode === this.BACKSPACE_KEYCODE:
+            case 'Backspace':
                 if (SHORT_CUT_ENABLE) {
                     this.toolbox.getCurrentTool().onBackspaceDown(event);
                 }
@@ -283,12 +285,10 @@ export class DrawingComponent implements AfterViewInit {
     }
 
     get width(): number {
-        // return this.canvasSize.x;
         return this.workzoneSizeService.drawingZoneWidth;
     }
 
     get height(): number {
-        // return this.canvasSize.y;
         return this.workzoneSizeService.drawingZoneHeight;
     }
 }

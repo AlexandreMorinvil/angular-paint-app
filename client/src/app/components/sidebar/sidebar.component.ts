@@ -32,6 +32,7 @@ export class SidebarComponent {
         private modalHandler: ModalHandlerService,
         private drawingStateTracker: DrawingStateTrackerService,
         public magnetismService: MagnetismService,
+        private drawingStateTrackingService: DrawingStateTrackerService,
     ) {}
 
     toogleMagnetism(): void {
@@ -68,6 +69,7 @@ export class SidebarComponent {
     }
 
     resetDrawing(): void {
+        this.drawingStateTrackingService.reset();
         this.drawingService.resetDrawingWithWarning();
     }
 
