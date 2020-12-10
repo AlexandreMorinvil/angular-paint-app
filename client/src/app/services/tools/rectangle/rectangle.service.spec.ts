@@ -218,15 +218,6 @@ describe('RectangleService', () => {
         expect(drawRectangleSpy).toHaveBeenCalled();
     });
 
-    it('should drawing a rectangle if height is positif and width negatif', () => {
-        mouseEvent = { offsetX: 50, offsetY: 60, button: 0 } as MouseEvent;
-        service.onMouseDown(mouseEvent);
-        service.shiftDown = true;
-        mouseEvent = { offsetX: 40, offsetY: 70, button: 0 } as MouseEvent;
-        service.onMouseMove(mouseEvent);
-        expect(drawRectangleSpy).toHaveBeenCalled();
-    });
-
     it(' should call setAttribute with trace of type contour', () => {
         tracingService.setHasContour(true);
         tracingService.getHasContour();

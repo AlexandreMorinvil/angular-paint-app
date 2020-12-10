@@ -251,16 +251,6 @@ describe('EllipseSelectionService', () => {
         expect((service as any).pathData).not.toContain(service.getPositionFromMouse(mouseEventNotInCanvas));
     });
 
-    it('should set attribute and getSquaredSize is called when shiftDown is set to true on mouse move', () => {
-        (service as any).draggingImage = false;
-        (service as any).mouseDown = true;
-        (service as any).localMouseDown = true;
-        (service as any).shiftDown = true;
-
-        service.onMouseMove(mouseEvent100);
-        expect(getSquaredSizeSpy).toHaveBeenCalled();
-    });
-
     it('should clear canvas and getAnchorHit called when we clicked on anchor and localMouseDown is set to true on mouse move', () => {
         (service as any).draggingImage = false;
         (service as any).mouseDown = true;
