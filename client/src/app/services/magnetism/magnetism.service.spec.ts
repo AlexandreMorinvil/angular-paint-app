@@ -4,7 +4,7 @@ import { SpacingService } from '@app/services/tool-modifier/spacing/spacing.serv
 import { MagnetismService } from './magnetism.service';
 
 // tslint:disable:no-any
-fdescribe('MagnetismService', () => {
+describe('MagnetismService', () => {
     let service: MagnetismService;
     let spacingService: SpacingService;
 
