@@ -158,7 +158,7 @@ describe('PencilService', () => {
     });
 
     it(' should change the pixel of the canvas ', () => {
-      drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
+        drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
         mouseEvent = { offsetX: 0, offsetY: 0, button: 0 } as MouseEvent;
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 1, offsetY: 0, button: 0 } as MouseEvent;

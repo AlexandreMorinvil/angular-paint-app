@@ -94,7 +94,6 @@ export class DrawingComponent implements AfterViewInit {
 
     @HostListener('mousewheel', ['$event'])
     onMouseWheel(event: WheelEvent): void {
-        event.preventDefault(); // to prevent key of windows
         this.toolbox.getCurrentTool().onMouseWheel(event);
     }
 
