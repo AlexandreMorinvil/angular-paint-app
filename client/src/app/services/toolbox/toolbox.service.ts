@@ -52,21 +52,21 @@ export class ToolboxService {
         this.availableTools.push(cursorService);
         this.availableTools.push(gridService);
         this.availableTools.push(pencilService);
+        this.availableTools.push(featherService);
         this.availableTools.push(brushService);
         this.availableTools.push(eraserService);
         this.availableTools.push(lineService);
         this.availableTools.push(rectangleService);
         this.availableTools.push(ellipseService);
         this.availableTools.push(polygonService);
-        this.availableTools.push(colorPickerService);
-        this.availableTools.push(paintService);
         this.availableTools.push(rectangleSelectionService);
         this.availableTools.push(ellipseSelectionService);
+        this.availableTools.push(magicWandService);
+        this.availableTools.push(paintService);
+        this.availableTools.push(textService);
         this.availableTools.push(stampService);
         this.availableTools.push(aerosolService);
-        this.availableTools.push(magicWandService);
-        this.availableTools.push(featherService);
-        this.availableTools.push(textService);
+        this.availableTools.push(colorPickerService);
     }
 
     getAvailableTools(): Tool[] {
