@@ -6,8 +6,12 @@ import { Bound } from '@app/classes/bound';
 })
 export class ModifierHandlerService {
     clamp(input: number, maximum: number, minimum: number): number {
-        if (input >= maximum) return Bound.upper;
-        if (input <= minimum) return Bound.lower;
-        return Bound.inside;
+        let value = Bound.inside;
+        if (input >= maximum) {
+            value = Bound.upper;
+        } else if (input <= minimum) {
+            value = Bound.lower;
+        }
+        return value;
     }
 }

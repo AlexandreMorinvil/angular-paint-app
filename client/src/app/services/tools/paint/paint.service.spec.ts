@@ -8,7 +8,7 @@ import { PaintService } from './paint.service';
 // The disablement of the "any" tslint rule is justified in this situation as the prototype
 // of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
 // tslint:disable:no-any
-fdescribe('PaintService', () => {
+describe('PaintService', () => {
     let service: PaintService;
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;

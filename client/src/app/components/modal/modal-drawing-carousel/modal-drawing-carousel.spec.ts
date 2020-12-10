@@ -183,5 +183,4 @@ describe('DrawingCarouselComponent', () => {
         component.onKeyDown(event);
         expect(drawings[1]).toBe(component.getCurrentDrawings()[1]);
     });
-
 });
