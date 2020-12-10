@@ -39,6 +39,7 @@ describe('PencilService', () => {
         (service as any).drawingService.canvas = canvasStub;
         (service as any).drawingService.canvas.width = canvasWidth;
         (service as any).drawingService.canvas.height = canvasHeight;
+        (service as any).mouseDown = false;
 
         mouseEvent = {
             offsetX: 25,
