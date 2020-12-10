@@ -138,7 +138,7 @@ describe('ModalExportComponent', () => {
     });
 
     it('send Email to server should call basic post if name and email is valid', () => {
-        (component as any).drawName.value = 'name';
+        (component as any).drawingName.value = 'name';
         (component as any).email.value = 'la@hotmail.com';
         sendEmailToServerSpy.and.callThrough();
         component.sendEmailToServer('png');
@@ -147,7 +147,7 @@ describe('ModalExportComponent', () => {
 
     it('send Email to server should not call basic post if name is invalid', () => {
         sendEmailToServerSpy.and.callThrough();
-        (component as any).drawName.value = '';
+        (component as any).drawingName.value = '';
         (component as any).email.value = 'la@hotmail.com';
         component.sendEmailToServer('png');
         expect(basicPostSpy).not.toHaveBeenCalled();
@@ -155,7 +155,7 @@ describe('ModalExportComponent', () => {
 
     it('send Email to server should not call basic post if email is invalid', () => {
         sendEmailToServerSpy.and.callThrough();
-        (component as any).drawName.value = 'name';
+        (component as any).drawingName.value = 'name';
         (component as any).email.value = '';
         component.sendEmailToServer('png');
         expect(basicPostSpy).not.toHaveBeenCalled();
