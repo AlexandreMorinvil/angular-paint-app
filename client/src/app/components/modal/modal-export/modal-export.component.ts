@@ -63,33 +63,35 @@ export class ExportComponent implements AfterViewInit {
         }
     }
 
-    sendEmailToPNG() {
+    sendEmailToPNG(): void {
         this.saveImageSRC('png');
         let sourceBase64 = this.saveService.imageSourceWithFilter(this.exportDrawingService.currentFilter).replace('data:image/png;base64,', '');
         sourceBase64 = sourceBase64.split(/\s/).join('');
+        // tslint:disable-next-line: no-magic-numbers
         const firstPNGnumber = sourceBase64.substring(0, 11);
-        if (firstPNGnumber == 'iVBORw0KGgo') {
+        if (firstPNGnumber === 'iVBORw0KGgo') {
             // png start with 89 50 4E 47 0D 0A 1A 0A
             this.sendEmailToServer('png');
         }
     }
 
-    sendEmailToJPG() {
+    sendEmailToJPG(): void {
         this.saveImageSRC('jpeg');
         let sourceBase64 = this.saveService.imageSourceWithFilter(this.exportDrawingService.currentFilter).replace('data:image/png;base64,', '');
         sourceBase64 = sourceBase64.split(/\s/).join('');
+        // tslint:disable-next-line: no-magic-numbers
         const firstJPGnumber = sourceBase64.substring(0, 16);
-        if (firstJPGnumber == '/9j/4AAQSkZJRgAB') {
+        if (firstJPGnumber === '/9j/4AAQSkZJRgAB') {
             // format jpeg start with FF D8 FF E0 00 10 4A 46 49 46 00 01
             this.sendEmailToServer('jpeg');
         }
     }
 
-    saveImageSRC(format: string) {
+    saveImageSRC(format: string): void {
         this.saveService.saveDraw(format);
     }
 
-    sendEmailToServer(format: string) {
+    sendEmailToServer(format: string): void {
         // verifie bon format de l'email
         if (this.validateEmail(this.email.value) && this.validateValue()) {
             const newDrawingToSend: DrawingToEmail = new DrawingToEmail(
@@ -111,7 +113,7 @@ export class ExportComponent implements AfterViewInit {
             alert(this.EMAIL_INVALID_ERROR);
             return false;
         }
-        return email != NO_EMAIL && email != undefined;
+        return email !== NO_EMAIL && email !== undefined;
     }
     private validateValue(): boolean {
         return this.validateDrawName(this.drawingName.value);

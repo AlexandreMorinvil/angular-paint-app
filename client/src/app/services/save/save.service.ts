@@ -61,7 +61,7 @@ export class SaveService {
         ctx.drawImage(image, 0, 0);
         image.style.display = 'none';
         image.src = canvas.toDataURL();
-        if (format == 'jpeg') {
+        if (format === 'jpeg') {
             image.src = canvas.toDataURL('image/jpeg');
         }
         link.download = 'image' + '.' + format;
