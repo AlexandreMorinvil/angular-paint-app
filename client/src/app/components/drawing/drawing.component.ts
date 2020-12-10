@@ -174,7 +174,6 @@ export class DrawingComponent implements AfterViewInit {
     // tslint:disable:cyclomatic-complexity
     @HostListener('window:keydown', ['$event'])
     onShiftDown(event: KeyboardEvent): void {
-        event.preventDefault(); // to prevent key of windows
         if (this.toolbox.getCurrentTool() instanceof TextService) {
             this.toolbox.getCurrentTool().onKeyDown(event);
         }
@@ -190,13 +189,16 @@ export class DrawingComponent implements AfterViewInit {
 
         switch (KEY_CODE) {
             case 'Shift':
+                event.preventDefault(); // to prevent key of windows
                 this.toolbox.getCurrentTool().onShiftDown(event);
                 break;
             case 'Escape':
+                event.preventDefault(); // to prevent key of windows
                 this.toolbox.getCurrentTool().onEscapeDown(event);
                 this.hasBeenDrawnOnto = true;
                 break;
             case 'Alt':
+                event.preventDefault(); // to prevent key of windows
                 this.toolbox.getCurrentTool().onAltDown(event);
                 break;
             case 'Delete':
@@ -214,6 +216,7 @@ export class DrawingComponent implements AfterViewInit {
         if (IS_CTRL_KEY) {
             if (IS_SHIFT_KEY) {
                 if (KEY_CODE_LOWER_CASE === 'z') {
+                    event.preventDefault(); // to prevent key of windows
                     this.drawingStateTrackerService.onCtrlShiftZDown();
                 }
             } else {
@@ -249,12 +252,15 @@ export class DrawingComponent implements AfterViewInit {
                 if (SHORT_CUT_ENABLE) {
                     switch (KEY_CODE_LOWER_CASE) {
                         case 's':
+                            event.preventDefault(); // to prevent key of windows
                             this.modalHandlerService.openSaveDialog();
                             break;
                         case 'g':
+                            event.preventDefault(); // to prevent key of windows
                             this.modalHandlerService.openDrawingCarouselDialog();
                             break;
                         case 'e':
+                            event.preventDefault(); // to prevent key of windows
                             this.modalHandlerService.openExportDialog();
                             break;
                     }
@@ -264,15 +270,19 @@ export class DrawingComponent implements AfterViewInit {
             if (!SHORT_CUT_ENABLE) return;
             switch (KEY_CODE_LOWER_CASE) {
                 case 'g':
+                    event.preventDefault(); // to prevent key of windows
                     this.gridService.toogleGrid();
                     break;
                 case '+':
+                    event.preventDefault(); // to prevent key of windows
                     this.gridService.incrementSpacing();
                     break;
                 case '-':
+                    event.preventDefault(); // to prevent key of windows
                     this.gridService.decrementSpacing();
                     break;
                 case 'm':
+                    event.preventDefault(); // to prevent key of windows
                     this.magnetismService.toogleMagnetism();
             }
         }
