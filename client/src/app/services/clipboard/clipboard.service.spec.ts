@@ -1,8 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
-import { DrawingService } from '../drawing/drawing.service';
-// import { DrawingService } from '@app/services/drawing/drawing.service';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ClipBoardService } from './clipboard.service';
 
 // tslint:disable:no-any
@@ -28,11 +27,11 @@ describe('ClipBoardService', () => {
         service.clipboardCtx = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
     });
 
-    fit('should be created', () => {
+    it('should be created', () => {
         expect(service).toBeTruthy();
     });
 
-    fit('should store the image procided with the right selection size', () => {
+    it('should store the image procided with the right selection size', () => {
         computeDimensionsSpy = spyOn<any>(service, 'computeDimensions').and.callThrough();
         computeCenterSpy = spyOn<any>(service, 'computeCenter').and.callThrough();
         computeUpperLeftCornerSpy = spyOn<any>(service, 'computeUpperLeftCorner').and.callThrough();
@@ -47,15 +46,15 @@ describe('ClipBoardService', () => {
         expect(computeUpperLeftCornerSpy).toHaveBeenCalled();
     });
 
-    fit('should return the data URL of the data stored', () => {
-        expect(service.provide()).toBe((new Image()).src);
+    it('should return the data URL of the data stored', () => {
+        expect(service.provide()).toBe(new Image().src);
     });
 
-    fit('should return the height of the image stored', () => {
+    it('should return the height of the image stored', () => {
         expect(service.getHeight()).toBe(service.canvas.height);
     });
 
-    fit('should return the width of the image stored', () => {
+    it('should return the width of the image stored', () => {
         expect(service.getWidth()).toBe(service.canvas.width);
     });
 });

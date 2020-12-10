@@ -76,7 +76,7 @@ describe('MagnetismService', () => {
     it('should determine the bottom size jump distance to the clossest horizontal grid line', () => {
         const SPACING = 50;
         (spacingService as any).spacing = SPACING;
-        const Y_POSITION: number = 20;
+        const Y_POSITION = 20;
         const HEIGHT = 10;
 
         const CLOSEST_POSITION: number = service.getVerticalJumpDistance(Y_POSITION, HEIGHT, true);
