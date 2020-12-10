@@ -8,7 +8,7 @@ import { PaintService } from './paint.service';
 // The disablement of the "any" tslint rule is justified in this situation as the prototype
 // of the jasmine.Spy type takes a generic argument whose type is by convention of type "any"
 // tslint:disable:no-any
-describe('PaintService', () => {
+fdescribe('PaintService', () => {
     let service: PaintService;
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
@@ -146,7 +146,7 @@ describe('PaintService', () => {
             fillColorG: 255,
             fillColorB: 255,
         } as InteractionPaint;
-        floodFillSpy = spyOn<any>(service, 'floodFill').and.callThrough();
+        sameColorFillSpy = spyOn<any>(service, 'sameColorFill').and.callThrough();
         (service as any).execute(interactionPaint);
         expect(sameColorFillSpy).toHaveBeenCalled();
     });
