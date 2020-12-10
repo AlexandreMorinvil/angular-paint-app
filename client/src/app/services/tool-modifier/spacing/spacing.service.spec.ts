@@ -32,7 +32,7 @@ describe('SpacingService', () => {
     });
 
     it(' setSpacing should set spacing to the 50 if input is above 50', () => {
-        const spacing = 75;
+        const spacing = 150;
         const maxSpacing = service.MAX_ATTRIBUTE_SPACING;
         service.setSpacing(spacing);
         expect(setSpacingSpy).toHaveBeenCalled();

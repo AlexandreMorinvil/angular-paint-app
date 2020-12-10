@@ -17,7 +17,9 @@ import { AttributeColorComponent } from './components/attributes-panel/attribute
 import { AttributeGridDisplayComponent } from './components/attributes-panel/attribute-grid-display/attribute-grid-display.component';
 import { AttributeGridOpacityComponent } from './components/attributes-panel/attribute-grid-opacity/attributes-grid-opacity.component';
 import { AttributeJunctionComponent } from './components/attributes-panel/attribute-junction/attributes-junction.component';
+import { AttributeMagnetismAnchorComponent } from './components/attributes-panel/attribute-magnetism-anchor/attribute-magnetism-anchor.component';
 import { AttributeNumberSprayTransmissionComponent } from './components/attributes-panel/attribute-number-spray-transmission/attribute-number-spray-transmission.component';
+import { AttributeSelectionManipulationComponent } from './components/attributes-panel/attribute-selection-manipulation/attribute-selection-manipulation.component';
 import { AttributeSelectionComponent } from './components/attributes-panel/attribute-selection/attribute-selection.component';
 import { AttributeSpacingComponent } from './components/attributes-panel/attribute-spacing/attributes-spacing.component';
 import { AttributeSprayDiameterComponent } from './components/attributes-panel/attribute-spray-diameter/attribute-spray-diameter.component';
@@ -33,7 +35,6 @@ import { AttributesToleranceComponent } from './components/attributes-panel/attr
 import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorPageComponent } from './components/editor-page/editor-page.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
-import { ContinueDrawingModalComponent } from './components/modal/modal-continue-drawing/modal-continue-drawing.component';
 import { DrawingCarouselComponent } from './components/modal/modal-drawing-carousel/modal-drawing-carousel.component';
 import { ExportComponent } from './components/modal/modal-export/modal-export.component';
 import { ModalSaveComponent } from './components/modal/modal-save/modal-save.component';
@@ -41,10 +42,12 @@ import { UserGuideModalComponent } from './components/modal/modal-user-guide/mod
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { TooltipComponent } from './components/tooltip/tooltip.component';
 import { WorkspaceComponent } from './components/workspace/workspace.component';
+
 @NgModule({
     declarations: [
         AppComponent,
         AttributesPanelComponent,
+        AttributeMagnetismAnchorComponent,
         AttributeSpacingComponent,
         AttributeGridDisplayComponent,
         AttributeGridOpacityComponent,
@@ -67,8 +70,8 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
         AttributeColorPickerViewerComponent,
         AttributesToleranceComponent,
         AttributeSelectionComponent,
+        AttributeSelectionManipulationComponent,
         AttributeStampPickerComponent,
-        ContinueDrawingModalComponent,
         AttributeSprayDiameterComponent,
         AttributeSprayDropletDiameterComponent,
         AttributeNumberSprayTransmissionComponent,

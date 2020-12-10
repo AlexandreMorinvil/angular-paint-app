@@ -135,7 +135,7 @@ export class StampService extends Tool {
             }
         }
     }
-
+    // tslint:disable:no-magic-numbers
     private previewStamp(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         const TRANSPARENCE_VALUE = 0.4;
         ctx.globalAlpha = TRANSPARENCE_VALUE;
@@ -143,7 +143,7 @@ export class StampService extends Tool {
     }
 
     private convertDegreeToRad(angleDegre: number): number {
-        const HALF_CIRCLE_ANGLE: number = 180;
+        const HALF_CIRCLE_ANGLE = 180;
         return (angleDegre * Math.PI) / HALF_CIRCLE_ANGLE;
     }
 
@@ -157,24 +157,20 @@ export class StampService extends Tool {
         const LAST_POSITION: Vec2 = path[path.length - 1];
         const X_POSITION: number = LAST_POSITION.x;
         const Y_POSITION: number = LAST_POSITION.y;
+        const SIZE_FACTOR = 5;
+        const SIZE_IMAGE: number = this.widthService.getWidth() * SIZE_FACTOR;
 
         image.onload = () => {
             ctx.save();
             ctx.fillStyle = this.colorService.getPrimaryColor();
             ctx.beginPath();
-            ctx.arc(X_POSITION, Y_POSITION, this.widthService.getWidth() / 2, 0, 2 * Math.PI);
+            ctx.arc(X_POSITION, Y_POSITION, SIZE_IMAGE / 2, 0, 2 * Math.PI);
             ctx.fill();
             ctx.translate(X_POSITION, Y_POSITION);
             ctx.rotate(this.convertDegreeToRad(this.angleInRadian));
             ctx.translate(-X_POSITION, -Y_POSITION);
             ctx.globalCompositeOperation = 'destination-out';
-            ctx.drawImage(
-                image,
-                X_POSITION - this.widthService.getWidth() / 2,
-                Y_POSITION - this.widthService.getWidth() / 2,
-                this.widthService.getWidth(),
-                this.widthService.getWidth(),
-            );
+            ctx.drawImage(image, X_POSITION - SIZE_IMAGE / 2, Y_POSITION - SIZE_IMAGE / 2, SIZE_IMAGE, SIZE_IMAGE);
             ctx.restore();
         };
     }

@@ -7,7 +7,12 @@ import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 const minSurfaceSize = 250;
-
+export enum Anchors {
+    Default = 0,
+    BottomRight = 1,
+    MiddleRight = 2,
+    BottomMiddle = 3,
+}
 @Injectable({
     providedIn: 'root',
 })
@@ -55,18 +60,18 @@ export class CursorService extends Tool {
         }
         this.mouseDownCoord = this.getPositionFromMouse(event);
         switch (this.anchorHit) {
-            case 1:
+            case Anchors.BottomRight:
                 this.moveWidth(this.mouseDownCoord.x);
                 this.moveHeight(this.mouseDownCoord.y);
                 break;
-            case 2:
+            case Anchors.MiddleRight:
                 this.moveWidth(this.mouseDownCoord.x);
                 break;
-            case 3:
+            case Anchors.BottomMiddle:
                 this.moveHeight(this.mouseDownCoord.y);
                 break;
             default:
-                this.anchorHit = 0;
+                this.anchorHit = Anchors.Default;
                 break;
         }
     }
@@ -103,27 +108,26 @@ export class CursorService extends Tool {
         y = Math.pow(mouse.y - canvas.height, 2);
         if (x + y <= DOT_SIZE_SQUARE) {
             this.clickOnAnchor = true;
-            this.anchorHit = 1;
+            this.anchorHit = Anchors.BottomRight;
         }
 
         x = Math.pow(mouse.x - canvas.width, 2);
         y = Math.pow(mouse.y - canvas.height / 2, 2);
         if (x + y <= DOT_SIZE_SQUARE) {
             this.clickOnAnchor = true;
-            this.anchorHit = 2;
+            this.anchorHit = Anchors.MiddleRight;
         }
 
         x = Math.pow(mouse.x - canvas.width / 2, 2);
         y = Math.pow(mouse.y - canvas.height, 2);
         if (x + y <= DOT_SIZE_SQUARE) {
             this.clickOnAnchor = true;
-            // tslint:disable-next-line:no-magic-numbers
-            this.anchorHit = 3;
+            this.anchorHit = Anchors.BottomMiddle;
         }
 
         if (!this.clickOnAnchor) {
             this.clickOnAnchor = false;
-            this.anchorHit = 0;
+            this.anchorHit = Anchors.Default;
         }
     }
 

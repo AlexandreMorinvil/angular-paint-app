@@ -78,9 +78,11 @@ export class ToolboxService {
     }
 
     setSelectedTool(selectedTool: Tool): void {
-        if (this.currentTool instanceof TextService) {
-            (this.currentTool as TextService).confirm();
-        }
+        if (this.currentTool instanceof EllipseSelectionService) (this.currentTool as EllipseSelectionService).drawOnBaseCanvas();
+        if (this.currentTool instanceof RectangleSelectionService) (this.currentTool as RectangleSelectionService).drawOnBaseCanvas();
+        if (this.currentTool instanceof MagicWandService) (this.currentTool as MagicWandService).drawOnBaseCanvas();
+        if (this.currentTool instanceof TextService) (this.currentTool as TextService).confirm();
+
         this.currentTool = selectedTool;
         this.currentTool.mouseDown = false;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);

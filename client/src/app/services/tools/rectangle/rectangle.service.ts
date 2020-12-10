@@ -87,7 +87,7 @@ export class RectangleService extends Tool {
         this.drawRectangle(this.drawingService.previewCtx, this.pathData);
     }
 
-    drawRectangle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    private drawRectangle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         const LAST_MOUSE_MOVE_COORD = path[path.length - 1];
         const MOUSE_DOWN_COORD_X = this.mouseDownCoord.x;

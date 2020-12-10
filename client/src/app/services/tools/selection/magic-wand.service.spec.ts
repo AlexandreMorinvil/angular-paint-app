@@ -30,10 +30,12 @@ describe('MagicWandService', () => {
     let floodFillSelectSpy: jasmine.Spy<any>;
     let drawRectSpy: jasmine.Spy<any>;
     let sameColorSelectSpy: jasmine.Spy<any>;
-    let deleteUnderSelectionSpy: jasmine.Spy<any>;
     let onMouseDownSpy: jasmine.Spy<any>;
     let showSelectionSpy: jasmine.Spy<any>;
     let executeSpy: jasmine.Spy<any>;
+    let rotateCanvasSpy: jasmine.Spy<any>;
+    let clearCanvasSelectionSpy: jasmine.Spy<any>;
+    let checkHitSpy: jasmine.Spy<any>;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     let rectangleServiceSpy: jasmine.SpyObj<RectangleService>;
 
@@ -65,10 +67,11 @@ describe('MagicWandService', () => {
         floodFillSelectSpy = spyOn<any>(service, 'floodFillSelect').and.callThrough();
         sameColorSelectSpy = spyOn<any>(service, 'sameColorSelect').and.callThrough();
         showSelectionSpy = spyOn<any>(service, 'showSelection').and.callThrough();
-        deleteUnderSelectionSpy = spyOn<any>(service, 'deleteUnderSelection').and.callThrough();
         drawRectSpy = spyOn<any>(service, 'drawRect').and.callThrough();
         onMouseDownSpy = spyOn<any>(service, 'onMouseDown').and.callThrough();
         executeSpy = spyOn<any>(service, 'execute').and.callThrough();
+        clearCanvasSelectionSpy = spyOn<any>(service, 'clearCanvasSelection').and.callThrough();
+        rotateCanvasSpy = spyOn<any>(service, 'rotateCanvas');
 
         const canvasWidth = 200;
         const canvasHeight = 100;
@@ -140,11 +143,10 @@ describe('MagicWandService', () => {
         expect((service as any).localMouseDown).toEqual(false);
     });
 
-    it('should call showSelection, deleteUnderSelection and set variables if a selected area is clicked', () => {
+    it('should call showSelection and set variables if a selected area is clicked', () => {
         service.onMouseDown(mouseEventInRegionLeftClick);
         service.onMouseDown(mouseEventInRegionLeftClick);
         expect(showSelectionSpy).toHaveBeenCalled();
-        expect(deleteUnderSelectionSpy).toHaveBeenCalled();
         expect((service as any).draggingImage).toBe(true);
         expect((service as any).mouseDown).toBe(true);
         expect((service as any).hasDoneFirstTranslation).toBe(false);
@@ -154,8 +156,6 @@ describe('MagicWandService', () => {
         service.onMouseDown(mouseEventInRegionLeftClick);
         service.onMouseDown(mouseEventInRegionLeftClick);
         service.onMouseMove(mouseEvent120);
-        console.log((service as any).edgePixelsSplitted);
-        console.log((service as any).edgePixelsAllRegions);
         expect((service as any).draggingImage).toBe(true);
         expect((service as any).localMouseDown).toBe(true);
         expect((service as any).hasDoneFirstTranslation).toBe(false);
@@ -167,7 +167,7 @@ describe('MagicWandService', () => {
         service.onMouseDown(mouseEventInRegionLeftClick);
         service.onMouseDown(mouseEventInRegionLeftClick);
         service.onMouseMove(mouseEvent120);
-        service.onMouseUp();
+        service.onMouseUp(mouseEvent120);
         service.onMouseDown(mouseEvent120);
         service.onMouseMove(mouseEvent25);
         expect((service as any).draggingImage).toBe(true);
@@ -186,7 +186,7 @@ describe('MagicWandService', () => {
         service.onMouseDown(mouseEventInRegionLeftClick);
         service.onMouseDown(mouseEventInRegionLeftClick);
         service.onMouseMove(mouseEvent120);
-        service.onMouseUp();
+        service.onMouseUp(mouseEvent120);
         expect((service as any).draggingImage).toBe(false);
         expect((service as any).localMouseDown).toBe(false);
         expect((service as any).hasDoneFirstTranslation).toBe(true);
@@ -198,7 +198,7 @@ describe('MagicWandService', () => {
         service.onMouseDown(mouseEventInRegionLeftClick);
         service.onMouseDown(mouseEventInRegionLeftClick);
         service.onMouseMove(mouseEvent120);
-        service.onMouseUp();
+        service.onMouseUp(mouseEvent120);
         expect((service as any).draggingImage).toBe(false);
         expect((service as any).localMouseDown).toBe(false);
         expect((service as any).hasDoneFirstTranslation).toBe(true);
@@ -206,12 +206,9 @@ describe('MagicWandService', () => {
         expect((service as any).startDownCoord).toEqual({ x: 20, y: 71 });
     });
 
-    it('should not call showSelection on mouse up without clicking before', () => {
-        service.onMouseUp();
-        expect(showSelectionSpy).not.toHaveBeenCalled();
-    });
-
     it('should spill and sort array', () => {
+        (service as any).startDownCoord = { x: 0, y: 0 };
+        (service as any).selectionSize = { x: 2, y: 2 };
         (service as any).edgePixelsAllRegions = [
             { x: 1, y: 1 },
             { x: 1, y: 0 },
@@ -223,6 +220,7 @@ describe('MagicWandService', () => {
             { x: 3, y: 4 },
             { x: 10, y: 10 },
         ];
+        console.log((service as any).edgePixelsAllRegions[0]);
         (service as any).splitAndSortEdgeArray();
         expect((service as any).edgePixelsSplitted).toEqual([
             Object({ edgePixels: [Object({ x: 1, y: 1 }), Object({ x: 1, y: 0 }), Object({ x: 0, y: 0 }), Object({ x: 0, y: 1 })] }),
@@ -241,9 +239,21 @@ describe('MagicWandService', () => {
         service.onMouseDown(mouseEventInRegionLeftClick);
         service.onMouseDown(mouseEventInRegionLeftClick);
         service.onMouseMove(mouseEvent120);
-        service.onMouseUp();
+        service.onMouseUp(mouseEvent120);
         service.onArrowDown({ key: 'ArrowUp' } as KeyboardEvent);
         expect(showSelectionSpy).toHaveBeenCalled();
+        expect((service as any).draggingImage).toBe(false);
+    });
+
+    it('should draw selection on canvas when pressing escape ', () => {
+        service.onMouseDown(mouseEventInRegionLeftClick);
+        service.onEscapeDown();
+        expect(showSelectionSpy).toHaveBeenCalled();
+        expect((service as any).draggingImage).toBe(false);
+    });
+    it('should not do anything on canvas when pressing escape if no selection was created ', () => {
+        service.onEscapeDown();
+        expect(showSelectionSpy).not.toHaveBeenCalled();
         expect((service as any).draggingImage).toBe(false);
     });
 
@@ -263,6 +273,8 @@ describe('MagicWandService', () => {
     });
 
     it('should draw selection contour', () => {
+        (service as any).startDownCoord = { x: 0, y: 0 };
+        (service as any).selectionSize = { x: 1, y: 1 };
         (service as any).edgePixelsAllRegions = [
             { x: 1, y: 1 },
             { x: 1, y: 0 },
@@ -270,7 +282,7 @@ describe('MagicWandService', () => {
             { x: 0, y: 1 },
         ];
         (service as any).splitAndSortEdgeArray();
-        (service as any).drawSelectionCoutour();
+        (service as any).drawSelectionSurround();
         expect((service as any).drawingService.previewCtx.getImageData(1, 1, 2, 2).data[3]).toEqual(255);
         expect((service as any).drawingService.previewCtx.getImageData(1, 1, 2, 2).data[7]).toEqual(255);
         expect((service as any).drawingService.previewCtx.getImageData(1, 1, 2, 2).data[11]).toEqual(255);
@@ -278,6 +290,8 @@ describe('MagicWandService', () => {
     });
 
     it('should clip path correctly', () => {
+        (service as any).startDownCoord = { x: 0, y: 0 };
+        (service as any).selectionSize = { x: 1, y: 1 };
         (service as any).edgePixelsAllRegions = [
             { x: 1, y: 1 },
             { x: 1, y: 0 },
@@ -303,5 +317,49 @@ describe('MagicWandService', () => {
         service.execute(interaction);
         expect(executeSpy).toHaveBeenCalled();
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+    });
+
+    it('should rotate selection on mouse wheel', () => {
+        service.onMouseDown(mouseEventInRegionLeftClick);
+        service.onMouseDown(mouseEventInRegionLeftClick);
+        const wheelEvent = {
+            deltaY: 100,
+        } as WheelEvent;
+        service.onMouseWheel(wheelEvent);
+
+        expect(rotateCanvasSpy).toHaveBeenCalled();
+    });
+
+    it('should clear canvas on mouse click on anchor', () => {
+        checkHitSpy = spyOn<any>(service, 'checkHit').and.returnValue(true);
+        service.onMouseDown(mouseEventInRegionLeftClick);
+        service.onMouseDown(mouseEvent25);
+        expect(checkHitSpy).toHaveBeenCalled();
+        expect(clearCanvasSelectionSpy).toHaveBeenCalled();
+    });
+    /*
+  it('should draw selection on canvas if a new selection is created', () => {
+    service.onMouseDown(mouseEventInRegionLeftClick);
+    service.onMouseUp(mouseEventInRegionLeftClick);
+    service.onMouseDown(mouseEvent120);
+    expect(drawOnBaseCanvasSpy).toHaveBeenCalled();
+});
+*/
+
+    it('should resize correctly', () => {
+        checkHitSpy = spyOn<any>(service, 'checkHit').and.returnValue(true);
+        (service as any).clickOnAnchor = true;
+        (service as any).draggingImage = false;
+        (service as any).mouseDown = false;
+        (service as any).localMouseDown = false;
+        (service as any).shiftDown = false;
+        (service as any).resizeStartCoords = { x: 25, y: 25 };
+        (service as any).resizeWidth = 95;
+        (service as any).resizeHeight = 95;
+        service.onMouseDown(mouseEvent25);
+        service.onMouseMove(mouseEvent120);
+        service.onMouseUp(mouseEvent120);
+        expect((service as any).selectionSize).toEqual({ x: 20, y: 71.5 });
+        expect((service as any).startDownCoord).toEqual({ x: 25, y: 25 });
     });
 });
