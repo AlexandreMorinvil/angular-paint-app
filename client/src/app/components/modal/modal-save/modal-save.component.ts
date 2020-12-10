@@ -21,6 +21,8 @@ export class ModalSaveComponent {
     private readonly ERROR_SOURCE_IMAGE: string = "L'image source est invalide";
     private readonly ERROR_NO_DRAWING_NAME: string = 'Les dessins doivent contenir un nom';
     private readonly ERROR_NUMBER_TAG_GREATER_MAXIMUM: string = "Le nombre d'étiquettes est supérieur à la limite de 15";
+    private readonly ERROR_NAME_SPECIAL_CHARACTERS: string = 'Le nom des dessins ne peut pas contenir de caractères spéciaux';
+    private readonly ERROR_TAG_SPECIAL_CHARACTERS: string = 'Le nom des étiquettes ne peut pas contenir de caractères spéciaux';
     private readonly ERROR_NO_TAG_NAME: string = 'Les étiquettes assignées ne peuvent pas être vides';
     private readonly ERROR_MAX_LENGTH_NAME_TAG: string = 'Les étiquettes des dessions doivent contenir un maximum de 25 caractères';
     private readonly ERROR_MAX_LENGTH_NAME_DRAWING: string = 'Les noms des dessions doivent contenir un maximum de 50 caractères';
@@ -66,7 +68,7 @@ export class ModalSaveComponent {
 
     saveToServer(): void {
         if (this.validateValue(this.drawingName.value, this.tags, this.saveService.imageSource)) {
-            this.saveService.saveDraw();
+            this.saveService.saveDraw('png');
             this.sendMessageToServer();
             (document.getElementById('buttonSaveServer') as HTMLInputElement).disabled = true;
         }
@@ -85,6 +87,10 @@ export class ModalSaveComponent {
             alert(this.ERROR_MAX_LENGTH_NAME_DRAWING);
             return false;
         }
+        if (!/^[0-9a-zA-Z]*$/g.test(name)) {
+            alert(this.ERROR_NAME_SPECIAL_CHARACTERS);
+            return false;
+        }
         return true;
     }
 
@@ -97,7 +103,11 @@ export class ModalSaveComponent {
             alert(this.ERROR_MAX_LENGTH_NAME_TAG);
             return false;
         }
-        return tag !== '' && tag.length <= this.MAX_LENGHT_NAME_TAG;
+        if (!/^[0-9a-zA-Z]*$/g.test(name)) {
+            alert(this.ERROR_TAG_SPECIAL_CHARACTERS);
+            return false;
+        }
+        return tag !== '' && tag.length <= this.MAX_LENGHT_NAME_TAG && /^[0-9a-zA-Z]*$/g.test(tag);
     }
 
     private validateImageSRC(imageSrc: string): boolean {

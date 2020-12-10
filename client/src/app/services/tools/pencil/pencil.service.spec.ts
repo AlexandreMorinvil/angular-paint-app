@@ -30,7 +30,6 @@ describe('PencilService', () => {
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         });
         service = TestBed.inject(PencilService);
-        drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
 
         // Configuration of spy service
         const canvasWidth = 1000;
@@ -40,6 +39,7 @@ describe('PencilService', () => {
         (service as any).drawingService.canvas = canvasStub;
         (service as any).drawingService.canvas.width = canvasWidth;
         (service as any).drawingService.canvas.height = canvasHeight;
+        (service as any).mouseDown = false;
 
         mouseEvent = {
             offsetX: 25,
@@ -82,7 +82,7 @@ describe('PencilService', () => {
     it(' onMouseUp should call drawLine if mouse was already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
-
+        drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
         service.onMouseUp(mouseEvent);
         expect(drawLineSpy).toHaveBeenCalled();
     });
@@ -90,23 +90,16 @@ describe('PencilService', () => {
     it(' onMouseUp should not call drawLine if mouse was not already down', () => {
         service.mouseDown = false;
         service.mouseDownCoord = { x: 0, y: 0 };
+        drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
 
         service.onMouseUp(mouseEvent);
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
 
-    it(' onMouseMove should call drawLine if mouse was already down', () => {
-        service.mouseDownCoord = { x: 5, y: 5 };
-        service.mouseDown = true;
-        service.onMouseMove(mouseEvent);
-        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-        expect(drawLineSpy).toHaveBeenCalled();
-    });
-
     it(' onMouseMove should not call drawLine if mouse was not already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = false;
-
+        drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
         service.onMouseMove(mouseEvent);
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(drawLineSpy).not.toHaveBeenCalled();
@@ -137,6 +130,7 @@ describe('PencilService', () => {
     it(' onMouseMove should not call drawLine if mouse is not on canvas', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
+        drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
 
         service.onMouseMove(mouseEvent2);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
@@ -150,11 +144,13 @@ describe('PencilService', () => {
                 { x: 1, y: 1 },
             ],
         } as InteractionPath;
+        drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
         service.execute(interaction);
         expect(drawLineSpy).toHaveBeenCalled();
     });
 
     it(' should change the pixel of the canvas ', () => {
+        drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
         mouseEvent = { offsetX: 0, offsetY: 0, button: 0 } as MouseEvent;
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 1, offsetY: 0, button: 0 } as MouseEvent;
@@ -168,6 +164,7 @@ describe('PencilService', () => {
     it(' onMouseMove should not call drawLine if mouse is not on canvas', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
+        drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
 
         service.onMouseMove(mouseEvent2);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();

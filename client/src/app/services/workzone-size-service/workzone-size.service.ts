@@ -14,7 +14,7 @@ export class WorkzoneSizeService {
     DRAWINGZONE_MINIMAL_SIZE: number = 250;
 
     SMALL_SPACE: number = 120;
-    TOOLBOX_WIDTH: number = 313;
+    TOOLBOX_WIDTH: number = 408;
     workZoneHeight: number;
     workZoneWidth: number;
 

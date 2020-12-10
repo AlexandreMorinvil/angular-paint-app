@@ -81,20 +81,6 @@ describe('PaintService', () => {
         expect(sameColorFillSpy).toHaveBeenCalled();
     });
 
-    it(' should make sure that matchStartColor verify correctly with fill rgb and target surface', () => {
-        colorService.setPrimaryColor('#010102');
-        floodFillSpy = spyOn<any>(service, 'floodFill').and.callThrough();
-
-        const mouseEvent2 = {
-            offsetX: 51,
-            offsetY: 51,
-            button: 0,
-        } as MouseEvent;
-        service.onMouseDown(mouseEvent2);
-
-        expect(floodFillSpy).toHaveBeenCalled();
-    });
-
     it(' should make sure that function are not called if mouseEvent is not in canvas', () => {
         const mouseEvent2 = {
             offsetX: 0,

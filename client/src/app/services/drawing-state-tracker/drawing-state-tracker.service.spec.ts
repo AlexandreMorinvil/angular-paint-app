@@ -18,6 +18,7 @@ describe('DrawingStateTrackerService', () => {
     let reconstituteCanvasSpy: jasmine.Spy<any>;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
+    let selectionCtxStub: CanvasRenderingContext2D;
     let canvasStub: HTMLCanvasElement;
 
     beforeEach(() => {
@@ -31,6 +32,7 @@ describe('DrawingStateTrackerService', () => {
 
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        selectionCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         canvasStub = canvasTestHelper.canvas;
 
         onCtrlZDownSpy = spyOn<any>(service, 'onCtrlZDown').and.callThrough();
@@ -44,6 +46,7 @@ describe('DrawingStateTrackerService', () => {
         const canvasHeight = 800;
         (service as any).drawingService.baseCtx = baseCtxStub;
         (service as any).drawingService.previewCtx = previewCtxStub;
+        (service as any).drawingService.selectionCtx = selectionCtxStub;
         (service as any).drawingService.canvas = canvasStub;
         (service as any).drawingService.canvas.width = canvasWidth;
         (service as any).drawingService.canvas.height = canvasHeight;

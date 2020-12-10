@@ -106,4 +106,10 @@ export class AttributesPanelComponent {
     needsGridDisplayAttribute(): boolean {
         return this.currentTool.name === 'grille';
     }
+
+    needsClipboardAttributes(): boolean {
+        if (this.toolboxService.getCurrentTool() instanceof SelectionToolService)
+            return (this.toolboxService.getCurrentTool() as SelectionToolService).selectionCreated;
+        return false;
+    }
 }

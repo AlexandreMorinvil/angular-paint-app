@@ -89,6 +89,7 @@ export class MagicWandService extends SelectionToolService {
         if (this.draggingImage && this.localMouseDown) {
             const MOUSE_POSITION_MAGNETIC = this.getPositionFromMouse(event, true);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawingService.clearCanvas(this.drawingService.selectionCtx);
             this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION_MAGNETIC);
             this.rotateCanvas();
             this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
@@ -97,6 +98,7 @@ export class MagicWandService extends SelectionToolService {
             // resizing
         } else if (this.clickOnAnchor && this.localMouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawingService.clearCanvas(this.drawingService.selectionCtx);
             this.getAnchorHit(this.drawingService.previewCtx, MOUSE_POSITION, CALLER_ID);
         }
     }
@@ -107,6 +109,7 @@ export class MagicWandService extends SelectionToolService {
         if (this.draggingImage) {
             const MOUSE_POSITION_MAGNETIC = this.getPositionFromMouse(event, true);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawingService.clearCanvas(this.drawingService.selectionCtx);
             this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION_MAGNETIC);
             this.rotateCanvas();
             this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
@@ -177,6 +180,7 @@ export class MagicWandService extends SelectionToolService {
             this.calculateRotation(event.altKey, event.deltaY / 100);
             // clearing canvas for rotation
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawingService.clearCanvas(this.drawingService.selectionCtx);
             // does translation and rotation of the canvas
             this.rotateCanvas();
             this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize); // draw new image on preview
@@ -214,8 +218,8 @@ export class MagicWandService extends SelectionToolService {
     }
 
     private drawSelectionSurround(): void {
-        this.rectangleService.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
-        this.drawnAnchor(this.drawingService.previewCtx);
+        this.rectangleService.drawPreviewRect(this.drawingService.selectionCtx, this.pathData);
+        this.drawnAnchor(this.drawingService.selectionCtx);
     }
 
     private resetTransform(): void {
@@ -409,6 +413,7 @@ export class MagicWandService extends SelectionToolService {
             this.addActionTracking(this.startDownCoord);
         }
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawingService.clearCanvas(this.drawingService.selectionCtx);
         this.selectionCreated = false;
         this.arrowDown = true;
     }
@@ -429,9 +434,11 @@ export class MagicWandService extends SelectionToolService {
     onArrowDown(event: KeyboardEvent): void {
         if (!this.arrowDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawingService.clearCanvas(this.drawingService.selectionCtx);
         }
         if (this.selectionCreated) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawingService.clearCanvas(this.drawingService.selectionCtx);
             this.checkArrowHit(event);
             const TEMP = this.startDownCoord; // needed because rotateCanvas changes the value
             this.rotateCanvas();
@@ -445,6 +452,7 @@ export class MagicWandService extends SelectionToolService {
         if (this.selectionCreated) {
             this.checkArrowUnhit(event);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawingService.clearCanvas(this.drawingService.selectionCtx);
             if (this.arrowPress.every((v) => !v)) {
                 this.arrowDown = false;
                 const MEM_COORDS = this.startDownCoord;
@@ -514,5 +522,6 @@ export class MagicWandService extends SelectionToolService {
         this.selectionCreated = false;
         this.drawingService.baseCtx.putImageData(interaction.selection, interaction.startSelectionPoint.x, interaction.startSelectionPoint.y);
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawingService.clearCanvas(this.drawingService.selectionCtx);
     }
 }

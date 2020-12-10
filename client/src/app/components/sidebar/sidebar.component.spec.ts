@@ -49,6 +49,7 @@ describe('SidebarComponent', () => {
     let resetDrawingWithWarningSpy: jasmine.Spy<any>;
     let openGuideSpy: jasmine.Spy<any>;
     let previewCtxStub: CanvasRenderingContext2D;
+    let selectionCtxStub: CanvasRenderingContext2D;
     let canvasStub: HTMLCanvasElement;
     let modalHandlerServiceSpy: jasmine.Spy<any>;
 
@@ -142,9 +143,11 @@ describe('SidebarComponent', () => {
         const canvasWidth = 1200;
         const canvasHeight = 1000;
         previewCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+        selectionCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         canvasStub = canvasTestHelper.canvas;
         (toolserviceMock as any).drawingService = drawingStub;
         (toolserviceMock as any).drawingService.previewCtx = previewCtxStub;
+        (toolserviceMock as any).drawingService.selectionCtx = selectionCtxStub;
         (toolserviceMock as any).drawingService.canvas = canvasStub;
         (toolserviceMock as any).drawingService.canvas.width = canvasWidth;
         (toolserviceMock as any).drawingService.canvas.height = canvasHeight;

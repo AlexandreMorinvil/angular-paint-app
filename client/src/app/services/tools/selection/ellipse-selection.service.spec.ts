@@ -19,6 +19,7 @@ describe('EllipseSelectionService', () => {
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
+    let selectionCtxStub: CanvasRenderingContext2D;
     let canvasStub: HTMLCanvasElement;
     let mouseEventNotInCanvas: MouseEvent;
     let mouseEvent25: MouseEvent;
@@ -52,6 +53,7 @@ describe('EllipseSelectionService', () => {
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        selectionCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         canvasStub = canvasTestHelper.canvas;
 
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
@@ -91,6 +93,7 @@ describe('EllipseSelectionService', () => {
         (service as any).widthService = widthService;
         (service as any).drawingService.baseCtx = baseCtxStub;
         (service as any).drawingService.previewCtx = previewCtxStub;
+        (service as any).drawingService.selectionCtx = selectionCtxStub;
         (service as any).drawingService.canvas = canvasStub;
         (service as any).drawingService.canvas.width = canvasWidth;
         (service as any).drawingService.canvas.height = canvasHeight;
@@ -246,16 +249,6 @@ describe('EllipseSelectionService', () => {
         service.onMouseMove(mouseEventNotInCanvas);
         expect(ellipseServiceSpy.onMouseMove).not.toHaveBeenCalled();
         expect((service as any).pathData).not.toContain(service.getPositionFromMouse(mouseEventNotInCanvas));
-    });
-
-    it('should set attribute and getSquaredSize is called when shiftDown is set to true on mouse move', () => {
-        (service as any).draggingImage = false;
-        (service as any).mouseDown = true;
-        (service as any).localMouseDown = true;
-        (service as any).shiftDown = true;
-
-        service.onMouseMove(mouseEvent100);
-        expect(getSquaredSizeSpy).toHaveBeenCalled();
     });
 
     it('should clear canvas and getAnchorHit called when we clicked on anchor and localMouseDown is set to true on mouse move', () => {
