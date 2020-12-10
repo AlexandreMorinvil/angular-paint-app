@@ -40,6 +40,7 @@ describe('DrawingCarouselComponent', () => {
                 filterByTag: testData,
                 addTag: {},
                 removeTag: {},
+                clearTags: {},
             });
             loadServiceSpy = jasmine.createSpyObj('LoadService', {
                 loadDraw: {},

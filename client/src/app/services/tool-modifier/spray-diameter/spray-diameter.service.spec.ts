@@ -15,10 +15,6 @@ describe('SprayDiameterService', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(SprayDiameterService);
-        setSprayDiameterSpy = spyOn<any>(service, 'setSprayDiameter').and.callThrough();
-        setStateSpy = spyOn<any>(service, 'setState').and.callThrough();
-        getSprayDiameterSpy = spyOn<any>(service, 'getSprayDiameter').and.callThrough();
-        getStateSpy = spyOn<any>(service, 'getState').and.callThrough();
     });
 
     it('should be created', () => {
@@ -26,10 +22,11 @@ describe('SprayDiameterService', () => {
     });
 
     it(' should set sray diameter with the incoming argument and getSprayDiameter should equal to the right number', () => {
+        setSprayDiameterSpy = spyOn<any>(service, 'setSprayDiameter').and.callThrough();
+        getSprayDiameterSpy = spyOn<any>(service, 'getSprayDiameter').and.callThrough();
         const sprayDiameter = 20;
         service.setSprayDiameter(sprayDiameter);
         expect(setSprayDiameterSpy).toHaveBeenCalled();
-
         expect(service.getSprayDiameter()).toBe(sprayDiameter);
         expect(getSprayDiameterSpy).toHaveBeenCalled();
     });
@@ -37,16 +34,19 @@ describe('SprayDiameterService', () => {
     it(' setSprayDiameter should set number spray diameter to the 200  if input is above 200', () => {
         const sprayDiameter = 201;
         const maxNumberSprayDiameter = service.MAX_SPRAY_DIAMETER;
+        setSprayDiameterSpy = spyOn<any>(service, 'setSprayDiameter').and.callThrough();
+        getSprayDiameterSpy = spyOn<any>(service, 'getSprayDiameter').and.callThrough();
         service.setSprayDiameter(sprayDiameter);
         expect(setSprayDiameterSpy).toHaveBeenCalled();
-
         expect(service.getSprayDiameter()).toBe(maxNumberSprayDiameter);
-        expect(setSprayDiameterSpy).toHaveBeenCalled();
+        expect(getSprayDiameterSpy).toHaveBeenCalled();
     });
 
     it(' setSprayDiameter should set spray diameter to 10 if input is below 10', () => {
         const sprayDiameter = 9;
         const minNumberSprayDiameter = service.MIN_SPRAY_DIAMETER;
+        setSprayDiameterSpy = spyOn<any>(service, 'setSprayDiameter').and.callThrough();
+        getSprayDiameterSpy = spyOn<any>(service, 'getSprayDiameter').and.callThrough();
         service.setSprayDiameter(sprayDiameter);
         expect(setSprayDiameterSpy).toHaveBeenCalled();
 
@@ -58,6 +58,8 @@ describe('SprayDiameterService', () => {
         const state = {
             sprayDiameter: 50,
         } as SprayDiameterModifierState;
+        getSprayDiameterSpy = spyOn<any>(service, 'getSprayDiameter').and.callThrough();
+        setStateSpy = spyOn<any>(service, 'setState').and.callThrough();
         service.setState(state);
         expect(setStateSpy).toHaveBeenCalled();
         expect(service.getSprayDiameter()).toBe(state.sprayDiameter);
@@ -68,6 +70,9 @@ describe('SprayDiameterService', () => {
         const state = {
             sprayDiameter: 50,
         } as SprayDiameterModifierState;
+        getSprayDiameterSpy = spyOn<any>(service, 'getSprayDiameter').and.callThrough();
+        setStateSpy = spyOn<any>(service, 'setState').and.callThrough();
+        getStateSpy = spyOn<any>(service, 'getState').and.callThrough();
         service.setState(state);
         service.getState();
         expect(setStateSpy).toHaveBeenCalled();

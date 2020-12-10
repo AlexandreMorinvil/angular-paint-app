@@ -33,8 +33,6 @@ describe('PaintService', () => {
         colorService = TestBed.inject(ColorService);
         toleranceService = TestBed.inject(ToleranceService);
 
-        sameColorFillSpy = spyOn<any>(service, 'sameColorFill').and.callThrough();
-        floodFillSpy = spyOn<any>(service, 'floodFill').and.callThrough();
         // No need to justify numbers to create a mock rectangles
         // tslint:disable:no-magic-numbers
         const canvasWidth = 100;
@@ -67,11 +65,13 @@ describe('PaintService', () => {
     });
 
     it(' Left click should call floodFill ', () => {
+        floodFillSpy = spyOn<any>(service, 'floodFill').and.callThrough();
         service.onMouseDown(mouseEvent);
         expect(floodFillSpy).toHaveBeenCalled();
     });
 
     it(' Right click should call sameColorFill ', () => {
+        sameColorFillSpy = spyOn<any>(service, 'sameColorFill').and.callThrough();
         const mouseEvent2 = {
             offsetX: 25,
             offsetY: 25,
@@ -83,6 +83,7 @@ describe('PaintService', () => {
 
     it(' should make sure that matchStartColor verify correctly with fill rgb and target surface', () => {
         colorService.setPrimaryColor('#010102');
+        floodFillSpy = spyOn<any>(service, 'floodFill').and.callThrough();
 
         const mouseEvent2 = {
             offsetX: 51,
@@ -100,6 +101,7 @@ describe('PaintService', () => {
             offsetY: 2000,
             button: 0,
         } as MouseEvent;
+        floodFillSpy = spyOn<any>(service, 'floodFill').and.callThrough();
         service.onMouseDown(mouseEvent2);
         expect(floodFillSpy).not.toHaveBeenCalled();
     });
@@ -111,7 +113,8 @@ describe('PaintService', () => {
             button: 1,
         } as MouseEvent;
         service.onMouseDown(mouseEvent2);
-
+        floodFillSpy = spyOn<any>(service, 'floodFill').and.callThrough();
+        sameColorFillSpy = spyOn<any>(service, 'sameColorFill').and.callThrough();
         expect(floodFillSpy).not.toHaveBeenCalled();
         expect(sameColorFillSpy).not.toHaveBeenCalled();
     });
@@ -127,6 +130,7 @@ describe('PaintService', () => {
             fillColorG: 255,
             fillColorB: 255,
         } as InteractionPaint;
+        floodFillSpy = spyOn<any>(service, 'floodFill').and.callThrough();
         (service as any).execute(interactionPaint);
         expect(floodFillSpy).toHaveBeenCalled();
     });
@@ -142,6 +146,7 @@ describe('PaintService', () => {
             fillColorG: 255,
             fillColorB: 255,
         } as InteractionPaint;
+        sameColorFillSpy = spyOn<any>(service, 'sameColorFill').and.callThrough();
         (service as any).execute(interactionPaint);
         expect(sameColorFillSpy).toHaveBeenCalled();
     });
@@ -157,6 +162,8 @@ describe('PaintService', () => {
             fillColorG: 255,
             fillColorB: 255,
         } as InteractionPaint;
+        floodFillSpy = spyOn<any>(service, 'floodFill').and.callThrough();
+        sameColorFillSpy = spyOn<any>(service, 'sameColorFill').and.callThrough();
         (service as any).execute(interactionPaint);
         expect(sameColorFillSpy).not.toHaveBeenCalled();
         expect(floodFillSpy).not.toHaveBeenCalled();

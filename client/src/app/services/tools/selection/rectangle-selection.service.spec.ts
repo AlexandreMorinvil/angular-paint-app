@@ -19,6 +19,7 @@ describe('RectangleSelectionService', () => {
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
+    let selectionCtxStub: CanvasRenderingContext2D;
     let canvasStub: HTMLCanvasElement;
     let mouseEventNotInCanvas: MouseEvent;
     let mouseEvent: MouseEvent;
@@ -51,6 +52,7 @@ describe('RectangleSelectionService', () => {
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        selectionCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         canvasStub = canvasTestHelper.canvas;
 
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
@@ -91,6 +93,7 @@ describe('RectangleSelectionService', () => {
         (service as any).widthService = widthService;
         (service as any).drawingService.baseCtx = baseCtxStub;
         (service as any).drawingService.previewCtx = previewCtxStub;
+        (service as any).drawingService.selectionCtx = selectionCtxStub;
         (service as any).drawingService.canvas = canvasStub;
         (service as any).drawingService.canvas.width = canvasWidth;
         (service as any).drawingService.canvas.height = canvasHeight;

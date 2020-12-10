@@ -227,9 +227,9 @@ export class EllipseSelectionService extends SelectionToolService {
     }
 
     private drawSelectionSurround(): void {
-        this.ellipseService.drawEllipse(this.drawingService.previewCtx, this.pathData);
-        this.ellipseService.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
-        this.drawnAnchor(this.drawingService.previewCtx);
+        this.ellipseService.drawEllipse(this.drawingService.selectionCtx, this.pathData);
+        this.ellipseService.drawPreviewRect(this.drawingService.selectionCtx, this.pathData);
+        this.drawnAnchor(this.drawingService.selectionCtx);
     }
 
     private resetTransform(): void {
@@ -257,9 +257,7 @@ export class EllipseSelectionService extends SelectionToolService {
     drawOnBaseCanvas(): void {
         // puts selection on baseCanvas
         if (this.selectionCreated) {
-            if (this.hasDoneFirstRotation) {
-                this.rotateCanvas();
-            }
+            this.rotateCanvas();
             this.showSelection(this.drawingService.baseCtx, this.image, this.firstSelectionCoord, this.selectionSize);
             this.resetCanvasRotation();
         }
