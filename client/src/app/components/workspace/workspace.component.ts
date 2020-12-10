@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzone-size.service';
-const TOOL_BOX_WIDTH = 313;
+const TOOL_BOX_WIDTH = 266;
 const SIDEBARWIDTH = 95;
 @Component({
     selector: 'app-workspace',

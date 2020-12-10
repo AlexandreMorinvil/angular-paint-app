@@ -201,7 +201,7 @@ describe('ModalSaveComponent', () => {
     it('send message to server should call basic post', () => {
         (component as any).drawingName.value = 'name';
         (component as any).tags = ['tag1', 'tag2'];
-        component.saveService.saveDraw();
+        component.saveService.saveDraw('png');
         component.sendMessageToServer();
         expect(basicPostSpy).toHaveBeenCalled();
     });
@@ -222,7 +222,7 @@ describe('ModalSaveComponent', () => {
     it('should save message to server when validate value is true', () => {
         (component as any).drawingName.value = 'name';
         (component as any).tags = ['tag1', 'tag2'];
-        component.saveService.saveDraw();
+        component.saveService.saveDraw('png');
         component.saveToServer();
         expect(saveDrawSpy).toHaveBeenCalled();
         expect(sendMessageToServerSpy).toHaveBeenCalled();

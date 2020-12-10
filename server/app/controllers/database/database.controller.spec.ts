@@ -2,34 +2,34 @@ import { expect } from 'chai';
 import { StatusCodes } from 'http-status-codes';
 import { describe } from 'mocha';
 import * as tests from 'supertest';
-import { Drawing } from '../../../common/communication/drawing';
-import { DrawingToDatabase } from '../../../common/communication/drawing-to-database';
-import { Stubbed, testingContainer } from '../../test/test-utils';
-import { Application } from '../app';
-import { DatabaseService } from '../services/database/database.service';
-import { TYPES } from '../types';
+import { Drawing } from '../../../../common/communication/drawing';
+import { DrawingToDatabase } from '../../../../common/communication/drawing-to-database';
+import { Stubbed, testingContainer } from '../../../test/test-utils';
+import { Application } from '../../app';
+import { DatabaseService } from '../../services/database/database.service';
+import { TYPES } from '../../types';
 
 const HTTP_STATUS_CODE_NOT_FOUND = StatusCodes.NOT_FOUND;
 const HTTPS_STATUS_CODE_OK = StatusCodes.OK;
 const HTTPS_STATUS_CODE_CREATED = StatusCodes.CREATED;
 const HTTPS_STATUS_NO_CONTENT = StatusCodes.NO_CONTENT;
 
-const ERROR_DELETE_DRAWING: string = 'Échec lors de la tentative de suppression du dessin';
-const ERROR_UPDATE_DRAWING: string = 'Échec lors de la tentative de mise à jour du dessin';
-const ERROR_NO_DRAWING_FOUND: string = "Le dessin demandé n'a pas été trouvé";
-const ERROR_GET_ALL_DRAWING: string = 'Échec lors de la tentative de récupération de tous les dessins';
-const ERROR_ADD_DRAWING: string = "Échec lors de l'ajout du dessin";
-const ERROR_GET_DRAWING_BY_TAG: string = "Échec lors de la tentative de récupération de tous les dessins ayant l'étiquettes";
-const ERROR_GET_DRAWING_BY_NAME: string = 'Échec lors de la tentative de récupération de tous les dessins nommés';
+const ERROR_DELETE_DRAWING = 'Échec lors de la tentative de suppression du dessin';
+const ERROR_UPDATE_DRAWING = 'Échec lors de la tentative de mise à jour du dessin';
+const ERROR_NO_DRAWING_FOUND = "Le dessin demandé n'a pas été trouvé";
+const ERROR_GET_ALL_DRAWING = 'Échec lors de la tentative de récupération de tous les dessins';
+const ERROR_ADD_DRAWING = "Échec lors de l'ajout du dessin";
+const ERROR_GET_DRAWING_BY_TAG = "Échec lors de la tentative de récupération de tous les dessins ayant l'étiquettes";
+const ERROR_GET_DRAWING_BY_NAME = 'Échec lors de la tentative de récupération de tous les dessins nommés';
 
 describe('DatabaseController', () => {
-    const ROUTING_GET_ALL: string = '/api/drawing';
-    const ROUTING_POST: string = '/api/drawing';
-    const ROUTING_GET_DRAWING_ID: string = '/api/drawing/:drawingId';
-    const ROUTING_GET_NAME: string = '/api/drawing/name/:name';
-    const ROUTING_GET_TAG: string = '/api/drawing/tag/:tag';
-    const ROUTING_PATCH: string = '/api/drawing/:drawingId';
-    const ROUTING_DELETE: string = '/api/drawing/:drawingId';
+    const ROUTING_GET_ALL = '/api/drawing';
+    const ROUTING_POST = '/api/drawing';
+    const ROUTING_GET_DRAWING_ID = '/api/drawing/:drawingId';
+    const ROUTING_GET_NAME = '/api/drawing/name/:name';
+    const ROUTING_GET_TAG = '/api/drawing/tag/:tag';
+    const ROUTING_PATCH = '/api/drawing/:drawingId';
+    const ROUTING_DELETE = '/api/drawing/:drawingId';
 
     let application: Express.Application;
     let databaseService: Stubbed<DatabaseService>;
@@ -37,7 +37,6 @@ describe('DatabaseController', () => {
     const drawing0 = new Drawing('0', 'alex', new Array<string>('tag1', 'tag2'), 'imagsource');
     const drawing1 = new DrawingToDatabase('1', 'alex', new Array<string>('tag1', 'tag2'));
     const drawing2 = new DrawingToDatabase('2', 'luca', new Array<string>('tag3', 'tag4'));
-    //const drawing4 = new Drawing('4', 'alex', new Array<string>('ta$$g1', 'tag2'), '');
 
     beforeEach(async () => {
         const [container, sandbox] = await testingContainer();
