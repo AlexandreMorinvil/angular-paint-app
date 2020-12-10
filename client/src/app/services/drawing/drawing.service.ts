@@ -8,6 +8,7 @@ import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzon
 export class DrawingService {
     baseCtx: CanvasRenderingContext2D;
     previewCtx: CanvasRenderingContext2D;
+    selectionCtx: CanvasRenderingContext2D;
     canvas: HTMLCanvasElement;
     hasBeenDrawnOnto: boolean;
     shortcutEnable: boolean = true;
@@ -17,6 +18,7 @@ export class DrawingService {
     resetDrawing(): void {
         this.clearCanvas(this.baseCtx);
         this.clearCanvas(this.previewCtx);
+        this.clearCanvas(this.selectionCtx);
         this.baseCtx.fillStyle = '#FFFFFF';
         this.baseCtx.fillRect(0, 0, this.baseCtx.canvas.width, this.baseCtx.canvas.height);
         this.hasBeenDrawnOnto = false;
@@ -43,6 +45,8 @@ export class DrawingService {
         this.baseCtx.canvas.height = height;
         this.previewCtx.canvas.width = width;
         this.previewCtx.canvas.height = height;
+        this.selectionCtx.canvas.height = height;
+        this.selectionCtx.canvas.width = width;
         this.gridService.resize(width, height);
         this.printCanvas(IMAGE_DATA);
         this.workzoneSizeService.updateDrawingZoneDimension({ width, height });
@@ -50,6 +54,10 @@ export class DrawingService {
 
     clearCanvas(context: CanvasRenderingContext2D): void {
         context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    getGridContex(): CanvasRenderingContext2D {
+        return this.gridService.gridCtx;
     }
 
     getWidth(): number {

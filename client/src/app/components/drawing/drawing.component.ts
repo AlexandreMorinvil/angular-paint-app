@@ -6,6 +6,8 @@ import { MagnetismService } from '@app/services/magnetism/magnetism.service';
 import { ModalHandlerService } from '@app/services/modal-handler/modal-handler';
 import { ToolboxService } from '@app/services/toolbox/toolbox.service';
 import { GridService } from '@app/services/tools/grid/grid.service';
+import { RectangleSelectionService } from '@app/services/tools/selection/rectangle-selection.service';
+import { SelectionToolService } from '@app/services/tools/selection/selection-tool.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import { WorkzoneSizeService } from '@app/services/workzone-size-service/workzone-size.service';
 
@@ -24,6 +26,7 @@ export class DrawingComponent implements AfterViewInit {
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('editCanvas', { static: false }) editCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('gridCanvas', { static: false }) gridCanvas: ElementRef<HTMLCanvasElement>;
+    @ViewChild('selectionCanvas', { static: false }) selectionCanvas: ElementRef<HTMLCanvasElement>;
 
     readonly BACKSPACE_KEYCODE: number = 32;
     private baseCtx: CanvasRenderingContext2D;
@@ -31,6 +34,7 @@ export class DrawingComponent implements AfterViewInit {
     private editCtx: CanvasRenderingContext2D;
     private gridCtx: CanvasRenderingContext2D;
     private clipboardCtx: CanvasRenderingContext2D;
+    private selectionCtx: CanvasRenderingContext2D;
     hasBeenDrawnOnto: boolean;
 
     constructor(
@@ -42,6 +46,7 @@ export class DrawingComponent implements AfterViewInit {
         private gridService: GridService,
         private magnetismService: MagnetismService,
         private clipboardService: ClipBoardService,
+        private rectangleSelectionService: RectangleSelectionService,
     ) {}
     // tslint:disable:no-magic-numbers
     ngAfterViewInit(): void {
@@ -50,8 +55,10 @@ export class DrawingComponent implements AfterViewInit {
         this.editCtx = this.editCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.gridCtx = this.gridCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.clipboardCtx = this.clipboardCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.selectionCtx = this.selectionCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
+        this.drawingService.selectionCtx = this.selectionCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
         this.editCtx.canvas.width = window.innerWidth - TOOL_BOX_WIDTH - SIDEBARWIDTH;
         this.editCtx.canvas.height = window.innerHeight - 5;
@@ -121,7 +128,8 @@ export class DrawingComponent implements AfterViewInit {
     // tslint:disable:cyclomatic-complexity
     @HostListener('window:keyup', ['$event'])
     keyEventUp(event: KeyboardEvent): void {
-        if (this.drawingService.shortcutEnable) {
+        const IS_CTRL_KEY: boolean = event.ctrlKey;
+        if (this.drawingService.shortcutEnable && !IS_CTRL_KEY) {
             for (const i in this.toolbox.getAvailableTools()) {
                 if (this.toolbox.getAvailableTools()[i].shortcut === event.key.toLowerCase()) {
                     this.toolbox.setSelectedTool(this.toolbox.getAvailableTools()[i]);
@@ -146,7 +154,10 @@ export class DrawingComponent implements AfterViewInit {
                     this.toolbox.getCurrentTool().onBackspaceDown(event);
                 }
                 break;
-            case 'ArrowLeft' || 'ArrowRight' || 'ArrowUp' || 'ArrowDown':
+            case 'ArrowLeft':
+            case 'ArrowRight':
+            case 'ArrowUp':
+            case 'ArrowDown':
                 this.toolbox.getCurrentTool().onArrowUp(event);
                 break;
             case 'Alt':
@@ -154,12 +165,7 @@ export class DrawingComponent implements AfterViewInit {
                 this.toolbox.getCurrentTool().onAltUp(event);
                 break;
             default:
-                if (!SHORT_CUT_ENABLE) return;
-                for (const i in this.toolbox.getAvailableTools()) {
-                    if (this.toolbox.getAvailableTools()[i].shortcut === keyCode.toLowerCase()) {
-                        this.toolbox.setSelectedTool(this.toolbox.getAvailableTools()[i]);
-                    }
-                }
+                return;
         }
     }
     // The disablement of the "cyclomatic-complexity" tslint rule is justified in this situation
@@ -193,7 +199,14 @@ export class DrawingComponent implements AfterViewInit {
                 event.preventDefault(); // to prevent key of windows
                 this.toolbox.getCurrentTool().onAltDown(event);
                 break;
-            case 'ArrowLeft' || 'ArrowRight' || 'ArrowUp' || 'ArrowDown':
+            case 'Delete':
+                event.preventDefault(); // to prevent key of windows
+                if (this.toolbox.getCurrentTool() instanceof SelectionToolService) (this.toolbox.getCurrentTool() as SelectionToolService).delete();
+                break;
+            case 'ArrowLeft':
+            case 'ArrowRight':
+            case 'ArrowUp':
+            case 'ArrowDown':
                 event.preventDefault(); // to prevent key of windows
                 this.toolbox.getCurrentTool().onArrowDown(event);
                 break;
@@ -206,12 +219,34 @@ export class DrawingComponent implements AfterViewInit {
                     this.drawingStateTrackerService.onCtrlShiftZDown();
                 }
             } else {
-                if (KEY_CODE_LOWER_CASE === 'z') {
-                    event.preventDefault(); // to prevent key of windows
-                    this.drawingStateTrackerService.onCtrlZDown();
-                } else if (KEY_CODE_LOWER_CASE === 'a') {
-                    event.preventDefault(); // to prevent key of windows
-                    this.toolbox.getCurrentTool().onCtrlADown();
+                switch (KEY_CODE_LOWER_CASE) {
+                    case 'z':
+                        event.preventDefault(); // to prevent key of windows
+                        this.drawingStateTrackerService.onCtrlZDown();
+                        break;
+                    case 'a':
+                        event.preventDefault(); // to prevent key of windows
+                        this.toolbox.getCurrentTool().onCtrlADown();
+                        break;
+                    case 'c':
+                        event.preventDefault(); // to prevent key of windows
+                        if (this.toolbox.getCurrentTool() instanceof SelectionToolService)
+                            (this.toolbox.getCurrentTool() as SelectionToolService).copy();
+                        break;
+                    case 'x':
+                        event.preventDefault(); // to prevent key of windows
+                        if (this.toolbox.getCurrentTool() instanceof SelectionToolService)
+                            (this.toolbox.getCurrentTool() as SelectionToolService).cut();
+                        break;
+                    case 'v':
+                        event.preventDefault(); // to prevent key of windows
+                        if (this.toolbox.getCurrentTool() instanceof SelectionToolService) {
+                            this.toolbox.setSelectedTool(this.rectangleSelectionService);
+                            (this.toolbox.getCurrentTool() as SelectionToolService).paste();
+                        }
+                        break;
+                    default:
+                        break;
                 }
                 if (SHORT_CUT_ENABLE) {
                     switch (KEY_CODE_LOWER_CASE) {

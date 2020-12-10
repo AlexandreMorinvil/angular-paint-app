@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { InteractionSelection } from '@app/classes/action/interaction-selection';
 import { Description } from '@app/classes/description';
+import { MouseButton } from '@app/classes/mouse';
 import { Vec2 } from '@app/classes/vec2';
 import { ClipBoardService } from '@app/services/clipboard/clipboard.service';
 import { DrawingStateTrackerService } from '@app/services/drawing-state-tracker/drawing-state-tracker.service';
@@ -37,7 +38,15 @@ export class RectangleSelectionService extends SelectionToolService {
         this.image = new Image();
     }
 
+    pasteManipulation(): void {
+        this.resetTransform();
+        this.rectangleService.mouseDownCoord = this.startDownCoord;
+        this.drawSelectionSurround();
+        this.showSelection(this.drawingService.selectionCtx, this.image, this.firstSelectionCoord, this.selectionSize);
+    }
+
     onMouseDown(event: MouseEvent): void {
+        this.mouseDown = event.button === MouseButton.Left;
         if (!this.mouseDown) {
             this.onEscapeDown();
         }
@@ -76,6 +85,7 @@ export class RectangleSelectionService extends SelectionToolService {
         if (this.draggingImage && this.localMouseDown) {
             const MOUSE_POSITION_MAGNETIC = this.getPositionFromMouse(event, true);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawingService.clearCanvas(this.drawingService.selectionCtx);
             this.startDownCoord = this.evenImageStartCoord(MOUSE_POSITION_MAGNETIC);
             this.pathLastCoord = this.getBottomRightCorner(); // needed for showSelection
             this.rotateCanvas();
@@ -85,6 +95,7 @@ export class RectangleSelectionService extends SelectionToolService {
             // resizing
         } else if (this.clickOnAnchor && this.localMouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawingService.clearCanvas(this.drawingService.selectionCtx);
             this.getAnchorHit(this.drawingService.previewCtx, MOUSE_POSITION, CALLER_ID);
             // creation
         } else if (this.isInCanvas(MOUSE_POSITION) && this.localMouseDown) {
@@ -102,6 +113,7 @@ export class RectangleSelectionService extends SelectionToolService {
     onMouseUp(event: MouseEvent): void {
         const MOUSE_POSITION = this.getPositionFromMouse(event);
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawingService.clearCanvas(this.drawingService.selectionCtx);
         // translate
         if (this.draggingImage) {
             const MOUSE_POSITION_MAGNETIC = this.getPositionFromMouse(event, true);
@@ -161,7 +173,6 @@ export class RectangleSelectionService extends SelectionToolService {
             this.addActionTracking(this.startDownCoord);
             // put selection on previewCanvas
             this.pathLastCoord = this.getBottomRightCorner();
-            this.clipboardHelperImage = this.image;
             this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize);
             this.drawSelectionSurround();
             // remove original rectangle from base
@@ -193,6 +204,7 @@ export class RectangleSelectionService extends SelectionToolService {
             this.calculateRotation(event.altKey, event.deltaY / 100);
             // clearing canvas for rotation
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawingService.clearCanvas(this.drawingService.selectionCtx);
             // does translation and rotation of the canvas
             this.rotateCanvas();
             this.showSelection(this.drawingService.previewCtx, this.image, this.firstSelectionCoord, this.selectionSize); // draw new image on preview
@@ -220,8 +232,8 @@ export class RectangleSelectionService extends SelectionToolService {
     }
 
     private drawSelectionSurround(): void {
-        this.rectangleService.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
-        this.drawnAnchor(this.drawingService.previewCtx);
+        this.rectangleService.drawPreviewRect(this.drawingService.selectionCtx, this.pathData);
+        this.drawnAnchor(this.drawingService.selectionCtx);
     }
 
     private resetTransform(): void {
@@ -273,6 +285,7 @@ export class RectangleSelectionService extends SelectionToolService {
             this.addActionTracking(this.startDownCoord);
         }
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawingService.clearCanvas(this.drawingService.selectionCtx);
         this.selectionCreated = false;
         this.arrowDown = true;
     }
@@ -308,9 +321,11 @@ export class RectangleSelectionService extends SelectionToolService {
     onArrowDown(event: KeyboardEvent): void {
         if (!this.arrowDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawingService.clearCanvas(this.drawingService.selectionCtx);
         }
         if (this.selectionCreated) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawingService.clearCanvas(this.drawingService.selectionCtx);
             this.checkArrowHit(event);
             const TEMP = this.startDownCoord; // needed because rotateCanvas changes the value
             this.rotateCanvas();
@@ -324,6 +339,7 @@ export class RectangleSelectionService extends SelectionToolService {
         if (this.selectionCreated) {
             this.checkArrowUnhit(event);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawingService.clearCanvas(this.drawingService.selectionCtx);
             if (this.arrowPress.every((v) => !v)) {
                 this.arrowDown = false;
                 const MEM_COORDS = this.startDownCoord;
@@ -361,5 +377,6 @@ export class RectangleSelectionService extends SelectionToolService {
         this.selectionCreated = false;
         this.drawingService.baseCtx.putImageData(interaction.selection, interaction.startSelectionPoint.x, interaction.startSelectionPoint.y);
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawingService.clearCanvas(this.drawingService.selectionCtx);
     }
 }

@@ -12,10 +12,12 @@ describe('ToolboxService', () => {
     let toolStub: ToolStub;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
+    let selectionCtxStub: CanvasRenderingContext2D;
     let canvasStub: HTMLCanvasElement;
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        selectionCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         canvasStub = canvasTestHelper.canvas;
         TestBed.configureTestingModule({
             providers: [ToolboxService],
@@ -27,6 +29,7 @@ describe('ToolboxService', () => {
         const canvasHeight = 800;
         (service as any).drawingService.baseCtx = baseCtxStub;
         (service as any).drawingService.previewCtx = previewCtxStub;
+        (service as any).drawingService.selectionCtx = selectionCtxStub;
         (service as any).drawingService.canvas = canvasStub;
         (service as any).drawingService.canvas.width = canvasWidth;
         (service as any).drawingService.canvas.height = canvasHeight;

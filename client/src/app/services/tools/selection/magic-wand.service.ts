@@ -214,8 +214,8 @@ export class MagicWandService extends SelectionToolService {
     }
 
     private drawSelectionSurround(): void {
-        this.rectangleService.drawPreviewRect(this.drawingService.previewCtx, this.pathData);
-        this.drawnAnchor(this.drawingService.previewCtx);
+        this.rectangleService.drawPreviewRect(this.drawingService.selectionCtx, this.pathData);
+        this.drawnAnchor(this.drawingService.selectionCtx);
     }
 
     private resetTransform(): void {
